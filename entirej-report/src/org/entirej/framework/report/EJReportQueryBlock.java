@@ -1,0 +1,52 @@
+/*******************************************************************************
+ * Copyright 2013 Mojave Innovations GmbH
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * Contributors:
+ *     Mojave Innovations GmbH - initial API and implementation
+ ******************************************************************************/
+package org.entirej.framework.report;
+
+import java.util.Collection;
+
+import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
+
+public interface EJReportQueryBlock
+{
+    public String getName();
+
+    public Collection<EJReportBlockItem> getBlockItems();
+
+    /**
+     * Indicates if the block has an item with the given name
+     * 
+     * @param itemName
+     *            the name to check for
+     * @return <code>true</code> if the item exists within the block, otherwise
+     *         <code>false</code>
+     * 
+     */
+    public boolean containsItem(String itemName);
+
+    public EJReportDefaultServicePojoHelper getServicePojoHelper();
+
+    public EJReportBlockItem getBlockItem(String itemName);
+
+    /**
+     * Return the form to which this block belongs
+     * 
+     * @return This form to which this block belongs
+     */
+    public EJReport getReport();
+}

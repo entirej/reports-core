@@ -1,0 +1,424 @@
+/*******************************************************************************
+ * Copyright 2013 Mojave Innovations GmbH
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * Contributors:
+ *     Mojave Innovations GmbH - initial API and implementation
+ ******************************************************************************/
+package org.entirej.framework.report.internal;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+
+import org.entirej.framework.report.EJManagedReportFrameworkConnection;
+import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportMessage;
+import org.entirej.framework.report.EJReportMessageFactory;
+import org.entirej.framework.report.EJReportParameterList;
+import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJReportActionController;
+import org.entirej.framework.report.data.controllers.EJReportBlockController;
+import org.entirej.framework.report.data.controllers.EJReportController;
+import org.entirej.framework.report.data.controllers.EJReportDateHelper;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
+import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
+import org.entirej.framework.report.properties.EJCoreReportProperties;
+import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
+import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+
+public class EJInternalReport implements Serializable
+{
+    private EJReportController _formController;
+
+    public EJInternalReport(EJReportController formController)
+    {
+        _formController = formController;
+    }
+
+    public EJReportController getFormController()
+    {
+        return _formController;
+    }
+
+    /**
+     * Returns a managed framework connection
+     * 
+     * @return The connection
+     */
+    public EJManagedReportFrameworkConnection getFrameworkConnection()
+    {
+        return getFrameworkManager().getConnection();
+    }
+
+    /**
+     * This method should be called when to handle an exception in a
+     * standardized manner
+     * <p>
+     * The exception will be sent to the applications messenger so that a
+     * correct message will be displayed to the user. If the application has a
+     * logger, then the exception will also be logged
+     * 
+     * @param exception
+     *            The exception to handle
+     */
+    public void handleException(Exception exception)
+    {
+        _formController.getFrameworkManager().handleException(exception);
+    }
+
+    /**
+     * Instructs EntireJ to clear the form
+     * <p>
+     * If <code>disregardChanges</code> is <code>true</code> then all changes
+     * made within the form will be disregarded
+     * 
+     */
+    public void clear()
+    {
+        _formController.clearReport();
+    }
+
+    /**
+     * Returns the framework manager
+     * 
+     * @return The framework manager
+     */
+    public EJReportFrameworkManager getFrameworkManager()
+    {
+        return _formController.getFrameworkManager();
+    }
+
+    /**
+     * Returns the action controller for this form
+     * 
+     * @return
+     */
+    public EJReportActionController getActionController()
+    {
+        return _formController.getActionController();
+    }
+
+    /**
+     * Returns an immutable collection of all blocks available within this form
+     * 
+     * @return All blocks within this form
+     */
+    public Collection<EJInternalReportBlock> getAllBlocks()
+    {
+        ArrayList<EJInternalReportBlock> blocks = new ArrayList<EJInternalReportBlock>();
+
+        for (EJReportBlockController controller : _formController.getAllBlockControllers())
+        {
+            blocks.add(controller.getBlock());
+        }
+
+        return Collections.unmodifiableCollection(blocks);
+    }
+
+    /**
+     * Retrieves the required block
+     * <p>
+     * If there is no block with the given name then an exception will be thrown
+     * 
+     * @param blockName
+     *            The name of the required block
+     * @return The required block or <code>null</code> if no block exists with
+     *         the given name.
+     */
+    public EJInternalReportBlock getBlock(String blockName)
+    {
+        EJReportBlockController blockController = _formController.getBlockController(blockName);
+        if (blockController == null)
+        {
+            return null;
+        }
+
+        return blockController.getBlock();
+    }
+
+    /**
+     * Returns the <code>VisualAttributeProperties</code> with the given name or
+     * <code>null</code> if there is no visual attribute with the given name
+     * 
+     * @param vaName
+     *            the name of the required <code>VisualAttribute</code>
+     * 
+     * @return The required <code>VisualAttributeProperties</code> or
+     *         <code>null</code> if there was no Visual Attribute with the given
+     *         name
+     */
+    public EJReportVisualAttributeProperties getVisualAttribute(String vaName)
+    {
+        return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(vaName);
+    }
+
+    /**
+     * Adds the given <code>VisualAttributeProperties</code> to the frameworks
+     * list of Visual Attributes
+     * <p>
+     * The given visual attribute will replace any visual attribute that
+     * currently exists with the same name
+     * 
+     * @param vaProperties
+     *            The visual attribute to add
+     */
+    public void addVisualAttribute(EJReportVisualAttributeProperties vaProperties)
+    {
+        EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().replaceVisualAttribute(vaProperties);
+    }
+
+    /**
+     * Used to set the value of an application level parameter
+     * 
+     * @param valueName
+     *            The name of the value
+     * @param value
+     *            The parameter value
+     */
+    public void setApplicationLevelParameter(String valueName, Object value)
+    {
+        _formController.getFrameworkManager().setApplicationLevelParameter(valueName, value);
+    }
+
+    /**
+     * Retrieves an application level parameter value with the given name
+     * <p>
+     * If there is no parameter with the given name then an exception will be
+     * thrown
+     * 
+     * @param paramName
+     *            The name of the required parameter
+     * @return The value of the given parameter
+     */
+    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String paramName)
+    {
+        return _formController.getFrameworkManager().getApplicationLevelParameter(paramName);
+    }
+
+    /**
+     * Sets the given form parameter to the given value
+     * 
+     * @param name
+     *            The name of the parameter to set
+     * @param value
+     *            The value of the parameter
+     * @throws EJReportRuntimeException
+     *             id there is no property with the given name or the data type
+     *             of the given object is not the same as defined within the
+     *             form
+     */
+    public void setFormParameter(String name, Object value)
+    {
+        if (_formController.getParameterList().contains(name))
+        {
+            _formController.getParameterList().getParameter(name).setValue(value);
+        }
+        else
+        {
+            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NO_FORM_PARAMETER, name,
+                    _formController.getProperties().getName());
+            throw new EJReportRuntimeException(message);
+        }
+    }
+
+    /**
+     * Returns the From Level Parameter with the given name
+     * 
+     * @param name
+     *            The name of the required application parameter
+     * @return The form parameter
+     */
+    public EJReportParameter getFormParameter(String name)
+    {
+        if (_formController.getParameterList().contains(name))
+        {
+            return _formController.getParameterList().getParameter(name);
+        }
+        else
+        {
+            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NO_FORM_PARAMETER, name,
+                    _formController.getProperties().getName());
+            throw new EJReportRuntimeException(message);
+        }
+    }
+
+    /**
+     * Return the properties of this form
+     * 
+     * @return The form properties
+     */
+    public EJCoreReportProperties getProperties()
+    {
+        return _formController.getProperties();
+    }
+
+    private boolean hasValue(String value)
+    {
+        if (value == null || value.trim().length() == 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Translates a given text to the current application <code>{@link Locale}
+     * </code> using the applications <code>{@link EJTranslator}</code>
+     * <p>
+     * If the application has no translator defined then this message will just
+     * return the same text as the one passed
+     * 
+     * @param textKey
+     *            The value to translate
+     * @return The translated text for the given key
+     */
+    public String translateText(String textKey)
+    {
+        EJManagedReportFrameworkConnection localConnection = getFrameworkManager().getConnection();
+        try
+        {
+            return _formController.getFrameworkManager().getTranslationController().translateText(textKey);
+        }
+        finally
+        {
+            localConnection.close();
+        }
+    }
+
+    /**
+     * Translates a given text to the given <code>{@link Locale}
+     * </code> using the applications <code>{@link EJTranslator}</code>
+     * <p>
+     * If the application has no translator defined then this message will just
+     * return the same text as the one passed
+     * 
+     * @param textKey
+     *            The value to translate
+     * @return The translated text for the given key
+     */
+    public String translateText(String textKey, Locale locale)
+    {
+        EJManagedReportFrameworkConnection localConnection = null;
+        try
+        {
+            localConnection = getFrameworkManager().getConnection();
+
+            if (locale == null)
+            {
+                return _formController.getFrameworkManager().getTranslationController().translateText(textKey);
+            }
+            else
+            {
+                return _formController.getFrameworkManager().getTranslationController().translateText(textKey, locale);
+            }
+        }
+        finally
+        {
+            if (localConnection != null)
+            {
+                localConnection.close();
+            }
+        }
+    }
+
+    /**
+     * Translates a given message text to the current application
+     * <code>{@link Locale}
+     * </code> using the applications <code>{@link EJTranslator}</code>
+     * <p>
+     * If the application has no translator defined then this message will just
+     * return the same text as the one passed
+     * 
+     * @param textKey
+     *            The value to translate
+     * @return The translated text for the given key
+     */
+    public String translateMessageText(String textKey)
+    {
+        EJManagedReportFrameworkConnection localConnection = null;
+        try
+        {
+            localConnection = getFrameworkManager().getConnection();
+            return _formController.getFrameworkManager().getTranslationController().translateMessageText(textKey);
+        }
+        finally
+        {
+            if (localConnection != null)
+            {
+                localConnection.close();
+            }
+        }
+    }
+
+    /**
+     * Translates a given message text to the given <code>{@link Locale}
+     * </code> using the applications <code>{@link EJTranslator}</code>
+     * <p>
+     * If the application has no translator defined then this message will just
+     * return the same text as the one passed
+     * 
+     * @param textKey
+     *            The value to translate
+     * @return The translated text for the given key
+     */
+    public String translateMessageText(String textKey, Locale locale)
+    {
+        EJManagedReportFrameworkConnection localConnection = null;
+        try
+        {
+            localConnection = getFrameworkManager().getConnection();
+
+            if (locale == null)
+            {
+                return _formController.getFrameworkManager().getTranslationController().translateMessageText(textKey);
+            }
+            else
+            {
+                return _formController.getFrameworkManager().getTranslationController().translateMessageText(textKey, locale);
+            }
+        }
+        finally
+        {
+            if (localConnection != null)
+            {
+                localConnection.close();
+            }
+        }
+    }
+
+    /**
+     * Returns this forms parameter list
+     * <p>
+     * the parameter list is a list of properties that were declared for the
+     * form within the EntireJ Form Plugin. These parameters are used when
+     * either calling another form or when another form calls this form. They
+     * are used to pass values to and from the calling forms
+     * 
+     * @return This forms parameter list
+     */
+    public EJReportParameterList getParameterList()
+    {
+        return _formController.getParameterList();
+    }
+
+    public EJReportDateHelper createDateHelper()
+    {
+        return _formController.getFrameworkManager().getTranslationController().createDateHelper();
+    }
+}
