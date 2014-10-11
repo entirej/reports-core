@@ -41,7 +41,7 @@ public interface EJReportBlockActionProcessor extends Serializable
      * 
      * @see EJManagedReportFrameworkConnection
      * @param report
-     *            The form from which this method is called
+     *            The report from which this method is called
      * @param queryCriteria
      *            The query criteria for this block
      */
@@ -58,8 +58,8 @@ public interface EJReportBlockActionProcessor extends Serializable
      * transaction. If an operation is required outside of the Framework
      * transaction, then a new connection must be obtained.
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param record
      *            The record retrieved
      */
@@ -73,35 +73,35 @@ public interface EJReportBlockActionProcessor extends Serializable
      * this method is called once after all data has been retrieved and not for
      * each record
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param block
      *            The block upon which the query was made
      * @throws EJReportActionProcessorException
      */
-    public void postBlockQuery(EJReport form, EJReportBlock block) throws EJReportActionProcessorException;
+    public void postBlockQuery(EJReport report, EJReportBlock block) throws EJReportActionProcessorException;
 
     /**
      * Called before the given record is updated within the data block
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param record
      *            The record that will be updated
      */
-    public void preUpdate(EJReport form, EJReportRecord record) throws EJReportActionProcessorException;
+    public void preUpdate(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 
     /**
      * Called each time the user navigated to a new record. The
      * <code>EJRecord</code> given, is the record that was navigated to, i.e.
      * the new current record.
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param record
      *            The new current record
      */
-    public void newRecordInstance(EJReport form, EJReportRecord record) throws EJReportActionProcessorException;
+    public void newRecordInstance(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 
     /**
      * Used to validate the given query criteria before a query is made on the
@@ -111,23 +111,23 @@ public interface EJReportBlockActionProcessor extends Serializable
      * <code>ActionProcessorException</code> should be thrown
      * <p>
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param queryCriteria
      *            The query criteria that should be validated
      */
-    public void validateQueryCriteria(EJReport form, EJQueryCriteria queryCriteria) throws EJReportActionProcessorException;
+    public void validateQueryCriteria(EJReport report, EJQueryCriteria queryCriteria) throws EJReportActionProcessorException;
 
     /**
      * Called when a record is created for one of the screens. This allows
      * developers to add default values to a record before it is displayed
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param record
      *            The record to initialise
      * @param recordType
      *            The type of record to be initialised
      */
-    public void initialiseRecord(EJReport form, EJReportRecord record) throws EJReportActionProcessorException;
+    public void initialiseRecord(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 }

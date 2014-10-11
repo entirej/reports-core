@@ -264,7 +264,7 @@ public class EJReport implements EJReportFrameworkHelper
      * @throws EJReportRuntimeException
      *             if there is no parameter with the given value
      */
-    public EJReportParameter getFormParameter(String name)
+    public EJReportParameter getReportParameter(String name)
     {
         return _form.getFormParameter(name);
     }

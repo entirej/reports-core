@@ -81,7 +81,7 @@ public class EJReportController implements Serializable
 
     public void reportInitialised()
     {
-        getActionController().newFormInstance(new EJReport(_report));
+        getActionController().newReportInstance(new EJReport(_report));
     }
 
     private void createParameterList()

@@ -36,14 +36,14 @@ public class EJReportDataHelper
 {
     private static final Logger logger = LoggerFactory.getLogger(EJReportDataHelper.class);
 
-    public static Object getDefaultQueryValue(EJReport form, EJReportBlockItem item)
+    public static Object getDefaultQueryValue(EJReport report, EJReportBlockItem item)
     {
-        return getDefaultValue(form, item, item.getDefaultQueryValue());
+        return getDefaultValue(report, item, item.getDefaultQueryValue());
     }
 
-    private static Object getDefaultValue(EJReport form, EJReportBlockItem item, String defaultValue)
+    private static Object getDefaultValue(EJReport report, EJReportBlockItem item, String defaultValue)
     {
-        logger.trace("START getDefaultValue. Form: {}, Item: {}, defaultValue: {}", form.getProperties().getName(), item.getName(), defaultValue);
+        logger.trace("START getDefaultValue. Report: {}, Item: {}, defaultValue: {}", report.getProperties().getName(), item.getName(), defaultValue);
 
         if (defaultValue == null || defaultValue.trim().length() == 0)
         {
@@ -57,14 +57,14 @@ public class EJReportDataHelper
 
         if ("APP_PARAMETER".equals(paramTypeCode))
         {
-            EJReportRuntimeLevelParameter param = form.getApplicationLevelParameter(paramValue);
+            EJReportRuntimeLevelParameter param = report.getApplicationLevelParameter(paramValue);
             logger.trace("Application Parameter Value: {}", param.getValue());
             return param.getValue();
         }
-        else if ("FORM_PARAMETER".equals(paramTypeCode))
+        else if ("REPORT_PARAMETER".equals(paramTypeCode))
         {
-            EJReportParameter param = form.getFormParameter(paramValue);
-            logger.trace("Form Parameter Value: {}", param.getValue());
+            EJReportParameter param = report.getReportParameter(paramValue);
+            logger.trace("Report Parameter Value: {}", param.getValue());
             return param.getValue();
         }
         else if ("BLOCK_ITEM".equals(paramTypeCode))
@@ -83,13 +83,13 @@ public class EJReportDataHelper
 
             logger.trace("Getting parameter for LOV: Block: " + blockName);
 
-            EJReportBlock block = form.getBlock(blockName);
+            EJReportBlock block = report.getBlock(blockName);
             if (block == null)
             {
-                throw new EJReportRuntimeException(new EJReportMessage(form, "Trying to retrieve a default value from a Block.Item value: " + blockName + "."
-                        + itemName + ", but there is not a block with the given name within this form: " + form.getProperties().getName()));
+                throw new EJReportRuntimeException(new EJReportMessage(report, "Trying to retrieve a default value from a Block.Item value: " + blockName + "."
+                        + itemName + ", but there is not a block with the given name within this report: " + report.getProperties().getName()));
             }
-            record = form.getBlock(blockName).getFocusedRecord();
+            record = report.getBlock(blockName).getFocusedRecord();
 
             if (record != null)
             {

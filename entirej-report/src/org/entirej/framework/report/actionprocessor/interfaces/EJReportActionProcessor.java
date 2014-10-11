@@ -25,22 +25,22 @@ public interface EJReportActionProcessor extends EJReportBlockActionProcessor
 {
 
     /**
-     * Called when a user selects a new form to be opened. This will be called
+     * Called when a user selects a new report to be opened. This will be called
      * before displaying the report to the user
      * <p>
      * 
-     * @param form
-     *            The form that is opening
+     * @param report
+     *            The report that is opening
      */
-    public void newReportInstance(EJReport form) throws EJReportActionProcessorException;
+    public void newReportInstance(EJReport report) throws EJReportActionProcessorException;
 
     /**
-     * Called whenever the user navigates to a different block within the form
+     * Called whenever the user navigates to a different block within the report
      * 
-     * @param form
-     *            The form from which this method is called
+     * @param report
+     *            The report from which this method is called
      * @param blockName
      *            The name of the block that gained focus
      */
-    public void newBlockInstance(EJReport form, String blockName) throws EJReportActionProcessorException;
+    public void newBlockInstance(EJReport report, String blockName) throws EJReportActionProcessorException;
 }

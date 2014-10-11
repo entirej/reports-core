@@ -40,13 +40,13 @@ public class EJReportActionController implements Serializable
 {
     final Logger                                          logger = LoggerFactory.getLogger(EJReportActionController.class);
 
-    private EJReportController                            _formController;
-    private EJReportActionProcessor                       _formLevelActionProcessor;
+    private EJReportController                            _reportController;
+    private EJReportActionProcessor                       _reportLevelActionProcessor;
     private HashMap<String, EJReportBlockActionProcessor> _blockLevelActionProcessors;
 
-    public EJReportActionController(EJReportController formController)
+    public EJReportActionController(EJReportController reportController)
     {
-        _formController = formController;
+        _reportController = reportController;
         _blockLevelActionProcessors = new HashMap<String, EJReportBlockActionProcessor>();
 
         loadActionProcessors();
@@ -54,17 +54,17 @@ public class EJReportActionController implements Serializable
 
     private void loadActionProcessors()
     {
-        if (_formController.getProperties().getActionProcessorClassName() != null && _formController.getProperties().getActionProcessorClassName().length() > 0)
+        if (_reportController.getProperties().getActionProcessorClassName() != null && _reportController.getProperties().getActionProcessorClassName().length() > 0)
         {
-            _formLevelActionProcessor = EJReportActionProcessorFactory.getInstance().getActionProcessor(_formController.getProperties());
+            _reportLevelActionProcessor = EJReportActionProcessorFactory.getInstance().getActionProcessor(_reportController.getProperties());
         }
         else
         {
-            _formLevelActionProcessor = new EJDefaultReportActionProcessor();
+            _reportLevelActionProcessor = new EJDefaultReportActionProcessor();
         }
 
         // Get all the block level action processors
-        Iterator<EJCoreReportBlockProperties> allBlockProperties = _formController.getProperties().getBlockContainer().getAllBlockProperties().iterator();
+        Iterator<EJCoreReportBlockProperties> allBlockProperties = _reportController.getProperties().getBlockContainer().getAllBlockProperties().iterator();
         while (allBlockProperties.hasNext())
         {
             EJCoreReportBlockProperties blockProperties = allBlockProperties.next();
@@ -77,13 +77,13 @@ public class EJReportActionController implements Serializable
 
     }
 
-    public void newBlockInstance(EJReport form, String blockName)
+    public void newBlockInstance(EJReport report, String blockName)
     {
-        logger.trace("START newBlockInstance. Form: {}, Block: {}", form.getName(), blockName);
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        logger.trace("START newBlockInstance. Report: {}, Block: {}", report.getName(), blockName);
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
-            _formLevelActionProcessor.newBlockInstance(form, blockName);
+            _reportLevelActionProcessor.newBlockInstance(report, blockName);
         }
         catch (Exception e)
         {
@@ -100,13 +100,13 @@ public class EJReportActionController implements Serializable
         logger.trace("END newBlockInstance");
     }
 
-    public void newFormInstance(EJReport form)
+    public void newReportInstance(EJReport report)
     {
-        logger.trace("START newFormInstance. Form: {}", form.getName());
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        logger.trace("START newReportInstance. Report: {}", report.getName());
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
-            _formLevelActionProcessor.newReportInstance(form);
+            _reportLevelActionProcessor.newReportInstance(report);
         }
         catch (Exception e)
         {
@@ -120,14 +120,14 @@ public class EJReportActionController implements Serializable
         {
             connection.close();
         }
-        logger.trace("END newFormInstance");
+        logger.trace("END newReportInstance");
     }
 
-    public void postQuery(EJReport form, EJReportRecord record)
+    public void postQuery(EJReport report, EJReportRecord record)
     {
-        logger.trace("START postQuery. Form: {}", form.getName());
+        logger.trace("START postQuery. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = record == null ? "" : record.getBlockName();
@@ -135,14 +135,14 @@ public class EJReportActionController implements Serializable
             if (_blockLevelActionProcessors.containsKey(blockName))
             {
                 logger.trace("Calling block level postQuery. Block: {}", blockName);
-                _blockLevelActionProcessors.get(blockName).postQuery(form, record);
+                _blockLevelActionProcessors.get(blockName).postQuery(report, record);
                 logger.trace("Called block level postQuery");
             }
             else
             {
-                logger.trace("Calling form level postQuery");
-                _formLevelActionProcessor.postQuery(form, record);
-                logger.trace("Called form level postQuery");
+                logger.trace("Calling report level postQuery");
+                _reportLevelActionProcessor.postQuery(report, record);
+                logger.trace("Called report level postQuery");
             }
 
         }
@@ -161,11 +161,11 @@ public class EJReportActionController implements Serializable
         logger.trace("END postQuery");
     }
 
-    public void preQuery(EJReport form, EJQueryCriteria queryCriteria)
+    public void preQuery(EJReport report, EJQueryCriteria queryCriteria)
     {
-        logger.trace("START preQuery. Form: {}", form.getName());
+        logger.trace("START preQuery. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = queryCriteria == null ? "" : queryCriteria.getBlockName();
@@ -174,14 +174,14 @@ public class EJReportActionController implements Serializable
                 if (_blockLevelActionProcessors.containsKey(blockName))
                 {
                     logger.trace("Calling block level preQuery. Block: {}", blockName);
-                    _blockLevelActionProcessors.get(blockName).preQuery(form, queryCriteria);
+                    _blockLevelActionProcessors.get(blockName).preQuery(report, queryCriteria);
                     logger.trace("Called block level preQuery");
                 }
                 else
                 {
-                    logger.trace("Calling form level preQuery");
-                    _formLevelActionProcessor.preQuery(form, queryCriteria);
-                    logger.trace("Called form level preQuery");
+                    logger.trace("Calling report level preQuery");
+                    _reportLevelActionProcessor.preQuery(report, queryCriteria);
+                    logger.trace("Called report level preQuery");
                 }
             }
         }
@@ -200,11 +200,11 @@ public class EJReportActionController implements Serializable
         logger.trace("END preQuery");
     }
 
-    public void newRecordInstance(EJReport form, EJReportRecord record)
+    public void newRecordInstance(EJReport report, EJReportRecord record)
     {
-        logger.trace("START newRecordInstance. Form: {}", form.getName());
+        logger.trace("START newRecordInstance. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = record == null ? "" : record.getBlockName();
@@ -213,14 +213,14 @@ public class EJReportActionController implements Serializable
                 if (_blockLevelActionProcessors.containsKey(blockName))
                 {
                     logger.trace("Calling block level newRecordInstance. Block: {}", record.getBlockName());
-                    _blockLevelActionProcessors.get(blockName).newRecordInstance(form, record);
+                    _blockLevelActionProcessors.get(blockName).newRecordInstance(report, record);
                     logger.trace("Called block level newRecordInstance");
                 }
                 else
                 {
-                    logger.trace("Calling form level newRecordInstance");
-                    _formLevelActionProcessor.newRecordInstance(form, record);
-                    logger.trace("Called form level newRecordInstance");
+                    logger.trace("Calling report level newRecordInstance");
+                    _reportLevelActionProcessor.newRecordInstance(report, record);
+                    logger.trace("Called report level newRecordInstance");
                 }
             }
         }
@@ -239,11 +239,11 @@ public class EJReportActionController implements Serializable
         logger.trace("END newRecordInstance");
     }
 
-    public void validateQueryCriteria(EJReport form, EJQueryCriteria queryCriteria)
+    public void validateQueryCriteria(EJReport report, EJQueryCriteria queryCriteria)
     {
-        logger.trace("START validateQueryCriteria. Form: {}", form.getName());
+        logger.trace("START validateQueryCriteria. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = queryCriteria == null ? "" : queryCriteria.getBlockName();
@@ -251,14 +251,14 @@ public class EJReportActionController implements Serializable
             if (_blockLevelActionProcessors.containsKey(blockName))
             {
                 logger.trace("Calling block level validateQueryCiteria. Block: {}", blockName);
-                _blockLevelActionProcessors.get(blockName).validateQueryCriteria(form, queryCriteria);
+                _blockLevelActionProcessors.get(blockName).validateQueryCriteria(report, queryCriteria);
                 logger.trace("Called block level validateQueryCriteria");
             }
             else
             {
-                logger.trace("Calling form level validateQueryCriteria");
-                _formLevelActionProcessor.validateQueryCriteria(form, queryCriteria);
-                logger.trace("Called form level validateQueryCriteria");
+                logger.trace("Calling report level validateQueryCriteria");
+                _reportLevelActionProcessor.validateQueryCriteria(report, queryCriteria);
+                logger.trace("Called report level validateQueryCriteria");
             }
 
         }
@@ -277,24 +277,24 @@ public class EJReportActionController implements Serializable
         logger.trace("END validateQueryCriteria");
     }
 
-    public void postBlockQuery(EJReport form, EJReportBlock block)
+    public void postBlockQuery(EJReport report, EJReportBlock block)
     {
-        logger.trace("START postBlockQuery. Form: {}, Block: {}", form.getName(), block.getName());
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        logger.trace("START postBlockQuery. Report: {}, Block: {}", report.getName(), block.getName());
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
 
             if (_blockLevelActionProcessors.containsKey(block.getName()))
             {
                 logger.trace("Calling block level postBlockQuery. Block: {}", block.getName());
-                _blockLevelActionProcessors.get(block.getName()).postBlockQuery(form, block);
+                _blockLevelActionProcessors.get(block.getName()).postBlockQuery(report, block);
                 logger.trace("Called block level postBlockQuery");
             }
             else
             {
-                logger.trace("Calling form level postBlockQuery");
-                _formLevelActionProcessor.postBlockQuery(form, block);
-                logger.trace("Called form level postBlockQuery");
+                logger.trace("Calling report level postBlockQuery");
+                _reportLevelActionProcessor.postBlockQuery(report, block);
+                logger.trace("Called report level postBlockQuery");
             }
 
         }
@@ -313,11 +313,11 @@ public class EJReportActionController implements Serializable
         logger.trace("END postBlockQuery");
     }
 
-    public void initialiseRecord(EJReport form, EJReportRecord record)
+    public void initialiseRecord(EJReport report, EJReportRecord record)
     {
-        logger.trace("START initialiseRecord. Form: {}", form.getName());
+        logger.trace("START initialiseRecord. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = form.getConnection();
+        EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = record == null ? "" : record.getBlockName();
@@ -326,14 +326,14 @@ public class EJReportActionController implements Serializable
                 if (_blockLevelActionProcessors.containsKey(blockName))
                 {
                     logger.trace("Calling block level initialiseRecord. Block: {}", blockName);
-                    _blockLevelActionProcessors.get(blockName).initialiseRecord(form, record);
+                    _blockLevelActionProcessors.get(blockName).initialiseRecord(report, record);
                     logger.trace("Called block level initialiseRecord");
                 }
                 else
                 {
-                    logger.trace("Calling form level initialiseRecord");
-                    _formLevelActionProcessor.initialiseRecord(form, record);
-                    logger.trace("Called form level initialiseRecord");
+                    logger.trace("Calling report level initialiseRecord");
+                    _reportLevelActionProcessor.initialiseRecord(report, record);
+                    logger.trace("Called report level initialiseRecord");
                 }
             }
         }
