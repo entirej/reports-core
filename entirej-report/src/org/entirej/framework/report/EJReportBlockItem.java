@@ -92,7 +92,7 @@ public class EJReportBlockItem implements Serializable
      * Returns the value to be used as a default when executing a query on the
      * block to which this item belongs
      * <p>
-     * This could be a block item a form parameter or an application parameter
+     * This could be a block item a report parameter or an application parameter
      * 
      * @return The default query value
      */

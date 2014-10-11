@@ -44,9 +44,9 @@ public interface EJReportQueryBlock
     public EJReportBlockItem getBlockItem(String itemName);
 
     /**
-     * Return the form to which this block belongs
+     * Return the report to which this block belongs
      * 
-     * @return This form to which this block belongs
+     * @return This report to which this block belongs
      */
     public EJReport getReport();
 }

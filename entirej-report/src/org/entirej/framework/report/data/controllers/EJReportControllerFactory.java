@@ -38,85 +38,85 @@ public class EJReportControllerFactory implements Serializable
         _frameworkManager = frameworkManager;
     }
 
-    public EJReportController createController(String formName, EJReportParameterList parameterList)
+    public EJReportController createController(String reportName, EJReportParameterList parameterList)
     {
-        if (formName == null)
+        if (reportName == null)
         {
-            throw new EJReportRuntimeException("The formName passed to createForm is null");
+            throw new EJReportRuntimeException("The reportName passed to createReport is null");
         }
-        if (formName.trim().length() == 0)
+        if (reportName.trim().length() == 0)
         {
-            throw new EJReportRuntimeException("Invalid form name passed to createForm. FormName: ''");
+            throw new EJReportRuntimeException("Invalid report name passed to createReport. ReportName: ''");
         }
 
-        EJCoreReportProperties formProperties = getReportProperties(formName);
+        EJCoreReportProperties reportProperties = getReportProperties(reportName);
 
-        return createController(formProperties, parameterList);
+        return createController(reportProperties, parameterList);
     }
 
     /**
-     * Returns the form properties for the named form
+     * Returns the report properties for the named report
      * 
-     * @param formName
-     *            - The form name
+     * @param reportName
+     *            - The report name
      * @return a {@link EJCoreReportProperties} object containing the translated
      *         from properties
      */
-    public EJCoreReportProperties getReportProperties(String formName)
+    public EJCoreReportProperties getReportProperties(String reportName)
     {
-        EJCoreReportProperties formProperties = null;
+        EJCoreReportProperties reportProperties = null;
 
-        formProperties = _frameworkManager.getFormPropertiesFactory().createReportProperties(formName);
-        if (formProperties != null)
+        reportProperties = _frameworkManager.getReportPropertiesFactory().createReportProperties(reportName);
+        if (reportProperties != null)
         {
-            _frameworkManager.getTranslationController().translateReport(formProperties, _frameworkManager);
+            _frameworkManager.getTranslationController().translateReport(reportProperties, _frameworkManager);
         }
-        return formProperties;
+        return reportProperties;
     }
 
     /**
-     * Creates a <code>FormController</code> with the given name and
+     * Creates a <code>ReportController</code> with the given name and
      * <code>IMessenger</code>
      * 
-     * @param formProperties
-     *            The properties of the form to create
+     * @param reportProperties
+     *            The properties of the report to create
      * @param parameterList
-     *            The list of properties for the form
-     * @return The controller of the newly created form
+     *            The list of properties for the report
+     * @return The controller of the newly created report
      */
-    public EJReportController createController(EJCoreReportProperties formProperties, EJReportParameterList parameterList)
+    public EJReportController createController(EJCoreReportProperties reportProperties, EJReportParameterList parameterList)
     {
-        if (formProperties == null)
+        if (reportProperties == null)
         {
-            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NULL_FORM_CONTROLLER_PASSED_TO_FORM_PROPS);
+            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NULL_REPORT_CONTROLLER_PASSED_TO_REPORT_PROPS);
             throw new EJReportRuntimeException(message);
         }
 
-        EJReportData dataForm = new EJReportData(formProperties);
+        EJReportData dataReport = new EJReportData(reportProperties);
 
         // Create the controller and add the messenger to it
 
-        EJReportController formController = new EJReportController(_frameworkManager, dataForm);
+        EJReportController reportController = new EJReportController(_frameworkManager, dataReport);
 
         // Now copy parameter values from the parameter list given to the
-        // forms parameter list
+        // reports parameter list
         if (parameterList != null)
         {
             for (EJReportParameter parameter : parameterList.getAllParameters())
             {
-                if (formController.getParameterList().contains(parameter.getName()))
+                if (reportController.getParameterList().contains(parameter.getName()))
                 {
-                    formController.getParameterList().getParameter(parameter.getName()).setValue(parameter.getValue());
+                    reportController.getParameterList().getParameter(parameter.getName()).setValue(parameter.getValue());
                 }
                 else if (parameter.getValue() != null)
                 {
                     EJReportParameter param = new EJReportParameter(parameter.getName(), parameter.getValue().getClass());
                     param.setValue(parameter.getValue());
-                    formController.getParameterList().addParameter(param);
+                    reportController.getParameterList().addParameter(param);
                 }
             }
         }
-        return formController;
+        return reportController;
 
     }
 }

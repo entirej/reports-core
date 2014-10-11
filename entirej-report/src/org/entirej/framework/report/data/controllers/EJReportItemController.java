@@ -40,7 +40,7 @@ public class EJReportItemController implements Comparable<EJReportItemController
 
     public EJInternalReport getReport()
     {
-        return _blockController.getBlock().getForm();
+        return _blockController.getBlock().getReport();
     }
 
     public EJInternalReportBlock getBlock()
@@ -49,13 +49,13 @@ public class EJReportItemController implements Comparable<EJReportItemController
     }
 
     /**
-     * Returns the controller responsible for the form
+     * Returns the controller responsible for the report
      * 
-     * @return The form controller
+     * @return The report controller
      */
     public EJReportController getReportController()
     {
-        return _blockController.getFormController();
+        return _blockController.getReportController();
     }
 
     public EJReportBlockController getBlockController()

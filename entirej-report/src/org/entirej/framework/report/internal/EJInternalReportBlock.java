@@ -76,13 +76,13 @@ public class EJInternalReportBlock implements Serializable
     }
 
     /**
-     * Returns the <code>InternalForm</code> to which this block belongs
+     * Returns the <code>InternalReport</code> to which this block belongs
      * 
      * @return The {@link EJInternalReport} to which this block belongs
      */
-    public EJInternalReport getForm()
+    public EJInternalReport getReport()
     {
-        return _blockController.getFormController().getInternalReport();
+        return _blockController.getReportController().getInternalReport();
     }
 
     /**

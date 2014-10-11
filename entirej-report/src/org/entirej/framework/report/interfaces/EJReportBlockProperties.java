@@ -93,9 +93,9 @@ public interface EJReportBlockProperties extends Serializable
     public String getDescription();
 
     /**
-     * Returns the properties of the Form to which this block belongs
+     * Returns the properties of the Report to which this block belongs
      * 
-     * @return The form properties
+     * @return The report properties
      */
     public EJReportProperties getReportProperties();
 
@@ -129,7 +129,7 @@ public interface EJReportBlockProperties extends Serializable
      * Actions can include buttons being pressed, check boxes being selected or
      * pre-post query methods etc.
      * 
-     * @return The name of the Action Processor responsible for this form.
+     * @return The name of the Action Processor responsible for this report.
      */
     public String getActionProcessorClassName();
 

@@ -33,14 +33,14 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 public class EJReportDataItem implements Serializable
 {
     private Object                            _value;
-    private EJReportController                _formController;
+    private EJReportController                _reportController;
     private EJReportVisualAttributeProperties _vaProperties;
     private String                            _hint;
     private EJCoreReportItemProperties        _itemProperties;
 
-    EJReportDataItem(EJReportController formController, EJCoreReportItemProperties itemProperties)
+    EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties)
     {
-        _formController = formController;
+        _reportController = reportController;
         _itemProperties = itemProperties;
 
     }
@@ -86,9 +86,9 @@ public class EJReportDataItem implements Serializable
     }
 
     /**
-     * Returns the properties object of this form.
+     * Returns the properties object of this report.
      * 
-     * @return This forms properties
+     * @return This reports properties
      */
     public EJCoreReportItemProperties getProperties()
     {
@@ -103,10 +103,10 @@ public class EJReportDataItem implements Serializable
             return;
         }
 
-        EJReportVisualAttributeProperties vaProperties = _formController.getInternalReport().getVisualAttribute(visualAttributeName);
+        EJReportVisualAttributeProperties vaProperties = _reportController.getInternalReport().getVisualAttribute(visualAttributeName);
         if (vaProperties == null)
         {
-            throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this form.");
+            throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
         }
 
         _vaProperties = vaProperties;

@@ -26,12 +26,12 @@ import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
 
 /**
- * The <code>DataForm</code> is the actual class that will hold the forms data.
- * The <code>DataForm</code> contains <code>DataBlock</code>s which contain the
+ * The <code>DataReport</code> is the actual class that will hold the reports data.
+ * The <code>DataReport</code> contains <code>DataBlock</code>s which contain the
  * data per block. The data blocks contain <code>DataRecord</code>s and these
  * records hold </code>DataItems</code>.
  * <p>
- * If you would compare the data classes to a database then the form would be
+ * If you would compare the data classes to a database then the report would be
  * the actual application the block would represent a database table, the data
  * records would represent the records of the table and the data items would
  * represent the actual table columns.
@@ -42,18 +42,18 @@ public class EJReportData implements Serializable
     private HashMap<String, EJReportDataBlock> _dataBlocks;
 
     /**
-     * Creates an instance of a <code>DataForm</code> using the form properties
+     * Creates an instance of a <code>DataReport</code> using the report properties
      * given.
      * 
-     * @param formProperties
-     *            The properties that will be used to initialize this data form
+     * @param reportProperties
+     *            The properties that will be used to initialize this data report
      */
-    public EJReportData(EJCoreReportProperties formProperties)
+    public EJReportData(EJCoreReportProperties reportProperties)
     {
-        _reportProperties = formProperties;
+        _reportProperties = reportProperties;
         _dataBlocks = new HashMap<String, EJReportDataBlock>();
 
-        initialiseDataForm(formProperties);
+        initialiseDataReport(reportProperties);
     }
 
     public EJCoreReportProperties getProperties()
@@ -87,15 +87,15 @@ public class EJReportData implements Serializable
     }
 
     /**
-     * Initializes this form object using the properties within the given
-     * <code>EJCoreFormProperties</code> object
+     * Initializes this report object using the properties within the given
+     * <code>EJCoreReportProperties</code> object
      * 
-     * @param formProps
-     *            The form properties object
+     * @param reportProps
+     *            The report properties object
      */
-    private void initialiseDataForm(EJCoreReportProperties formProperties)
+    private void initialiseDataReport(EJCoreReportProperties reportProperties)
     {
-        for (EJCoreReportBlockProperties blockProperties : formProperties.getBlockContainer().getAllBlockProperties())
+        for (EJCoreReportBlockProperties blockProperties : reportProperties.getBlockContainer().getAllBlockProperties())
         {
             EJReportDataBlock block = new EJReportDataBlock(blockProperties);
             _dataBlocks.put(blockProperties.getName(), block);
@@ -103,10 +103,10 @@ public class EJReportData implements Serializable
     }
 
     /**
-     * Retrieve a collection of this forms data blocks.
+     * Retrieve a collection of this reports data blocks.
      * 
      * @return A <code>Collection</code> containing the list of blocks that this
-     *         form contains.
+     *         report contains.
      */
     public Collection<EJReportDataBlock> getAllBlocks()
     {

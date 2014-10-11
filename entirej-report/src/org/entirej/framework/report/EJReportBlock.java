@@ -41,13 +41,13 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     }
 
     /**
-     * Return the form to which this block belongs
+     * Return the report to which this block belongs
      * 
-     * @return This form to which this block belongs
+     * @return This report to which this block belongs
      */
     public EJReport getReport()
     {
-        return new EJReport(_block.getForm());
+        return new EJReport(_block.getReport());
     }
 
     /**

@@ -43,16 +43,16 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 
 public class EJInternalReport implements Serializable
 {
-    private EJReportController _formController;
+    private EJReportController _reportController;
 
-    public EJInternalReport(EJReportController formController)
+    public EJInternalReport(EJReportController reportController)
     {
-        _formController = formController;
+        _reportController = reportController;
     }
 
-    public EJReportController getFormController()
+    public EJReportController getReportController()
     {
-        return _formController;
+        return _reportController;
     }
 
     /**
@@ -78,19 +78,19 @@ public class EJInternalReport implements Serializable
      */
     public void handleException(Exception exception)
     {
-        _formController.getFrameworkManager().handleException(exception);
+        _reportController.getFrameworkManager().handleException(exception);
     }
 
     /**
-     * Instructs EntireJ to clear the form
+     * Instructs EntireJ to clear the report
      * <p>
      * If <code>disregardChanges</code> is <code>true</code> then all changes
-     * made within the form will be disregarded
+     * made within the report will be disregarded
      * 
      */
     public void clear()
     {
-        _formController.clearReport();
+        _reportController.clearReport();
     }
 
     /**
@@ -100,29 +100,29 @@ public class EJInternalReport implements Serializable
      */
     public EJReportFrameworkManager getFrameworkManager()
     {
-        return _formController.getFrameworkManager();
+        return _reportController.getFrameworkManager();
     }
 
     /**
-     * Returns the action controller for this form
+     * Returns the action controller for this report
      * 
      * @return
      */
     public EJReportActionController getActionController()
     {
-        return _formController.getActionController();
+        return _reportController.getActionController();
     }
 
     /**
-     * Returns an immutable collection of all blocks available within this form
+     * Returns an immutable collection of all blocks available within this report
      * 
-     * @return All blocks within this form
+     * @return All blocks within this report
      */
     public Collection<EJInternalReportBlock> getAllBlocks()
     {
         ArrayList<EJInternalReportBlock> blocks = new ArrayList<EJInternalReportBlock>();
 
-        for (EJReportBlockController controller : _formController.getAllBlockControllers())
+        for (EJReportBlockController controller : _reportController.getAllBlockControllers())
         {
             blocks.add(controller.getBlock());
         }
@@ -142,7 +142,7 @@ public class EJInternalReport implements Serializable
      */
     public EJInternalReportBlock getBlock(String blockName)
     {
-        EJReportBlockController blockController = _formController.getBlockController(blockName);
+        EJReportBlockController blockController = _reportController.getBlockController(blockName);
         if (blockController == null)
         {
             return null;
@@ -192,7 +192,7 @@ public class EJInternalReport implements Serializable
      */
     public void setApplicationLevelParameter(String valueName, Object value)
     {
-        _formController.getFrameworkManager().setApplicationLevelParameter(valueName, value);
+        _reportController.getFrameworkManager().setApplicationLevelParameter(valueName, value);
     }
 
     /**
@@ -207,11 +207,11 @@ public class EJInternalReport implements Serializable
      */
     public EJReportRuntimeLevelParameter getApplicationLevelParameter(String paramName)
     {
-        return _formController.getFrameworkManager().getApplicationLevelParameter(paramName);
+        return _reportController.getFrameworkManager().getApplicationLevelParameter(paramName);
     }
 
     /**
-     * Sets the given form parameter to the given value
+     * Sets the given report parameter to the given value
      * 
      * @param name
      *            The name of the parameter to set
@@ -220,18 +220,18 @@ public class EJInternalReport implements Serializable
      * @throws EJReportRuntimeException
      *             id there is no property with the given name or the data type
      *             of the given object is not the same as defined within the
-     *             form
+     *             report
      */
-    public void setFormParameter(String name, Object value)
+    public void setReportParameter(String name, Object value)
     {
-        if (_formController.getParameterList().contains(name))
+        if (_reportController.getParameterList().contains(name))
         {
-            _formController.getParameterList().getParameter(name).setValue(value);
+            _reportController.getParameterList().getParameter(name).setValue(value);
         }
         else
         {
-            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NO_FORM_PARAMETER, name,
-                    _formController.getProperties().getName());
+            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NO_REPORT_PARAMETER, name,
+                    _reportController.getProperties().getName());
             throw new EJReportRuntimeException(message);
         }
     }
@@ -241,30 +241,30 @@ public class EJInternalReport implements Serializable
      * 
      * @param name
      *            The name of the required application parameter
-     * @return The form parameter
+     * @return The report parameter
      */
-    public EJReportParameter getFormParameter(String name)
+    public EJReportParameter getReportParameter(String name)
     {
-        if (_formController.getParameterList().contains(name))
+        if (_reportController.getParameterList().contains(name))
         {
-            return _formController.getParameterList().getParameter(name);
+            return _reportController.getParameterList().getParameter(name);
         }
         else
         {
-            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NO_FORM_PARAMETER, name,
-                    _formController.getProperties().getName());
+            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NO_REPORT_PARAMETER, name,
+                    _reportController.getProperties().getName());
             throw new EJReportRuntimeException(message);
         }
     }
 
     /**
-     * Return the properties of this form
+     * Return the properties of this report
      * 
-     * @return The form properties
+     * @return The report properties
      */
     public EJCoreReportProperties getProperties()
     {
-        return _formController.getProperties();
+        return _reportController.getProperties();
     }
 
     private boolean hasValue(String value)
@@ -293,7 +293,7 @@ public class EJInternalReport implements Serializable
         EJManagedReportFrameworkConnection localConnection = getFrameworkManager().getConnection();
         try
         {
-            return _formController.getFrameworkManager().getTranslationController().translateText(textKey);
+            return _reportController.getFrameworkManager().getTranslationController().translateText(textKey);
         }
         finally
         {
@@ -321,11 +321,11 @@ public class EJInternalReport implements Serializable
 
             if (locale == null)
             {
-                return _formController.getFrameworkManager().getTranslationController().translateText(textKey);
+                return _reportController.getFrameworkManager().getTranslationController().translateText(textKey);
             }
             else
             {
-                return _formController.getFrameworkManager().getTranslationController().translateText(textKey, locale);
+                return _reportController.getFrameworkManager().getTranslationController().translateText(textKey, locale);
             }
         }
         finally
@@ -355,7 +355,7 @@ public class EJInternalReport implements Serializable
         try
         {
             localConnection = getFrameworkManager().getConnection();
-            return _formController.getFrameworkManager().getTranslationController().translateMessageText(textKey);
+            return _reportController.getFrameworkManager().getTranslationController().translateMessageText(textKey);
         }
         finally
         {
@@ -386,11 +386,11 @@ public class EJInternalReport implements Serializable
 
             if (locale == null)
             {
-                return _formController.getFrameworkManager().getTranslationController().translateMessageText(textKey);
+                return _reportController.getFrameworkManager().getTranslationController().translateMessageText(textKey);
             }
             else
             {
-                return _formController.getFrameworkManager().getTranslationController().translateMessageText(textKey, locale);
+                return _reportController.getFrameworkManager().getTranslationController().translateMessageText(textKey, locale);
             }
         }
         finally
@@ -403,22 +403,22 @@ public class EJInternalReport implements Serializable
     }
 
     /**
-     * Returns this forms parameter list
+     * Returns this reports parameter list
      * <p>
      * the parameter list is a list of properties that were declared for the
-     * form within the EntireJ Form Plugin. These parameters are used when
-     * either calling another form or when another form calls this form. They
-     * are used to pass values to and from the calling forms
+     * report within the EntireJ Report Plugin. These parameters are used when
+     * either calling another report or when another report calls this report. They
+     * are used to pass values to and from the calling reports
      * 
-     * @return This forms parameter list
+     * @return This reports parameter list
      */
     public EJReportParameterList getParameterList()
     {
-        return _formController.getParameterList();
+        return _reportController.getParameterList();
     }
 
     public EJReportDateHelper createDateHelper()
     {
-        return _formController.getFrameworkManager().getTranslationController().createDateHelper();
+        return _reportController.getFrameworkManager().getTranslationController().createDateHelper();
     }
 }

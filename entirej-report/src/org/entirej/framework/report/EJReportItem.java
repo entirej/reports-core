@@ -157,7 +157,7 @@ public class EJReportItem implements Serializable
         String hintToSet = hint;
         if (translate && hint != null)
         {
-            hintToSet = _block.getForm().translateText(hint);
+            hintToSet = _block.getReport().translateText(hint);
         }
 
         _dataItem.setHint(hintToSet);

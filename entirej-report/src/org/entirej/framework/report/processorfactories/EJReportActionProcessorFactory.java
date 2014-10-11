@@ -101,59 +101,59 @@ public class EJReportActionProcessorFactory implements Serializable
     }
 
     /**
-     * Retrieve the processor defined within the <code>FormProperties</code>
+     * Retrieve the processor defined within the <code>ReportProperties</code>
      * specified
      * 
-     * @param formProperties
-     *            The form properties containing the name of the action
+     * @param reportProperties
+     *            The report properties containing the name of the action
      *            processor
-     * @return The action processor specified within the given form properties
+     * @return The action processor specified within the given report properties
      * @throws EJReportActionProcessorException
      */
-    public EJReportActionProcessor getActionProcessor(EJCoreReportProperties formProperties)
+    public EJReportActionProcessor getActionProcessor(EJCoreReportProperties reportProperties)
     {
-        if (formProperties == null)
+        if (reportProperties == null)
         {
             throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
-                    EJReportFrameworkMessage.NULL_FORM_PROPERTIES_PASSED_TO_METHOD, "getActionProcessor"));
+                    EJReportFrameworkMessage.NULL_REPORT_PROPERTIES_PASSED_TO_METHOD, "getActionProcessor"));
         }
 
-        String actionProcessorName = formProperties.getActionProcessorClassName();
+        String actionProcessorName = reportProperties.getActionProcessorClassName();
 
         if (actionProcessorName == null || actionProcessorName.trim().length() == 0)
         {
             throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
-                    EJReportFrameworkMessage.NO_ACTION_PROCESSOR_DEFINED_FOR_FORM, formProperties.getName()));
+                    EJReportFrameworkMessage.NO_ACTION_PROCESSOR_DEFINED_FOR_REPORT, reportProperties.getName()));
         }
 
         if (_actionProcessors.containsKey(actionProcessorName))
         {
-            return createNewFormActionProcessorInstance(formProperties.getFrameworkManager(), actionProcessorName);
+            return createNewReportActionProcessorInstance(reportProperties.getFrameworkManager(), actionProcessorName);
         }
         try
         {
             Class<?> processorClass = Class.forName(actionProcessorName);
             _actionProcessors.put(actionProcessorName, processorClass);
 
-            return createNewFormActionProcessorInstance(formProperties.getFrameworkManager(), actionProcessorName);
+            return createNewReportActionProcessorInstance(reportProperties.getFrameworkManager(), actionProcessorName);
         }
         catch (ClassNotFoundException e)
         {
-            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.INVALID_ACTION_PROCESSOR_FOR_FORM,
-                    actionProcessorName, formProperties.getName()));
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.INVALID_ACTION_PROCESSOR_FOR_REPORT,
+                    actionProcessorName, reportProperties.getName()));
         }
     }
 
     /**
-     * Creates a new <code>EJFormActionProcessor</code> from the class instance
+     * Creates a new <code>EJReportActionProcessor</code> from the class instance
      * stored within the cache
      * 
      * @param processorName
      *            The name of the processor
-     * @return The new <code>EJFormActionProcessor</code> instance
+     * @return The new <code>EJReportActionProcessor</code> instance
      * @throws EJReportActionProcessorException
      */
-    private EJReportActionProcessor createNewFormActionProcessorInstance(EJReportFrameworkManager frameworkManager, String processorName)
+    private EJReportActionProcessor createNewReportActionProcessorInstance(EJReportFrameworkManager frameworkManager, String processorName)
     {
         Class<?> processorClass = _actionProcessors.get(processorName);
 
@@ -174,7 +174,7 @@ public class EJReportActionProcessorFactory implements Serializable
             else
             {
                 throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.INVALID_ACTION_PROCESSOR_NAME,
-                        processorName, "EJFormActionProcessor"));
+                        processorName, "EJReportActionProcessor"));
             }
         }
         catch (InstantiationException e)
@@ -195,7 +195,7 @@ public class EJReportActionProcessorFactory implements Serializable
      * 
      * @param processorName
      *            The name of the processor
-     * @return The new <code>EJFormActionProcessor</code> instance
+     * @return The new <code>EJReportActionProcessor</code> instance
      * @throws EJReportActionProcessorException
      */
     private EJReportBlockActionProcessor createNewBlockActionProcessorInstance(EJReportFrameworkManager frameworkManager, String processorName)

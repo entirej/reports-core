@@ -49,7 +49,7 @@ public interface EJReportFrameworkHelper extends Serializable
      * Properties
      * 
      * value is not used by the EntireJFramework but allows the user to store
-     * values within the form which can be retrieved when needed
+     * values within the report which can be retrieved when needed
      * 
      * @param valueName
      *            The name of the value

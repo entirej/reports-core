@@ -31,7 +31,7 @@ public interface EJReportItemProperties extends Serializable
      * the query value is added to a query screen or by implementing one of the
      * action processor methods
      * <p>
-     * This could be a block item a form parameter or an application parameter.
+     * This could be a block item a report parameter or an application parameter.
      * 
      * @return The default value for
      */
@@ -61,7 +61,7 @@ public interface EJReportItemProperties extends Serializable
 
     /**
      * The full name of an item is made up as follows:
-     * <code>FormName.&lt;.BlockName.ItemName</code>
+     * <code>ReportName.&lt;.BlockName.ItemName</code>
      * 
      * @return The full name of this item
      */

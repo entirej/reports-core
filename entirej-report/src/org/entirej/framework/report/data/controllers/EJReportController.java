@@ -44,37 +44,36 @@ public class EJReportController implements Serializable
     private EJReportFrameworkManager                 _frameworkManager;
     private EJReportParameterList                    _parameterList;
 
-    private EJReportActionController                 _formActionController;
+    private EJReportActionController                 _reportActionController;
     private EJInternalReport                         _report;
     private EJReport                                 _ejReport;
-    private EJReportData                             _dataForm;
+    private EJReportData                             _dataReport;
     private HashMap<String, EJReportBlockController> _blockControllers = new HashMap<String, EJReportBlockController>();
 
-    EJReportController(EJReportFrameworkManager frameworkManager, EJReportData dataForm)
+    EJReportController(EJReportFrameworkManager frameworkManager, EJReportData dataReport)
     {
         LOGGER.trace("START Constructor");
 
-        if (dataForm == null)
+        if (dataReport == null)
         {
             throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
-                    EJReportFrameworkMessage.NULL_DATA_FORM_PASSED_TO_FORM_CONTROLLER));
+                    EJReportFrameworkMessage.NULL_DATA_REPORT_PASSED_TO_REPORT_CONTROLLER));
         }
 
         _frameworkManager = frameworkManager;
-        _dataForm = dataForm;
+        _dataReport = dataReport;
         createParameterList();
 
         // First create the actionProcessor instance as this is can be used
         // within the block renderer initialization
         // If none has been defined, use the framework default action processor
-        _formActionController = new EJReportActionController(this);
+        _reportActionController = new EJReportActionController(this);
 
         _report = new EJInternalReport(this);
         _ejReport = new EJReport(_report);
 
         initialiseController();
 
-        // getUnmanagedActionController().newFormInstance(new EJForm(_form));
 
         LOGGER.trace("END Constructor");
     }
@@ -87,7 +86,7 @@ public class EJReportController implements Serializable
     private void createParameterList()
     {
         EJReportParameterList list = new EJReportParameterList();
-        for (EJReportRuntimeLevelParameter parameter : _dataForm.getProperties().getAllReportParameters())
+        for (EJReportRuntimeLevelParameter parameter : _dataReport.getProperties().getAllReportParameters())
         {
             EJReportParameter listParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
             list.addParameter(listParameter);
@@ -103,13 +102,13 @@ public class EJReportController implements Serializable
     private void initialiseController()
     {
         LOGGER.trace("START initialiseController");
-        EJCoreReportProperties formProperties = _dataForm.getProperties();
+        EJCoreReportProperties reportProperties = _dataReport.getProperties();
 
         LOGGER.trace("Setting up blocks");
 
-        for (EJReportDataBlock block : _dataForm.getAllBlocks())
+        for (EJReportDataBlock block : _dataReport.getAllBlocks())
         {
-            EJCoreReportBlockProperties blockProps = _dataForm.getProperties().getBlockProperties(block.getName());
+            EJCoreReportBlockProperties blockProps = _dataReport.getProperties().getBlockProperties(block.getName());
             EJReportBlockController blockController = new EJReportBlockController(this, blockProps, block);
             _blockControllers.put(blockProps.getName(), blockController);
 
@@ -133,14 +132,14 @@ public class EJReportController implements Serializable
 
     public EJReportActionController getActionController()
     {
-        return _formActionController;
+        return _reportActionController;
     }
 
     /**
-     * Return the manager for this form
+     * Return the manager for this report
      * <p>
-     * The form manager is used by developers within the action processor to
-     * interact with the form and the <code>EntireJ Framework</code>
+     * The report manager is used by developers within the action processor to
+     * interact with the report and the <code>EntireJ Framework</code>
      * 
      * @return
      */
@@ -149,17 +148,17 @@ public class EJReportController implements Serializable
         return _report;
     }
 
-    public EJReport getEJForm()
+    public EJReport getEJReport()
     {
         return _ejReport;
     }
 
     /**
-     * Returns a collection of all <code>BlockControllers</code> for this form
+     * Returns a collection of all <code>BlockControllers</code> for this report
      * controller
      * 
      * @return A <code>Collection</code> of <code>BlockControllers</code> that
-     *         have been added to this form controller
+     *         have been added to this report controller
      */
     public Collection<EJReportBlockController> getAllBlockControllers()
     {
@@ -167,13 +166,13 @@ public class EJReportController implements Serializable
     }
 
     /**
-     * Returns the underlying properties of this form
+     * Returns the underlying properties of this report
      * 
-     * @return The form properties of this forms underlying data form
+     * @return The report properties of this reports underlying data report
      */
     public EJCoreReportProperties getProperties()
     {
-        return _dataForm.getProperties();
+        return _dataReport.getProperties();
     }
 
     /**
@@ -196,13 +195,13 @@ public class EJReportController implements Serializable
     }
 
     /**
-     * Clears the forms blocks and any embedded forms of any data
+     * Clears the reports blocks and any embedded reports of any data
      * <p>
-     * the form renderer will be informed after the form is cleared
+     * 
      * 
      * @param clearChanges
      *            Indicates if the dirty records contained within the underlying
-     *            blocks of this form should also be cleared
+     *            blocks of this report should also be cleared
      */
     public void clearReport()
     {

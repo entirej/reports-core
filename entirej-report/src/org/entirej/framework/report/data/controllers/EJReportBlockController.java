@@ -55,16 +55,16 @@ public class EJReportBlockController implements Serializable
     private EJReportQueryCriteria                         _queryCriteria  = null;
 
     private EJReportFrameworkManager                      _frameworkManager;
-    private EJReportController                            _formController;
+    private EJReportController                            _reportController;
     private EJReportDataBlock                             _dataBlock;
     private EJCoreReportBlockProperties                   _blockProperties;
 
     private LinkedHashMap<String, EJReportItemController> _itemProperties = new LinkedHashMap<String, EJReportItemController>();
     private final EJInternalReportBlock                   _internalBlock;
 
-    public EJInternalReport getForm()
+    public EJInternalReport getReport()
     {
-        return getBlock().getForm();
+        return getBlock().getReport();
     }
 
     public EJInternalReportBlock getBlock()
@@ -92,20 +92,20 @@ public class EJReportBlockController implements Serializable
     /**
      * Creates a controller for the given data block
      * 
-     * @param formController
+     * @param reportController
      * @param blockProperties
      *            the properties of the given block
      * @param dataBlock
      *            the created controller will control this data block
      */
-    public EJReportBlockController(EJReportController formController, EJCoreReportBlockProperties blockProperties, EJReportDataBlock dataBlock)
+    public EJReportBlockController(EJReportController reportController, EJCoreReportBlockProperties blockProperties, EJReportDataBlock dataBlock)
     {
         if (dataBlock == null)
         {
             throw new EJReportRuntimeException("The DataBlock passed to the BlockController constructor is null");
         }
-        _formController = formController;
-        _frameworkManager = formController.getFrameworkManager();
+        _reportController = reportController;
+        _frameworkManager = reportController.getFrameworkManager();
         _dataBlock = dataBlock;
         _blockProperties = blockProperties;
 
@@ -177,13 +177,13 @@ public class EJReportBlockController implements Serializable
     }
 
     /**
-     * Returns the controller responsible for the form
+     * Returns the controller responsible for the report
      * 
-     * @return The form controller
+     * @return The report controller
      */
-    public EJReportController getFormController()
+    public EJReportController getReportController()
     {
-        return _formController;
+        return _reportController;
     }
 
     public EJReportFrameworkManager getFrameworkManager()
@@ -243,7 +243,7 @@ public class EJReportBlockController implements Serializable
      * method will ignore this property, to create a record and to use this
      * value call the {@link #createNewRecord(boolean)} method.
      * <p>
-     * After the record has been created, the forms action processors
+     * After the record has been created, the reports action processors
      * <code>whenCreateRecord</code> will be called
      * 
      * @param recordType
@@ -256,7 +256,7 @@ public class EJReportBlockController implements Serializable
         EJReportDataRecord record;
         record = createNewRecord();
 
-        getFormController().getActionController().initialiseRecord(getFormController().getEJForm(), new EJReportRecord(record));
+        getReportController().getActionController().initialiseRecord(getReportController().getEJReport(), new EJReportRecord(record));
 
         return record;
     }
@@ -295,7 +295,7 @@ public class EJReportBlockController implements Serializable
      */
     protected EJReportDataRecord createNewRecord()
     {
-        EJReportDataRecord record = new EJReportDataRecord(_formController, getBlock());
+        EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock());
         return record;
     }
 
@@ -308,7 +308,7 @@ public class EJReportBlockController implements Serializable
      * changed before inserting the record to ensure that no integrity
      * constraints will be broken
      * 
-     * After the record has been copied, the forms action processors
+     * After the record has been copied, the reports action processors
      * <code>initialiseRecord</code> will be called
      * 
      * @return The record copied from the current record
@@ -339,7 +339,7 @@ public class EJReportBlockController implements Serializable
             }
         }
 
-        getFormController().getActionController().initialiseRecord(getFormController().getEJForm(), new EJReportRecord(record));
+        getReportController().getActionController().initialiseRecord(getReportController().getEJReport(), new EJReportRecord(record));
 
         logger.trace("END  copyFocusedRecord");
         return record;
@@ -378,7 +378,7 @@ public class EJReportBlockController implements Serializable
      * <p>
      * If the block has changes then they will be cleared and the block reset.
      * The changes will be ignored. If the changes should be committed before a
-     * new query is executed then the form renderer should check for open
+     * new query is executed then the report renderer should check for open
      * changes before allowing the user to execute a new query.
      * 
      * @param queryCriteria
@@ -388,7 +388,7 @@ public class EJReportBlockController implements Serializable
     {
         if (getBlockService() == null)
         {
-            getFormController().getFrameworkManager().handleMessage(
+            getReportController().getFrameworkManager().handleMessage(
                     new EJReportMessage(EJReportMessageLevel.MESSAGE, "Cannot perform query operation when no data service has been defined. Block: "
                             + getProperties().getName()));
             return;
@@ -406,8 +406,8 @@ public class EJReportBlockController implements Serializable
         // Clear the block so that it is ready for the newly queried records
         try
         {
-            getFormController().getActionController().validateQueryCriteria(getFormController().getEJForm(), getQueryCriteria());
-            getFormController().getActionController().preQuery(getFormController().getEJForm(), getQueryCriteria());
+            getReportController().getActionController().validateQueryCriteria(getReportController().getEJReport(), getQueryCriteria());
+            getReportController().getActionController().preQuery(getReportController().getEJReport(), getQueryCriteria());
 
             // Clear the block so that it is ready for the newly queried
             // records
@@ -424,7 +424,7 @@ public class EJReportBlockController implements Serializable
                 _queryCriteria.setQueryAllRows(true);
 
                 logger.trace("Calling execute query on service: {}", _blockProperties.getBlockService().getClass().getName());
-                List<?> entities = _blockProperties.getBlockService().executeQuery(getFormController().getEJForm(), _queryCriteria);
+                List<?> entities = _blockProperties.getBlockService().executeQuery(getReportController().getEJReport(), _queryCriteria);
                 logger.trace("Execute query on block service completed. {} records retrieved", (entities == null ? 0 : entities.size()));
 
                 if (entities != null)
@@ -440,7 +440,7 @@ public class EJReportBlockController implements Serializable
 
                     for (Object entity : entities)
                     {
-                        EJReportDataRecord record = new EJReportDataRecord(_formController, getBlock(), entity, false);
+                        EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock(), entity, false);
 
                         addQueriedRecord(record);
                     }
@@ -468,7 +468,7 @@ public class EJReportBlockController implements Serializable
      * Adds a record to this controllers underlying list of records
      * <p>
      * This method should be called for each record the data access processor
-     * retrieves. The forms action processors post-query method will be called
+     * retrieves. The reports action processors post-query method will be called
      * then the record will be added to the blocks underlying list of records
      * 
      * @param record
@@ -478,7 +478,7 @@ public class EJReportBlockController implements Serializable
         if (record != null)
         {
             _dataBlock.addQueriedRecord(record);
-            getFormController().getActionController().postQuery(getFormController().getEJForm(), new EJReportRecord(record));
+            getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(record));
         }
     }
 

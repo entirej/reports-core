@@ -33,7 +33,7 @@ import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 
 public class EJReportDataRecord implements Serializable
 {
-    private EJReportController                _formController;
+    private EJReportController                _reportController;
     private EJReportDataRecord                _baseRecord;
     private Object                            _servicePojo;
     private EJInternalReportBlock             _block;
@@ -46,13 +46,13 @@ public class EJReportDataRecord implements Serializable
      * 
      * @return The properties of the block that contains this record
      */
-    public EJReportDataRecord(EJReportController formController, EJInternalReportBlock block)
+    public EJReportDataRecord(EJReportController reportController, EJInternalReportBlock block)
     {
-        _formController = formController;
+        _reportController = reportController;
         _block = block;
         _servicePojo = getBlock().getServicePojoHelper().createNewPojoFromService();
         _itemList = new HashMap<String, EJReportDataItem>();
-        initialiseRecord(formController, null);
+        initialiseRecord(reportController, null);
     }
 
     /**
@@ -60,31 +60,31 @@ public class EJReportDataRecord implements Serializable
      * 
      * @return The properties of the block that contains this record
      */
-    public EJReportDataRecord(EJReportController formController, EJInternalReportBlock block, Object servicePojo)
+    public EJReportDataRecord(EJReportController reportController, EJInternalReportBlock block, Object servicePojo)
     {
-        _formController = formController;
+        _reportController = reportController;
         _block = block;
         _servicePojo = servicePojo;
         _itemList = new HashMap<String, EJReportDataItem>();
-        initialiseRecord(formController, servicePojo);
+        initialiseRecord(reportController, servicePojo);
     }
 
     /**
      * Creates a data record with all values copied from the given source entity
      * object
      * 
-     * @param formController
+     * @param reportController
      * @param block
      * @param entityObject
      * @param sourceEntityObject
      */
-    public EJReportDataRecord(EJReportController formController, EJInternalReportBlock block, Object servicePojo, Object sourceEntityObject)
+    public EJReportDataRecord(EJReportController reportController, EJInternalReportBlock block, Object servicePojo, Object sourceEntityObject)
     {
-        _formController = formController;
+        _reportController = reportController;
         _block = block;
         _servicePojo = servicePojo;
         _itemList = new HashMap<String, EJReportDataItem>();
-        initialiseRecord(formController, sourceEntityObject);
+        initialiseRecord(reportController, sourceEntityObject);
     }
 
     /**
@@ -130,11 +130,11 @@ public class EJReportDataRecord implements Serializable
         return _servicePojo;
     }
 
-    private void initialiseRecord(EJReportController formController, Object sourceEntityObject)
+    private void initialiseRecord(EJReportController reportController, Object sourceEntityObject)
     {
         for (EJCoreReportItemProperties itemProps : _block.getProperties().getItemContainer().getAllItemProperties())
         {
-            EJReportDataItem item = new EJReportDataItem(formController, itemProps);
+            EJReportDataItem item = new EJReportDataItem(reportController, itemProps);
             addItem(item);
         }
 
@@ -455,7 +455,7 @@ public class EJReportDataRecord implements Serializable
     public EJReportDataRecord copy()
     {
         // Create a new record copying all values from this record entity object
-        EJReportDataRecord newRec = new EJReportDataRecord(_formController, _block, _block.getServicePojoHelper().createNewServicePojo(getServicePojo()),
+        EJReportDataRecord newRec = new EJReportDataRecord(_reportController, _block, _block.getServicePojoHelper().createNewServicePojo(getServicePojo()),
                 _servicePojo);
         copyValuesToRecord(newRec);
         return newRec;

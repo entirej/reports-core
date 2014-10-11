@@ -45,22 +45,22 @@ public class EJReportMessage implements Serializable
         initialise(null, messageLevel, text, '$', replacementStrings);
     }
 
-    public EJReportMessage(EJReport form, String text, String... replacementStrings)
+    public EJReportMessage(EJReport report, String text, String... replacementStrings)
     {
-        initialise(form, EJReportMessageLevel.ERROR, text, '$', replacementStrings);
+        initialise(report, EJReportMessageLevel.ERROR, text, '$', replacementStrings);
     }
 
-    public EJReportMessage(EJReport form, EJReportMessageLevel messageLevel, String text, String... replacementStrings)
+    public EJReportMessage(EJReport report, EJReportMessageLevel messageLevel, String text, String... replacementStrings)
     {
-        initialise(form, messageLevel, text, '$', replacementStrings);
+        initialise(report, messageLevel, text, '$', replacementStrings);
     }
 
-    public EJReportMessage(EJReport form, EJReportMessageLevel messageLevel, String text, char replacementChar, String... replacementStrings)
+    public EJReportMessage(EJReport report, EJReportMessageLevel messageLevel, String text, char replacementChar, String... replacementStrings)
     {
-        initialise(form, messageLevel, text, replacementChar, replacementStrings);
+        initialise(report, messageLevel, text, replacementChar, replacementStrings);
     }
 
-    private void initialise(EJReport form, EJReportMessageLevel messageLevel, String text, char replacementChar, String... replacementStrings)
+    private void initialise(EJReport report, EJReportMessageLevel messageLevel, String text, char replacementChar, String... replacementStrings)
     {
         _messageLevel = messageLevel;
         _text = text;
@@ -75,12 +75,12 @@ public class EJReportMessage implements Serializable
             }
         }
 
-        _translatedMessage = translateMessage(form);
+        _translatedMessage = translateMessage(report);
     }
 
-    private String translateMessage(EJReport form)
+    private String translateMessage(EJReport report)
     {
-        if (form == null)
+        if (report == null)
         {
             String message = _text;
             String replacementChar = String.valueOf(_replacementChar);
@@ -95,7 +95,7 @@ public class EJReportMessage implements Serializable
             return message;
         }
 
-        String message = form.translateMessageText(_text);
+        String message = report.translateMessageText(_text);
 
         String replacementChar = String.valueOf(_replacementChar);
         // replace strings
@@ -103,7 +103,7 @@ public class EJReportMessage implements Serializable
         {
             for (int i = 0; i < _replacementStrings.size(); i++)
             {
-                String text = form.translateText(_replacementStrings.get(i));
+                String text = report.translateText(_replacementStrings.get(i));
                 message = message.replace(replacementChar + (i + 1), text);
             }
         }

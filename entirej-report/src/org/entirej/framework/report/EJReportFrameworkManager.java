@@ -41,8 +41,8 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
 
     private EJReportConnectionRetriever                    _connectionRetriever;
     private Locale                                         _currentLocale = Locale.ENGLISH;
-    private EJReportPropertiesFactory                      _formPropertiesFactory;
-    private EJReportControllerFactory                      _formControllerFactory;
+    private EJReportPropertiesFactory                      _reportPropertiesFactory;
+    private EJReportControllerFactory                      _reportControllerFactory;
     private EJReportTranslationController                  _translationController;
     private EJReportBlockServiceFactory                    _blockServiceFactory;
 
@@ -52,8 +52,8 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     {
 
         _applicationLevelParameters = new HashMap<String, EJReportRuntimeLevelParameter>();
-        _formPropertiesFactory = createFormPropertiesFactory();
-        _formControllerFactory = createFormControllerFactory();
+        _reportPropertiesFactory = createReportPropertiesFactory();
+        _reportControllerFactory = createReportControllerFactory();
         _blockServiceFactory = createBlockServiceFactory();
 
         initialiseCore(entireJPropertiesFileName);
@@ -73,12 +73,12 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
 
     }
 
-    protected EJReportPropertiesFactory createFormPropertiesFactory()
+    protected EJReportPropertiesFactory createReportPropertiesFactory()
     {
         return new EJCoreReportPropertiesFactory(this);
     }
 
-    protected EJReportControllerFactory createFormControllerFactory()
+    protected EJReportControllerFactory createReportControllerFactory()
     {
         return new EJReportControllerFactory(this);
     }
@@ -99,7 +99,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      * <p>
      * The EntireJProperties file passed as a parameter will be read and the
      * properties added to {@link EJCoreReportRuntimeProperties}. EntireJ Core
-     * Framework will automatically cache all forms, lookups and color
+     * Framework will automatically cache all reports, lookups and color
      * properties.
      * <p>
      * 
@@ -213,18 +213,18 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     }
 
     /**
-     * Creates a <code>Form</code> with the given name
+     * Creates a <code>Report</code> with the given name
      * 
-     * @param formName
-     *            The name of the form to create
+     * @param reportName
+     *            The name of the report to create
      * 
-     * @return The newly created form
+     * @return The newly created report
      */
-    public EJReport createForm(String formName)
+    public EJReport createReport(String reportName)
     {
         try
         {
-            return createForm(formName, null);
+            return createReport(reportName, null);
         }
         catch (Exception e)
         {
@@ -235,35 +235,35 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     }
 
     /**
-     * Returns the form properties for the named form
+     * Returns the report properties for the named report
      * 
-     * @param formName
-     *            - The form name
+     * @param reportName
+     *            - The report name
      * @return a {@link EJCoreReportProperties} object containing the translated
      *         from properties
      */
-    public EJCoreReportProperties getFormProperties(String formName)
+    public EJCoreReportProperties getReportProperties(String reportName)
     {
-        return _formControllerFactory.getReportProperties(formName);
+        return _reportControllerFactory.getReportProperties(reportName);
     }
 
     /**
-     * Creates a <code>Form</code> with the given name
+     * Creates a <code>Report</code> with the given name
      * <p>
      * 
-     * @param formName
-     *            The name of the form to create
+     * @param reportName
+     *            The name of the report to create
      * @param parameterList
-     *            A parameter list containing parameters for the form to open.
+     *            A parameter list containing parameters for the report to open.
      * 
-     * @return The newly created form
+     * @return The newly created report
      */
-    private EJReport createForm(String formName, EJReportParameterList parameterList)
+    private EJReport createReport(String reportName, EJReportParameterList parameterList)
     {
-        EJReportController controller = _formControllerFactory.createController(formName, parameterList);
+        EJReportController controller = _reportControllerFactory.createController(reportName, parameterList);
         if (controller != null)
         {
-            return controller.getEJForm();
+            return controller.getEJReport();
         }
         else
         {
@@ -272,21 +272,21 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     }
 
     /**
-     * Creates a <code>EJInternalForm</code> with the given name
+     * Creates a <code>EJInternalReport</code> with the given name
      * <p>
      * <b>This method should only used within the Applicaton Framework and not
      * within any of the action processors</b>
      * 
-     * @param formName
-     *            The name of the form to create
+     * @param reportName
+     *            The name of the report to create
      * @param parameterList
-     *            A parameter list containing parameters for the form to open.
+     *            A parameter list containing parameters for the report to open.
      * 
-     * @return The newly created form
+     * @return The newly created report
      */
-    public EJInternalReport createInternalForm(String formName, EJReportParameterList parameterList)
+    public EJInternalReport createInternalReport(String reportName, EJReportParameterList parameterList)
     {
-        EJReportController controller = _formControllerFactory.createController(formName, parameterList);
+        EJReportController controller = _reportControllerFactory.createController(reportName, parameterList);
         if (controller != null)
         {
             return controller.getInternalReport();
@@ -299,14 +299,14 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
 
     /**
      * Retrieve the application instance of the
-     * <code>FormPropertiesFactory</code>
+     * <code>ReportPropertiesFactory</code>
      * 
      * @return The application instance of the
-     *         <code>FormPropertiesFactory</code>
+     *         <code>ReportPropertiesFactory</code>
      */
-    public EJReportPropertiesFactory getFormPropertiesFactory()
+    public EJReportPropertiesFactory getReportPropertiesFactory()
     {
-        return _formPropertiesFactory;
+        return _reportPropertiesFactory;
     }
 
     /**
@@ -330,7 +330,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      * Properties
      * 
      * value is not used by the EntireJFramework but allows the user to store
-     * values within the form which can be retrieved when needed
+     * values within the report which can be retrieved when needed
      * 
      * @param valueName
      *            The name of the value

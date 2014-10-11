@@ -33,41 +33,41 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 
 public class EJReport implements EJReportFrameworkHelper
 {
-    private EJInternalReport _form;
+    private EJInternalReport _report;
 
-    public EJReport(EJInternalReport form)
+    public EJReport(EJInternalReport report)
     {
-        _form = form;
+        _report = report;
     }
 
     /**
-     * Returns the properties for of this form
+     * Returns the properties for of this report
      * 
-     * @return This forms properties
+     * @return This reports properties
      */
     public EJReportProperties getProperties()
     {
-        return _form.getProperties();
+        return _report.getProperties();
     }
 
     /**
-     * Returns the action controller for this form
+     * Returns the action controller for this report
      * 
-     * @return This forms {@link EJReportActionController}
+     * @return This reports {@link EJReportActionController}
      */
     public EJReportActionController getActionController()
     {
-        return _form.getActionController();
+        return _report.getActionController();
     }
 
     /**
-     * Returns the name of this form
+     * Returns the name of this report
      * 
-     * @return The name of this form
+     * @return The name of this report
      */
     public String getName()
     {
-        return _form.getProperties().getName();
+        return _report.getProperties().getName();
     }
 
     /**
@@ -83,19 +83,19 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void handleException(Exception exception)
     {
-        _form.handleException(exception);
+        _report.handleException(exception);
     }
 
     /**
-     * Instructs EntireJ to clear the form
+     * Instructs EntireJ to clear the report
      * <p>
      * If <code>disregardChanges</code> is <code>true</code> then all changes
-     * made within the form will be disregarded
+     * made within the report will be disregarded
      * 
      */
     public void clear()
     {
-        _form.clear();
+        _report.clear();
     }
 
     /**
@@ -111,7 +111,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void changeLocale(Locale locale)
     {
-        _form.getFrameworkManager().changeLocale(locale);
+        _report.getFrameworkManager().changeLocale(locale);
     }
 
     /**
@@ -125,29 +125,29 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public Locale getCurrentLocale()
     {
-        return _form.getFrameworkManager().getCurrentLocale();
+        return _report.getFrameworkManager().getCurrentLocale();
     }
 
     /**
-     * Retrieves an instance of the forms current connection
+     * Retrieves an instance of the reports current connection
      * 
-     * @return The form connection
+     * @return The report connection
      */
     public EJManagedReportFrameworkConnection getConnection()
     {
-        return _form.getFrameworkManager().getConnection();
+        return _report.getFrameworkManager().getConnection();
     }
 
     /**
-     * Returns an immutable collection of all blocks available within this form
+     * Returns an immutable collection of all blocks available within this report
      * 
-     * @return All blocks within this form
+     * @return All blocks within this report
      */
     public Collection<EJReportBlock> getAllBlocks()
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
 
-        for (EJInternalReportBlock block : _form.getAllBlocks())
+        for (EJInternalReportBlock block : _report.getAllBlocks())
         {
             blocks.add(new EJReportBlock(block));
         }
@@ -167,7 +167,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJReportBlock getBlock(String blockName)
     {
-        EJInternalReportBlock block = _form.getBlock(blockName);
+        EJInternalReportBlock block = _report.getBlock(blockName);
         if (block == null)
         {
             return null;
@@ -192,7 +192,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJReportVisualAttributeProperties getVisualAttribute(String vaName)
     {
-        return _form.getVisualAttribute(vaName);
+        return _report.getVisualAttribute(vaName);
     }
 
     /**
@@ -207,7 +207,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void addVisualAttribute(EJReportVisualAttributeProperties vaProperties)
     {
-        _form.addVisualAttribute(vaProperties);
+        _report.addVisualAttribute(vaProperties);
     }
 
     /**
@@ -220,7 +220,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void setApplicationLevelParameter(String valueName, Object value)
     {
-        _form.setApplicationLevelParameter(valueName, value);
+        _report.setApplicationLevelParameter(valueName, value);
     }
 
     /**
@@ -235,11 +235,11 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJReportRuntimeLevelParameter getApplicationLevelParameter(String paramName)
     {
-        return _form.getApplicationLevelParameter(paramName);
+        return _report.getApplicationLevelParameter(paramName);
     }
 
     /**
-     * Sets the given form parameter to the given value
+     * Sets the given report parameter to the given value
      * 
      * @param name
      *            The name of the parameter to set
@@ -248,11 +248,11 @@ public class EJReport implements EJReportFrameworkHelper
      * @throws EJReportRuntimeException
      *             id there is no property with the given name or the data type
      *             of the given object is not the same as defined within the
-     *             form
+     *             report
      */
-    public void setFormParameter(String name, Object value)
+    public void setReportParameter(String name, Object value)
     {
-        _form.setFormParameter(name, value);
+        _report.setReportParameter(name, value);
     }
 
     /**
@@ -260,13 +260,13 @@ public class EJReport implements EJReportFrameworkHelper
      * 
      * @param name
      *            The name of the required application parameter
-     * @return The form parameter
+     * @return The report parameter
      * @throws EJReportRuntimeException
      *             if there is no parameter with the given value
      */
     public EJReportParameter getReportParameter(String name)
     {
-        return _form.getFormParameter(name);
+        return _report.getReportParameter(name);
     }
 
     /**
@@ -282,7 +282,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateText(String textKey)
     {
-        return _form.translateText(textKey);
+        return _report.translateText(textKey);
     }
 
     /**
@@ -298,7 +298,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateText(String textKey, Locale locale)
     {
-        return _form.translateText(textKey, locale);
+        return _report.translateText(textKey, locale);
     }
 
     /**
@@ -315,7 +315,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateMessageText(String textKey)
     {
-        return _form.translateMessageText(textKey, null);
+        return _report.translateMessageText(textKey, null);
     }
 
     /**
@@ -331,33 +331,33 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateMessageText(String textKey, Locale locale)
     {
-        return _form.translateMessageText(textKey, locale);
+        return _report.translateMessageText(textKey, locale);
     }
 
     /**
-     * Returns this forms parameter list
+     * Returns this reports parameter list
      * <p>
      * the parameter list is a list of properties that were declared for the
-     * form within the EntireJ Form Plugin. These parameters are used when
-     * either calling another form or when another form calls this form. They
-     * are used to pass values to and from the calling forms
+     * report within the EntireJ Report Plugin. These parameters are used when
+     * either calling another report or when another report calls this report. They
+     * are used to pass values to and from the calling reports
      * 
-     * @return This forms parameter list
+     * @return This reports parameter list
      */
     public EJReportParameterList getParameterList()
     {
-        return _form.getParameterList();
+        return _report.getParameterList();
     }
 
     public EJReportDateHelper createDateHelper()
     {
-        return _form.createDateHelper();
+        return _report.createDateHelper();
     }
 
     @Override
     public EJReportTranslatorHelper getTranslatorHelper()
     {
-        return _form.getFrameworkManager().getTranslatorHelper();
+        return _report.getFrameworkManager().getTranslatorHelper();
     }
 
 }

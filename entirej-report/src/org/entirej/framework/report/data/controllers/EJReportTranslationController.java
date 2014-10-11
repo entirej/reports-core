@@ -202,10 +202,10 @@ public class EJReportTranslationController implements Serializable
 
         try
         {
-            // Translate the form properties
-            // formToTranslate.setTranslatedTitle(translateText(formToTranslate.getTitle()));
+            // Translate the report properties
+            // reportToTranslate.setTranslatedTitle(translateText(reportToTranslate.getTitle()));
 
-            // Translate the forms blocks
+            // Translate the reports blocks
             for (EJCoreReportBlockProperties blockProps : reportToTranslate.getBlockContainer().getAllBlockProperties())
             {
                 translateBlockProperties(blockProps);

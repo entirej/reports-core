@@ -27,10 +27,10 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
 
     private EJReportBlockItemContainer   _itemContainer;
 
-    public EJCoreReportBlockProperties(EJCoreReportProperties formProperties, String blockName, boolean isCcontrolBlock)
+    public EJCoreReportBlockProperties(EJCoreReportProperties reportProperties, String blockName, boolean isCcontrolBlock)
     {
 
-        _reportProperties = formProperties;
+        _reportProperties = reportProperties;
         _name = blockName;
         _isControlBlock = isCcontrolBlock;
         _layoutScreenProperties = new EJCoreReportScreenProperties(this);
