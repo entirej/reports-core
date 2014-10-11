@@ -31,7 +31,7 @@ import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 import org.entirej.framework.report.properties.factory.EJCoreReportPropertiesFactory;
 import org.entirej.framework.report.properties.factory.EJCoreReportRuntimePropertiesFactory;
 import org.entirej.framework.report.properties.factory.EJReportPropertiesFactory;
-import org.entirej.framework.report.service.EJBlockServiceFactory;
+import org.entirej.framework.report.service.EJReportBlockServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     private EJReportPropertiesFactory                      _formPropertiesFactory;
     private EJReportControllerFactory                      _formControllerFactory;
     private EJReportTranslationController                  _translationController;
-    private EJBlockServiceFactory                          _blockServiceFactory;
+    private EJReportBlockServiceFactory                    _blockServiceFactory;
 
     private HashMap<String, EJReportRuntimeLevelParameter> _applicationLevelParameters;
 
@@ -83,12 +83,12 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
         return new EJReportControllerFactory(this);
     }
 
-    protected EJBlockServiceFactory createBlockServiceFactory()
+    protected EJReportBlockServiceFactory createBlockServiceFactory()
     {
-        return new EJBlockServiceFactory();
+        return new EJReportBlockServiceFactory();
     }
 
-    public EJBlockServiceFactory getBlockServiceFactory()
+    public EJReportBlockServiceFactory getBlockServiceFactory()
     {
         return _blockServiceFactory;
     }

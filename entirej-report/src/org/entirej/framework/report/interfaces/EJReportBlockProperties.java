@@ -21,7 +21,7 @@ package org.entirej.framework.report.interfaces;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.entirej.framework.report.service.EJBlockService;
+import org.entirej.framework.report.service.EJReportBlockService;
 
 public interface EJReportBlockProperties extends Serializable
 {
@@ -121,7 +121,7 @@ public interface EJReportBlockProperties extends Serializable
      * 
      * @return This blocks service
      */
-    public EJBlockService<?> getBlockService();
+    public EJReportBlockService<?> getBlockService();
 
     /**
      * The Action Processor is responsible for actions within this block

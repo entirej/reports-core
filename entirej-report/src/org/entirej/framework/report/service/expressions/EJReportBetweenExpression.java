@@ -1,0 +1,101 @@
+/*******************************************************************************
+ * Copyright 2013 Mojave Innovations GmbH
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * Contributors:
+ *     Mojave Innovations GmbH - initial API and implementation
+ ******************************************************************************/
+package org.entirej.framework.report.service.expressions;
+
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import org.entirej.framework.report.EJReportMessage;
+import org.entirej.framework.report.EJReportRuntimeException;
+
+class EJReportBetweenExpression implements Serializable
+{
+    private EJReportGreaterThanExpression _greaterThan;
+    private EJReportLessThanExpression    _lessThan;
+    private String                        _stringFrom;
+    private String                        _stringTo;
+
+    EJReportBetweenExpression(String stringFrom, String stringTo)
+    {
+        if (stringFrom == null && stringTo == null)
+        {
+            throw new EJReportRuntimeException(new EJReportMessage("A Between expression must have at least a value from or a value to"));
+        }
+
+        if (stringFrom == null && stringTo != null)
+        {
+            _lessThan = new EJReportLessThanExpression(stringTo);
+        }
+        else if (stringFrom != null & stringTo == null)
+        {
+            _greaterThan = new EJReportGreaterThanExpression(stringFrom);
+        }
+        else
+        {
+            _stringFrom = stringFrom;
+            _stringTo = stringTo;
+        }
+    }
+
+    public String getExpressionString(String name)
+    {
+        if (_greaterThan != null)
+        {
+            return _greaterThan.getExpressionString(name);
+        }
+        else if (_lessThan != null)
+        {
+            return _lessThan.getExpressionString(name);
+        }
+        else
+        {
+            return " BETWEEN :" + name + " AND :1";
+        }
+    }
+
+    public int setStatementParams(PreparedStatement pstmt, int startPos) throws SQLException
+    {
+        if (_greaterThan != null)
+        {
+            return _greaterThan.setStatementParams(pstmt, startPos);
+        }
+        else if (_lessThan != null)
+        {
+            return _lessThan.setStatementParams(pstmt, startPos);
+        }
+        else
+        {
+            pstmt.setObject(startPos, _stringFrom);
+            pstmt.setObject(startPos + 1, _stringTo);
+
+            return 2;
+        }
+    }
+
+    public Class<?> getBaseType()
+    {
+        return String.class;
+    }
+
+    public String toString()
+    {
+        return "BETWEEN " + _stringFrom + " AND " + _stringTo;
+    }
+}

@@ -29,7 +29,7 @@ import org.entirej.framework.report.data.controllers.EJReportItemController;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJReportBlock implements EJReportQueryBlock, Serializable
 {
@@ -135,7 +135,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
      * 
      * @return
      */
-    public EJQueryCriteria createQueryCriteria()
+    public EJReportQueryCriteria createQueryCriteria()
     {
         return _block.createQueryCriteria();
     }
@@ -184,7 +184,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
      * Instructs EntireJ to perform a query on the given block using no query
      * criteria
      * <p>
-     * The block will create an empty {@link EJQueryCriteria}
+     * The block will create an empty {@link EJReportQueryCriteria}
      */
     public void executeQuery()
     {
@@ -198,7 +198,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
      * @param queryCriteria
      *            The criteria for the query
      */
-    public void executeQuery(EJQueryCriteria queryCriteria)
+    public void executeQuery(EJReportQueryCriteria queryCriteria)
     {
         if (queryCriteria.getBlock() == null)
         {

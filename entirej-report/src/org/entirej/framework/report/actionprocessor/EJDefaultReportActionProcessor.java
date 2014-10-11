@@ -23,7 +23,7 @@ import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJDefaultReportActionProcessor implements EJReportActionProcessor
 {
@@ -48,7 +48,7 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     {
     }
 
-    public void validateQueryCriteria(EJReport report, EJQueryCriteria queryCriteria) throws EJReportActionProcessorException
+    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
     {
     }
 
@@ -56,7 +56,7 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     {
     }
 
-    public void preQuery(EJReport report, EJQueryCriteria queryCriteria) throws EJReportActionProcessorException
+    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
     {
     }
 

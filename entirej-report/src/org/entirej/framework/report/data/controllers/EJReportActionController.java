@@ -32,7 +32,7 @@ import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionPro
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
 import org.entirej.framework.report.processorfactories.EJReportActionProcessorFactory;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,8 @@ public class EJReportActionController implements Serializable
 
     private void loadActionProcessors()
     {
-        if (_reportController.getProperties().getActionProcessorClassName() != null && _reportController.getProperties().getActionProcessorClassName().length() > 0)
+        if (_reportController.getProperties().getActionProcessorClassName() != null
+                && _reportController.getProperties().getActionProcessorClassName().length() > 0)
         {
             _reportLevelActionProcessor = EJReportActionProcessorFactory.getInstance().getActionProcessor(_reportController.getProperties());
         }
@@ -161,7 +162,7 @@ public class EJReportActionController implements Serializable
         logger.trace("END postQuery");
     }
 
-    public void preQuery(EJReport report, EJQueryCriteria queryCriteria)
+    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria)
     {
         logger.trace("START preQuery. Report: {}", report.getName());
 
@@ -239,7 +240,7 @@ public class EJReportActionController implements Serializable
         logger.trace("END newRecordInstance");
     }
 
-    public void validateQueryCriteria(EJReport report, EJQueryCriteria queryCriteria)
+    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria)
     {
         logger.trace("START validateQueryCriteria. Report: {}", report.getName());
 

@@ -21,7 +21,6 @@ package org.entirej.framework.report.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,7 +28,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportPojoHelper;
 import org.entirej.framework.report.EJReportRuntimeException;
 
-public class DefaultServiceGenerator implements EJServiceContentGenerator
+public class DefaultServiceGenerator implements EJReportServiceContentGenerator
 {
 
     protected final static String PACKAGE     = "package ";
@@ -57,22 +56,22 @@ public class DefaultServiceGenerator implements EJServiceContentGenerator
     protected final static String EQUALS      = " = ";
     protected final static String OVERRIDE    = "@Override ";
 
-    protected List<String> getAdditionalImports(EJServiceGeneratorType type)
+    protected List<String> getAdditionalImports(EJReportServiceGeneratorType type)
     {
         return Collections.<String> emptyList();
     }
 
-    private List<String> getSystemImports(EJServiceGeneratorType type)
+    private List<String> getSystemImports(EJReportServiceGeneratorType type)
     {
         List<String> system = new ArrayList<String>();
         system.add(EJReport.class.getName());
         system.add(EJReportRuntimeException.class.getName());
-        system.add(EJBlockService.class.getName());
-        system.add(EJQueryCriteria.class.getName());
-        system.add(EJStatementCriteria.class.getName());
-        system.add(EJRestrictions.class.getName());
-        system.add(EJStatementExecutor.class.getName());
-        system.add(EJStatementParameter.class.getName());
+        system.add(EJReportBlockService.class.getName());
+        system.add(EJReportQueryCriteria.class.getName());
+        system.add(EJReportStatementCriteria.class.getName());
+        system.add(EJReportRestrictions.class.getName());
+        system.add(EJReportStatementExecutor.class.getName());
+        system.add(EJReportStatementParameter.class.getName());
         system.add(ArrayList.class.getName());
         system.add(List.class.getName());
         system.add(type.getPojo().getName());
@@ -81,7 +80,7 @@ public class DefaultServiceGenerator implements EJServiceContentGenerator
     }
 
     @Override
-    public String generateContent(EJServiceGeneratorType type)
+    public String generateContent(EJReportServiceGeneratorType type)
     {
         try
         {
@@ -140,12 +139,6 @@ public class DefaultServiceGenerator implements EJServiceContentGenerator
 
             fileBuilder.append(OVERRIDE).append(NEW_LINE);
             fileBuilder.append(PUBLIC);
-            fileBuilder.append("boolean canQueryInPages").append(O_BRACKETS).append(C_BRACKETS).append(OC_BRACKETS).append(NEW_LINE);
-            fileBuilder.append(getCanQueryInPagesMethodBody());
-            fileBuilder.append(CC_BRACKETS).append(NEW_LINE);
-
-            fileBuilder.append(OVERRIDE).append(NEW_LINE);
-            fileBuilder.append(PUBLIC);
 
             fileBuilder.append("List<").append(pojoName).append("> executeQuery(EJForm form, EJQueryCriteria queryCriteria").append(C_BRACKETS)
                     .append(OC_BRACKETS).append(NEW_LINE);
@@ -163,153 +156,6 @@ public class DefaultServiceGenerator implements EJServiceContentGenerator
 
             fileBuilder.append(CC_BRACKETS).append(NEW_LINE);
 
-            fileBuilder.append(OVERRIDE).append(NEW_LINE);
-            fileBuilder.append(PUBLIC).append(VOID);
-            fileBuilder.append("executeInsert(EJForm form, List<").append(pojoName).append("> newRecords").append(C_BRACKETS).append(OC_BRACKETS)
-                    .append(NEW_LINE);
-            Class<?> datatype;
-            String typeName;
-            Map<String, Class<?>> props = EJReportPojoHelper.getGettersAndDatatypes(type.getPojo());
-            if (hasTable)
-            {
-                fileBuilder.append("List<EJStatementParameter> parameters = new ArrayList<EJStatementParameter>").append(O_BRACKETS).append(C_BRACKETS)
-                        .append(SEMICOLON).append(NEW_LINE);
-                fileBuilder.append("int recordsProcessed = 0;\n");
-                fileBuilder.append("for (").append(pojoName).append(" record : newRecords)\n");
-                fileBuilder.append(OC_BRACKETS).append(NEW_LINE);
-                fileBuilder.append("// Initialise the value list\n");
-                fileBuilder.append("parameters.clear").append(O_BRACKETS).append(C_BRACKETS).append(SEMICOLON).append(NEW_LINE);
-
-                for (String methodName : props.keySet())
-                {
-                    if (methodName.contains("Initial"))
-                    {
-                        continue;
-                    }
-
-                    String fieldName = EJReportPojoHelper.getFieldName(type.getPojo(), methodName);
-
-                    datatype = props.get(methodName);
-                    typeName = datatype.getName().substring(datatype.getName().lastIndexOf('.') + 1);
-                    fileBuilder.append("parameters.add(new EJStatementParameter(\"").append(fieldName).append("\", ").append(typeName)
-                            .append(".class, record.");
-                    fileBuilder.append(methodName).append("()));\n");
-                }
-
-                fileBuilder.append("EJStatementParameter[] paramArray = new EJStatementParameter[parameters.size()];\n");
-                fileBuilder.append("recordsProcessed += _statementExecutor.executeInsert(form, \"").append(type.getTableName())
-                        .append("\", parameters.toArray(paramArray));\n");
-                fileBuilder.append("record.clearInitialValues();\n");
-                fileBuilder.append("}\n");
-            }
-
-            fileBuilder.append("if (recordsProcessed != newRecords.size()) {");
-            fileBuilder
-                    .append("throw new EJApplicationException(\"Unexpected amount of records processed in insert. Expected: \"+newRecords.size()+\". Inserted: \"+recordsProcessed);");
-
-            fileBuilder.append("} }\n\n");
-
-            fileBuilder.append("@Override\n");
-            fileBuilder.append("public void executeUpdate(EJForm form, List<").append(pojoName).append("> updateRecords)\n");
-            fileBuilder.append("{\n");
-            if (hasTable)
-            {
-                fileBuilder.append("List<EJStatementParameter> parameters = new ArrayList<EJStatementParameter>();\n\n");
-                fileBuilder.append("int recordsProcessed = 0;");
-                fileBuilder.append("for (").append(pojoName).append(" record : updateRecords)\n");
-                fileBuilder.append("{\n");
-                fileBuilder.append("parameters.clear();\n\n");
-                fileBuilder.append("// First add the new values\n");
-
-                for (String methodName : props.keySet())
-                {
-                    if (methodName.contains("Initial"))
-                    {
-                        continue;
-                    }
-                    datatype = props.get(methodName);
-                    String fieldName = EJReportPojoHelper.getFieldName(type.getPojo(), methodName);
-                    typeName = datatype.getName().substring(datatype.getName().lastIndexOf('.') + 1);
-                    fileBuilder.append("parameters.add(new EJStatementParameter(\"").append(fieldName).append("\",").append(typeName).append(".class, record.");
-                    fileBuilder.append(methodName).append("()));\n");
-                }
-
-                fileBuilder.append("\nEJStatementCriteria criteria = new EJStatementCriteria();\n");
-
-                for (String methodName : props.keySet())
-                {
-                    if (!methodName.contains("Initial"))
-                    {
-                        continue;
-                    }
-
-                    fileBuilder.append("if (record.").append(methodName).append("() == null)\n");
-                    fileBuilder.append("{\n");
-                    fileBuilder.append("criteria.add(EJRestrictions.isNull(\"").append(EJReportPojoHelper.getFieldName(type.getPojo(), methodName))
-                            .append("\"));\n");
-                    fileBuilder.append("}\n");
-                    fileBuilder.append("else\n");
-                    fileBuilder.append("{\n");
-                    fileBuilder.append("criteria.add(EJRestrictions.equals(\"").append(EJReportPojoHelper.getFieldName(type.getPojo(), methodName))
-                            .append("\", record.").append(methodName).append("()));\n");
-                    fileBuilder.append("}\n");
-                }
-
-                fileBuilder.append("EJStatementParameter[] paramArray = new EJStatementParameter[parameters.size()];\n");
-                fileBuilder.append("recordsProcessed += _statementExecutor.executeUpdate(form, \"").append(type.getTableName())
-                        .append("\", criteria, parameters.toArray(paramArray));\n");
-                fileBuilder.append("record.clearInitialValues();\n");
-                fileBuilder.append("}\n");
-            }
-            fileBuilder.append("if (recordsProcessed != updateRecords.size()) {");
-            fileBuilder
-                    .append("throw new EJApplicationException(\"Unexpected amount of records processed in update. Expected: \"+updateRecords.size()+\". Updated: \"+recordsProcessed);");
-
-            fileBuilder.append("} }\n\n");
-
-            fileBuilder.append("@Override\n");
-            fileBuilder.append("public void executeDelete(EJForm form, List<").append(pojoName).append("> recordsToDelete)\n");
-            fileBuilder.append("{\n");
-            if (hasTable)
-            {
-                fileBuilder.append("ArrayList<EJStatementParameter> parameters = new ArrayList<EJStatementParameter>();\n\n");
-                fileBuilder.append("int recordsProcessed = 0;");
-                fileBuilder.append("for (").append(pojoName).append(" record : recordsToDelete)\n");
-                fileBuilder.append("{\n");
-                fileBuilder.append("parameters.clear();\n\n");
-
-                fileBuilder.append("EJStatementCriteria criteria = new EJStatementCriteria();\n\n");
-                for (String methodName : props.keySet())
-                {
-                    if (!methodName.contains("Initial"))
-                    {
-                        continue;
-                    }
-
-                    fileBuilder.append("if (record.").append(methodName).append("() == null)\n");
-                    fileBuilder.append("{\n");
-                    fileBuilder.append("criteria.add(EJRestrictions.isNull(\"").append(EJReportPojoHelper.getFieldName(type.getPojo(), methodName))
-                            .append("\"));\n");
-                    fileBuilder.append("}\n");
-                    fileBuilder.append("else\n");
-                    fileBuilder.append("{\n");
-                    fileBuilder.append("criteria.add(EJRestrictions.equals(\"").append(EJReportPojoHelper.getFieldName(type.getPojo(), methodName))
-                            .append("\", record.").append(methodName).append("()));\n");
-                    fileBuilder.append("}\n");
-                }
-
-                fileBuilder.append("EJStatementParameter[] paramArray = new EJStatementParameter[parameters.size()];\n");
-                fileBuilder.append("recordsProcessed +=  _statementExecutor.executeDelete(form, \"").append(type.getTableName())
-                        .append("\", criteria, parameters.toArray(paramArray));\n");
-                fileBuilder.append("record.clearInitialValues();\n");
-                fileBuilder.append("}\n");
-            }
-            fileBuilder.append("if (recordsProcessed != recordsToDelete.size()) {");
-            fileBuilder
-                    .append("throw new EJApplicationException(\"Unexpected amount of records processed in delete. Expected: \"+recordsToDelete.size()+\". Deleted: \"+recordsProcessed);");
-
-            fileBuilder.append("} }\n\n");
-
             fileBuilder.append("\n}");
 
             return fileBuilder.toString();
@@ -320,13 +166,7 @@ public class DefaultServiceGenerator implements EJServiceContentGenerator
         }
     }
 
-    protected String getCanQueryInPagesMethodBody()
-    {
-
-        return new StringBuilder().append(RETURN).append(FALSE).append(SEMICOLON).toString();
-    }
-
-    public static String buildSelectStatement(EJServiceGeneratorType generatorType)
+    public static String buildSelectStatement(EJReportServiceGeneratorType generatorType)
     {
         String baseTableName = generatorType.getTableName();
 

@@ -19,16 +19,16 @@ package org.entirej.framework.report.interfaces;
 
 import java.io.Serializable;
 
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public interface EJReportItemProperties extends Serializable
 {
 
     /**
      * Returns the value to be used as a default when executing a query. This
-     * value will be set to the blocks {@link EJQueryCriteria} before the blocks
-     * query is executed. This value can be changed by the developer if the
-     * query value is added to a query screen or by implementing one of the
+     * value will be set to the blocks {@link EJReportQueryCriteria} before the
+     * blocks query is executed. This value can be changed by the developer if
+     * the query value is added to a query screen or by implementing one of the
      * action processor methods
      * <p>
      * This could be a block item a form parameter or an application parameter.

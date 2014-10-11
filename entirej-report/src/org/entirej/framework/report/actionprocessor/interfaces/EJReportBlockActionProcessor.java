@@ -25,7 +25,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public interface EJReportBlockActionProcessor extends Serializable
 {
@@ -45,7 +45,7 @@ public interface EJReportBlockActionProcessor extends Serializable
      * @param queryCriteria
      *            The query criteria for this block
      */
-    public void preQuery(EJReport report, EJQueryCriteria queryCriteria) throws EJReportActionProcessorException;
+    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException;
 
     /**
      * Called for each record of a queried block. The <code>EJrRecord</code> is
@@ -116,7 +116,7 @@ public interface EJReportBlockActionProcessor extends Serializable
      * @param queryCriteria
      *            The query criteria that should be validated
      */
-    public void validateQueryCriteria(EJReport report, EJQueryCriteria queryCriteria) throws EJReportActionProcessorException;
+    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException;
 
     /**
      * Called when a record is created for one of the screens. This allows

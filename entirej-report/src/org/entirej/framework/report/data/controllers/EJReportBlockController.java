@@ -39,8 +39,8 @@ import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.service.EJBlockService;
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportBlockService;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class EJReportBlockController implements Serializable
      * Used in conjunction with the deferred query property. This criteria will
      * contain the query criteria for the query to be executed
      */
-    private EJQueryCriteria                               _queryCriteria  = null;
+    private EJReportQueryCriteria                         _queryCriteria  = null;
 
     private EJReportFrameworkManager                      _frameworkManager;
     private EJReportController                            _formController;
@@ -135,7 +135,7 @@ public class EJReportBlockController implements Serializable
      * @param queryCriteria
      *            The query criteria to set
      */
-    public void setQueryCriteria(EJQueryCriteria queryCriteria)
+    public void setQueryCriteria(EJReportQueryCriteria queryCriteria)
     {
         _queryCriteria = queryCriteria;
     }
@@ -145,7 +145,7 @@ public class EJReportBlockController implements Serializable
      * 
      * @return The blocks saved query criteria
      */
-    public EJQueryCriteria getQueryCriteria()
+    public EJReportQueryCriteria getQueryCriteria()
     {
         return _queryCriteria;
     }
@@ -196,7 +196,7 @@ public class EJReportBlockController implements Serializable
         return _dataBlock.containsRecord(record);
     }
 
-    public EJBlockService<?> getBlockService()
+    public EJReportBlockService<?> getBlockService()
     {
         return _blockProperties.getBlockService();
     }
@@ -384,7 +384,7 @@ public class EJReportBlockController implements Serializable
      * @param queryCriteria
      *            The query criteria to be used for this block
      */
-    public void executeQuery(EJQueryCriteria queryCriteria)
+    public void executeQuery(EJReportQueryCriteria queryCriteria)
     {
         if (getBlockService() == null)
         {

@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.interfaces.EJReportBlockProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockContainerItem;
-import org.entirej.framework.report.service.EJBlockService;
+import org.entirej.framework.report.service.EJReportBlockService;
 
 public class EJCoreReportBlockProperties implements EJReportBlockProperties, BlockContainerItem
 {
@@ -154,7 +154,7 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
     }
 
     @Override
-    public EJBlockService<?> getBlockService()
+    public EJReportBlockService<?> getBlockService()
     {
         return null;
     }

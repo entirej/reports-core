@@ -33,7 +33,7 @@ import org.entirej.framework.report.data.controllers.EJReportBlockController;
 import org.entirej.framework.report.data.controllers.EJReportItemController;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.service.EJQueryCriteria;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,9 +182,9 @@ public class EJInternalReportBlock implements Serializable
      * 
      * @return
      */
-    public EJQueryCriteria createQueryCriteria()
+    public EJReportQueryCriteria createQueryCriteria()
     {
-        return new EJQueryCriteria(new EJReportBlock(_blockController.getBlock()));
+        return new EJReportQueryCriteria(new EJReportBlock(_blockController.getBlock()));
     }
 
     /**
@@ -222,7 +222,7 @@ public class EJInternalReportBlock implements Serializable
      * @param queryCriteria
      *            The criteria for the query
      */
-    public void executeQuery(EJQueryCriteria queryCriteria)
+    public void executeQuery(EJReportQueryCriteria queryCriteria)
     {
         logger.trace("START executeQuery");
 
@@ -232,7 +232,7 @@ public class EJInternalReportBlock implements Serializable
         {
             if (queryCriteria == null)
             {
-                queryCriteria = new EJQueryCriteria(new EJReportBlock(_blockController.getBlock()));
+                queryCriteria = new EJReportQueryCriteria(new EJReportBlock(_blockController.getBlock()));
             }
             _blockController.executeQuery(queryCriteria);
         }
