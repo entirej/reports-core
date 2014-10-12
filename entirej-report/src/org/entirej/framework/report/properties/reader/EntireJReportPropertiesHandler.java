@@ -41,7 +41,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
 
         _properties = properties;
 
-        _properties.getAllApplicationLevelParameters().clear();
+        _properties.getAllRuntimeLevelParameters().clear();
     }
 
     public EJCoreReportRuntimeProperties getProperties()
@@ -61,7 +61,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
 
             EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(paramName, dataTypeName);
             parameter.setValue(parameter);
-            _properties.addApplicationLevelParameter(parameter);
+            _properties.addRuntimeLevelParameter(parameter);
         }
         else if (name.equals(FORMS_PACKAGE))
         {

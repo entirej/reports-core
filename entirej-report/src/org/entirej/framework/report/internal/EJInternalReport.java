@@ -183,16 +183,16 @@ public class EJInternalReport implements Serializable
     }
 
     /**
-     * Used to set the value of an application level parameter
+     * Used to set the value of an runtime level parameter
      * 
      * @param valueName
      *            The name of the value
      * @param value
      *            The parameter value
      */
-    public void setApplicationLevelParameter(String valueName, Object value)
+    public void setRuntimeLevelParameter(String valueName, Object value)
     {
-        _reportController.getFrameworkManager().setApplicationLevelParameter(valueName, value);
+        _reportController.getFrameworkManager().setRuntimeLevelParameter(valueName, value);
     }
 
     /**
@@ -205,9 +205,9 @@ public class EJInternalReport implements Serializable
      *            The name of the required parameter
      * @return The value of the given parameter
      */
-    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String paramName)
+    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String paramName)
     {
-        return _reportController.getFrameworkManager().getApplicationLevelParameter(paramName);
+        return _reportController.getFrameworkManager().getRuntimeLevelParameter(paramName);
     }
 
     /**

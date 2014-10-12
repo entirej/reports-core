@@ -57,8 +57,8 @@ public class EJReportDataHelper
 
         if ("APP_PARAMETER".equals(paramTypeCode))
         {
-            EJReportRuntimeLevelParameter param = report.getApplicationLevelParameter(paramValue);
-            logger.trace("Application Parameter Value: {}", param.getValue());
+            EJReportRuntimeLevelParameter param = report.getRuntimeLevelParameter(paramValue);
+            logger.trace("Runtime Parameter Value: {}", param.getValue());
             return param.getValue();
         }
         else if ("REPORT_PARAMETER".equals(paramTypeCode))

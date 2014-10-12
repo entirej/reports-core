@@ -218,9 +218,9 @@ public class EJReport implements EJReportFrameworkHelper
      * @param value
      *            The parameter value
      */
-    public void setApplicationLevelParameter(String valueName, Object value)
+    public void setRuntimeLevelParameter(String valueName, Object value)
     {
-        _report.setApplicationLevelParameter(valueName, value);
+        _report.setRuntimeLevelParameter(valueName, value);
     }
 
     /**
@@ -233,9 +233,9 @@ public class EJReport implements EJReportFrameworkHelper
      *            The name of the required parameter
      * @return The value of the given parameter
      */
-    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String paramName)
+    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String paramName)
     {
-        return _report.getApplicationLevelParameter(paramName);
+        return _report.getRuntimeLevelParameter(paramName);
     }
 
     /**

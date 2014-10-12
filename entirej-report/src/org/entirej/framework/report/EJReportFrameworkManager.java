@@ -46,12 +46,12 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     private EJReportTranslationController                  _translationController;
     private EJReportBlockServiceFactory                    _blockServiceFactory;
 
-    private HashMap<String, EJReportRuntimeLevelParameter> _applicationLevelParameters;
+    private HashMap<String, EJReportRuntimeLevelParameter> _runtimeLevelParameters;
 
     protected EJReportFrameworkManager(String entireJPropertiesFileName)
     {
 
-        _applicationLevelParameters = new HashMap<String, EJReportRuntimeLevelParameter>();
+        _runtimeLevelParameters = new HashMap<String, EJReportRuntimeLevelParameter>();
         _reportPropertiesFactory = createReportPropertiesFactory();
         _reportControllerFactory = createReportControllerFactory();
         _blockServiceFactory = createBlockServiceFactory();
@@ -120,7 +120,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
 
         _translationController = new EJReportTranslationController(this, EJCoreReportRuntimeProperties.getInstance().getApplicationTranslator(), _currentLocale);
 
-        EJCoreReportRuntimeProperties.getInstance().copyApplicationLevelParameters(this);
+        EJCoreReportRuntimeProperties.getInstance().copyRuntimeLevelParameters(this);
 
     }
 
@@ -315,11 +315,11 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      * @param parameter
      *            The parameter to add
      */
-    public void addApplicationLevelParameter(EJReportRuntimeLevelParameter parameter)
+    public void addRuntimeLevelParameter(EJReportRuntimeLevelParameter parameter)
     {
         if (parameter != null)
         {
-            _applicationLevelParameters.put(parameter.getName(), parameter);
+            _runtimeLevelParameters.put(parameter.getName(), parameter);
         }
     }
 
@@ -337,9 +337,9 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      * @param value
      *            The value
      */
-    public void setApplicationLevelParameter(String valueName, Object value)
+    public void setRuntimeLevelParameter(String valueName, Object value)
     {
-        EJReportRuntimeLevelParameter parameter = _applicationLevelParameters.get(valueName);
+        EJReportRuntimeLevelParameter parameter = _runtimeLevelParameters.get(valueName);
 
         if (parameter != null)
         {
@@ -365,16 +365,16 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      *             If there is no application level parameter with the given
      *             name
      */
-    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String valueName)
+    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String valueName)
     {
         if (valueName == null)
         {
             throw new EJReportRuntimeException("Trying to retrieve an application level parameter without specifying a name");
         }
 
-        if (_applicationLevelParameters.containsKey(valueName))
+        if (_runtimeLevelParameters.containsKey(valueName))
         {
-            return _applicationLevelParameters.get(valueName);
+            return _runtimeLevelParameters.get(valueName);
         }
         else
         {
@@ -394,8 +394,8 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      * @return <code>true</code> if there is a parameter with the specified
      *         name, otherwise <code>false</code>
      */
-    public boolean applicationLevelParameterExists(String parameterName)
+    public boolean runtimeLevelParameterExists(String parameterName)
     {
-        return _applicationLevelParameters.containsKey(parameterName);
+        return _runtimeLevelParameters.containsKey(parameterName);
     }
 }

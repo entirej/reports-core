@@ -53,9 +53,9 @@ public class EJReportTranslatorHelper implements Serializable
      * @param parameter
      *            The parameter to add
      */
-    public void addApplicationLevelParameter(EJReportRuntimeLevelParameter parameter)
+    public void addRuntimeLevelParameter(EJReportRuntimeLevelParameter parameter)
     {
-        _fwkManager.addApplicationLevelParameter(parameter);
+        _fwkManager.addRuntimeLevelParameter(parameter);
     }
 
     /**
@@ -72,9 +72,9 @@ public class EJReportTranslatorHelper implements Serializable
      * @param value
      *            The value
      */
-    public void setApplicationLevelParameter(String valueName, Object value)
+    public void setRuntimeLevelParameter(String valueName, Object value)
     {
-        _fwkManager.setApplicationLevelParameter(valueName, value);
+        _fwkManager.setRuntimeLevelParameter(valueName, value);
     }
 
     /**
@@ -90,9 +90,9 @@ public class EJReportTranslatorHelper implements Serializable
      *             If there is no application level parameter with the given
      *             name
      */
-    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String valueName)
+    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String valueName)
     {
-        return _fwkManager.getApplicationLevelParameter(valueName);
+        return _fwkManager.getRuntimeLevelParameter(valueName);
     }
 
     /**
@@ -106,9 +106,9 @@ public class EJReportTranslatorHelper implements Serializable
      * @return <code>true</code> if there is a parameter with the specified
      *         name, otherwise <code>false</code>
      */
-    public boolean applicationLevelParameterExists(String parameterName)
+    public boolean runtimeLevelParameterExists(String parameterName)
     {
-        return _fwkManager.applicationLevelParameterExists(parameterName);
+        return _fwkManager.runtimeLevelParameterExists(parameterName);
     }
 
 }

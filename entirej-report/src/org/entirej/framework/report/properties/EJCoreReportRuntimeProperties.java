@@ -40,7 +40,7 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
     private String                               _translatorClassName;
     private EJReportVisualAttributeContainer     _visualAttributeContainer;
 
-    private List<EJReportRuntimeLevelParameter>  _applicationLevelParameters;
+    private List<EJReportRuntimeLevelParameter>  _runtimeLevelParameters;
 
     private static EJCoreReportRuntimeProperties _instance;
 
@@ -61,7 +61,7 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         _reportPackageNames = new ArrayList<String>();
         _visualAttributeContainer = new EJReportVisualAttributeContainer(new ArrayList<EJReportVisualAttributeProperties>());
 
-        _applicationLevelParameters = new ArrayList<EJReportRuntimeLevelParameter>();
+        _runtimeLevelParameters = new ArrayList<EJReportRuntimeLevelParameter>();
     }
 
     public String getVersion()
@@ -195,22 +195,22 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         return true;
     }
 
-    public Collection<EJReportRuntimeLevelParameter> getAllApplicationLevelParameters()
+    public Collection<EJReportRuntimeLevelParameter> getAllRuntimeLevelParameters()
     {
-        return _applicationLevelParameters;
+        return _runtimeLevelParameters;
     }
 
-    public void addApplicationLevelParameter(EJReportRuntimeLevelParameter parameter)
+    public void addRuntimeLevelParameter(EJReportRuntimeLevelParameter parameter)
     {
         if (parameter != null)
         {
-            _applicationLevelParameters.add(parameter);
+            _runtimeLevelParameters.add(parameter);
         }
     }
 
-    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String name)
+    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String name)
     {
-        for (EJReportRuntimeLevelParameter parameter : _applicationLevelParameters)
+        for (EJReportRuntimeLevelParameter parameter : _runtimeLevelParameters)
         {
             if (parameter.getName().equals(name))
             {
@@ -220,14 +220,14 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         return null;
     }
 
-    public void removeApplicationLevelParameter(EJReportRuntimeLevelParameter parameter)
+    public void removeRuntimeLevelParameter(EJReportRuntimeLevelParameter parameter)
     {
-        _applicationLevelParameters.remove(parameter);
+        _runtimeLevelParameters.remove(parameter);
     }
 
-    public boolean containsApplicationLevelParameter(String name)
+    public boolean containsRuntimeLevelParameter(String name)
     {
-        for (EJReportRuntimeLevelParameter parameter : _applicationLevelParameters)
+        for (EJReportRuntimeLevelParameter parameter : _runtimeLevelParameters)
         {
             if (parameter.getName().equals(name))
             {
@@ -242,13 +242,13 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         return EJCoreReportManagedConnectionFactory.getInstane().getConnectionFactory();
     }
 
-    public void copyApplicationLevelParameters(EJReportFrameworkManager frameworkManager)
+    public void copyRuntimeLevelParameters(EJReportFrameworkManager frameworkManager)
     {
-        for (EJReportRuntimeLevelParameter param : _applicationLevelParameters)
+        for (EJReportRuntimeLevelParameter param : _runtimeLevelParameters)
         {
             EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(param.getName(), param.getDataType());
             parameter.setValue(param.getValue());
-            frameworkManager.addApplicationLevelParameter(parameter);
+            frameworkManager.addRuntimeLevelParameter(parameter);
         }
     }
 

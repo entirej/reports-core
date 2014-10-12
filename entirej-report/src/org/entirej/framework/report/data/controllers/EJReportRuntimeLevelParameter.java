@@ -40,7 +40,7 @@ public class EJReportRuntimeLevelParameter implements Serializable
         if (dataTypeName == null)
         {
             EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NULL_DATA_TYPE_PASSED_TO_METHOD,
-                    "ApplicationLevelParameter Constructor");
+                    "RuntimeLevelParameter Constructor");
             throw new EJReportRuntimeException(message);
         }
 

@@ -40,7 +40,7 @@ public interface EJReportFrameworkHelper extends Serializable
      *             If there is no application level parameter with the given
      *             name
      */
-    public EJReportRuntimeLevelParameter getApplicationLevelParameter(String valueName);
+    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String valueName);
 
     /**
      * Used to set an application level parameter
@@ -56,7 +56,7 @@ public interface EJReportFrameworkHelper extends Serializable
      * @param value
      *            The value
      */
-    public void setApplicationLevelParameter(String valueName, Object value);
+    public void setRuntimeLevelParameter(String valueName, Object value);
 
     /**
      * Returns the {@link Locale} that is currently set for this application
