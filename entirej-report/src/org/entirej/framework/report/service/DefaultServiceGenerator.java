@@ -112,7 +112,7 @@ public class DefaultServiceGenerator implements EJReportServiceContentGenerator
                 fileBuilder.append(IMPORT).append(clazz).append(SEMICOLON).append(NEW_LINE);
             }
 
-            fileBuilder.append(NEW_LINE).append(PUBLIC).append(CLASS).append(type.getServiceName()).append(EMPTY).append(IMPLEMENTS).append("EJBlockService<")
+            fileBuilder.append(NEW_LINE).append(PUBLIC).append(CLASS).append(type.getServiceName()).append(EMPTY).append(IMPLEMENTS).append("EJReportBlockService<")
                     .append(pojoName).append(">").append(NEW_LINE).append(OC_BRACKETS).append(NEW_LINE);
 
             String baseTableName = type.getTableName();
@@ -123,7 +123,7 @@ public class DefaultServiceGenerator implements EJReportServiceContentGenerator
             if (hasTable || hasQuery)
             {
                 fileBuilder.append(PRIVATE);
-                fileBuilder.append("final EJStatementExecutor _statementExecutor").append(SEMICOLON).append(NEW_LINE);
+                fileBuilder.append("final EJReportStatementExecutor _statementExecutor").append(SEMICOLON).append(NEW_LINE);
                 fileBuilder.append(PRIVATE);
                 fileBuilder.append("String _selectStatement").append(EQUALS)
                         .append(hasQuery ? splitStatementToStrBuilder(type.getQueryStatement()) : buildSelectStatement(type)).append(SEMICOLON)
@@ -132,7 +132,7 @@ public class DefaultServiceGenerator implements EJReportServiceContentGenerator
                 fileBuilder.append(PUBLIC).append(type.getServiceName()).append(O_BRACKETS).append(C_BRACKETS).append(OC_BRACKETS).append(NEW_LINE);
                 fileBuilder.append("_statementExecutor");
                 fileBuilder.append(EQUALS);
-                fileBuilder.append("new EJStatementExecutor").append(O_BRACKETS).append(C_BRACKETS).append(SEMICOLON).append(NEW_LINE);
+                fileBuilder.append("new EJReportStatementExecutor").append(O_BRACKETS).append(C_BRACKETS).append(SEMICOLON).append(NEW_LINE);
                 fileBuilder.append(CC_BRACKETS).append(NEW_LINE);
 
             }
@@ -140,11 +140,11 @@ public class DefaultServiceGenerator implements EJReportServiceContentGenerator
             fileBuilder.append(OVERRIDE).append(NEW_LINE);
             fileBuilder.append(PUBLIC);
 
-            fileBuilder.append("List<").append(pojoName).append("> executeQuery(EJForm form, EJQueryCriteria queryCriteria").append(C_BRACKETS)
+            fileBuilder.append("List<").append(pojoName).append("> executeQuery(EJReport report, EJReportQueryCriteria queryCriteria").append(C_BRACKETS)
                     .append(OC_BRACKETS).append(NEW_LINE);
             if (hasTable || hasQuery)
             {
-                fileBuilder.append(RETURN).append("_statementExecutor.executeQuery(" + pojoName + ".class, form, _selectStatement, queryCriteria")
+                fileBuilder.append(RETURN).append("_statementExecutor.executeQuery(" + pojoName + ".class, report, _selectStatement, queryCriteria")
                         .append(C_BRACKETS).append(SEMICOLON).append(NEW_LINE);
 
             }

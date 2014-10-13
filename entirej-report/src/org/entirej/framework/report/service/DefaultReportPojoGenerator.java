@@ -191,7 +191,7 @@ public class DefaultReportPojoGenerator implements EJReportPojoContentGenerator
         methodBuilder.append(PUBLIC).append(dataTypeName).append(GET);
         methodBuilder.append(propertyName.substring(0, 1).toUpperCase());
         methodBuilder.append(propertyName.substring(1)).append(O_BRACKETS).append(C_BRACKETS).append(NEW_LINE).append(OC_BRACKETS).append(NEW_LINE);
-        methodBuilder.append("return").append(UNDERSCORE).append(propertyName).append(SEMICOLON).append(NEW_LINE).append(CC_BRACKETS).append(NEW_LINE)
+        methodBuilder.append("return ").append(UNDERSCORE).append(propertyName).append(SEMICOLON).append(NEW_LINE).append(CC_BRACKETS).append(NEW_LINE)
                 .append(NEW_LINE);
 
         // Add the annotation
