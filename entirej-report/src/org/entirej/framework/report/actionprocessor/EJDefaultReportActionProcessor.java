@@ -28,7 +28,7 @@ import org.entirej.framework.report.service.EJReportQueryCriteria;
 public class EJDefaultReportActionProcessor implements EJReportActionProcessor
 {
 
-    public void newBlockInstance(EJReport report, String blockName) throws EJReportActionProcessorException
+    public void preReport(EJReport report, String blockName) throws EJReportActionProcessorException
     {
     }
 

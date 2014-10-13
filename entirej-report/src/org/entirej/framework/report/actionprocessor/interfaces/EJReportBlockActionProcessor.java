@@ -81,27 +81,7 @@ public interface EJReportBlockActionProcessor extends Serializable
      */
     public void postBlockQuery(EJReport report, EJReportBlock block) throws EJReportActionProcessorException;
 
-    /**
-     * Called before the given record is updated within the data block
-     * 
-     * @param report
-     *            The report from which this method is called
-     * @param record
-     *            The record that will be updated
-     */
-    public void preUpdate(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 
-    /**
-     * Called each time the user navigated to a new record. The
-     * <code>EJRecord</code> given, is the record that was navigated to, i.e.
-     * the new current record.
-     * 
-     * @param report
-     *            The report from which this method is called
-     * @param record
-     *            The new current record
-     */
-    public void newRecordInstance(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 
     /**
      * Used to validate the given query criteria before a query is made on the
@@ -118,16 +98,5 @@ public interface EJReportBlockActionProcessor extends Serializable
      */
     public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException;
 
-    /**
-     * Called when a record is created for one of the screens. This allows
-     * developers to add default values to a record before it is displayed
-     * 
-     * @param report
-     *            The report from which this method is called
-     * @param record
-     *            The record to initialise
-     * @param recordType
-     *            The type of record to be initialised
-     */
-    public void initialiseRecord(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
+ 
 }

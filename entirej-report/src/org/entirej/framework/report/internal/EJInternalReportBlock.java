@@ -306,6 +306,7 @@ public class EJInternalReportBlock implements Serializable
      */
     public EJReportDataRecord getFocusedRecord()
     {
+        //FIXME
         return _blockController.getFocusedRecord();
     }
 

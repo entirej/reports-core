@@ -42,5 +42,5 @@ public interface EJReportActionProcessor extends EJReportBlockActionProcessor
      * @param blockName
      *            The name of the block that gained focus
      */
-    public void newBlockInstance(EJReport report, String blockName) throws EJReportActionProcessorException;
+    public void preReport(EJReport report, String blockName) throws EJReportActionProcessorException;
 }

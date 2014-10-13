@@ -256,8 +256,7 @@ public class EJReportBlockController implements Serializable
         EJReportDataRecord record;
         record = createNewRecord();
 
-        getReportController().getActionController().initialiseRecord(getReportController().getEJReport(), new EJReportRecord(record));
-
+      
         return record;
     }
 
@@ -339,8 +338,7 @@ public class EJReportBlockController implements Serializable
             }
         }
 
-        getReportController().getActionController().initialiseRecord(getReportController().getEJReport(), new EJReportRecord(record));
-
+       
         logger.trace("END  copyFocusedRecord");
         return record;
     }

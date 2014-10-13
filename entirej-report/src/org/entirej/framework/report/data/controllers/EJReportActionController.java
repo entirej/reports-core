@@ -84,7 +84,7 @@ public class EJReportActionController implements Serializable
         EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
-            _reportLevelActionProcessor.newBlockInstance(report, blockName);
+            _reportLevelActionProcessor.preReport(report, blockName);
         }
         catch (Exception e)
         {
@@ -201,45 +201,6 @@ public class EJReportActionController implements Serializable
         logger.trace("END preQuery");
     }
 
-    public void newRecordInstance(EJReport report, EJReportRecord record)
-    {
-        logger.trace("START newRecordInstance. Report: {}", report.getName());
-
-        EJManagedReportFrameworkConnection connection = report.getConnection();
-        try
-        {
-            String blockName = record == null ? "" : record.getBlockName();
-
-            {
-                if (_blockLevelActionProcessors.containsKey(blockName))
-                {
-                    logger.trace("Calling block level newRecordInstance. Block: {}", record.getBlockName());
-                    _blockLevelActionProcessors.get(blockName).newRecordInstance(report, record);
-                    logger.trace("Called block level newRecordInstance");
-                }
-                else
-                {
-                    logger.trace("Calling report level newRecordInstance");
-                    _reportLevelActionProcessor.newRecordInstance(report, record);
-                    logger.trace("Called report level newRecordInstance");
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            if (connection != null)
-            {
-                connection.rollback();
-            }
-            throw new EJReportRuntimeException(e);
-        }
-        finally
-        {
-            connection.close();
-        }
-        logger.trace("END newRecordInstance");
-    }
-
     public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria)
     {
         logger.trace("START validateQueryCriteria. Report: {}", report.getName());
@@ -312,41 +273,5 @@ public class EJReportActionController implements Serializable
             connection.close();
         }
         logger.trace("END postBlockQuery");
-    }
-
-    public void initialiseRecord(EJReport report, EJReportRecord record)
-    {
-        logger.trace("START initialiseRecord. Report: {}", report.getName());
-
-        EJManagedReportFrameworkConnection connection = report.getConnection();
-        try
-        {
-            String blockName = record == null ? "" : record.getBlockName();
-
-            {
-                if (_blockLevelActionProcessors.containsKey(blockName))
-                {
-                    logger.trace("Calling block level initialiseRecord. Block: {}", blockName);
-                    _blockLevelActionProcessors.get(blockName).initialiseRecord(report, record);
-                    logger.trace("Called block level initialiseRecord");
-                }
-                else
-                {
-                    logger.trace("Calling report level initialiseRecord");
-                    _reportLevelActionProcessor.initialiseRecord(report, record);
-                    logger.trace("Called report level initialiseRecord");
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            connection.rollback();
-            throw new EJReportRuntimeException(e);
-        }
-        finally
-        {
-            connection.close();
-        }
-        logger.trace("END initialiseRecord");
     }
 }

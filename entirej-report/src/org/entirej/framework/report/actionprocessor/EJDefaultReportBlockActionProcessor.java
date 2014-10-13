@@ -39,23 +39,13 @@ public class EJDefaultReportBlockActionProcessor implements EJReportBlockActionP
     {
     }
 
-    public void newRecordInstance(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
-    {
 
-    }
 
     public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
     {
     }
 
-    public void preUpdate(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
-    {
+  
 
-    }
-
-    public void initialiseRecord(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
-    {
-
-    }
 
 }
