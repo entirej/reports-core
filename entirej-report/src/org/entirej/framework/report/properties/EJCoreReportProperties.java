@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
 
@@ -60,6 +61,8 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
 
     private EJReportBlockContainer              blockContainer;
     private EJReportFrameworkManager            _frameworkManager;
+
+    private EJReportExportType                  exportType =  EJReportExportType.PDF;
 
     public EJCoreReportProperties(String reportName, EJReportFrameworkManager _frameworkManager)
     {
@@ -438,4 +441,18 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     {
         return _frameworkManager;
     }
+    
+    
+    @Override
+    public EJReportExportType getExportType()
+    {
+        return exportType;
+    }
+    
+    
+    public void setExportType(EJReportExportType exportType)
+    {
+        this.exportType = exportType;
+    }
+    
 }

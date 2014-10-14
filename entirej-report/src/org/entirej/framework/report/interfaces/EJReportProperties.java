@@ -19,6 +19,8 @@ package org.entirej.framework.report.interfaces;
 
 import java.io.Serializable;
 
+import org.entirej.framework.report.enumerations.EJReportExportType;
+
 public interface EJReportProperties extends Serializable
 {
 
@@ -96,5 +98,7 @@ public interface EJReportProperties extends Serializable
     public int getMarginRight();
 
     public ORIENTATION getOrientation();
+    
+    public EJReportExportType getExportType();
 
 }

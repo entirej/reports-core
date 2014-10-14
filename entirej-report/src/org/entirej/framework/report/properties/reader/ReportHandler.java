@@ -19,6 +19,7 @@ package org.entirej.framework.report.properties.reader;
 
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportProperties.ORIENTATION;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
 import org.xml.sax.Attributes;
@@ -36,6 +37,7 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
     private static final String    ELEMENT_MARGIN_LEFT            = "marginLeft";
     private static final String    ELEMENT_MARGIN_RIGHT           = "marginRight";
     private static final String    ELEMENT_REPORT_ORIENTATION     = "orientation";
+    private static final String    ELEMENT_REPORT_EXPORT_TYPE     = "exportType";
     private static final String    ELEMENT_REPORT_HEIGHT          = "height";
     private static final String    ELEMENT_ACTION_PROCESSOR       = "actionProcessorClassName";
 
@@ -208,6 +210,10 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
         else if (name.equals(ELEMENT_REPORT_ORIENTATION))
         {
             _reportProperties.setOrientation(ORIENTATION.valueOf(value));
+        }
+        else if (name.equals(ELEMENT_REPORT_EXPORT_TYPE))
+        {
+            _reportProperties.setExportType(EJReportExportType.valueOf(value));
         }
     }
 
