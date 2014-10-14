@@ -15,7 +15,6 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
 
     private String                       _blockDescription         = "";
     private boolean                      _isReferenced             = false;
-    private String                       _canvasName               = "";
 
     private EJCoreReportProperties       _reportProperties;
     private String                       _name                     = "";
@@ -24,9 +23,12 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
 
     private String                       _serviceClassName;
     private String                       _actionProcessorClassName = "";
+    
+    private EJReportBlockService<?>                   _blockService;
 
     private EJReportBlockItemContainer   _itemContainer;
 
+    
     public EJCoreReportBlockProperties(EJCoreReportProperties reportProperties, String blockName, boolean isCcontrolBlock)
     {
 
@@ -55,17 +57,7 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
         return _itemContainer.getItemProperties(itemName);
     }
 
-    @Override
-    public String getCanvasName()
-    {
-        return _canvasName;
-    }
-
-    public void setCanvasName(String canvasName)
-    {
-        this._canvasName = canvasName;
-    }
-
+ 
     @Override
     public boolean isControlBlock()
     {
@@ -141,10 +133,15 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
      * 
      * @return the service class name
      */
-    public void setServiceClassName(String serviceClassName, boolean addItems)
+    public void setServiceClassName(String serviceClassName)
     {
 
         _serviceClassName = serviceClassName;
+        
+        if (serviceClassName != null && serviceClassName.trim().length() > 0)
+        {
+            _blockService = _reportProperties.getFrameworkManager().getBlockServiceFactory().createBlockService(serviceClassName);
+        }
 
     }
 
@@ -156,7 +153,7 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
     @Override
     public EJReportBlockService<?> getBlockService()
     {
-        return null;
+        return _blockService;
     }
 
     public EJReportFrameworkManager getFrameworkManager()

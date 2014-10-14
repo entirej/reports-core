@@ -48,22 +48,7 @@ public interface EJReportBlockProperties extends Serializable
      */
     public EJReportItemProperties getItemProperties(String itemName);
 
-    /**
-     * Returns the name of the canvas upon which this blocks data should be
-     * displayed or <code>null</code> if no canvas has been defined for the
-     * block
-     * <p>
-     * If the canvas that was chosen is a type of TAB then the blocks data
-     * should be displayed on the correct tab page
-     * <p>
-     * If no canvas has been defined for this block, then the block will not be
-     * displayed anywhere
-     * <p>
-     * 
-     * @return the name of the canvas upon which the blocks data will be
-     *         displayed or <code>null</code> if no canvas has been defined
-     */
-    public String getCanvasName();
+  
 
     /**
      * Indicates if this is a control block

@@ -50,18 +50,6 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return new EJReport(_block.getReport());
     }
 
-    /**
-     * Returns the name of this blocks canvas, or <code>null</code> if the block
-     * is not displayed on a canvas
-     * 
-     * @return the name of this blocks canvas or <code>null</code> if this block
-     *         is not displayed
-     */
-    public String getCanvasName()
-    {
-        return _block.getProperties().getCanvasName();
-    }
-
     public Collection<EJReportBlockItem> getBlockItems()
     {
         ArrayList<EJReportBlockItem> blockItems = new ArrayList<EJReportBlockItem>();

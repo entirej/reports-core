@@ -87,6 +87,39 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         {
             _connectionFactoryClassName = null;
         }
+        
+        
+        try
+        {
+            _connectionFactoryClassName = className;
+            
+            Class<?> factoryClass = Class.forName(className);
+            Object obj = factoryClass.newInstance();
+            
+            if (obj instanceof EJReportConnectionFactory)
+            {
+                EJCoreReportManagedConnectionFactory.getInstane().setConnectionFactory((EJReportConnectionFactory) obj);
+            }
+            else
+            {
+                throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.INVALID_TRANSACTION_FACTORY));
+            }
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className),
+                    e);
+        }
+        catch (InstantiationException e)
+        {
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className),
+                    e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className),
+                    e);
+        }
     }
 
     public String getTranslatorClassName()

@@ -27,11 +27,10 @@ import org.xml.sax.SAXException;
 public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
 {
     private EJCoreReportBlockProperties _blockProperties;
-    private EJCoreReportProperties      _formProperties;
+    private EJCoreReportProperties      _reportProperties;
 
     private static final String         ELEMENT_BLOCK              = "block";
     private static final String         ELEMENT_DESCRIPTION        = "description";
-    private static final String         ELEMENT_CANVAS             = "canvasName";
     private static final String         ELEMENT_SERVICE_CLASS_NAME = "serviceClassName";
     private static final String         ELEMENT_ACTION_PROCESSOR   = "actionProcessorClassName";
     private static final String         ELEMENT_SCREEN_TYPE        = "screenType";
@@ -47,12 +46,12 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
 
     public ReportBlockHandler(EJCoreReportProperties formProperties)
     {
-        _formProperties = formProperties;
+        _reportProperties = formProperties;
     }
 
     public void dispose()
     {
-        _formProperties = null;
+        _reportProperties = null;
         _blockProperties = null;
     }
 
@@ -81,7 +80,7 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         }
         else if (name.equals(ELEMENT_BLOCK_GROUP))
         {
-            setDelegate(new ReportBlockGroupHandler(_formProperties, _blockProperties.getLayoutScreenProperties().getSubBlocks()));
+            setDelegate(new ReportBlockGroupHandler(_reportProperties, _blockProperties.getLayoutScreenProperties().getSubBlocks()));
         }
 
         if (name.equals(ELEMENT_BLOCK))
@@ -98,7 +97,7 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
             }
             else
             {
-                _blockProperties = new EJCoreReportBlockProperties(_formProperties, blockName, Boolean.parseBoolean(isControlBlock == null ? "false"
+                _blockProperties = new EJCoreReportBlockProperties(_reportProperties, blockName, Boolean.parseBoolean(isControlBlock == null ? "false"
                         : isControlBlock));
 
             }
@@ -128,14 +127,15 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
             _blockProperties.setDescription(value);
         }
 
-        else if (name.equals(ELEMENT_CANVAS))
-        {
-            _blockProperties.setCanvasName(value);
-        }
+      
 
         else if (name.equals(ELEMENT_SERVICE_CLASS_NAME))
         {
-            _blockProperties.setServiceClassName(value, false);
+            _blockProperties.setServiceClassName(value);
+        }
+        else if (name.equals(ELEMENT_ACTION_PROCESSOR))
+        {
+            _blockProperties.setActionProcessorClassName(value);
         }
         else if (name.equals(ELEMENT_SCREEN_TYPE))
         {

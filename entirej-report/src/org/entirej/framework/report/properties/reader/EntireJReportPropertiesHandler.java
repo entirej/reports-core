@@ -32,7 +32,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
     private static final String           CONNECTION_FACTORY_CLASS_NAME = "connectionFactoryClassName";
     private static final String           TRANSLATOR_CLASS_NAME         = "translatorClassName";
     private static final String           APPLICATION_LEVEL_PARAMETER   = "appicationLevelParameter";
-    private static final String           FORMS_PACKAGE                 = "reportPackage";
+    private static final String           REPORT_PACKAGE                 = "reportPackage";
 
     private static final String           VISUAL_ATTRIBUTE              = "visualAttribute";
 
@@ -60,12 +60,12 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
             String defaultValue = attributes.getValue("defaultValue");
 
             EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(paramName, dataTypeName);
-            parameter.setValue(parameter);
+            parameter.setValue(defaultValue);
             _properties.addRuntimeLevelParameter(parameter);
         }
-        else if (name.equals(FORMS_PACKAGE))
+        else if (name.equals(REPORT_PACKAGE))
         {
-            _properties.getReportPackageNames().add(attributes.getValue("name"));
+            _properties.addReportPackageName(attributes.getValue("name"));
         }
 
         else if (name.equals(VISUAL_ATTRIBUTE))
@@ -97,7 +97,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
             _properties.setTranslatorClassName(value);
         }
 
-        else if (name.equals(FORMS_PACKAGE))
+        else if (name.equals(REPORT_PACKAGE))
         {
             if (value != null && value.trim().length() > 0)
             {
