@@ -3,6 +3,7 @@ package org.entirej.report.jasper.builder;
 import java.util.Collection;
 
 import net.sf.jasperreports.engine.JRAlignment;
+import net.sf.jasperreports.engine.JRCommonText;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
@@ -15,6 +16,7 @@ import net.sf.jasperreports.engine.design.JRDesignStaticText;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
+import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 import org.entirej.framework.report.EJReport;
@@ -29,6 +31,7 @@ import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Label;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 
@@ -117,6 +120,7 @@ public class EJReportJasperReportBuilder
                         text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
 
                         setAlignments(text, textItem);
+                        setRotation(text, textItem);
                     }
                         break;
                     case LABEL:
@@ -126,7 +130,7 @@ public class EJReportJasperReportBuilder
                         element = lbl;
                         lbl.setText(labelItem.getText());
                         setAlignments(lbl, labelItem);
-
+                        setRotation(lbl, labelItem);
                     }
                         break;
 
@@ -189,6 +193,22 @@ public class EJReportJasperReportBuilder
                 break;
 
             default:
+                break;
+        }
+    }
+
+    void setRotation(JRCommonText elm, RotatableItem rotatableItem)
+    {
+        switch (rotatableItem.getRotation())
+        {
+            case LEFT:
+                elm.setRotation(RotationEnum.LEFT);
+                break;
+            case RIGHT:
+                elm.setRotation(RotationEnum.RIGHT);
+                break;
+            case UPSIDEDOWN:
+                elm.setRotation(RotationEnum.UPSIDE_DOWN);
                 break;
         }
     }

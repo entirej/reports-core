@@ -306,7 +306,7 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     {
 
         private EJReportScreenAlignment hAlignment = EJReportScreenAlignment.LEFT;
-        private EJReportScreenAlignment vAlignment = EJReportScreenAlignment.TOP;
+        private EJReportScreenAlignment vAlignment = EJReportScreenAlignment.CENTER;
 
         public AlignmentBaseItem(EJCoreReportBlockProperties blockProperties)
         {
