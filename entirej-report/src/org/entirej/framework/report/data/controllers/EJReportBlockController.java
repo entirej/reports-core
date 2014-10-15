@@ -110,6 +110,7 @@ public class EJReportBlockController implements Serializable
         _blockProperties = blockProperties;
 
         _internalBlock = new EJInternalReportBlock(this);
+        initialiseItems();
 
     }
 
@@ -438,7 +439,7 @@ public class EJReportBlockController implements Serializable
 
                     for (Object entity : entities)
                     {
-                        EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock(), entity, false);
+                        EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock(), entity);
 
                         addQueriedRecord(record);
                     }

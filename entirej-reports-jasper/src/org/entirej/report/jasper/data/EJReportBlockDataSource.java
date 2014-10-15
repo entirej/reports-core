@@ -20,33 +20,36 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import org.entirej.framework.report.EJReportBlock;
+import org.entirej.framework.report.EJReportRecord;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
-import org.entirej.framework.report.EJReportRecord;
 
-public class EJRecordDataSource implements JRDataSource, Serializable
+public class EJReportBlockDataSource implements JRDataSource, Serializable
 {
 
-    private final EJReportRecord[] data;
-    private int              index = -1;
+    private final EJReportBlock block;
+    private int           index = -1;
 
-    public EJRecordDataSource(EJReportRecord... data)
+    public EJReportBlockDataSource(EJReportBlock block)
     {
-        this.data = data;
-    }
-    public EJRecordDataSource(Collection<EJReportRecord> records)
-    {
-        this.data = records.toArray(new EJReportRecord[0]);
+        this.block = block;
+        
     }
 
     @Override
     public Object getFieldValue(JRField field) throws JRException
     {
-        EJReportRecord record = data[index];
+
+        List<EJReportRecord> blockRecords = new ArrayList<EJReportRecord>(block.getBlockRecords());
+        EJReportRecord record = blockRecords.get(index);
         return record.getValue(field.getName());
     }
 
@@ -54,8 +57,8 @@ public class EJRecordDataSource implements JRDataSource, Serializable
     public boolean next() throws JRException
     {
         index++;
-
-        return (index < data.length);
+        Collection<EJReportRecord> blockRecords = block.getBlockRecords();
+        return (index < blockRecords.size());
     }
 
 }

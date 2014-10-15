@@ -31,6 +31,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
@@ -43,8 +44,13 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
+import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportBlock;
+import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.enumerations.EJReportExportType;
+import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
+import org.entirej.report.jasper.data.EJReportBlockDataSource;
 
 public class EJJasperReports
 {
@@ -89,6 +95,20 @@ public class EJJasperReports
             throw new EJReportRuntimeException(e);
         }
     }
+    public static JasperPrint fillReport(JasperReport reportFile, JRDataSource dataSource, EJJasperReportParameter... parameters)
+    {
+        try
+        {
+            JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), dataSource);
+            return reportToFile;
+            
+        }
+        catch (JRException e)
+        {
+            e.printStackTrace();
+            throw new EJReportRuntimeException(e);
+        }
+    }
 
     public static JasperPrint fillReport(String reportFile, Connection connection, EJJasperReportParameter... parameters)
     {
@@ -112,6 +132,20 @@ public class EJJasperReports
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
             return reportToFile;
 
+        }
+        catch (JRException e)
+        {
+            e.printStackTrace();
+            throw new EJReportRuntimeException(e);
+        }
+    }
+    public static JasperPrint fillReport(JasperReport reportFile, Connection connection, EJJasperReportParameter... parameters)
+    {
+        try
+        {
+            JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
+            return reportToFile;
+            
         }
         catch (JRException e)
         {
@@ -290,6 +324,52 @@ public class EJJasperReports
         {
             e.printStackTrace();
         }
+    }
+    
+    
+    public static void tempEJReportRun(EJReportFrameworkManager manager, EJReport report)
+    {
+        
+        File temp = null;
+        try
+        {
+            temp = File.createTempFile("ej-report", "pdf");
+            temp.deleteOnExit();
+        }
+        catch (IOException e1)
+        {
+            e1.printStackTrace();
+            return;
+        }
+
+        System.out.println(temp.getAbsolutePath());
+        
+        EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
+        
+        
+      
+        
+        EJReportBlock block = report.getBlock("ReportCountry");
+       
+        builder.buildDesign(block);
+        
+        
+        EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);  
+        JasperReport jasperReport = builder.toReport();
+        JasperPrint print=  fillReport(jasperReport, dataSource);
+        
+        try
+        {
+            
+           
+            exportReport(EJReportExportType.PDF, print, temp.getAbsolutePath());
+            Desktop.getDesktop().open(temp);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
     }
 
 }

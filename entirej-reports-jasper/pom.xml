@@ -153,13 +153,9 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>5.5.2</version>
+			<scope>runtime</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>ar.com.fdvs</groupId>
-			<artifactId>DynamicJasper</artifactId>
-			<version>5.0.2</version>
-		</dependency>
 		<dependency>
 			<groupId>org.entirej</groupId>
 			<artifactId>entirej-report</artifactId>
@@ -174,10 +170,4 @@
 	</properties>
 
 
-	<repositories>
-		<repository>
-			<id>fdvsolution.public</id>
-			<url>http://archiva.fdvs.com.ar/repository/public1/</url>
-		</repository>
-	</repositories>
 </project>
