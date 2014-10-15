@@ -43,6 +43,8 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.view.JasperDesignViewer;
+import net.sf.jasperreports.view.JasperViewer;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
@@ -354,16 +356,19 @@ public class EJJasperReports
         builder.buildDesign(block);
         
         
-        EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);  
+        
         JasperReport jasperReport = builder.toReport();
-        JasperPrint print=  fillReport(jasperReport, dataSource);
+        
         
         try
         {
+            JasperDesignViewer.viewReportDesign(jasperReport);
             
-           
-            exportReport(EJReportExportType.PDF, print, temp.getAbsolutePath());
-            Desktop.getDesktop().open(temp);
+            EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);  
+            JasperPrint print=  fillReport(jasperReport, dataSource);
+            JasperViewer.viewReport(print);
+            //exportReport(EJReportExportType.PDF, print, temp.getAbsolutePath());
+            //Desktop.getDesktop().open(temp);
         }
         catch (Exception e)
         {

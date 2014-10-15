@@ -49,8 +49,26 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable
     {
 
         List<EJReportRecord> blockRecords = new ArrayList<EJReportRecord>(block.getBlockRecords());
-        EJReportRecord record = blockRecords.get(index);
-        return record.getValue(field.getName());
+       
+        String name = field.getName();
+        
+        if(name.contains("."))
+        {
+            String blockName = name.substring(0, name.indexOf('.'));
+            String itemName = name.substring(name.indexOf('.') + 1);
+            if(blockName.equals(block.getName()))
+            {
+                EJReportRecord record = blockRecords.get(index);
+                return record.getValue(itemName);
+            }
+        }
+        else
+        {
+            EJReportRecord record = blockRecords.get(index);
+            return record.getValue(name);
+        }
+            
+        return null;
     }
 
     @Override
