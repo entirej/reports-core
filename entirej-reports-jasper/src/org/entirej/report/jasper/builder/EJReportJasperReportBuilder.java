@@ -5,32 +5,36 @@ import java.util.Collection;
 import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRCommonText;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPen;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignLine;
+import net.sf.jasperreports.engine.design.JRDesignParameter;
+import net.sf.jasperreports.engine.design.JRDesignRectangle;
 import net.sf.jasperreports.engine.design.JRDesignSection;
 import net.sf.jasperreports.engine.design.JRDesignStaticText;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
+import net.sf.jasperreports.engine.type.LineDirectionEnum;
+import net.sf.jasperreports.engine.type.LineStyleEnum;
 import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportBlockItem;
-import org.entirej.framework.report.EJReportMessage;
-import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Label;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineDirection;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
@@ -51,10 +55,28 @@ public class EJReportJasperReportBuilder
         design.setName(report.getName());
     }
 
+    
+    
+    void createParamaters(EJReport report) throws JRException
+    {
+        
+        Collection<EJReportRuntimeLevelParameter> runtimeLevelParameters = report.getRuntimeLevelParameters();
+        
+        for (EJReportRuntimeLevelParameter parameter : runtimeLevelParameters)
+        {
+            JRDesignParameter designParameter = new JRDesignParameter();
+            designParameter.setName(parameter.getName());
+            design.addParameter(designParameter);
+        }
+        
+    }
+    
     public void buildDesign(EJReportBlock block)
     {
+        
         try
         {
+            createParamaters(block.getReport());
             design.setName(block.getName());
 
             EJCoreReportBlockProperties properties = block.getProperties();
@@ -133,6 +155,58 @@ public class EJReportJasperReportBuilder
                         setRotation(lbl, labelItem);
                     }
                         break;
+                    case LINE:
+                    {
+                        EJCoreReportScreenItemProperties.Line lineItem = (EJCoreReportScreenItemProperties.Line) item;
+                        JRDesignLine line = new JRDesignLine();
+                        element = line;
+
+                        line.setDirection(lineItem.getLineDirection() == LineDirection.BOTTOM_UP ? LineDirectionEnum.BOTTOM_UP : LineDirectionEnum.TOP_DOWN);
+                        JRPen linePen = line.getLinePen();
+                        linePen.setLineWidth((float) lineItem.getLineWidth());
+                        switch (lineItem.getLineStyle())
+                        {
+                            case DASHED:
+                                linePen.setLineStyle(LineStyleEnum.DASHED);
+                                break;
+                            case DOTTED:
+                                linePen.setLineStyle(LineStyleEnum.DOTTED);
+                                break;
+                            case DOUBLE:
+                                linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                     break;
+                    case RECTANGLE:
+                    {
+                        EJCoreReportScreenItemProperties.Rectangle lineItem = (EJCoreReportScreenItemProperties.Rectangle) item;
+                        JRDesignRectangle line = new JRDesignRectangle();
+                        element = line;
+                        
+                        line.setRadius(lineItem.getRadius());
+                        JRPen linePen = line.getLinePen();
+                        linePen.setLineWidth((float) lineItem.getLineWidth());
+                        switch (lineItem.getLineStyle())
+                        {
+                            case DASHED:
+                                linePen.setLineStyle(LineStyleEnum.DASHED);
+                                break;
+                            case DOTTED:
+                                linePen.setLineStyle(LineStyleEnum.DOTTED);
+                                break;
+                            case DOUBLE:
+                                linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                                break;
+                                
+                            default:
+                                break;
+                        }
+                    }
+                    break;
 
                     default:
                         break;

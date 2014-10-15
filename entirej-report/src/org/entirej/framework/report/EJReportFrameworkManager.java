@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.entirej.framework.report;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -71,6 +72,11 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
             return new EJManagedReportFrameworkConnection(_connectionRetriever, false);
         }
 
+    }
+    
+    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
+    {
+        return _runtimeLevelParameters.values();
     }
 
     protected EJReportPropertiesFactory createReportPropertiesFactory()

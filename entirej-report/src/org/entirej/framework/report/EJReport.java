@@ -238,6 +238,12 @@ public class EJReport implements EJReportFrameworkHelper
         return _report.getRuntimeLevelParameter(paramName);
     }
 
+    
+    @Override
+    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
+    {
+        return _report.getRuntimeLevelParameters();
+    }
     /**
      * Sets the given report parameter to the given value
      * 

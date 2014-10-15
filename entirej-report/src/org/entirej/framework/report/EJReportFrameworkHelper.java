@@ -19,6 +19,7 @@
 package org.entirej.framework.report;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Locale;
 
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
@@ -41,6 +42,8 @@ public interface EJReportFrameworkHelper extends Serializable
      *             name
      */
     public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String valueName);
+    
+    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters();
 
     /**
      * Used to set an application level parameter

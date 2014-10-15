@@ -23,7 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -50,6 +54,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportBlockDataSource;
@@ -97,13 +102,14 @@ public class EJJasperReports
             throw new EJReportRuntimeException(e);
         }
     }
+
     public static JasperPrint fillReport(JasperReport reportFile, JRDataSource dataSource, EJJasperReportParameter... parameters)
     {
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), dataSource);
             return reportToFile;
-            
+
         }
         catch (JRException e)
         {
@@ -141,13 +147,14 @@ public class EJJasperReports
             throw new EJReportRuntimeException(e);
         }
     }
+
     public static JasperPrint fillReport(JasperReport reportFile, Connection connection, EJJasperReportParameter... parameters)
     {
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
             return reportToFile;
-            
+
         }
         catch (JRException e)
         {
@@ -156,7 +163,8 @@ public class EJJasperReports
         }
     }
 
-    public static void exportReport(String reportFile, String outputFile, EJReportExportType type, JRDataSource dataSource, EJJasperReportParameter... parameters)
+    public static void exportReport(String reportFile, String outputFile, EJReportExportType type, JRDataSource dataSource,
+            EJJasperReportParameter... parameters)
     {
         JasperPrint jasperPrint = fillReport(reportFile, dataSource, parameters);
         exportReport(type, jasperPrint, outputFile);
@@ -175,7 +183,8 @@ public class EJJasperReports
         exportReport(type, jasperPrint, outputFile);
     }
 
-    public static void exportReport(InputStream reportFile, String outputFile, EJReportExportType type, Connection connection, EJJasperReportParameter... parameters)
+    public static void exportReport(InputStream reportFile, String outputFile, EJReportExportType type, Connection connection,
+            EJJasperReportParameter... parameters)
     {
         JasperPrint jasperPrint = fillReport(reportFile, connection, parameters);
         exportReport(type, jasperPrint, outputFile);
@@ -241,12 +250,12 @@ public class EJJasperReports
                 case CSV:
                 {
                     File destFile = new File(outputFile);
-                    
+
                     JRCsvExporter exporter = new JRCsvExporter();
-                    
+
                     exporter.setExporterInput(new SimpleExporterInput(print));
                     exporter.setExporterOutput(new SimpleWriterExporterOutput(destFile));
-                    
+
                     exporter.exportReport();
                 }
                 case RTF:
@@ -265,9 +274,9 @@ public class EJJasperReports
                 case XLS:
                 {
                     File destFile = new File(outputFile);
-                    
+
                     JRXlsExporter exporter = new JRXlsExporter();
-                    
+
                     exporter.setExporterInput(new SimpleExporterInput(print));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
                     SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
@@ -275,21 +284,21 @@ public class EJJasperReports
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                 }
-                
-                break;
+
+                    break;
                 case XLSX:
                 {
                     File destFile = new File(outputFile);
-                    
+
                     JRXlsxExporter exporter = new JRXlsxExporter();
-                    
+
                     exporter.setExporterInput(new SimpleExporterInput(print));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
                     exporter.exportReport();
                 }
-                
-                break;
-              
+
+                    break;
+
                 default:
                     break;
             }
@@ -327,11 +336,10 @@ public class EJJasperReports
             e.printStackTrace();
         }
     }
-    
-    
-    public static void tempEJReportRun(EJReportFrameworkManager manager, EJReport report)
+
+    public static void tempEJReportRun(EJReportFrameworkManager manager, EJReport report, EJJasperReportParameter... parameters)
     {
-        
+
         File temp = null;
         try
         {
@@ -345,36 +353,40 @@ public class EJJasperReports
         }
 
         System.out.println(temp.getAbsolutePath());
-        
+
         EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
-        
-        
-      
-        
+
         EJReportBlock block = report.getBlock("ReportCountry");
-       
+
         builder.buildDesign(block);
-        
-        
-        
+
+        List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>(Arrays.asList(parameters));
+
+
+        for (EJReportRuntimeLevelParameter parameter : manager.getRuntimeLevelParameters())
+        {
+            EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
+            reportParameters.add(jasperReportParameter);
+        }
+
         JasperReport jasperReport = builder.toReport();
-        
-        
+
         try
         {
-            JasperDesignViewer.viewReportDesign(jasperReport);
-            
-            EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);  
-            JasperPrint print=  fillReport(jasperReport, dataSource);
+            //JasperDesignViewer.viewReportDesign(jasperReport);
+
+            EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);
+            JasperPrint print = fillReport(jasperReport, dataSource, reportParameters.toArray(parameters));
             JasperViewer.viewReport(print);
-            //exportReport(EJReportExportType.PDF, print, temp.getAbsolutePath());
-            //Desktop.getDesktop().open(temp);
+            // exportReport(EJReportExportType.PDF, print,
+            // temp.getAbsolutePath());
+            // Desktop.getDesktop().open(temp);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        
+
     }
 
 }

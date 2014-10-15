@@ -209,6 +209,11 @@ public class EJInternalReport implements Serializable
     {
         return _reportController.getFrameworkManager().getRuntimeLevelParameter(paramName);
     }
+    
+    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
+    {
+        return _reportController.getFrameworkManager().getRuntimeLevelParameters();
+    }
 
     /**
      * Sets the given report parameter to the given value
