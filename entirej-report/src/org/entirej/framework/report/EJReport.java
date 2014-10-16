@@ -50,6 +50,12 @@ public class EJReport implements EJReportFrameworkHelper
         return _report.getProperties();
     }
 
+    
+    public EJReportFrameworkManager getFrameworkManager()
+    {
+        return _report.getFrameworkManager();
+        
+    }
     /**
      * Returns the action controller for this report
      * 

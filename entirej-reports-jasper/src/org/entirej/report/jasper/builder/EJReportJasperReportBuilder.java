@@ -1,17 +1,24 @@
 package org.entirej.report.jasper.builder;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Locale;
 
+import net.sf.jasperreports.charts.type.ScaleTypeEnum;
 import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRCommonText;
+import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPen;
+import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignImage;
 import net.sf.jasperreports.engine.design.JRDesignLine;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JRDesignRectangle;
@@ -23,6 +30,7 @@ import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
 import net.sf.jasperreports.engine.type.RotationEnum;
+import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 import org.entirej.framework.report.EJReport;
@@ -33,8 +41,10 @@ import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParamet
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Label;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineDirection;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Number.NumberFormats;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
@@ -66,6 +76,7 @@ public class EJReportJasperReportBuilder
         {
             JRDesignParameter designParameter = new JRDesignParameter();
             designParameter.setName(parameter.getName());
+            designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
         }
         
@@ -143,8 +154,117 @@ public class EJReportJasperReportBuilder
 
                         setAlignments(text, textItem);
                         setRotation(text, textItem);
+                        text.setBlankWhenNull(true);
                     }
                         break;
+                    case NUMBER:
+                    {
+                        EJCoreReportScreenItemProperties.Number textItem = (EJCoreReportScreenItemProperties.Number) item;
+                        JRDesignTextField text = new JRDesignTextField();
+                        element = text;
+                        text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
+                        
+                        setAlignments(text, textItem);
+                        setRotation(text, textItem);
+                        text.setBlankWhenNull(true);
+                        if(textItem.getManualFormat()!=null && !textItem.getManualFormat().isEmpty())
+                        {
+                            text.setPattern(textItem.getManualFormat());
+                        }
+                        else
+                        {
+                            Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
+                            NumberFormats localeFormat = textItem.getLocaleFormat();
+                            switch (localeFormat)
+                            {
+                                case CURRENCY:
+                                    text.setPattern(((java.text.DecimalFormat)java.text.NumberFormat.getCurrencyInstance(defaultLocale)).toPattern());
+                                    break;
+                                case PERCENT:
+                                    text.setPattern(((java.text.DecimalFormat)java.text.NumberFormat.getPercentInstance(defaultLocale)).toPattern());
+                                    break;
+                                case INTEGER:
+                                    text.setPattern(((java.text.DecimalFormat)java.text.NumberFormat.getIntegerInstance(defaultLocale)).toPattern());
+                                    break;
+                                case NUMBER:
+                                    text.setPattern(((java.text.DecimalFormat)java.text.NumberFormat.getNumberInstance(defaultLocale)).toPattern());
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                        
+                    }
+                    break;
+                    case DATE:
+                    {
+                        EJCoreReportScreenItemProperties.Date textItem = (EJCoreReportScreenItemProperties.Date) item;
+                        JRDesignTextField text = new JRDesignTextField();
+                        element = text;
+                        text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
+                        
+                        setAlignments(text, textItem);
+                        setRotation(text, textItem);
+                        text.setBlankWhenNull(true);
+                        
+                        Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
+                        
+                        if(textItem.getManualFormat()!=null && !textItem.getManualFormat().isEmpty())
+                        {
+                            text.setPattern(textItem.getManualFormat());
+                        }
+                        else
+                        {
+                            DateFormats localeFormat = textItem.getLocaleFormat();
+                            SimpleDateFormat dateFormat = null; 
+                            switch (localeFormat)
+                            {
+                                case DATE_FULL:
+                                    dateFormat =(SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.FULL,defaultLocale));
+                                    break;
+                                case DATE_LONG:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.LONG,defaultLocale));
+                                    break;
+                                case DATE_MEDIUM:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.MEDIUM,defaultLocale));
+                                    break;
+                                case DATE_SHORT:
+                                    dateFormat =(SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.SHORT,defaultLocale));
+                                    break;
+                                case DATE_TIME_FULL:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL,defaultLocale));
+                                    break;    
+                                case DATE_TIME_LONG:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG,defaultLocale));
+                                    break;    
+                                case DATE_TIME_MEDIUM:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,defaultLocale));
+                                    break;    
+                                case DATE_TIME_SHORT:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,defaultLocale));
+                                    break; 
+                                    
+                                case TIME_FULL:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.FULL,defaultLocale));
+                                    break;
+                                case TIME_LONG:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.LONG,defaultLocale));
+                                    break;
+                                case TIME_MEDIUM:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.MEDIUM,defaultLocale));
+                                    break;
+                                case TIME_SHORT:
+                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.SHORT,defaultLocale));
+                                    break;
+                            }
+                            if(dateFormat!=null)
+                            {
+                                text.setPattern(dateFormat.toPattern());
+                            }
+                        }
+                    }
+                    break;
                     case LABEL:
                     {
                         EJCoreReportScreenItemProperties.Label labelItem = (Label) item;
@@ -153,6 +273,7 @@ public class EJReportJasperReportBuilder
                         lbl.setText(labelItem.getText());
                         setAlignments(lbl, labelItem);
                         setRotation(lbl, labelItem);
+                        
                     }
                         break;
                     case LINE:
@@ -207,14 +328,36 @@ public class EJReportJasperReportBuilder
                         }
                     }
                     break;
-
+                    case IMAGE:
+                    {
+                        EJCoreReportScreenItemProperties.Image imageItem = (EJCoreReportScreenItemProperties.Image) item;
+                        JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
+                        {
+                            
+                            @Override
+                            public JRStyle getDefaultStyle()
+                            {
+                                return null;
+                            }
+                        }; 
+                        JRDesignImage image = new JRDesignImage(styleProvider) ;
+                        
+                        element = image;
+                        
+                        image.setExpression(createImageValueExpression(block.getReport(), imageItem.getValue()));
+                        
+                        image.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
+                        image.setUsingCache(true);
+                        setAlignments(image, imageItem);
+                    }
+                    break;
                     default:
                         break;
                 }
 
                 if (element != null)
                 {
-
+                    
                     element.setX(item.getX());
                     element.setY(item.getY());
                     element.setWidth(item.getWidth());
@@ -317,6 +460,17 @@ public class EJReportJasperReportBuilder
             expression.setText(paramValue);
         }
 
+        return expression;
+    }
+    JRDesignExpression createImageValueExpression(EJReport report, String defaultValue)
+    {
+        JRDesignExpression expression = createValueExpression(report, defaultValue);
+        
+        if(expression.getText()!=null && !expression.getText().isEmpty())
+        {
+             expression.setText(String.format("new ByteArrayInputStream((byte[]) %s)", expression.getText()));
+        }
+       
         return expression;
     }
 

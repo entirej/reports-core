@@ -60,7 +60,8 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
             String defaultValue = attributes.getValue("defaultValue");
 
             EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(paramName, dataTypeName);
-            parameter.setValue(defaultValue);
+            if(defaultValue!=null && !defaultValue.isEmpty())
+                parameter.setValue(parameter.toDefaultValue(defaultValue));
             _properties.addRuntimeLevelParameter(parameter);
         }
         else if (name.equals(REPORT_PACKAGE))

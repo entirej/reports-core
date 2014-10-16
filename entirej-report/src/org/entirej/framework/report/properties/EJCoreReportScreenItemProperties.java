@@ -483,7 +483,7 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
         @Override
         public EJReportScreenItemType getType()
         {
-            return EJReportScreenItemType.DATE;
+            return EJReportScreenItemType.IMAGE;
         }
 
     }

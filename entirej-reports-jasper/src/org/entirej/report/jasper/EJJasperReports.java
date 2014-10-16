@@ -373,7 +373,7 @@ public class EJJasperReports
 
         try
         {
-            //JasperDesignViewer.viewReportDesign(jasperReport);
+            JasperDesignViewer.viewReportDesign(jasperReport);
 
             EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);
             JasperPrint print = fillReport(jasperReport, dataSource, reportParameters.toArray(parameters));
