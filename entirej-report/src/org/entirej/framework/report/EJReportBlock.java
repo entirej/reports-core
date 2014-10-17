@@ -253,11 +253,11 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     }
 
     /**
-     * Navigates to the last record of this block
+     * Navigates to the next record of this block
      * <p>
      * If this block has no records then no action will be performed
      */
-    public void navigateToRecord()
+    public void navigateToNextRecord()
     {
         _block.nextRecord();
     }

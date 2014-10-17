@@ -67,6 +67,9 @@ public class EJReportBlockController implements Serializable
         return getBlock().getReport();
     }
 
+    
+    private int           index = -1;
+    
     public EJInternalReportBlock getBlock()
     {
         return _internalBlock;
@@ -77,7 +80,7 @@ public class EJReportBlockController implements Serializable
      */
     public void nextRecord()
     {
-        _internalBlock.nextRecord();
+        index++;
     }
 
     /**
@@ -86,7 +89,7 @@ public class EJReportBlockController implements Serializable
     public void previousRecord()
     {
 
-        _internalBlock.previousRecord();
+        index--;
     }
 
     /**
@@ -227,7 +230,16 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord getFocusedRecord()
     {
-        return _internalBlock.getFocusedRecord();
+        if(index==-1 && _dataBlock.getBlockRecordCount()>0)
+        {
+            return getRecord(0);
+        }
+        
+        if(_dataBlock.getBlockRecordCount()>0 && index > -1 &&index< _dataBlock.getBlockRecordCount())
+        {
+            return getRecord(index);
+        }
+        return null;
     }
 
     public EJReportDataRecord getRecord(int recordNumber)
@@ -517,6 +529,7 @@ public class EJReportBlockController implements Serializable
         logger.trace("START clearBlock");
 
         _dataBlock.clearBlock();
+        index=-1;
 
         logger.trace("END clearBlock");
     }

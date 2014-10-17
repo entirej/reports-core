@@ -77,8 +77,22 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable
             if(blockName.equals(block.getName()))
             {
                 EJReportRecord record = blockRecords.get(index);
+                
                 return record.getValue(itemName);
             }
+            else
+            {
+                EJReportBlock otherBlock = block.getReport().getBlock(blockName);
+                if(otherBlock!=null)
+                {
+                    EJReportRecord focusedRecord = otherBlock.getFocusedRecord();
+                    if(focusedRecord!=null){
+                        return focusedRecord.getValue(itemName);
+                    }
+                                
+                }
+            }
+            
         }
         else
         {
@@ -92,9 +106,17 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable
     @Override
     public boolean next() throws JRException
     {
+        
         index++;
         Collection<EJReportRecord> blockRecords = block.getBlockRecords();
-        return (index < blockRecords.size());
+        
+       
+        boolean hasRecord = index < blockRecords.size();
+        if(hasRecord)
+        {
+            block.navigateToNextRecord();
+        }
+        return hasRecord;
     }
 
 }
