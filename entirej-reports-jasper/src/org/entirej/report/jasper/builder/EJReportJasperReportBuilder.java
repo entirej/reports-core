@@ -3,6 +3,7 @@ package org.entirej.report.jasper.builder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import net.sf.jasperreports.charts.type.ScaleTypeEnum;
@@ -99,90 +100,12 @@ public class EJReportJasperReportBuilder
             
             detailSection.addBand(detail);
 
-            Collection<EJReportBlock> allBlocks = report.getAllBlocks();
-            for (EJReportBlock block : allBlocks)
+            Collection<EJReportBlock> rootbBlocks = report.getRootBlocks();
+            for (EJReportBlock block : rootbBlocks)
             {
 
                
-                EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
-
-                if (screenProperties.getScreenType() == EJReportScreenType.FORM_LATOUT)
-                {
-                    
-                    
-                    String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
-                    String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
-                    
-                    JRDesignParameter rptParameter = new JRDesignParameter();
-                    rptParameter.setName(blockRPTParam);
-                    rptParameter.setValueClass(JasperReport.class);
-                    design.addParameter(rptParameter);
-                  
-                    
-                    JRDesignField field = new JRDesignField();
-
-                    field.setName(blockDataSourceField);
-                    field.setValueClass(JRDataSource.class);
-                    design.addField(field);
-                    
-                    JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
-                    {
-
-                        @Override
-                        public JRStyle getDefaultStyle()
-                        {
-                            return null;
-                        }
-                    };
-                    JRDesignSubreport subreport = new JRDesignSubreport(styleProvider) ;
-                    subreport.setKey(block.getName());
-                    subreport.setRemoveLineWhenBlank(true);
-                    
-                    
-                    
-                    JRDesignExpression expressionDS = new JRDesignExpression();
-                    expressionDS.setText(String.format("$F{%s}", blockDataSourceField));
-                    subreport.setDataSourceExpression(expressionDS);
-                    
-                    JRDesignExpression expressionRPT = new JRDesignExpression();
-                    expressionRPT.setText(String.format("$P{%s}", blockRPTParam));
-                    subreport.setExpression(expressionRPT);
-                    
-                   
-                    
-                    
-                    for (EJReportRuntimeLevelParameter parameter : report.getRuntimeLevelParameters())
-                    {
-                        JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
-                        subreportParameter.setName(parameter.getName());
-                        JRDesignExpression expression = new JRDesignExpression();
-                        expression.setText(String.format("$P{%s}", parameter.getName()));
-                        subreportParameter.setExpression(expression);
-                        
-                        subreport.addParameter(subreportParameter);
-                    }
-                    
-                    EJReportParameterList parameterList = report.getParameterList();
-                    Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
-                    for (EJReportParameter parameter : allParameters)
-                    {
-                        JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
-                        subreportParameter.setName(parameter.getName());
-                        JRDesignExpression expression = new JRDesignExpression();
-                        expression.setText(String.format("$P{%s}", parameter.getName()));
-                        subreportParameter.setExpression(expression);
-                        
-                        subreport.addParameter(subreportParameter);
-                    }
-                    
-                   
-                    
-                    subreport.setX(screenProperties.getX());
-                    subreport.setY(screenProperties.getY());
-                    subreport.setWidth(screenProperties.getWidth());
-                    subreport.setHeight(screenProperties.getHeight());
-                    detail.addElement(subreport);
-                }
+                createSubReport(report, detail, block);
 
             }
 
@@ -190,6 +113,96 @@ public class EJReportJasperReportBuilder
         catch (JRException e)
         {
             throw new EJReportRuntimeException(e);
+        }
+    }
+
+    private void createSubReport(EJReport report, JRDesignBand detail, EJReportBlock block) throws JRException
+    {
+        EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
+
+        if (screenProperties.getScreenType() == EJReportScreenType.FORM_LATOUT)
+        {
+            
+            
+           
+           
+          
+            String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
+            JRDesignField field = new JRDesignField();
+
+            field.setName(blockDataSourceField);
+            field.setValueClass(JRDataSource.class);
+            design.addField(field);
+            
+            JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
+            {
+
+                @Override
+                public JRStyle getDefaultStyle()
+                {
+                    return null;
+                }
+            };
+            JRDesignSubreport subreport = new JRDesignSubreport(styleProvider) ;
+            subreport.setKey(block.getName());
+            subreport.setRemoveLineWhenBlank(true);
+            
+            
+            
+            JRDesignExpression expressionDS = new JRDesignExpression();
+            expressionDS.setText(String.format("$F{%s}", blockDataSourceField));
+            subreport.setDataSourceExpression(expressionDS);
+            
+            JRDesignExpression expressionRPT = new JRDesignExpression();
+            expressionRPT.setText(String.format("$P{%s}", String.format("EJRJ_BLOCK_RPT_%s", block.getName())));
+            subreport.setExpression(expressionRPT);
+            
+           
+            
+            
+            for (EJReportRuntimeLevelParameter parameter : report.getRuntimeLevelParameters())
+            {
+                JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
+                subreportParameter.setName(parameter.getName());
+                JRDesignExpression expression = new JRDesignExpression();
+                expression.setText(String.format("$P{%s}", parameter.getName()));
+                subreportParameter.setExpression(expression);
+                
+                subreport.addParameter(subreportParameter);
+            }
+            
+            EJReportParameterList parameterList = report.getParameterList();
+            Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
+            for (EJReportParameter parameter : allParameters)
+            {
+                JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
+                subreportParameter.setName(parameter.getName());
+                JRDesignExpression expression = new JRDesignExpression();
+                expression.setText(String.format("$P{%s}", parameter.getName()));
+                subreportParameter.setExpression(expression);
+                
+                subreport.addParameter(subreportParameter);
+            }
+            
+            Collection<EJReportBlock> allBlocks = report.getAllBlocks();
+            for (EJReportBlock ejReportBlock : allBlocks)
+            {
+                String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", ejReportBlock.getName());
+                JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
+                subreportParameter.setName(blockRPTParam);
+                JRDesignExpression expression = new JRDesignExpression();
+                expression.setText(String.format("$P{%s}", blockRPTParam));
+                subreportParameter.setExpression(expression);
+                subreport.addParameter(subreportParameter);
+            }
+            
+           
+            
+            subreport.setX(screenProperties.getX());
+            subreport.setY(screenProperties.getY());
+            subreport.setWidth(screenProperties.getWidth());
+            subreport.setHeight(screenProperties.getHeight());
+            detail.addElement(subreport);
         }
     }
 
@@ -215,6 +228,24 @@ public class EJReportJasperReportBuilder
             designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
         }
+        Collection<EJReportBlock> allBlocks = report.getAllBlocks();
+        for (EJReportBlock block : allBlocks)
+        {
+            createBlockRPTParamater(block);
+        }
+    }
+    
+    
+    void createBlockRPTParamater(EJReportBlock block) throws JRException
+    {
+        String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
+        
+        JRDesignParameter rptParameter = new JRDesignParameter();
+        rptParameter.setName(blockRPTParam);
+        rptParameter.setValueClass(JasperReport.class);
+        design.addParameter(rptParameter);
+        
+        
     }
 
     public void buildDesign(EJReportBlock block)
@@ -509,6 +540,14 @@ public class EJReportJasperReportBuilder
                     detail.addElement(element);
                 }
 
+            }
+            
+            
+             List<EJCoreReportBlockProperties> allSubBlocks = screenProperties.getAllSubBlocks();
+             for (EJCoreReportBlockProperties blockProperties : allSubBlocks)
+            {
+                EJReportBlock subBlock = block.getReport().getBlock(blockProperties.getName());
+                createSubReport(block.getReport(), detail, subBlock);
             }
 
         }

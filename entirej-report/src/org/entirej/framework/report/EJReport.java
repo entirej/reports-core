@@ -29,6 +29,7 @@ import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParamet
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
+import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReport implements EJReportFrameworkHelper
@@ -158,6 +159,23 @@ public class EJReport implements EJReportFrameworkHelper
             blocks.add(new EJReportBlock(block));
         }
 
+        return blocks;
+    }
+    /**
+     * Returns an immutable collection of all blocks available within this report
+     * 
+     * @return All blocks within this report
+     */
+    public Collection<EJReportBlock> getRootBlocks()
+    {
+        ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
+        
+        for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getRootBlockProperties())
+        {
+            
+            blocks.add(getBlock(blockProp.getName()));
+        }
+        
         return blocks;
     }
 

@@ -48,6 +48,24 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable
     public Object getFieldValue(JRField field) throws JRException
     {
 
+        if (field.getName().startsWith("EJRJ_BLOCK_DS_"))
+        {
+            EJReportBlock subBlock = null;
+
+            String blockName = field.getName().substring("EJRJ_BLOCK_DS_".length());
+            subBlock = this.block.getReport().getBlock(blockName);
+
+            if (subBlock != null)
+            {
+                if (!subBlock.isControlBlock())
+                {
+                    subBlock.executeQuery();
+                }
+                return new EJReportBlockDataSource(subBlock);
+            }
+
+        }
+        
         List<EJReportRecord> blockRecords = new ArrayList<EJReportRecord>(block.getBlockRecords());
        
         String name = field.getName();

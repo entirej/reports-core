@@ -220,10 +220,24 @@ public class EJReportBlockContainer
     {
         List<EJCoreReportBlockProperties> list = new ArrayList<EJCoreReportBlockProperties>();
 
+       list.addAll(getRootBlockProperties());
+        for (EJCoreReportBlockProperties ejCoreReportBlockProperties : new ArrayList<EJCoreReportBlockProperties>(list))
+        {
+            collectSubBlocks(ejCoreReportBlockProperties, list);
+        }
+        
+
+        return list;
+    }
+    
+    public List<EJCoreReportBlockProperties> getRootBlockProperties()
+    {
+        List<EJCoreReportBlockProperties> list = new ArrayList<EJCoreReportBlockProperties>();
+        
         Iterator<BlockContainerItem> iti = _blockProperties.iterator();
         while (iti.hasNext())
         {
-
+            
             BlockContainerItem containerItem = iti.next();
             if ((containerItem instanceof BlockGroup))
             {
@@ -233,8 +247,21 @@ public class EJReportBlockContainer
             EJCoreReportBlockProperties props = (EJCoreReportBlockProperties) containerItem;
             list.add(props);
         }
-
+        
+        
+        
         return list;
+    }
+    
+    
+    void collectSubBlocks(EJCoreReportBlockProperties blockProperties,  List<EJCoreReportBlockProperties> list)
+    {
+        List<EJCoreReportBlockProperties> allSubBlocks = blockProperties.getLayoutScreenProperties().getAllSubBlocks();
+        for(EJCoreReportBlockProperties sub : allSubBlocks)
+        {
+            list.add(sub);
+            collectSubBlocks(sub, list);
+        }
     }
 
     public List<BlockContainerItem> getBlockContainerItems()
