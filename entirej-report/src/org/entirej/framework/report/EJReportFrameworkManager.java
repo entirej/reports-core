@@ -264,7 +264,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
      * 
      * @return The newly created report
      */
-    private EJReport createReport(String reportName, EJReportParameterList parameterList)
+    public EJReport createReport(String reportName, EJReportParameterList parameterList)
     {
         EJReportController controller = _reportControllerFactory.createController(reportName, parameterList);
         if (controller != null)

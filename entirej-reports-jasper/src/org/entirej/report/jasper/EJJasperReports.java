@@ -54,10 +54,12 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportBlockDataSource;
+import org.entirej.report.jasper.data.EJReportDataSource;
 
 public class EJJasperReports
 {
@@ -340,28 +342,13 @@ public class EJJasperReports
     public static void tempEJReportRun(EJReportFrameworkManager manager, EJReport report, EJJasperReportParameter... parameters)
     {
 
-        File temp = null;
-        try
-        {
-            temp = File.createTempFile("ej-report", "pdf");
-            temp.deleteOnExit();
-        }
-        catch (IOException e1)
-        {
-            e1.printStackTrace();
-            return;
-        }
-
-        System.out.println(temp.getAbsolutePath());
-
         EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
 
-        EJReportBlock block = report.getBlock("ReportCountry");
+        builder.buildDesign(report);
 
-        builder.buildDesign(block);
+        JasperReport jasperReport = builder.toReport();
 
         List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>(Arrays.asList(parameters));
-
 
         for (EJReportRuntimeLevelParameter parameter : manager.getRuntimeLevelParameters())
         {
@@ -369,15 +356,54 @@ public class EJJasperReports
             reportParameters.add(jasperReportParameter);
         }
 
-        JasperReport jasperReport = builder.toReport();
+        Collection<EJReportParameter> allParameters = report.getParameterList().getAllParameters();
+        for (EJReportParameter parameter : allParameters)
+        {
+            EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
+            reportParameters.add(jasperReportParameter);
+        }
+
+        // add Block datasource
+
+        Collection<EJReportBlock> allBlocks = report.getAllBlocks();
+        for (EJReportBlock block : allBlocks)
+        {
+            if (!block.isControlBlock())
+            {
+                block.executeQuery();
+            }
+            String blockDataSourceParam = String.format("EJRJ_BLOCK_DS_%s", block.getName());
+            EJJasperReportParameter subRPTDSParameter = new EJJasperReportParameter(blockDataSourceParam, new EJReportBlockDataSource(block));
+            reportParameters.add(subRPTDSParameter);
+            
+            EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+            sbBuilder.buildDesign(block);
+
+            String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
+            EJJasperReportParameter subRPTParameter = new EJJasperReportParameter(blockRPTParam, sbBuilder.toReport());
+            reportParameters.add(subRPTParameter);
+        }
 
         try
         {
             JasperDesignViewer.viewReportDesign(jasperReport);
 
-            EJReportBlockDataSource dataSource = new EJReportBlockDataSource(block);
-            JasperPrint print = fillReport(jasperReport, dataSource, reportParameters.toArray(parameters));
-            JasperViewer.viewReport(print);
+            File temp = null;
+            try
+            {
+                temp = File.createTempFile("ej-report", "pdf");
+                temp.deleteOnExit();
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+                return;
+            }
+
+            System.out.println(temp.getAbsolutePath());
+             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report),
+             reportParameters.toArray(parameters));
+             JasperViewer.viewReport(print);
             // exportReport(EJReportExportType.PDF, print,
             // temp.getAbsolutePath());
             // Desktop.getDesktop().open(temp);

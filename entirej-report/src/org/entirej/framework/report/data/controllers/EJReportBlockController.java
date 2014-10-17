@@ -287,15 +287,13 @@ public class EJReportBlockController implements Serializable
      * <code>recordCreated</code> will mark the record as new and add it to the
      * blocks list of record.
      * 
-     * @param addDefaultInsertValues
-     *            Indicates if the values defined by
-     *            {@link EJCoreReportItemProperties#getDefaultInsertValue()}
-     *            should be added to the items within the newly create record
+    
      * @return A new record
      */
     protected EJReportDataRecord createNewRecord()
     {
         EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock());
+        _dataBlock.addQueriedRecord(record);
         return record;
     }
 

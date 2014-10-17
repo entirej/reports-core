@@ -110,6 +110,11 @@ public class EJReportController implements Serializable
         {
             EJCoreReportBlockProperties blockProps = _dataReport.getProperties().getBlockProperties(block.getName());
             EJReportBlockController blockController = new EJReportBlockController(this, blockProps, block);
+            
+            if(blockProps.isControlBlock())
+            {
+                blockController.createRecord();
+            }
             _blockControllers.put(blockProps.getName(), blockController);
 
         }
