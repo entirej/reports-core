@@ -8,6 +8,7 @@ import java.util.Locale;
 import net.sf.jasperreports.charts.type.ScaleTypeEnum;
 import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRCommonText;
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPen;
@@ -109,17 +110,20 @@ public class EJReportJasperReportBuilder
                 {
                     
                     
-                    String blockDataSourceParam = String.format("EJRJ_BLOCK_DS_%s", block.getName());
+                    String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
                     String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
                     
                     JRDesignParameter rptParameter = new JRDesignParameter();
                     rptParameter.setName(blockRPTParam);
                     rptParameter.setValueClass(JasperReport.class);
                     design.addParameter(rptParameter);
-                    JRDesignParameter dsParameter = new JRDesignParameter();
-                    dsParameter.setName(blockDataSourceParam);
-                    dsParameter.setValueClass(EJReportBlockDataSource.class);
-                    design.addParameter(dsParameter);
+                  
+                    
+                    JRDesignField field = new JRDesignField();
+
+                    field.setName(blockDataSourceField);
+                    field.setValueClass(JRDataSource.class);
+                    design.addField(field);
                     
                     JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
                     {
@@ -137,7 +141,7 @@ public class EJReportJasperReportBuilder
                     
                     
                     JRDesignExpression expressionDS = new JRDesignExpression();
-                    expressionDS.setText(String.format("$P{%s}", blockDataSourceParam));
+                    expressionDS.setText(String.format("$F{%s}", blockDataSourceField));
                     subreport.setDataSourceExpression(expressionDS);
                     
                     JRDesignExpression expressionRPT = new JRDesignExpression();

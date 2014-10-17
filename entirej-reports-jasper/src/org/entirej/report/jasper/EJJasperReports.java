@@ -368,13 +368,7 @@ public class EJJasperReports
         Collection<EJReportBlock> allBlocks = report.getAllBlocks();
         for (EJReportBlock block : allBlocks)
         {
-            if (!block.isControlBlock())
-            {
-                block.executeQuery();
-            }
-            String blockDataSourceParam = String.format("EJRJ_BLOCK_DS_%s", block.getName());
-            EJJasperReportParameter subRPTDSParameter = new EJJasperReportParameter(blockDataSourceParam, new EJReportBlockDataSource(block));
-            reportParameters.add(subRPTDSParameter);
+            
             
             EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
             sbBuilder.buildDesign(block);

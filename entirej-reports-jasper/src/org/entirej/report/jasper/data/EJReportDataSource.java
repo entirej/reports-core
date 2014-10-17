@@ -20,44 +20,57 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.entirej.framework.report.EJReport;
-import org.entirej.framework.report.EJReportBlock;
-import org.entirej.framework.report.EJReportRecord;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
+import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportBlock;
 
 public class EJReportDataSource implements JRDataSource, Serializable
 {
 
     private final EJReport report;
 
-    private AtomicBoolean firstRUn = new AtomicBoolean(true);
+    private AtomicBoolean  firstRUn = new AtomicBoolean(true);
+
     public EJReportDataSource(EJReport report)
     {
         this.report = report;
-        
+
     }
 
     @Override
     public Object getFieldValue(JRField field) throws JRException
     {
 
-        
+        if (field.getName().startsWith("EJRJ_BLOCK_DS_"))
+        {
+            EJReportBlock block = null;
+
+            String blockName = field.getName().substring("EJRJ_BLOCK_DS_".length());
+            block = report.getBlock(blockName);
+
+            if (block != null)
+            {
+                if (!block.isControlBlock())
+                {
+                    block.executeQuery();
+                }
+                return new EJReportBlockDataSource(block);
+            }
+
+        }
+
         return null;
     }
 
     @Override
     public boolean next() throws JRException
     {
-       return firstRUn.getAndSet(false);
+        return firstRUn.getAndSet(false);
     }
 
 }
