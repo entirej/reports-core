@@ -99,6 +99,9 @@ public class EJReportJasperReportBuilder
             detail.setHeight(height);
             
             detailSection.addBand(detail);
+            
+            
+            
 
             Collection<EJReportBlock> rootbBlocks = report.getRootBlocks();
             for (EJReportBlock block : rootbBlocks)
@@ -306,17 +309,29 @@ public class EJReportJasperReportBuilder
             JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
             JRDesignBand detail = new JRDesignBand();
             detail.setSplitType(SplitTypeEnum.STRETCH);
-            detail.setHeight(screenProperties.getHeight());
-            design.setPageWidth(screenProperties.getWidth());
-            design.setColumnWidth(screenProperties.getWidth());
+           
             EJReportProperties reportProperties = block.getReport().getProperties();
             design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
 
             detailSection.addBand(detail);
 
+            
+            int width = screenProperties.getWidth();
+            int height = screenProperties.getHeight();
+            
             for (EJCoreReportScreenItemProperties item : screenItems)
             {
 
+                
+                if(width<(item.getX()+item.getWidth()))
+                {
+                    width = (item.getX()+item.getWidth());
+                }
+                if(height<(item.getY()+item.getHeight()))
+                {
+                    height = (item.getY()+item.getHeight());
+                }
+                
                 JRDesignElement element = null;
                 switch (item.getType())
                 {
@@ -548,7 +563,25 @@ public class EJReportJasperReportBuilder
             {
                 EJReportBlock subBlock = block.getReport().getBlock(blockProperties.getName());
                 createSubReport(block.getReport(), detail, subBlock);
+                
+                if(blockProperties.getLayoutScreenProperties().getScreenType()!=EJReportScreenType.NONE)
+                {
+                    EJCoreReportScreenProperties layoutScreenProperties = blockProperties.getLayoutScreenProperties();
+                    if(width<(layoutScreenProperties.getX()+layoutScreenProperties.getWidth()))
+                    {
+                        width = (layoutScreenProperties.getX()+layoutScreenProperties.getWidth());
+                    }
+                    if(height<(layoutScreenProperties.getY()+layoutScreenProperties.getHeight()))
+                    {
+                        height = (layoutScreenProperties.getY()+layoutScreenProperties.getHeight());
+                    }
+                }
             }
+             
+             
+             detail.setHeight(height);
+             design.setPageWidth(width);
+             design.setColumnWidth(width);
 
         }
         catch (JRException e)
