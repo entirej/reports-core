@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import net.sf.jasperreports.charts.type.ScaleTypeEnum;
 import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRCommonText;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -46,7 +45,10 @@ import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
+import org.entirej.framework.report.interfaces.EJReportBorderProperties;
+import org.entirej.framework.report.interfaces.EJReportColumnProperties;
 import org.entirej.framework.report.interfaces.EJReportProperties;
+import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
@@ -57,7 +59,6 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
-import org.entirej.report.jasper.data.EJReportBlockDataSource;
 
 public class EJReportJasperReportBuilder
 {
@@ -90,24 +91,18 @@ public class EJReportJasperReportBuilder
             design.setColumnWidth(width);
             design.setPageHeight(properties.getReportHeight());
 
-            
-            
             JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
-            
+
             JRDesignBand detail = new JRDesignBand();
             detail.setSplitType(SplitTypeEnum.STRETCH);
             detail.setHeight(height);
-            
+
             detailSection.addBand(detail);
-            
-            
-            
 
             Collection<EJReportBlock> rootbBlocks = report.getRootBlocks();
             for (EJReportBlock block : rootbBlocks)
             {
 
-               
                 createSubReport(report, detail, block);
 
             }
@@ -123,20 +118,16 @@ public class EJReportJasperReportBuilder
     {
         EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
 
-        if (screenProperties.getScreenType() == EJReportScreenType.FORM_LATOUT)
+        if (screenProperties.getScreenType() != EJReportScreenType.NONE)
         {
-            
-            
-           
-           
-          
+
             String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
             JRDesignField field = new JRDesignField();
 
             field.setName(blockDataSourceField);
             field.setValueClass(JRDataSource.class);
             design.addField(field);
-            
+
             JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
             {
 
@@ -146,23 +137,18 @@ public class EJReportJasperReportBuilder
                     return null;
                 }
             };
-            JRDesignSubreport subreport = new JRDesignSubreport(styleProvider) ;
+            JRDesignSubreport subreport = new JRDesignSubreport(styleProvider);
             subreport.setKey(block.getName());
             subreport.setRemoveLineWhenBlank(true);
-            
-            
-            
+
             JRDesignExpression expressionDS = new JRDesignExpression();
             expressionDS.setText(String.format("$F{%s}", blockDataSourceField));
             subreport.setDataSourceExpression(expressionDS);
-            
+
             JRDesignExpression expressionRPT = new JRDesignExpression();
             expressionRPT.setText(String.format("$P{%s}", String.format("EJRJ_BLOCK_RPT_%s", block.getName())));
             subreport.setExpression(expressionRPT);
-            
-           
-            
-            
+
             for (EJReportRuntimeLevelParameter parameter : report.getRuntimeLevelParameters())
             {
                 JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
@@ -170,10 +156,10 @@ public class EJReportJasperReportBuilder
                 JRDesignExpression expression = new JRDesignExpression();
                 expression.setText(String.format("$P{%s}", parameter.getName()));
                 subreportParameter.setExpression(expression);
-                
+
                 subreport.addParameter(subreportParameter);
             }
-            
+
             EJReportParameterList parameterList = report.getParameterList();
             Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
             for (EJReportParameter parameter : allParameters)
@@ -183,10 +169,10 @@ public class EJReportJasperReportBuilder
                 JRDesignExpression expression = new JRDesignExpression();
                 expression.setText(String.format("$P{%s}", parameter.getName()));
                 subreportParameter.setExpression(expression);
-                
+
                 subreport.addParameter(subreportParameter);
             }
-            
+
             Collection<EJReportBlock> allBlocks = report.getAllBlocks();
             for (EJReportBlock ejReportBlock : allBlocks)
             {
@@ -198,9 +184,7 @@ public class EJReportJasperReportBuilder
                 subreportParameter.setExpression(expression);
                 subreport.addParameter(subreportParameter);
             }
-            
-           
-            
+
             subreport.setX(screenProperties.getX());
             subreport.setY(screenProperties.getY());
             subreport.setWidth(screenProperties.getWidth());
@@ -221,7 +205,7 @@ public class EJReportJasperReportBuilder
             designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
         }
-        
+
         EJReportParameterList parameterList = report.getParameterList();
         Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
         for (EJReportParameter parameter : allParameters)
@@ -237,18 +221,16 @@ public class EJReportJasperReportBuilder
             createBlockRPTParamater(block);
         }
     }
-    
-    
+
     void createBlockRPTParamater(EJReportBlock block) throws JRException
     {
         String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
-        
+
         JRDesignParameter rptParameter = new JRDesignParameter();
         rptParameter.setName(blockRPTParam);
         rptParameter.setValueClass(JasperReport.class);
         design.addParameter(rptParameter);
-        
-        
+
     }
 
     public void buildDesign(EJReportBlock block)
@@ -276,318 +258,712 @@ public class EJReportJasperReportBuilder
                 design.addField(field);
             }
 
-            EJCoreReportScreenProperties screenProperties = properties.getLayoutScreenProperties();
-            Collection<EJCoreReportScreenItemProperties> screenItems = screenProperties.getScreenItems();
-
-            for (EJCoreReportScreenItemProperties item : screenItems)
-            {
-                if (item instanceof ValueBaseItem)
-                {
-                    ValueBaseItem vaItem = (ValueBaseItem) item;
-
-                    String defaultValue = vaItem.getValue();
-                    if (vaItem.getValue() != null && vaItem.getValue().length() > 0)
-                    {
-                        String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
-                        String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
-                        if ("BLOCK_ITEM".equals(paramTypeCode))
-                        {
-                            if (!design.getFieldsMap().containsKey(paramValue))
-                            {
-                                JRDesignField field = new JRDesignField();
-
-                                field.setName(paramValue);
-                                field.setValueClass(Object.class);
-                                design.addField(field);
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
-            JRDesignBand detail = new JRDesignBand();
-            detail.setSplitType(SplitTypeEnum.STRETCH);
-           
-            EJReportProperties reportProperties = block.getReport().getProperties();
-            design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
-
-            detailSection.addBand(detail);
-
-            
-            int width = screenProperties.getWidth();
-            int height = screenProperties.getHeight();
-            
-            for (EJCoreReportScreenItemProperties item : screenItems)
-            {
-
-                
-                if(width<(item.getX()+item.getWidth()))
-                {
-                    width = (item.getX()+item.getWidth());
-                }
-                if(height<(item.getY()+item.getHeight()))
-                {
-                    height = (item.getY()+item.getHeight());
-                }
-                
-                JRDesignElement element = null;
-                switch (item.getType())
-                {
-                    case TEXT:
-                    {
-                        EJCoreReportScreenItemProperties.Text textItem = (EJCoreReportScreenItemProperties.Text) item;
-                        JRDesignTextField text = new JRDesignTextField();
-                        element = text;
-                        text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
-                        setAlignments(text, textItem);
-                        setRotation(text, textItem);
-                        text.setBlankWhenNull(true);
-                    }
-                        break;
-                    case NUMBER:
-                    {
-                        EJCoreReportScreenItemProperties.Number textItem = (EJCoreReportScreenItemProperties.Number) item;
-                        JRDesignTextField text = new JRDesignTextField();
-                        element = text;
-                        text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
-                        setAlignments(text, textItem);
-                        setRotation(text, textItem);
-                        text.setBlankWhenNull(true);
-                        if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
-                        {
-                            text.setPattern(textItem.getManualFormat());
-                        }
-                        else
-                        {
-                            Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
-                            NumberFormats localeFormat = textItem.getLocaleFormat();
-                            switch (localeFormat)
-                            {
-                                case CURRENCY:
-                                    text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale)).toPattern());
-                                    break;
-                                case PERCENT:
-                                    text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale)).toPattern());
-                                    break;
-                                case INTEGER:
-                                    text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale)).toPattern());
-                                    break;
-                                case NUMBER:
-                                    text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale)).toPattern());
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                        }
-
-                    }
-                        break;
-                    case DATE:
-                    {
-                        EJCoreReportScreenItemProperties.Date textItem = (EJCoreReportScreenItemProperties.Date) item;
-                        JRDesignTextField text = new JRDesignTextField();
-                        element = text;
-                        text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
-                        setAlignments(text, textItem);
-                        setRotation(text, textItem);
-                        text.setBlankWhenNull(true);
-
-                        Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
-
-                        if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
-                        {
-                            text.setPattern(textItem.getManualFormat());
-                        }
-                        else
-                        {
-                            DateFormats localeFormat = textItem.getLocaleFormat();
-                            SimpleDateFormat dateFormat = null;
-                            switch (localeFormat)
-                            {
-                                case DATE_FULL:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.FULL, defaultLocale));
-                                    break;
-                                case DATE_LONG:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.LONG, defaultLocale));
-                                    break;
-                                case DATE_MEDIUM:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale));
-                                    break;
-                                case DATE_SHORT:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
-                                    break;
-                                case DATE_TIME_FULL:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, defaultLocale));
-                                    break;
-                                case DATE_TIME_LONG:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, defaultLocale));
-                                    break;
-                                case DATE_TIME_MEDIUM:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, defaultLocale));
-                                    break;
-                                case DATE_TIME_SHORT:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, defaultLocale));
-                                    break;
-
-                                case TIME_FULL:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.FULL, defaultLocale));
-                                    break;
-                                case TIME_LONG:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale));
-                                    break;
-                                case TIME_MEDIUM:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale));
-                                    break;
-                                case TIME_SHORT:
-                                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale));
-                                    break;
-                            }
-                            if (dateFormat != null)
-                            {
-                                text.setPattern(dateFormat.toPattern());
-                            }
-                        }
-                    }
-                        break;
-                    case LABEL:
-                    {
-                        EJCoreReportScreenItemProperties.Label labelItem = (Label) item;
-                        JRDesignStaticText lbl = new JRDesignStaticText();
-                        element = lbl;
-                        lbl.setText(labelItem.getText());
-                        setAlignments(lbl, labelItem);
-                        setRotation(lbl, labelItem);
-
-                    }
-                        break;
-                    case LINE:
-                    {
-                        EJCoreReportScreenItemProperties.Line lineItem = (EJCoreReportScreenItemProperties.Line) item;
-                        JRDesignLine line = new JRDesignLine();
-                        element = line;
-
-                        line.setDirection(lineItem.getLineDirection() == LineDirection.BOTTOM_UP ? LineDirectionEnum.BOTTOM_UP : LineDirectionEnum.TOP_DOWN);
-                        JRPen linePen = line.getLinePen();
-                        linePen.setLineWidth((float) lineItem.getLineWidth());
-                        switch (lineItem.getLineStyle())
-                        {
-                            case DASHED:
-                                linePen.setLineStyle(LineStyleEnum.DASHED);
-                                break;
-                            case DOTTED:
-                                linePen.setLineStyle(LineStyleEnum.DOTTED);
-                                break;
-                            case DOUBLE:
-                                linePen.setLineStyle(LineStyleEnum.DOUBLE);
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                        break;
-                    case RECTANGLE:
-                    {
-                        EJCoreReportScreenItemProperties.Rectangle lineItem = (EJCoreReportScreenItemProperties.Rectangle) item;
-                        JRDesignRectangle line = new JRDesignRectangle();
-                        element = line;
-
-                        line.setRadius(lineItem.getRadius());
-                        JRPen linePen = line.getLinePen();
-                        linePen.setLineWidth((float) lineItem.getLineWidth());
-                        switch (lineItem.getLineStyle())
-                        {
-                            case DASHED:
-                                linePen.setLineStyle(LineStyleEnum.DASHED);
-                                break;
-                            case DOTTED:
-                                linePen.setLineStyle(LineStyleEnum.DOTTED);
-                                break;
-                            case DOUBLE:
-                                linePen.setLineStyle(LineStyleEnum.DOUBLE);
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                        break;
-                    case IMAGE:
-                    {
-                        EJCoreReportScreenItemProperties.Image imageItem = (EJCoreReportScreenItemProperties.Image) item;
-                        JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
-                        {
-
-                            @Override
-                            public JRStyle getDefaultStyle()
-                            {
-                                return null;
-                            }
-                        };
-                        JRDesignImage image = new JRDesignImage(styleProvider);
-
-                        element = image;
-
-                        image.setExpression(createImageValueExpression(block.getReport(), imageItem.getValue()));
-
-                        image.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
-                        image.setUsingCache(true);
-                        setAlignments(image, imageItem);
-                    }
-                        break;
-                    default:
-                        break;
-                }
-
-                if (element != null)
-                {
-
-                    element.setX(item.getX());
-                    element.setY(item.getY());
-                    element.setWidth(item.getWidth());
-                    element.setHeight(item.getHeight());
-                    detail.addElement(element);
-                }
-
-            }
-            
-            
-             List<EJCoreReportBlockProperties> allSubBlocks = screenProperties.getAllSubBlocks();
-             for (EJCoreReportBlockProperties blockProperties : allSubBlocks)
-            {
-                EJReportBlock subBlock = block.getReport().getBlock(blockProperties.getName());
-                createSubReport(block.getReport(), detail, subBlock);
-                
-                if(blockProperties.getLayoutScreenProperties().getScreenType()!=EJReportScreenType.NONE)
-                {
-                    EJCoreReportScreenProperties layoutScreenProperties = blockProperties.getLayoutScreenProperties();
-                    if(width<(layoutScreenProperties.getX()+layoutScreenProperties.getWidth()))
-                    {
-                        width = (layoutScreenProperties.getX()+layoutScreenProperties.getWidth());
-                    }
-                    if(height<(layoutScreenProperties.getY()+layoutScreenProperties.getHeight()))
-                    {
-                        height = (layoutScreenProperties.getY()+layoutScreenProperties.getHeight());
-                    }
-                }
-            }
-             
-             
-             detail.setHeight(height);
-             design.setPageWidth(width);
-             design.setColumnWidth(width);
+            if (properties.getLayoutScreenProperties().getScreenType() == EJReportScreenType.FORM_LATOUT)
+                createFormLayout(block, properties);
+            else if (properties.getLayoutScreenProperties().getScreenType() == EJReportScreenType.TABLE_LAYOUT)
+                createTableLayout(block, properties);
 
         }
         catch (JRException e)
         {
             throw new EJReportRuntimeException(e);
         }
+    }
+
+    private void createTableLayout(EJReportBlock block, EJCoreReportBlockProperties properties) throws JRException
+    {
+        EJCoreReportScreenProperties screenProperties = properties.getLayoutScreenProperties();
+
+        Collection<? extends EJReportColumnProperties> allColumns = screenProperties.getAllColumns();
+        // create all ref fields
+
+        boolean addHeaderBand = false;
+        boolean addFooterBand = false;
+        int headerHeight = 0;
+        int detailHeight = 0;
+        int footerHeight = 0;
+        for (EJReportColumnProperties col : allColumns)
+        {
+            if (col.isShowHeader())
+            {
+               if (headerHeight < col.getHeaderScreen().getHeight())
+                {
+                    headerHeight = col.getHeaderScreen().getHeight();
+                }
+                addHeaderBand = true;
+                for (EJReportScreenItemProperties item : col.getHeaderScreen().getScreenItems())
+                {
+                    if (headerHeight < (item.getY() + item.getHeight()))
+                    {
+                        headerHeight = (item.getY() + item.getHeight());
+                    }
+                    crateValueRefField((EJCoreReportScreenItemProperties) item);
+                }
+            }
+
+            // details---
+            if (detailHeight < col.getDetailScreen().getHeight())
+            {
+                detailHeight = col.getDetailScreen().getHeight();
+            }
+            for (EJReportScreenItemProperties item : col.getDetailScreen().getScreenItems())
+            {
+
+                if (detailHeight < (item.getY() + item.getHeight()))
+                {
+                    detailHeight = (item.getY() + item.getHeight());
+                }
+                crateValueRefField((EJCoreReportScreenItemProperties) item);
+            }
+            // ----------
+            if (col.isShowFooter())
+            {
+                if (footerHeight < col.getFooterScreen().getHeight())
+                {
+                    footerHeight = col.getFooterScreen().getHeight();
+                }
+                addFooterBand = true;
+                for (EJReportScreenItemProperties item : col.getFooterScreen().getScreenItems())
+                {
+                    if (footerHeight < (item.getY() + item.getHeight()))
+                    {
+                        footerHeight = (item.getY() + item.getHeight());
+                    }
+                    crateValueRefField((EJCoreReportScreenItemProperties) item);
+                }
+            }
+
+        }
+        
+        JRDesignBand header =null;
+        JRDesignBand detail =null;
+        JRDesignBand footer =null;
+        
+        if(addHeaderBand)
+        {
+            header = new JRDesignBand();
+            header.setSplitType(SplitTypeEnum.STRETCH);
+            header.setHeight(headerHeight);
+            design.setColumnHeader(header);
+        }
+        if(addFooterBand)
+        {
+            footer = new JRDesignBand();
+            footer.setSplitType(SplitTypeEnum.STRETCH);
+            footer.setHeight(footerHeight);
+            design.setColumnFooter(footer);
+        }
+        JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
+        detail = new JRDesignBand();
+        detail.setSplitType(SplitTypeEnum.STRETCH);
+        detailSection.addBand(detail);
+        detail.setHeight(detailHeight);
+        
+        int currentX = 0; 
+        for (EJReportColumnProperties col : allColumns)
+        {
+            
+            int leftLineOffset = 0;
+            //keep lines offset
+            {
+                
+                
+                
+                if(col.isShowHeader() && col.getHeaderBorderProperties().isShowLeftLine())
+                {
+                    leftLineOffset = col.getHeaderBorderProperties().getLineWidth()<0?6:(int)Math.ceil(col.getHeaderBorderProperties().getLineWidth())+5;
+                }
+                
+                if( col.getDetailBorderProperties().isShowLeftLine())
+                {
+                    int lineWidth = col.getDetailBorderProperties().getLineWidth()<0?6:(int)Math.ceil(col.getDetailBorderProperties().getLineWidth())+5;
+                    leftLineOffset = lineWidth>leftLineOffset?lineWidth:leftLineOffset;
+                }
+                
+                if(col.isShowFooter() && col.getFooterBorderProperties().isShowLeftLine())
+                {
+                    int lineWidth = col.getFooterBorderProperties().getLineWidth()<0?6:(int)Math.ceil(col.getFooterBorderProperties().getLineWidth())+5;
+                    leftLineOffset = lineWidth;
+                    leftLineOffset = lineWidth>leftLineOffset?lineWidth:leftLineOffset;
+                }
+                
+                currentX+=leftLineOffset;
+            }
+            
+            int width = col.getDetailScreen().getWidth();
+            
+            if(col.isShowHeader())
+            {
+                if (width < col.getHeaderScreen().getWidth())
+                {
+                    width = col.getHeaderScreen().getWidth();
+                }
+                
+                @SuppressWarnings("unchecked")
+                Collection<EJCoreReportScreenItemProperties> screenItems = ( Collection<EJCoreReportScreenItemProperties>)col.getHeaderScreen().getScreenItems();
+                
+                for (EJCoreReportScreenItemProperties item : screenItems)
+                {
+
+                    if (width < (item.getX() + item.getWidth()))
+                    {
+                        width = (item.getX() + item.getWidth());
+                    }
+                    
+
+                    JRDesignElement element = createScrrenItem(block, item);
+
+                    if (element != null)
+                    {
+
+                        element.setX(currentX+item.getX());
+                        element.setY(item.getY());
+                        element.setWidth(item.getWidth());
+                        element.setHeight(item.getHeight());
+                        header.addElement(element);
+                    }
+
+                }
+                
+                
+                
+               
+            }
+            
+            {
+                
+                if (width < col.getDetailScreen().getWidth())
+                {
+                    width = col.getDetailScreen().getWidth();
+                }
+                
+                @SuppressWarnings("unchecked")
+                Collection<EJCoreReportScreenItemProperties> screenItems = ( Collection<EJCoreReportScreenItemProperties>)col.getDetailScreen().getScreenItems();
+                
+                for (EJCoreReportScreenItemProperties item : screenItems)
+                {
+
+                    if (width < (item.getX() + item.getWidth()))
+                    {
+                        width = (item.getX() + item.getWidth());
+                    }
+                    
+
+                    JRDesignElement element = createScrrenItem(block, item);
+
+                    if (element != null)
+                    {
+
+                        element.setX(currentX+item.getX());
+                        element.setY(item.getY());
+                        element.setWidth(item.getWidth());
+                        element.setHeight(item.getHeight());
+                        detail.addElement(element);
+                    }
+
+                }
+                
+            }
+            
+            
+            if(col.isShowFooter())
+            {
+                if (width < col.getFooterScreen().getWidth())
+                {
+                    width = col.getFooterScreen().getWidth();
+                }
+                
+                @SuppressWarnings("unchecked")
+                Collection<EJCoreReportScreenItemProperties> screenItems = ( Collection<EJCoreReportScreenItemProperties>)col.getFooterScreen().getScreenItems();
+                
+                for (EJCoreReportScreenItemProperties item : screenItems)
+                {
+
+                    if (width < (item.getX() + item.getWidth()))
+                    {
+                        width = (item.getX() + item.getWidth());
+                    }
+                    
+
+                    JRDesignElement element = createScrrenItem(block, item);
+
+                    if (element != null)
+                    {
+
+                        element.setX(currentX+item.getX());
+                        element.setY(item.getY());
+                        element.setWidth(item.getWidth());
+                        element.setHeight(item.getHeight());
+                        footer.addElement(element);
+                    }
+
+                }
+                
+               
+                
+               
+            }
+            
+            
+            if(addHeaderBand)
+            {
+                createColumnLines(headerHeight, header, currentX, leftLineOffset, width, col.getHeaderBorderProperties());
+            }
+           
+             createColumnLines(detailHeight, detail, currentX, leftLineOffset, width, col.getDetailBorderProperties());
+            
+            if(addFooterBand)
+            {
+                createColumnLines(footerHeight, footer, currentX, leftLineOffset, width, col.getFooterBorderProperties());
+            }
+            
+            currentX+=width;
+        }
+        
+    }
+
+    private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int leftLineOffset, int width, EJReportBorderProperties borderProperties)
+    {
+        if(borderProperties.isShowLeftLine())
+        {
+            JRDesignLine line = new JRDesignLine();
+           
+
+            
+            JRPen linePen = line.getLinePen();
+            linePen.setLineWidth((float) borderProperties.getLineWidth());
+            switch (borderProperties.getLineStyle())
+            {
+                case DASHED:
+                    linePen.setLineStyle(LineStyleEnum.DASHED);
+                    break;
+                case DOTTED:
+                    linePen.setLineStyle(LineStyleEnum.DOTTED);
+                    break;
+                case DOUBLE:
+                    linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                    break;
+
+                default:
+                    break;
+            }
+            line.setX(currentX-leftLineOffset);
+            line.setY(0);
+            line.setWidth(borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth()));
+            line.setHeight(bandHeight);
+            band.addElement(line);
+        }
+        if(borderProperties.isShowRightLine())
+        {
+            JRDesignLine line = new JRDesignLine();
+            
+            
+            
+            JRPen linePen = line.getLinePen();
+            linePen.setLineWidth((float) borderProperties.getLineWidth());
+            switch (borderProperties.getLineStyle())
+            {
+                case DASHED:
+                    linePen.setLineStyle(LineStyleEnum.DASHED);
+                    break;
+                case DOTTED:
+                    linePen.setLineStyle(LineStyleEnum.DOTTED);
+                    break;
+                case DOUBLE:
+                    linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            int lineWidth = borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth());
+            line.setX((currentX+width)-1);
+            line.setY(0);
+           
+            line.setWidth(lineWidth);
+            line.setHeight(bandHeight);
+            band.addElement(line);
+        }
+        if(borderProperties.isShowBottomLine())
+        {
+            JRDesignLine line = new JRDesignLine();
+           
+
+            
+            JRPen linePen = line.getLinePen();
+            linePen.setLineWidth((float) borderProperties.getLineWidth());
+            switch (borderProperties.getLineStyle())
+            {
+                case DASHED:
+                    linePen.setLineStyle(LineStyleEnum.DASHED);
+                    break;
+                case DOTTED:
+                    linePen.setLineStyle(LineStyleEnum.DOTTED);
+                    break;
+                case DOUBLE:
+                    linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                    break;
+
+                default:
+                    break;
+            }
+            line.setX(currentX-leftLineOffset);
+            int lineWidth = borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth());
+            line.setY(bandHeight-lineWidth);
+          
+            line.setWidth(width+leftLineOffset);
+            line.setHeight(lineWidth);
+            band.addElement(line);
+        }
+        if(borderProperties.isShowTopLine())
+        {
+            JRDesignLine line = new JRDesignLine();
+            
+            
+            
+            JRPen linePen = line.getLinePen();
+            linePen.setLineWidth((float) borderProperties.getLineWidth());
+            switch (borderProperties.getLineStyle())
+            {
+                case DASHED:
+                    linePen.setLineStyle(LineStyleEnum.DASHED);
+                    break;
+                case DOTTED:
+                    linePen.setLineStyle(LineStyleEnum.DOTTED);
+                    break;
+                case DOUBLE:
+                    linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                    break;
+                    
+                default:
+                    break;
+            }
+            line.setX(currentX-leftLineOffset);
+            int lineWidth = borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth());
+            line.setY(0);
+            
+            line.setWidth(width+leftLineOffset);
+            line.setHeight(lineWidth);
+            band.addElement(line);
+        }
+    }
+
+    private void createFormLayout(EJReportBlock block, EJCoreReportBlockProperties properties) throws JRException
+    {
+        EJCoreReportScreenProperties screenProperties = properties.getLayoutScreenProperties();
+        Collection<EJCoreReportScreenItemProperties> screenItems = screenProperties.getScreenItems();
+
+        for (EJCoreReportScreenItemProperties item : screenItems)
+        {
+            crateValueRefField(item);
+        }
+
+        JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
+        JRDesignBand detail = new JRDesignBand();
+        detail.setSplitType(SplitTypeEnum.STRETCH);
+
+        EJReportProperties reportProperties = block.getReport().getProperties();
+        design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
+
+        detailSection.addBand(detail);
+
+        int width = screenProperties.getWidth();
+        int height = screenProperties.getHeight();
+
+        for (EJCoreReportScreenItemProperties item : screenItems)
+        {
+
+            if (width < (item.getX() + item.getWidth()))
+            {
+                width = (item.getX() + item.getWidth());
+            }
+            if (height < (item.getY() + item.getHeight()))
+            {
+                height = (item.getY() + item.getHeight());
+            }
+
+            JRDesignElement element = createScrrenItem(block, item);
+
+            if (element != null)
+            {
+
+                element.setX(item.getX());
+                element.setY(item.getY());
+                element.setWidth(item.getWidth());
+                element.setHeight(item.getHeight());
+                detail.addElement(element);
+            }
+
+        }
+
+        List<EJCoreReportBlockProperties> allSubBlocks = screenProperties.getAllSubBlocks();
+        for (EJCoreReportBlockProperties blockProperties : allSubBlocks)
+        {
+            EJReportBlock subBlock = block.getReport().getBlock(blockProperties.getName());
+            createSubReport(block.getReport(), detail, subBlock);
+
+            if (blockProperties.getLayoutScreenProperties().getScreenType() != EJReportScreenType.NONE)
+            {
+                EJCoreReportScreenProperties layoutScreenProperties = blockProperties.getLayoutScreenProperties();
+                if (width < (layoutScreenProperties.getX() + layoutScreenProperties.getWidth()))
+                {
+                    width = (layoutScreenProperties.getX() + layoutScreenProperties.getWidth());
+                }
+                if (height < (layoutScreenProperties.getY() + layoutScreenProperties.getHeight()))
+                {
+                    height = (layoutScreenProperties.getY() + layoutScreenProperties.getHeight());
+                }
+            }
+        }
+
+        detail.setHeight(height);
+        design.setPageWidth(width);
+        design.setColumnWidth(width);
+    }
+
+    private void crateValueRefField(EJCoreReportScreenItemProperties item) throws JRException
+    {
+        if (item instanceof ValueBaseItem)
+        {
+            ValueBaseItem vaItem = (ValueBaseItem) item;
+
+            String defaultValue = vaItem.getValue();
+            if (vaItem.getValue() != null && vaItem.getValue().length() > 0)
+            {
+                String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
+                String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
+                if ("BLOCK_ITEM".equals(paramTypeCode))
+                {
+                    if (!design.getFieldsMap().containsKey(paramValue))
+                    {
+                        JRDesignField field = new JRDesignField();
+
+                        field.setName(paramValue);
+                        field.setValueClass(Object.class);
+                        design.addField(field);
+                    }
+
+                }
+            }
+        }
+    }
+
+    private JRDesignElement createScrrenItem(EJReportBlock block, EJCoreReportScreenItemProperties item)
+    {
+        JRDesignElement element = null;
+        switch (item.getType())
+        {
+            case TEXT:
+            {
+                EJCoreReportScreenItemProperties.Text textItem = (EJCoreReportScreenItemProperties.Text) item;
+                JRDesignTextField text = new JRDesignTextField();
+                element = text;
+                text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
+
+                setAlignments(text, textItem);
+                setRotation(text, textItem);
+                text.setBlankWhenNull(true);
+            }
+                break;
+            case NUMBER:
+            {
+                EJCoreReportScreenItemProperties.Number textItem = (EJCoreReportScreenItemProperties.Number) item;
+                JRDesignTextField text = new JRDesignTextField();
+                element = text;
+                text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
+
+                setAlignments(text, textItem);
+                setRotation(text, textItem);
+                text.setBlankWhenNull(true);
+                if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
+                {
+                    text.setPattern(textItem.getManualFormat());
+                }
+                else
+                {
+                    Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
+                    NumberFormats localeFormat = textItem.getLocaleFormat();
+                    switch (localeFormat)
+                    {
+                        case CURRENCY:
+                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale)).toPattern());
+                            break;
+                        case PERCENT:
+                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale)).toPattern());
+                            break;
+                        case INTEGER:
+                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale)).toPattern());
+                            break;
+                        case NUMBER:
+                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale)).toPattern());
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+                break;
+            case DATE:
+            {
+                EJCoreReportScreenItemProperties.Date textItem = (EJCoreReportScreenItemProperties.Date) item;
+                JRDesignTextField text = new JRDesignTextField();
+                element = text;
+                text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
+
+                setAlignments(text, textItem);
+                setRotation(text, textItem);
+                text.setBlankWhenNull(true);
+
+                Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
+
+                if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
+                {
+                    text.setPattern(textItem.getManualFormat());
+                }
+                else
+                {
+                    DateFormats localeFormat = textItem.getLocaleFormat();
+                    SimpleDateFormat dateFormat = null;
+                    switch (localeFormat)
+                    {
+                        case DATE_FULL:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.FULL, defaultLocale));
+                            break;
+                        case DATE_LONG:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.LONG, defaultLocale));
+                            break;
+                        case DATE_MEDIUM:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale));
+                            break;
+                        case DATE_SHORT:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
+                            break;
+                        case DATE_TIME_FULL:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, defaultLocale));
+                            break;
+                        case DATE_TIME_LONG:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, defaultLocale));
+                            break;
+                        case DATE_TIME_MEDIUM:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, defaultLocale));
+                            break;
+                        case DATE_TIME_SHORT:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, defaultLocale));
+                            break;
+
+                        case TIME_FULL:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.FULL, defaultLocale));
+                            break;
+                        case TIME_LONG:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale));
+                            break;
+                        case TIME_MEDIUM:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale));
+                            break;
+                        case TIME_SHORT:
+                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale));
+                            break;
+                    }
+                    if (dateFormat != null)
+                    {
+                        text.setPattern(dateFormat.toPattern());
+                    }
+                }
+            }
+                break;
+            case LABEL:
+            {
+                EJCoreReportScreenItemProperties.Label labelItem = (Label) item;
+                JRDesignStaticText lbl = new JRDesignStaticText();
+                element = lbl;
+                lbl.setText(labelItem.getText());
+                setAlignments(lbl, labelItem);
+                setRotation(lbl, labelItem);
+
+            }
+                break;
+            case LINE:
+            {
+                EJCoreReportScreenItemProperties.Line lineItem = (EJCoreReportScreenItemProperties.Line) item;
+                JRDesignLine line = new JRDesignLine();
+                element = line;
+
+                line.setDirection(lineItem.getLineDirection() == LineDirection.BOTTOM_UP ? LineDirectionEnum.BOTTOM_UP : LineDirectionEnum.TOP_DOWN);
+                JRPen linePen = line.getLinePen();
+                linePen.setLineWidth((float) lineItem.getLineWidth());
+                switch (lineItem.getLineStyle())
+                {
+                    case DASHED:
+                        linePen.setLineStyle(LineStyleEnum.DASHED);
+                        break;
+                    case DOTTED:
+                        linePen.setLineStyle(LineStyleEnum.DOTTED);
+                        break;
+                    case DOUBLE:
+                        linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+                break;
+            case RECTANGLE:
+            {
+                EJCoreReportScreenItemProperties.Rectangle lineItem = (EJCoreReportScreenItemProperties.Rectangle) item;
+                JRDesignRectangle line = new JRDesignRectangle();
+                element = line;
+
+                line.setRadius(lineItem.getRadius());
+                JRPen linePen = line.getLinePen();
+                linePen.setLineWidth((float) lineItem.getLineWidth());
+                switch (lineItem.getLineStyle())
+                {
+                    case DASHED:
+                        linePen.setLineStyle(LineStyleEnum.DASHED);
+                        break;
+                    case DOTTED:
+                        linePen.setLineStyle(LineStyleEnum.DOTTED);
+                        break;
+                    case DOUBLE:
+                        linePen.setLineStyle(LineStyleEnum.DOUBLE);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+                break;
+            case IMAGE:
+            {
+                EJCoreReportScreenItemProperties.Image imageItem = (EJCoreReportScreenItemProperties.Image) item;
+                JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
+                {
+
+                    @Override
+                    public JRStyle getDefaultStyle()
+                    {
+                        return null;
+                    }
+                };
+                JRDesignImage image = new JRDesignImage(styleProvider);
+
+                element = image;
+
+                image.setExpression(createImageValueExpression(block.getReport(), imageItem.getValue()));
+
+                image.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
+                image.setUsingCache(true);
+                setAlignments(image, imageItem);
+            }
+                break;
+            default:
+                break;
+        }
+        return element;
     }
 
     void setAlignments(JRAlignment elm, AlignmentBaseItem alignmentBaseItem)
