@@ -21,6 +21,9 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
     private EJReportScreenItemContainer _screenItemContainer;
     private EJReportColumnContainer     _columnContainer;
 
+    private String                      oddRowVAName;
+    private String                      evenRowVAName;
+
     public EJCoreReportScreenProperties(EJCoreReportBlockProperties blockProperties)
     {
         this.blockProperties = blockProperties;
@@ -121,5 +124,41 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
     public Collection<? extends EJReportColumnProperties> getAllColumns()
     {
         return _columnContainer.getAllColumnProperties();
+    }
+    
+    
+    
+    
+    
+    public String getOddRowVAName()
+    {
+        return oddRowVAName;
+    }
+
+    public void setOddRowVAName(String oddRowVAName)
+    {
+        this.oddRowVAName = oddRowVAName;
+    }
+
+    public String getEvenRowVAName()
+    {
+        return evenRowVAName;
+    }
+
+    public void setEvenRowVAName(String evenRowVAName)
+    {
+        this.evenRowVAName = evenRowVAName;
+    }
+
+    @Override
+    public EJReportVisualAttributeProperties getOddVAProperties()
+    {
+        return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(oddRowVAName);
+    }
+    
+    @Override
+    public EJReportVisualAttributeProperties getEvenVAProperties()
+    {
+        return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(evenRowVAName);
     }
 }

@@ -39,7 +39,7 @@ public class EJReportVisualAttributeProperties implements Comparable<EJReportVis
 
     private String             _fontName             = UNSPECIFIED;
     private int                _fontSize             = -1;
-    private boolean            _fontSizeAsPercentage = false;
+    private boolean            _useAsDYnamicVA       = false;
     private EJReportFontStyle  _fontStyle            = EJReportFontStyle.Unspecified;
     private EJReportFontWeight _fontWeight           = EJReportFontWeight.Unspecified;
 
@@ -183,14 +183,14 @@ public class EJReportVisualAttributeProperties implements Comparable<EJReportVis
      * 
      * @return the fontSize
      */
-    public boolean isFontSizeAsPercentage()
+    public boolean isUsedAsDynamicVA()
     {
-        return _fontSizeAsPercentage;
+        return _useAsDYnamicVA;
     }
 
-    public void setFontSizeAsPercentage(boolean _fontSizeAsPercentage)
+    public void setUsedAsDynamicVA(boolean _usedAsDynamicVA)
     {
-        this._fontSizeAsPercentage = _fontSizeAsPercentage;
+        this._useAsDYnamicVA = _usedAsDynamicVA;
     }
 
     /**
@@ -372,7 +372,7 @@ public class EJReportVisualAttributeProperties implements Comparable<EJReportVis
         props.setFontSize(_fontSize);
         props.setFontStyle(_fontStyle);
         props.setFontWeight(_fontWeight);
-        props.setFontSizeAsPercentage(_fontSizeAsPercentage);
+        props.setUsedAsDynamicVA(_useAsDYnamicVA);
 
         return props;
     }

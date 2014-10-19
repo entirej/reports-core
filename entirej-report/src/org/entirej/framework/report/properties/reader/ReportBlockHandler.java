@@ -34,6 +34,8 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
     private static final String         ELEMENT_SERVICE_CLASS_NAME = "serviceClassName";
     private static final String         ELEMENT_ACTION_PROCESSOR   = "actionProcessorClassName";
     private static final String         ELEMENT_SCREEN_TYPE        = "screenType";
+    private static final String         ELEMENT_ODD_VA             = "oddVA";
+    private static final String         ELEMENT_EVEN_VA            = "evenVA";
     private static final String         ELEMENT_SCREEN_X           = "x";
     private static final String         ELEMENT_SCREEN_Y           = "y";
     private static final String         ELEMENT_SCREEN_WIDTH       = "width";
@@ -127,8 +129,6 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
             _blockProperties.setDescription(value);
         }
 
-      
-
         else if (name.equals(ELEMENT_SERVICE_CLASS_NAME))
         {
             _blockProperties.setServiceClassName(value);
@@ -140,7 +140,17 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         else if (name.equals(ELEMENT_SCREEN_TYPE))
         {
             _blockProperties.getLayoutScreenProperties().setScreenType(EJReportScreenType.valueOf(value));
-            ;
+            
+        }
+        else if (name.equals(ELEMENT_ODD_VA))
+        {
+            _blockProperties.getLayoutScreenProperties().setOddRowVAName(value);
+            
+        }
+        else if (name.equals(ELEMENT_EVEN_VA))
+        {
+            _blockProperties.getLayoutScreenProperties().setEvenRowVAName(value);
+            
         }
         else if (name.equals(ELEMENT_SCREEN_X))
         {

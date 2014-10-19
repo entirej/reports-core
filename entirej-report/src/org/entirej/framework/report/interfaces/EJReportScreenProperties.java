@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.entirej.framework.report.enumerations.EJReportScreenType;
+import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public interface EJReportScreenProperties extends Serializable
 {
@@ -54,4 +55,9 @@ public interface EJReportScreenProperties extends Serializable
     public Collection<? extends EJReportBlockProperties> getAllSubBlocks();
 
     public Collection<? extends EJReportColumnProperties> getAllColumns();
+    
+    
+    EJReportVisualAttributeProperties getOddVAProperties();
+    
+    EJReportVisualAttributeProperties getEvenVAProperties();
 }
