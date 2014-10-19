@@ -12,6 +12,7 @@ import net.sf.jasperreports.engine.JRCommonText;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParagraphContainer;
 import net.sf.jasperreports.engine.JRPen;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -34,6 +35,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
+import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.SplitTypeEnum;
@@ -368,33 +370,7 @@ public class EJReportJasperReportBuilder
         for (EJReportColumnProperties col : allColumns)
         {
             
-            int leftLineOffset = 0;
-            //keep lines offset
-            {
-                
-                
-                
-                if(col.isShowHeader() && col.getHeaderBorderProperties().isShowLeftLine())
-                {
-                    leftLineOffset = col.getHeaderBorderProperties().getLineWidth()<1?6:(int)Math.ceil(col.getHeaderBorderProperties().getLineWidth())+5;
-                }
-                
-                if( col.getDetailBorderProperties().isShowLeftLine())
-                {
-                    int lineWidth = col.getDetailBorderProperties().getLineWidth()<1?6:(int)Math.ceil(col.getDetailBorderProperties().getLineWidth())+5;
-                    leftLineOffset = lineWidth>leftLineOffset?lineWidth:leftLineOffset;
-                }
-                
-                if(col.isShowFooter() && col.getFooterBorderProperties().isShowLeftLine())
-                {
-                    int lineWidth = col.getFooterBorderProperties().getLineWidth()<1?6:(int)Math.ceil(col.getFooterBorderProperties().getLineWidth())+5;
-                    leftLineOffset = lineWidth;
-                    leftLineOffset = lineWidth>leftLineOffset?lineWidth:leftLineOffset;
-                }
-                
-                currentX+=leftLineOffset;
-            }
-            
+           
             int width = col.getDetailScreen().getWidth();
             
             if(col.isShowHeader())
@@ -435,6 +411,8 @@ public class EJReportJasperReportBuilder
                             
                             element.setStyle(style);
                         }
+                        
+                        setPadding(item, element);
                     }
 
                 }
@@ -473,6 +451,16 @@ public class EJReportJasperReportBuilder
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         detail.addElement(element);
+                        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+                        if(va!=null)
+                        {
+                            
+                            JRDesignStyle style = toStyle(va);
+                            
+                            
+                            element.setStyle(style);
+                        }
+                        setPadding(item, element);
                     }
 
                 }
@@ -509,6 +497,16 @@ public class EJReportJasperReportBuilder
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         footer.addElement(element);
+                        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+                        if(va!=null)
+                        {
+                            
+                            JRDesignStyle style = toStyle(va);
+                            
+                            
+                            element.setStyle(style);
+                        }
+                        setPadding(item, element);
                     }
 
                 }
@@ -521,14 +519,14 @@ public class EJReportJasperReportBuilder
             
             if(addHeaderBand)
             {
-                createColumnLines(headerHeight, header, currentX, leftLineOffset, width, col.getHeaderBorderProperties());
+                createColumnLines(headerHeight, header, currentX, width, col.getHeaderBorderProperties());
             }
            
-             createColumnLines(detailHeight, detail, currentX, leftLineOffset, width, col.getDetailBorderProperties());
+             createColumnLines(detailHeight, detail, currentX, width, col.getDetailBorderProperties());
             
             if(addFooterBand)
             {
-                createColumnLines(footerHeight, footer, currentX, leftLineOffset, width, col.getFooterBorderProperties());
+                createColumnLines(footerHeight, footer, currentX, width, col.getFooterBorderProperties());
             }
             
             currentX+=width;
@@ -536,7 +534,18 @@ public class EJReportJasperReportBuilder
         
     }
 
-    private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int leftLineOffset, int width, EJReportBorderProperties borderProperties) throws JRException
+    private void setPadding(EJCoreReportScreenItemProperties item, JRDesignElement element)
+    {
+        if(element instanceof JRParagraphContainer)
+        {
+            JRParagraphContainer text = (JRParagraphContainer) element;
+            
+            text.getParagraph().setLeftIndent(5);
+            text.getParagraph().setRightIndent(5);
+        }
+    }
+
+    private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int width, EJReportBorderProperties borderProperties) throws JRException
     {
         
         EJReportVisualAttributeProperties va = borderProperties.getVisualAttributeProperties();
@@ -570,7 +579,7 @@ public class EJReportJasperReportBuilder
                 default:
                     break;
             }
-            line.setX(currentX-leftLineOffset);
+            line.setX(currentX);
             line.setY(0);
             line.setWidth(borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth()));
             line.setHeight(bandHeight);
@@ -644,11 +653,11 @@ public class EJReportJasperReportBuilder
                 default:
                     break;
             }
-            line.setX(currentX-leftLineOffset);
+            line.setX(currentX);
             int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
             line.setY(bandHeight-lineWidth);
           
-            line.setWidth(width+leftLineOffset);
+            line.setWidth(width);
             line.setHeight(lineWidth);
             
             if(style!=null)
@@ -680,11 +689,11 @@ public class EJReportJasperReportBuilder
                 default:
                     break;
             }
-            line.setX(currentX-leftLineOffset);
+            line.setX(currentX);
             int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
             line.setY(0);
             
-            line.setWidth(width+leftLineOffset);
+            line.setWidth(width);
             line.setHeight(lineWidth);
             
             if(style!=null)
@@ -795,6 +804,7 @@ public class EJReportJasperReportBuilder
         if(backgroundColor!=null)
         {
             style.setBackcolor(backgroundColor); 
+            style.setMode(ModeEnum.OPAQUE);
         }
         Color foregroundColor = va.getForegroundColor();
         if(foregroundColor!=null)
@@ -882,7 +892,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
+                
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -894,7 +904,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
+              
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -934,7 +944,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
+              
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -1004,7 +1014,6 @@ public class EJReportJasperReportBuilder
                 lbl.setText(labelItem.getText());
                 setAlignments(lbl, labelItem);
                 setRotation(lbl, labelItem);
-
             }
                 break;
             case LINE:
