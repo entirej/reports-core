@@ -1,5 +1,6 @@
 package org.entirej.report.jasper.builder;
 
+import java.awt.Color;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JRDesignRectangle;
 import net.sf.jasperreports.engine.design.JRDesignSection;
 import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.design.JRDesignStyle;
 import net.sf.jasperreports.engine.design.JRDesignSubreport;
 import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
@@ -44,6 +46,8 @@ import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.enumerations.EJReportFontStyle;
+import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportBorderProperties;
 import org.entirej.framework.report.interfaces.EJReportColumnProperties;
@@ -59,6 +63,7 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
+import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReportJasperReportBuilder
 {
@@ -421,6 +426,15 @@ public class EJReportJasperReportBuilder
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         header.addElement(element);
+                        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+                        if(va!=null)
+                        {
+                            
+                            JRDesignStyle style = toStyle(va);
+                            
+                            
+                            element.setStyle(style);
+                        }
                     }
 
                 }
@@ -522,8 +536,17 @@ public class EJReportJasperReportBuilder
         
     }
 
-    private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int leftLineOffset, int width, EJReportBorderProperties borderProperties)
+    private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int leftLineOffset, int width, EJReportBorderProperties borderProperties) throws JRException
     {
+        
+        EJReportVisualAttributeProperties va = borderProperties.getVisualAttributeProperties();
+        JRDesignStyle style = null;
+        if(va!=null)
+        {
+            
+             style = toStyle(va);
+            
+        }
         if(borderProperties.isShowLeftLine())
         {
             JRDesignLine line = new JRDesignLine();
@@ -551,6 +574,13 @@ public class EJReportJasperReportBuilder
             line.setY(0);
             line.setWidth(borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth()));
             line.setHeight(bandHeight);
+            
+            if(style!=null)
+            {
+                line.setStyle(style);
+            }
+            
+            
             band.addElement(line);
         }
         if(borderProperties.isShowRightLine())
@@ -583,7 +613,13 @@ public class EJReportJasperReportBuilder
            
             line.setWidth(lineWidth);
             line.setHeight(bandHeight);
+            
+            if(style!=null)
+            {
+                line.setStyle(style);
+            }
             band.addElement(line);
+            
         }
         if(borderProperties.isShowBottomLine())
         {
@@ -614,6 +650,11 @@ public class EJReportJasperReportBuilder
           
             line.setWidth(width+leftLineOffset);
             line.setHeight(lineWidth);
+            
+            if(style!=null)
+            {
+                line.setStyle(style);
+            }
             band.addElement(line);
         }
         if(borderProperties.isShowTopLine())
@@ -645,6 +686,11 @@ public class EJReportJasperReportBuilder
             
             line.setWidth(width+leftLineOffset);
             line.setHeight(lineWidth);
+            
+            if(style!=null)
+            {
+                line.setStyle(style);
+            }
             band.addElement(line);
         }
     }
@@ -693,6 +739,16 @@ public class EJReportJasperReportBuilder
                 element.setWidth(item.getWidth());
                 element.setHeight(item.getHeight());
                 detail.addElement(element);
+                
+                EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+                if(va!=null)
+                {
+                    
+                    JRDesignStyle style = toStyle(va);
+                    
+                    
+                    element.setStyle(style);
+                }
             }
 
         }
@@ -720,6 +776,72 @@ public class EJReportJasperReportBuilder
         detail.setHeight(height);
         design.setPageWidth(width);
         design.setColumnWidth(width);
+    }
+
+    private JRDesignStyle toStyle(EJReportVisualAttributeProperties va) throws JRException
+    {
+        
+        
+        JRDesignStyle style = (JRDesignStyle) design.getStylesMap().get(va.getName());
+        if(style!=null)
+        {
+            return style;
+        }
+        style = new JRDesignStyle();
+       
+        style.setName(va.getName());
+        design.addStyle(style);
+        Color backgroundColor = va.getBackgroundColor();
+        if(backgroundColor!=null)
+        {
+            style.setBackcolor(backgroundColor); 
+        }
+        Color foregroundColor = va.getForegroundColor();
+        if(foregroundColor!=null)
+        {
+            style.setForecolor(foregroundColor);
+        }
+        
+        
+        String fontName = va.getFontName();
+        if(!EJReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
+        {
+            style.setFontName(fontName);
+        }
+        
+        float fontSize = va.getFontSize();
+        if(fontSize!=-1)
+        {
+            style.setFontSize(fontSize);
+        }
+        
+        EJReportFontStyle fontStyle = va.getFontStyle();
+        switch (fontStyle)
+        {
+            case Italic:
+                style.setItalic(true);
+                break;
+            case Underline:
+                style.setUnderline(true);
+                break;
+           
+            default:
+                break;
+        }
+        
+        EJReportFontWeight fontWeight = va.getFontWeight();
+        
+        switch (fontWeight)
+        {
+            case Bold:
+                style.setBold(true);
+          
+           
+            default:
+                break;
+        }
+        
+        return style;
     }
 
     private void crateValueRefField(EJCoreReportScreenItemProperties item) throws JRException
