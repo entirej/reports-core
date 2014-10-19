@@ -17,7 +17,9 @@ import net.sf.jasperreports.engine.JRPen;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignField;
@@ -289,11 +291,15 @@ public class EJReportJasperReportBuilder
         int headerHeight = 0;
         int detailHeight = 0;
         int footerHeight = 0;
+
+        JRDesignStyle oddEvenRowStyle = createOddEvenRowStyle(screenProperties);
+       
+
         for (EJReportColumnProperties col : allColumns)
         {
             if (col.isShowHeader())
             {
-               if (headerHeight < col.getHeaderScreen().getHeight())
+                if (headerHeight < col.getHeaderScreen().getHeight())
                 {
                     headerHeight = col.getHeaderScreen().getHeight();
                 }
@@ -341,19 +347,19 @@ public class EJReportJasperReportBuilder
             }
 
         }
-        
-        JRDesignBand header =null;
-        JRDesignBand detail =null;
-        JRDesignBand footer =null;
-        
-        if(addHeaderBand)
+
+        JRDesignBand header = null;
+        JRDesignBand detail = null;
+        JRDesignBand footer = null;
+
+        if (addHeaderBand)
         {
             header = new JRDesignBand();
             header.setSplitType(SplitTypeEnum.STRETCH);
             header.setHeight(headerHeight);
             design.setColumnHeader(header);
         }
-        if(addFooterBand)
+        if (addFooterBand)
         {
             footer = new JRDesignBand();
             footer.setSplitType(SplitTypeEnum.STRETCH);
@@ -365,24 +371,24 @@ public class EJReportJasperReportBuilder
         detail.setSplitType(SplitTypeEnum.STRETCH);
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
-        
-        int currentX = 0; 
+
+        int currentX = 0;
         for (EJReportColumnProperties col : allColumns)
         {
-            
-           
+
             int width = col.getDetailScreen().getWidth();
-            
-            if(col.isShowHeader())
+
+            if (col.isShowHeader())
             {
                 if (width < col.getHeaderScreen().getWidth())
                 {
                     width = col.getHeaderScreen().getWidth();
                 }
-                
+
                 @SuppressWarnings("unchecked")
-                Collection<EJCoreReportScreenItemProperties> screenItems = ( Collection<EJCoreReportScreenItemProperties>)col.getHeaderScreen().getScreenItems();
-                
+                Collection<EJCoreReportScreenItemProperties> screenItems = (Collection<EJCoreReportScreenItemProperties>) col.getHeaderScreen()
+                        .getScreenItems();
+
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
 
@@ -390,48 +396,44 @@ public class EJReportJasperReportBuilder
                     {
                         width = (item.getX() + item.getWidth());
                     }
-                    
 
                     JRDesignElement element = createScrrenItem(block, item);
 
                     if (element != null)
                     {
 
-                        element.setX(currentX+item.getX());
+                        element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         header.addElement(element);
                         EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                        if(va!=null)
+                        if (va != null)
                         {
-                            
+
                             JRDesignStyle style = toStyle(va);
-                            
-                            
+
                             element.setStyle(style);
                         }
-                        
+
                         setPadding(item, element);
                     }
 
                 }
-                
-                
-                
-               
+
             }
-            
+
             {
-                
+
                 if (width < col.getDetailScreen().getWidth())
                 {
                     width = col.getDetailScreen().getWidth();
                 }
-                
+
                 @SuppressWarnings("unchecked")
-                Collection<EJCoreReportScreenItemProperties> screenItems = ( Collection<EJCoreReportScreenItemProperties>)col.getDetailScreen().getScreenItems();
-                
+                Collection<EJCoreReportScreenItemProperties> screenItems = (Collection<EJCoreReportScreenItemProperties>) col.getDetailScreen()
+                        .getScreenItems();
+
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
 
@@ -439,45 +441,43 @@ public class EJReportJasperReportBuilder
                     {
                         width = (item.getX() + item.getWidth());
                     }
-                    
 
                     JRDesignElement element = createScrrenItem(block, item);
 
                     if (element != null)
                     {
 
-                        element.setX(currentX+item.getX());
+                        element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         detail.addElement(element);
                         EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                        if(va!=null)
+                        if (va != null)
                         {
-                            
+
                             JRDesignStyle style = toStyle(va);
-                            
-                            
+
                             element.setStyle(style);
                         }
                         setPadding(item, element);
                     }
 
                 }
-                
+
             }
-            
-            
-            if(col.isShowFooter())
+
+            if (col.isShowFooter())
             {
                 if (width < col.getFooterScreen().getWidth())
                 {
                     width = col.getFooterScreen().getWidth();
                 }
-                
+
                 @SuppressWarnings("unchecked")
-                Collection<EJCoreReportScreenItemProperties> screenItems = ( Collection<EJCoreReportScreenItemProperties>)col.getFooterScreen().getScreenItems();
-                
+                Collection<EJCoreReportScreenItemProperties> screenItems = (Collection<EJCoreReportScreenItemProperties>) col.getFooterScreen()
+                        .getScreenItems();
+
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
 
@@ -485,61 +485,114 @@ public class EJReportJasperReportBuilder
                     {
                         width = (item.getX() + item.getWidth());
                     }
-                    
 
                     JRDesignElement element = createScrrenItem(block, item);
 
                     if (element != null)
                     {
 
-                        element.setX(currentX+item.getX());
+                        element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         footer.addElement(element);
                         EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                        if(va!=null)
+                        if (va != null)
                         {
-                            
+
                             JRDesignStyle style = toStyle(va);
-                            
-                            
+
                             element.setStyle(style);
                         }
                         setPadding(item, element);
                     }
 
                 }
-                
+
                
-                
-               
+
             }
             
-            
-            if(addHeaderBand)
+            if (oddEvenRowStyle != null)
+            {
+                JRDesignStaticText box = new JRDesignStaticText();
+                box.setStyle(oddEvenRowStyle);
+                box.setX(currentX);
+                box.setY(0);
+                box.setWidth(width);
+                box.setHeight(detailHeight);
+                detail.addElement(0, box);
+            }
+
+            if (addHeaderBand)
             {
                 createColumnLines(headerHeight, header, currentX, width, col.getHeaderBorderProperties());
             }
-           
-             createColumnLines(detailHeight, detail, currentX, width, col.getDetailBorderProperties());
-            
-            if(addFooterBand)
+
+            createColumnLines(detailHeight, detail, currentX, width, col.getDetailBorderProperties());
+
+            if (addFooterBand)
             {
                 createColumnLines(footerHeight, footer, currentX, width, col.getFooterBorderProperties());
             }
-            
-            currentX+=width;
+
+            currentX += width;
         }
-        
+
     }
+
+    private JRDesignStyle createOddEvenRowStyle(EJCoreReportScreenProperties screenProperties) throws JRException
+    {
+        
+        
+        EJReportVisualAttributeProperties vaOdd = screenProperties.getOddVAProperties();
+        EJReportVisualAttributeProperties vaEven = screenProperties.getEvenVAProperties();
+        if (vaOdd != null || vaEven!=null)
+        {
+
+            JRDesignStyle style = new JRDesignStyle();
+
+            if(vaOdd!=null)
+            {
+                style.setName(String.format("%s.odd", screenProperties.getBlockProperties().getName()));
+    
+                JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+                vaToStyle(vaOdd, conditionalStyle);
+    
+                JRDesignExpression expression = new JRDesignExpression();
+                expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
+                conditionalStyle.setConditionExpression(expression);
+    
+                style.addConditionalStyle(conditionalStyle);
+            }
+            if(vaEven!=null)
+            {
+                style.setName(String.format("%s.even", screenProperties.getBlockProperties().getName()));
+                
+                JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+                vaToStyle(vaEven, conditionalStyle);
+                
+                JRDesignExpression expression = new JRDesignExpression();
+                expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
+                conditionalStyle.setConditionExpression(expression);
+                
+                style.addConditionalStyle(conditionalStyle);
+            }
+            design.addStyle(style);
+            return style;
+
+        }
+        return null;
+    }
+    
+
 
     private void setPadding(EJCoreReportScreenItemProperties item, JRDesignElement element)
     {
-        if(element instanceof JRParagraphContainer)
+        if (element instanceof JRParagraphContainer)
         {
             JRParagraphContainer text = (JRParagraphContainer) element;
-            
+
             text.getParagraph().setLeftIndent(5);
             text.getParagraph().setRightIndent(5);
         }
@@ -547,21 +600,19 @@ public class EJReportJasperReportBuilder
 
     private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int width, EJReportBorderProperties borderProperties) throws JRException
     {
-        
+
         EJReportVisualAttributeProperties va = borderProperties.getVisualAttributeProperties();
         JRDesignStyle style = null;
-        if(va!=null)
+        if (va != null)
         {
-            
-             style = toStyle(va);
-            
+
+            style = toStyle(va);
+
         }
-        if(borderProperties.isShowLeftLine())
+        if (borderProperties.isShowLeftLine())
         {
             JRDesignLine line = new JRDesignLine();
-           
 
-            
             JRPen linePen = line.getLinePen();
             linePen.setLineWidth((float) borderProperties.getLineWidth());
             switch (borderProperties.getLineStyle())
@@ -581,23 +632,20 @@ public class EJReportJasperReportBuilder
             }
             line.setX(currentX);
             line.setY(0);
-            line.setWidth(borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth()));
+            line.setWidth(borderProperties.getLineWidth() < 1 ? 1 : (int) Math.floor(borderProperties.getLineWidth()));
             line.setHeight(bandHeight);
-            
-            if(style!=null)
+
+            if (style != null)
             {
                 line.setStyle(style);
             }
-            
-            
+
             band.addElement(line);
         }
-        if(borderProperties.isShowRightLine())
+        if (borderProperties.isShowRightLine())
         {
             JRDesignLine line = new JRDesignLine();
-            
-            
-            
+
             JRPen linePen = line.getLinePen();
             linePen.setLineWidth((float) borderProperties.getLineWidth());
             switch (borderProperties.getLineStyle())
@@ -611,31 +659,29 @@ public class EJReportJasperReportBuilder
                 case DOUBLE:
                     linePen.setLineStyle(LineStyleEnum.DOUBLE);
                     break;
-                    
+
                 default:
                     break;
             }
-            
-            int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
-            line.setX((currentX+width)-1);
+
+            int lineWidth = borderProperties.getLineWidth() < 1 ? 1 : (int) Math.floor(borderProperties.getLineWidth());
+            line.setX((currentX + width) - 1);
             line.setY(0);
-           
+
             line.setWidth(lineWidth);
             line.setHeight(bandHeight);
-            
-            if(style!=null)
+
+            if (style != null)
             {
                 line.setStyle(style);
             }
             band.addElement(line);
-            
+
         }
-        if(borderProperties.isShowBottomLine())
+        if (borderProperties.isShowBottomLine())
         {
             JRDesignLine line = new JRDesignLine();
-           
 
-            
             JRPen linePen = line.getLinePen();
             linePen.setLineWidth((float) borderProperties.getLineWidth());
             switch (borderProperties.getLineStyle())
@@ -654,24 +700,22 @@ public class EJReportJasperReportBuilder
                     break;
             }
             line.setX(currentX);
-            int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
-            line.setY(bandHeight-lineWidth);
-          
+            int lineWidth = borderProperties.getLineWidth() < 1 ? 1 : (int) Math.floor(borderProperties.getLineWidth());
+            line.setY(bandHeight - lineWidth);
+
             line.setWidth(width);
             line.setHeight(lineWidth);
-            
-            if(style!=null)
+
+            if (style != null)
             {
                 line.setStyle(style);
             }
             band.addElement(line);
         }
-        if(borderProperties.isShowTopLine())
+        if (borderProperties.isShowTopLine())
         {
             JRDesignLine line = new JRDesignLine();
-            
-            
-            
+
             JRPen linePen = line.getLinePen();
             linePen.setLineWidth((float) borderProperties.getLineWidth());
             switch (borderProperties.getLineStyle())
@@ -685,18 +729,18 @@ public class EJReportJasperReportBuilder
                 case DOUBLE:
                     linePen.setLineStyle(LineStyleEnum.DOUBLE);
                     break;
-                    
+
                 default:
                     break;
             }
             line.setX(currentX);
-            int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
+            int lineWidth = borderProperties.getLineWidth() < 1 ? 1 : (int) Math.floor(borderProperties.getLineWidth());
             line.setY(0);
-            
+
             line.setWidth(width);
             line.setHeight(lineWidth);
-            
-            if(style!=null)
+
+            if (style != null)
             {
                 line.setStyle(style);
             }
@@ -748,14 +792,13 @@ public class EJReportJasperReportBuilder
                 element.setWidth(item.getWidth());
                 element.setHeight(item.getHeight());
                 detail.addElement(element);
-                
+
                 EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                if(va!=null)
+                if (va != null)
                 {
-                    
+
                     JRDesignStyle style = toStyle(va);
-                    
-                    
+
                     element.setStyle(style);
                 }
             }
@@ -789,42 +832,47 @@ public class EJReportJasperReportBuilder
 
     private JRDesignStyle toStyle(EJReportVisualAttributeProperties va) throws JRException
     {
-        
-        
+
         JRDesignStyle style = (JRDesignStyle) design.getStylesMap().get(va.getName());
-        if(style!=null)
+        if (style != null)
         {
             return style;
         }
         style = new JRDesignStyle();
-       
+
         style.setName(va.getName());
         design.addStyle(style);
+        vaToStyle(va, style);
+
+        return style;
+    }
+
+    private void vaToStyle(EJReportVisualAttributeProperties va, JRBaseStyle style)
+    {
         Color backgroundColor = va.getBackgroundColor();
-        if(backgroundColor!=null)
+        if (backgroundColor != null)
         {
-            style.setBackcolor(backgroundColor); 
+            style.setBackcolor(backgroundColor);
             style.setMode(ModeEnum.OPAQUE);
         }
         Color foregroundColor = va.getForegroundColor();
-        if(foregroundColor!=null)
+        if (foregroundColor != null)
         {
             style.setForecolor(foregroundColor);
         }
-        
-        
+
         String fontName = va.getFontName();
-        if(!EJReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
+        if (!EJReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
         {
             style.setFontName(fontName);
         }
-        
+
         float fontSize = va.getFontSize();
-        if(fontSize!=-1)
+        if (fontSize != -1)
         {
             style.setFontSize(fontSize);
         }
-        
+
         EJReportFontStyle fontStyle = va.getFontStyle();
         switch (fontStyle)
         {
@@ -834,24 +882,21 @@ public class EJReportJasperReportBuilder
             case Underline:
                 style.setUnderline(true);
                 break;
-           
+
             default:
                 break;
         }
-        
+
         EJReportFontWeight fontWeight = va.getFontWeight();
-        
+
         switch (fontWeight)
         {
             case Bold:
                 style.setBold(true);
-          
-           
+
             default:
                 break;
         }
-        
-        return style;
     }
 
     private void crateValueRefField(EJCoreReportScreenItemProperties item) throws JRException
@@ -892,7 +937,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-                
+
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -904,7 +949,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-              
+
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -944,7 +989,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-              
+
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
