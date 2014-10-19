@@ -380,27 +380,32 @@ public class EJJasperReports
 
         try
         {
-            JasperDesignViewer.viewReportDesign(jasperReport);
+           // JasperDesignViewer.viewReportDesign(jasperReport);
 
-            File temp = null;
-            try
-            {
-                temp = File.createTempFile("ej-report", "pdf");
-                temp.deleteOnExit();
-            }
-            catch (IOException e1)
-            {
-                e1.printStackTrace();
-                return;
-            }
+           
 
-            System.out.println(temp.getAbsolutePath());
+           
              JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report),
              reportParameters.toArray(parameters));
              JasperViewer.viewReport(print);
-            // exportReport(EJReportExportType.PDF, print,
-            // temp.getAbsolutePath());
-            // Desktop.getDesktop().open(temp);
+             if(false)
+             {
+             File temp = null;
+             try
+             {
+                 temp = File.createTempFile("ej-report", "pdf");
+                 temp.deleteOnExit();
+             }
+             catch (IOException e1)
+             {
+                 e1.printStackTrace();
+                 return;
+             }
+             System.out.println(temp.getAbsolutePath());
+             exportReport(EJReportExportType.PDF, print,
+             temp.getAbsolutePath());
+             Desktop.getDesktop().open(temp);
+             }
         }
         catch (Exception e)
         {
@@ -408,5 +413,4 @@ public class EJJasperReports
         }
 
     }
-
 }

@@ -371,18 +371,18 @@ public class EJReportJasperReportBuilder
                 
                 if(col.isShowHeader() && col.getHeaderBorderProperties().isShowLeftLine())
                 {
-                    leftLineOffset = col.getHeaderBorderProperties().getLineWidth()<0?6:(int)Math.ceil(col.getHeaderBorderProperties().getLineWidth())+5;
+                    leftLineOffset = col.getHeaderBorderProperties().getLineWidth()<1?6:(int)Math.ceil(col.getHeaderBorderProperties().getLineWidth())+5;
                 }
                 
                 if( col.getDetailBorderProperties().isShowLeftLine())
                 {
-                    int lineWidth = col.getDetailBorderProperties().getLineWidth()<0?6:(int)Math.ceil(col.getDetailBorderProperties().getLineWidth())+5;
+                    int lineWidth = col.getDetailBorderProperties().getLineWidth()<1?6:(int)Math.ceil(col.getDetailBorderProperties().getLineWidth())+5;
                     leftLineOffset = lineWidth>leftLineOffset?lineWidth:leftLineOffset;
                 }
                 
                 if(col.isShowFooter() && col.getFooterBorderProperties().isShowLeftLine())
                 {
-                    int lineWidth = col.getFooterBorderProperties().getLineWidth()<0?6:(int)Math.ceil(col.getFooterBorderProperties().getLineWidth())+5;
+                    int lineWidth = col.getFooterBorderProperties().getLineWidth()<1?6:(int)Math.ceil(col.getFooterBorderProperties().getLineWidth())+5;
                     leftLineOffset = lineWidth;
                     leftLineOffset = lineWidth>leftLineOffset?lineWidth:leftLineOffset;
                 }
@@ -549,7 +549,7 @@ public class EJReportJasperReportBuilder
             }
             line.setX(currentX-leftLineOffset);
             line.setY(0);
-            line.setWidth(borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth()));
+            line.setWidth(borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth()));
             line.setHeight(bandHeight);
             band.addElement(line);
         }
@@ -577,7 +577,7 @@ public class EJReportJasperReportBuilder
                     break;
             }
             
-            int lineWidth = borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth());
+            int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
             line.setX((currentX+width)-1);
             line.setY(0);
            
@@ -609,7 +609,7 @@ public class EJReportJasperReportBuilder
                     break;
             }
             line.setX(currentX-leftLineOffset);
-            int lineWidth = borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth());
+            int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
             line.setY(bandHeight-lineWidth);
           
             line.setWidth(width+leftLineOffset);
@@ -640,7 +640,7 @@ public class EJReportJasperReportBuilder
                     break;
             }
             line.setX(currentX-leftLineOffset);
-            int lineWidth = borderProperties.getLineWidth()<0?1:(int)Math.floor(borderProperties.getLineWidth());
+            int lineWidth = borderProperties.getLineWidth()<1?1:(int)Math.floor(borderProperties.getLineWidth());
             line.setY(0);
             
             line.setWidth(width+leftLineOffset);
