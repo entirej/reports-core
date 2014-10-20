@@ -145,7 +145,7 @@ public class EJJasperReports
 
             JasperReport jasperReport = builder.toReport();
 
-            List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>(Arrays.asList(parameters));
+            List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>();
 
             for (EJReportRuntimeLevelParameter parameter : manager.getRuntimeLevelParameters())
             {
@@ -173,6 +173,8 @@ public class EJJasperReports
                 EJJasperReportParameter subRPTParameter = new EJJasperReportParameter(blockRPTParam, sbBuilder.toReport());
                 reportParameters.add(subRPTParameter);
             }
+            
+            reportParameters.addAll(Arrays.asList(parameters));
             
             // JasperDesignViewer.viewReportDesign(jasperReport);
             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));

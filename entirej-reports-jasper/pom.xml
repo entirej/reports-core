@@ -153,7 +153,6 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>5.5.2</version>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
