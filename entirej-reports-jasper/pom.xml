@@ -6,7 +6,7 @@
 	<version>${VERSION}</version>
 	<name>Entirej Reports Jasper Impl</name>
 	<build>
-		<finalName>entirej-reposts-${VERSION}</finalName>
+		<finalName>entirej-report-jasper-${VERSION}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>tests</testSourceDirectory>
 		<resources>

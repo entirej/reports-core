@@ -135,6 +135,57 @@ public class EJJasperReports
         }
     }
 
+    public static JasperPrint fillReport(EJReportFrameworkManager manager, EJReport report, EJJasperReportParameter... parameters)
+    {
+        try
+        {
+            EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
+
+            builder.buildDesign(report);
+
+            JasperReport jasperReport = builder.toReport();
+
+            List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>(Arrays.asList(parameters));
+
+            for (EJReportRuntimeLevelParameter parameter : manager.getRuntimeLevelParameters())
+            {
+                EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
+                reportParameters.add(jasperReportParameter);
+            }
+
+            Collection<EJReportParameter> allParameters = report.getParameterList().getAllParameters();
+            for (EJReportParameter parameter : allParameters)
+            {
+                EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
+                reportParameters.add(jasperReportParameter);
+            }
+
+            // add Block datasource
+
+            Collection<EJReportBlock> allBlocks = report.getAllBlocks();
+            for (EJReportBlock block : allBlocks)
+            {
+
+                EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+                sbBuilder.buildDesign(block);
+
+                String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
+                EJJasperReportParameter subRPTParameter = new EJJasperReportParameter(blockRPTParam, sbBuilder.toReport());
+                reportParameters.add(subRPTParameter);
+            }
+            
+            // JasperDesignViewer.viewReportDesign(jasperReport);
+            JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));
+            return print;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new EJReportRuntimeException(e);
+        }
+    }
+
     public static JasperPrint fillReport(InputStream reportFile, Connection connection, EJJasperReportParameter... parameters)
     {
         try
@@ -169,6 +220,18 @@ public class EJJasperReports
             EJJasperReportParameter... parameters)
     {
         JasperPrint jasperPrint = fillReport(reportFile, dataSource, parameters);
+        exportReport(type, jasperPrint, outputFile);
+    }
+    public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile,
+            EJJasperReportParameter... parameters)
+    {
+        JasperPrint jasperPrint = fillReport(manager,report,parameters);
+        exportReport(report.getProperties().getExportType(), jasperPrint, outputFile);
+    }
+    public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile, EJReportExportType type,
+            EJJasperReportParameter... parameters)
+    {
+        JasperPrint jasperPrint = fillReport(manager,report,parameters);
         exportReport(type, jasperPrint, outputFile);
     }
 
@@ -342,70 +405,31 @@ public class EJJasperReports
     public static void tempEJReportRun(EJReportFrameworkManager manager, EJReport report, EJJasperReportParameter... parameters)
     {
 
-        EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
-
-        builder.buildDesign(report);
-
-        JasperReport jasperReport = builder.toReport();
-
-        List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>(Arrays.asList(parameters));
-
-        for (EJReportRuntimeLevelParameter parameter : manager.getRuntimeLevelParameters())
-        {
-            EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
-            reportParameters.add(jasperReportParameter);
-        }
-
-        Collection<EJReportParameter> allParameters = report.getParameterList().getAllParameters();
-        for (EJReportParameter parameter : allParameters)
-        {
-            EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
-            reportParameters.add(jasperReportParameter);
-        }
-
-        // add Block datasource
-
-        Collection<EJReportBlock> allBlocks = report.getAllBlocks();
-        for (EJReportBlock block : allBlocks)
-        {
-            
-            
-            EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
-            sbBuilder.buildDesign(block);
-
-            String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
-            EJJasperReportParameter subRPTParameter = new EJJasperReportParameter(blockRPTParam, sbBuilder.toReport());
-            reportParameters.add(subRPTParameter);
-        }
+        
 
         try
         {
-           // JasperDesignViewer.viewReportDesign(jasperReport);
-
            
 
-           
-             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report),
-             reportParameters.toArray(parameters));
-             JasperViewer.viewReport(print);
-             if(false)
-             {
-             File temp = null;
-             try
-             {
-                 temp = File.createTempFile("ej-report", "pdf");
-                 temp.deleteOnExit();
-             }
-             catch (IOException e1)
-             {
-                 e1.printStackTrace();
-                 return;
-             }
-             System.out.println(temp.getAbsolutePath());
-             exportReport(EJReportExportType.PDF, print,
-             temp.getAbsolutePath());
-             Desktop.getDesktop().open(temp);
-             }
+            JasperPrint print = fillReport(manager, report, parameters);
+            JasperViewer.viewReport(print);
+            if (false)
+            {
+                File temp = null;
+                try
+                {
+                    temp = File.createTempFile("ej-report", "pdf");
+                    temp.deleteOnExit();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                    return;
+                }
+                System.out.println(temp.getAbsolutePath());
+                exportReport(EJReportExportType.PDF, print, temp.getAbsolutePath());
+                Desktop.getDesktop().open(temp);
+            }
         }
         catch (Exception e)
         {
