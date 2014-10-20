@@ -38,9 +38,11 @@ import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
+import net.sf.jasperreports.engine.type.PositionTypeEnum;
 import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.SplitTypeEnum;
+import net.sf.jasperreports.engine.type.StretchTypeEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 import org.entirej.framework.report.EJReport;
@@ -147,6 +149,7 @@ public class EJReportJasperReportBuilder
                 }
             };
             JRDesignSubreport subreport = new JRDesignSubreport(styleProvider);
+            subreport.setPositionType(PositionTypeEnum.FLOAT);
             subreport.setKey(block.getName());
             subreport.setRemoveLineWhenBlank(true);
 
@@ -416,7 +419,9 @@ public class EJReportJasperReportBuilder
                             element.setStyle(style);
                         }
 
-                        setPadding(item, element);
+                        if(element.getWidth()>10 && (element.getX()+element.getWidth()>=width))
+                            element.setWidth(element.getWidth()-10);
+                        element.setPositionType(PositionTypeEnum.FLOAT);
                     }
 
                 }
@@ -460,7 +465,10 @@ public class EJReportJasperReportBuilder
 
                             element.setStyle(style);
                         }
-                        setPadding(item, element);
+                        
+                        if(element.getWidth()>10 && (element.getX()+element.getWidth()>=width))
+                            element.setWidth(element.getWidth()-10);
+                        element.setPositionType(PositionTypeEnum.FLOAT);
                     }
 
                 }
@@ -504,7 +512,8 @@ public class EJReportJasperReportBuilder
 
                             element.setStyle(style);
                         }
-                        setPadding(item, element);
+                        
+                        element.setPositionType(PositionTypeEnum.FLOAT);
                     }
 
                 }
@@ -516,6 +525,7 @@ public class EJReportJasperReportBuilder
             if (oddEvenRowStyle != null)
             {
                 JRDesignStaticText box = new JRDesignStaticText();
+                box.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
                 box.setStyle(oddEvenRowStyle);
                 box.setX(currentX);
                 box.setY(0);
@@ -587,16 +597,7 @@ public class EJReportJasperReportBuilder
     
 
 
-    private void setPadding(EJCoreReportScreenItemProperties item, JRDesignElement element)
-    {
-        if (element instanceof JRParagraphContainer)
-        {
-            JRParagraphContainer text = (JRParagraphContainer) element;
 
-            text.getParagraph().setLeftIndent(5);
-            text.getParagraph().setRightIndent(5);
-        }
-    }
 
     private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int width, EJReportBorderProperties borderProperties) throws JRException
     {
@@ -639,7 +640,8 @@ public class EJReportJasperReportBuilder
             {
                 line.setStyle(style);
             }
-
+            line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
+            line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
             band.addElement(line);
         }
         if (borderProperties.isShowRightLine())
@@ -676,7 +678,8 @@ public class EJReportJasperReportBuilder
                 line.setStyle(style);
             }
             band.addElement(line);
-
+            line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
+            line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
         }
         if (borderProperties.isShowBottomLine())
         {
@@ -710,6 +713,7 @@ public class EJReportJasperReportBuilder
             {
                 line.setStyle(style);
             }
+            line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_BOTTOM);
             band.addElement(line);
         }
         if (borderProperties.isShowTopLine())
@@ -739,7 +743,7 @@ public class EJReportJasperReportBuilder
 
             line.setWidth(width);
             line.setHeight(lineWidth);
-
+            line.setPositionType(PositionTypeEnum.FLOAT);
             if (style != null)
             {
                 line.setStyle(style);
@@ -791,6 +795,7 @@ public class EJReportJasperReportBuilder
                 element.setY(item.getY());
                 element.setWidth(item.getWidth());
                 element.setHeight(item.getHeight());
+                element.setPositionType(PositionTypeEnum.FLOAT);
                 detail.addElement(element);
 
                 EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
@@ -801,6 +806,7 @@ public class EJReportJasperReportBuilder
 
                     element.setStyle(style);
                 }
+                
             }
 
         }
@@ -809,6 +815,7 @@ public class EJReportJasperReportBuilder
         for (EJCoreReportBlockProperties blockProperties : allSubBlocks)
         {
             EJReportBlock subBlock = block.getReport().getBlock(blockProperties.getName());
+            
             createSubReport(block.getReport(), detail, subBlock);
 
             if (blockProperties.getLayoutScreenProperties().getScreenType() != EJReportScreenType.NONE)
@@ -940,6 +947,7 @@ public class EJReportJasperReportBuilder
 
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
+                text.setStretchWithOverflow(true);
                 text.setBlankWhenNull(true);
             }
                 break;
@@ -953,6 +961,7 @@ public class EJReportJasperReportBuilder
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
+                text.setStretchWithOverflow(true);
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
                 {
                     text.setPattern(textItem.getManualFormat());
@@ -993,7 +1002,7 @@ public class EJReportJasperReportBuilder
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
-
+                text.setStretchWithOverflow(true);
                 Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
 
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
