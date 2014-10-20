@@ -100,7 +100,7 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
             String defaultValue = attributes.getValue("defaultValue");
 
             EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(paramName, dataTypeName);
-            parameter.setValue(defaultValue);
+            parameter.setValue(parameter.toDefaultValue(defaultValue));
             _reportProperties.addReportParameter(parameter);
         }
         else if (name.equals(ELEMENT_BLOCK))
