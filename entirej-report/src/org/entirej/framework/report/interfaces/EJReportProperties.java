@@ -100,5 +100,11 @@ public interface EJReportProperties extends Serializable
     public ORIENTATION getOrientation();
     
     public EJReportExportType getExportType();
+    
+    
+    public int getHeaderSectionHeight();
+    
+    
+    public int getFooterSectionHeight();
 
 }

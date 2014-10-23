@@ -57,12 +57,15 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     private int                                 _marginLeft;
     private int                                 _marginRight;
 
+    private int                                 _headerSectionHeight;
+    private int                                 _footerSectionHeight;
+
     private EJReportProperties.ORIENTATION      _orientation              = ORIENTATION.PORTRAIT;
 
     private EJReportBlockContainer              blockContainer;
     private EJReportFrameworkManager            _frameworkManager;
 
-    private EJReportExportType                  exportType =  EJReportExportType.PDF;
+    private EJReportExportType                  exportType                = EJReportExportType.PDF;
 
     public EJCoreReportProperties(String reportName, EJReportFrameworkManager _frameworkManager)
     {
@@ -441,18 +444,37 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     {
         return _frameworkManager;
     }
-    
-    
+
     @Override
     public EJReportExportType getExportType()
     {
         return exportType;
     }
-    
-    
+
     public void setExportType(EJReportExportType exportType)
     {
         this.exportType = exportType;
     }
-    
+
+    @Override
+    public int getHeaderSectionHeight()
+    {
+        return _headerSectionHeight;
+    }
+
+    public void setHeaderSectionHeight(int headerSectionHeight)
+    {
+        this._headerSectionHeight = headerSectionHeight;
+    }
+
+    @Override
+    public int getFooterSectionHeight()
+    {
+        return _footerSectionHeight;
+    }
+
+    public void setFooterSectionHeight(int footerSectionHeight)
+    {
+        this._footerSectionHeight = footerSectionHeight;
+    }
 }

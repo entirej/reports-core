@@ -104,6 +104,26 @@ public class EJReportJasperReportBuilder
 
             JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
 
+            
+            JRDesignBand header = null;
+            if(properties.getHeaderSectionHeight()>0)
+            {
+                header = new JRDesignBand();
+                header.setSplitType(SplitTypeEnum.STRETCH);
+                header.setHeight(properties.getHeaderSectionHeight());
+                design.setPageHeader(header);
+                height-=properties.getHeaderSectionHeight();
+            }
+            JRDesignBand footer = null;
+            if(properties.getFooterSectionHeight()>0)
+            {
+                footer = new JRDesignBand();
+                footer.setSplitType(SplitTypeEnum.STRETCH);
+                footer.setHeight(properties.getFooterSectionHeight());
+                design.setPageFooter(footer);
+                height-=properties.getFooterSectionHeight();
+            }
+            
             JRDesignBand detail = new JRDesignBand();
             detail.setSplitType(SplitTypeEnum.STRETCH);
             detail.setHeight(height);
@@ -113,8 +133,46 @@ public class EJReportJasperReportBuilder
             Collection<EJReportBlock> rootbBlocks = report.getRootBlocks();
             for (EJReportBlock block : rootbBlocks)
             {
-
-                createSubReport(report, detail, block);
+                JRDesignSubreport subreport = createSubReport(report, block);
+                if(subreport==null)continue;
+                EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
+                
+                
+                if(header!=null && properties.getHeaderSectionHeight()>screenProperties.getY())
+                {
+                    subreport.setX(screenProperties.getX());
+                    subreport.setY(screenProperties.getY());
+                    subreport.setWidth(screenProperties.getWidth());
+                    
+                    
+                    if((screenProperties.getY()+screenProperties.getHeight())>properties.getHeaderSectionHeight())
+                    {
+                        subreport.setHeight(screenProperties.getHeight()-((screenProperties.getY()+screenProperties.getHeight())-properties.getHeaderSectionHeight()));
+                    }
+                    else
+                    {
+                        subreport.setHeight(screenProperties.getHeight());
+                    }
+                    
+                    header.addElement(subreport);
+                    continue;
+                }
+                if(footer!=null && ((height+ properties.getHeaderSectionHeight()))<=screenProperties.getY())
+                {
+                    subreport.setX(screenProperties.getX());
+                    subreport.setY((height+ properties.getHeaderSectionHeight())-screenProperties.getY());
+                    subreport.setWidth(screenProperties.getWidth());
+                    subreport.setHeight(screenProperties.getHeight());
+                    footer.addElement(subreport);
+                    continue;
+                }
+                
+                    subreport.setX(screenProperties.getX());
+                    subreport.setY(screenProperties.getY()- properties.getHeaderSectionHeight());
+                    subreport.setWidth(screenProperties.getWidth());
+                    subreport.setHeight(screenProperties.getHeight());
+                    detail.addElement(subreport);
+                
 
             }
 
@@ -125,7 +183,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private void createSubReport(EJReport report, JRDesignBand detail, EJReportBlock block) throws JRException
+    private JRDesignSubreport createSubReport(EJReport report, EJReportBlock block) throws JRException
     {
         EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
 
@@ -196,13 +254,11 @@ public class EJReportJasperReportBuilder
                 subreportParameter.setExpression(expression);
                 subreport.addParameter(subreportParameter);
             }
-
-            subreport.setX(screenProperties.getX());
-            subreport.setY(screenProperties.getY());
-            subreport.setWidth(screenProperties.getWidth());
-            subreport.setHeight(screenProperties.getHeight());
-            detail.addElement(subreport);
+            return subreport;
+            
         }
+        
+        return null;
     }
 
     void createParamaters(EJReport report) throws JRException
@@ -816,8 +872,15 @@ public class EJReportJasperReportBuilder
         {
             EJReportBlock subBlock = block.getReport().getBlock(blockProperties.getName());
             
-            createSubReport(block.getReport(), detail, subBlock);
+            JRDesignSubreport subreport = createSubReport(block.getReport(), subBlock);
+            if(subreport==null)continue;
 
+            EJCoreReportScreenProperties sub = blockProperties.getLayoutScreenProperties();
+            subreport.setX(sub.getX());
+            subreport.setY(sub.getY());
+            subreport.setWidth(sub.getWidth());
+            subreport.setHeight(sub.getHeight());
+            detail.addElement(subreport);
             if (blockProperties.getLayoutScreenProperties().getScreenType() != EJReportScreenType.NONE)
             {
                 EJCoreReportScreenProperties layoutScreenProperties = blockProperties.getLayoutScreenProperties();
