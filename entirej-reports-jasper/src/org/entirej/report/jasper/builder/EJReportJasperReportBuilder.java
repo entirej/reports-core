@@ -124,6 +124,34 @@ public class EJReportJasperReportBuilder
                 height-=properties.getFooterSectionHeight();
             }
             
+            for (EJReportBlock block : report.getHeaderBlocks())
+            {
+                JRDesignSubreport subreport = createSubReport(report, block);
+                if(subreport==null)continue;
+                EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
+               
+                
+                    subreport.setX(screenProperties.getX());
+                    subreport.setY(screenProperties.getY());
+                    subreport.setWidth(screenProperties.getWidth());
+                    subreport.setHeight(screenProperties.getHeight());
+                    header.addElement(subreport);
+            }
+            for (EJReportBlock block : report.getFooterBlocks())
+            {
+                JRDesignSubreport subreport = createSubReport(report, block);
+                if(subreport==null)continue;
+                EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
+                
+                
+                subreport.setX(screenProperties.getX());
+                subreport.setY(screenProperties.getY());
+                subreport.setWidth(screenProperties.getWidth());
+                subreport.setHeight(screenProperties.getHeight());
+                footer.addElement(subreport);
+            }
+            
+            
             JRDesignBand detail = new JRDesignBand();
             detail.setSplitType(SplitTypeEnum.STRETCH);
             detail.setHeight(height);
@@ -136,44 +164,13 @@ public class EJReportJasperReportBuilder
                 JRDesignSubreport subreport = createSubReport(report, block);
                 if(subreport==null)continue;
                 EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
+               
                 
-                
-                if(header!=null && properties.getHeaderSectionHeight()>screenProperties.getY())
-                {
                     subreport.setX(screenProperties.getX());
                     subreport.setY(screenProperties.getY());
                     subreport.setWidth(screenProperties.getWidth());
-                    
-                    
-                    if((screenProperties.getY()+screenProperties.getHeight())>properties.getHeaderSectionHeight())
-                    {
-                        subreport.setHeight(screenProperties.getHeight()-((screenProperties.getY()+screenProperties.getHeight())-properties.getHeaderSectionHeight()));
-                    }
-                    else
-                    {
-                        subreport.setHeight(screenProperties.getHeight());
-                    }
-                    
-                    header.addElement(subreport);
-                    continue;
-                }
-                if(footer!=null && ((height+ properties.getHeaderSectionHeight()))<=screenProperties.getY())
-                {
-                    subreport.setX(screenProperties.getX());
-                    subreport.setY((height+ properties.getHeaderSectionHeight())-screenProperties.getY());
-                    subreport.setWidth(screenProperties.getWidth());
-                    subreport.setHeight(screenProperties.getHeight());
-                    footer.addElement(subreport);
-                    continue;
-                }
-                
-                    subreport.setX(screenProperties.getX());
-                    subreport.setY(screenProperties.getY()- properties.getHeaderSectionHeight());
-                    subreport.setWidth(screenProperties.getWidth());
                     subreport.setHeight(screenProperties.getHeight());
                     detail.addElement(subreport);
-                
-
             }
 
         }

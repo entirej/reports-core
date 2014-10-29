@@ -27,8 +27,11 @@ public class ReportBlockGroupHandler extends EJCoreReportPropertiesTagHandler
     private EJCoreReportProperties _formProperties;
     private BlockGroup             _blockGroup;
 
-    private static final String    ELEMENT_BLOCK       = "block";
-    private static final String    ELEMENT_BLOCK_GROUP = "blockGroup";
+    private static final String    ELEMENT_BLOCK        = "block";
+    private static final String    ELEMENT_BLOCK_GROUP  = "blockGroup";
+
+    private static final String    ELEMENT_BLOCK_HEADER = "ej.header.blocks";
+    private static final String    ELEMENT_BLOCK_FOOTER = "ej.footer.blocks";
 
     public ReportBlockGroupHandler(EJCoreReportProperties formProperties)
     {
@@ -67,6 +70,14 @@ public class ReportBlockGroupHandler extends EJCoreReportPropertiesTagHandler
     public void endLocalElement(String name, String value, String untrimmedValue)
     {
         if (name.equals(ELEMENT_BLOCK_GROUP))
+        {
+            quitAsDelegate();
+        }
+        if (name.equals(ELEMENT_BLOCK_HEADER))
+        {
+            quitAsDelegate();
+        }
+        if (name.equals(ELEMENT_BLOCK_FOOTER))
         {
             quitAsDelegate();
         }

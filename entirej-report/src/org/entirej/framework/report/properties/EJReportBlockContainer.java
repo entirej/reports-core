@@ -26,6 +26,9 @@ public class EJReportBlockContainer
     private List<BlockContainerItem> _blockProperties;
     private EJCoreReportProperties   _reportProperties;
 
+    private BlockGroup               headerSection = new BlockGroup("Header");
+    private BlockGroup               footerSection = new BlockGroup("Footer");
+
     public EJReportBlockContainer(EJCoreReportProperties reportProperties)
     {
         _reportProperties = reportProperties;
@@ -43,35 +46,30 @@ public class EJReportBlockContainer
 
     }
 
+    public void setFooterSection(BlockGroup footerSection)
+    {
+        this.footerSection = footerSection;
+    }
+
+    public BlockGroup getFooterSection()
+    {
+        return footerSection;
+    }
+
+    public void setHeaderSection(BlockGroup headerSection)
+    {
+        this.headerSection = headerSection;
+    }
+
+    public BlockGroup getHeaderSection()
+    {
+        return headerSection;
+    }
+
     public boolean contains(String blockName)
     {
-        Iterator<BlockContainerItem> iti = _blockProperties.iterator();
-        while (iti.hasNext())
-        {
-
-            BlockContainerItem containerItem = iti.next();
-            if ((containerItem instanceof BlockGroup))
-            {
-                BlockGroup blockGroup = (BlockGroup) containerItem;
-                EJCoreReportBlockProperties blockProperties = blockGroup.getBlockProperties(blockName);
-                if (blockProperties != null)
-                {
-                    return true;
-                }
-                continue;
-            }
-            EJCoreReportBlockProperties props = (EJCoreReportBlockProperties) containerItem;
-            if (props.getName().equalsIgnoreCase(blockName))
-            {
-                return true;
-            }
-            EJCoreReportBlockProperties blockProperties = props.getLayoutScreenProperties().getSubBlocks().getBlockProperties(blockName);
-            if (blockProperties != null)
-            {
-                return true;
-            }
-        }
-        return false;
+        
+        return getBlockProperties(blockName)!=null;
     }
 
     public void addBlockProperties(BlockContainerItem blockProperties)
@@ -90,30 +88,7 @@ public class EJReportBlockContainer
         }
     }
 
-    public void replaceBlockProperties(EJCoreReportBlockProperties oldProp, EJCoreReportBlockProperties newProp)
-    {
-        if (oldProp != null && newProp != null)
-        {
 
-            BlockGroup blockGroupByBlock = getBlockGroupByBlock(oldProp);
-            if (blockGroupByBlock == null)
-            {
-                int indexOf = _blockProperties.indexOf(oldProp);
-                if (indexOf > -1)
-                {
-                    _blockProperties.set(indexOf, newProp);
-                }
-                else
-                {
-                    _blockProperties.add(newProp);
-                }
-            }
-            else
-            {
-                blockGroupByBlock.replaceBlockProperties(oldProp, newProp);
-            }
-        }
-    }
 
     public void addBlockProperties(int index, BlockContainerItem blockProperties)
     {
@@ -123,27 +98,7 @@ public class EJReportBlockContainer
         }
     }
 
-    public void removeBlockProperties(EJCoreReportBlockProperties props, boolean cleanup)
-    {
 
-        if (cleanup && contains(props.getName()))
-        {
-
-            // FIXME
-
-        }
-
-        BlockGroup blockGroup = getBlockGroupByBlock(props);
-        if (blockGroup == null)
-        {
-            _blockProperties.remove(props);
-        }
-        else
-        {
-            blockGroup.removeBlockProperties(props);
-        }
-
-    }
 
     /**
      * Used to retrieve a specific blocks properties.
@@ -185,59 +140,44 @@ public class EJReportBlockContainer
                 return blockProperties;
             }
         }
-        return null;
-    }
-
-    public BlockGroup getBlockGroupByBlock(EJCoreReportBlockProperties blockProperties)
-    {
-
-        Iterator<BlockContainerItem> iti = _blockProperties.iterator();
-
-        while (iti.hasNext())
+        
+        EJCoreReportBlockProperties blockProperties = headerSection.getBlockProperties(blockName);
+        if(blockProperties!=null)
         {
-
-            BlockContainerItem containerItem = iti.next();
-            if ((containerItem instanceof BlockGroup))
-            {
-                BlockGroup blockGroup = (BlockGroup) containerItem;
-                if (blockGroup.getBlockProperties(blockProperties.getName()) != null)
-                {
-                    return blockGroup;
-                }
-                continue;
-            }
-            EJCoreReportBlockProperties props = (EJCoreReportBlockProperties) containerItem;
-
-            if (props.equals(blockProperties))
-            {
-                return null;
-            }
+            return blockProperties;
+        }
+         blockProperties = footerSection.getBlockProperties(blockName);
+        if(blockProperties!=null)
+        {
+            return blockProperties;
         }
         return null;
     }
+
+ 
 
     public List<EJCoreReportBlockProperties> getAllBlockProperties()
     {
         List<EJCoreReportBlockProperties> list = new ArrayList<EJCoreReportBlockProperties>();
 
-       list.addAll(getRootBlockProperties());
+        list.addAll(headerSection.getAllBlockProperties());
+        list.addAll(getRootBlockProperties());
         for (EJCoreReportBlockProperties ejCoreReportBlockProperties : new ArrayList<EJCoreReportBlockProperties>(list))
         {
             collectSubBlocks(ejCoreReportBlockProperties, list);
         }
-        
-
+        list.addAll(footerSection.getAllBlockProperties());
         return list;
     }
-    
+
     public List<EJCoreReportBlockProperties> getRootBlockProperties()
     {
         List<EJCoreReportBlockProperties> list = new ArrayList<EJCoreReportBlockProperties>();
-        
+
         Iterator<BlockContainerItem> iti = _blockProperties.iterator();
         while (iti.hasNext())
         {
-            
+
             BlockContainerItem containerItem = iti.next();
             if ((containerItem instanceof BlockGroup))
             {
@@ -247,17 +187,14 @@ public class EJReportBlockContainer
             EJCoreReportBlockProperties props = (EJCoreReportBlockProperties) containerItem;
             list.add(props);
         }
-        
-        
-        
+
         return list;
     }
-    
-    
-    void collectSubBlocks(EJCoreReportBlockProperties blockProperties,  List<EJCoreReportBlockProperties> list)
+
+    void collectSubBlocks(EJCoreReportBlockProperties blockProperties, List<EJCoreReportBlockProperties> list)
     {
         List<EJCoreReportBlockProperties> allSubBlocks = blockProperties.getLayoutScreenProperties().getAllSubBlocks();
-        for(EJCoreReportBlockProperties sub : allSubBlocks)
+        for (EJCoreReportBlockProperties sub : allSubBlocks)
         {
             list.add(sub);
             collectSubBlocks(sub, list);

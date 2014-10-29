@@ -178,6 +178,31 @@ public class EJReport implements EJReportFrameworkHelper
         
         return blocks;
     }
+    public Collection<EJReportBlock> getHeaderBlocks()
+    {
+        ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
+        
+        for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getHeaderSection().getAllBlockProperties())
+        {
+            
+            blocks.add(getBlock(blockProp.getName()));
+        }
+        
+        return blocks;
+    }
+    
+    public Collection<EJReportBlock> getFooterBlocks()
+    {
+        ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
+        
+        for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getFooterSection().getAllBlockProperties())
+        {
+            
+            blocks.add(getBlock(blockProp.getName()));
+        }
+        
+        return blocks;
+    }
 
     /**
      * Retrieves the required block
