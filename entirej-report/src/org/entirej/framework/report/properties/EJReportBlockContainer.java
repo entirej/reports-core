@@ -162,11 +162,13 @@ public class EJReportBlockContainer
 
         list.addAll(headerSection.getAllBlockProperties());
         list.addAll(getRootBlockProperties());
+        
+        list.addAll(footerSection.getAllBlockProperties());
+        
         for (EJCoreReportBlockProperties ejCoreReportBlockProperties : new ArrayList<EJCoreReportBlockProperties>(list))
         {
             collectSubBlocks(ejCoreReportBlockProperties, list);
         }
-        list.addAll(footerSection.getAllBlockProperties());
         return list;
     }
 
