@@ -71,6 +71,8 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
+import com.fasterxml.jackson.core.JsonToken;
+
 public class EJReportJasperReportBuilder
 {
 
@@ -135,6 +137,7 @@ public class EJReportJasperReportBuilder
                     subreport.setY(screenProperties.getY());
                     subreport.setWidth(screenProperties.getWidth());
                     subreport.setHeight(screenProperties.getHeight());
+                    subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
                     header.addElement(subreport);
             }
             for (EJReportBlock block : report.getFooterBlocks())
@@ -148,6 +151,7 @@ public class EJReportJasperReportBuilder
                 subreport.setY(screenProperties.getY());
                 subreport.setWidth(screenProperties.getWidth());
                 subreport.setHeight(screenProperties.getHeight());
+                subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
                 footer.addElement(subreport);
             }
             

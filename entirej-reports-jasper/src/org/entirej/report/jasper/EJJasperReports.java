@@ -47,7 +47,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-import net.sf.jasperreports.view.JasperDesignViewer;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import net.sf.jasperreports.view.JasperViewer;
 
 import org.entirej.framework.report.EJReport;
@@ -58,7 +58,6 @@ import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
-import org.entirej.report.jasper.data.EJReportBlockDataSource;
 import org.entirej.report.jasper.data.EJReportDataSource;
 
 public class EJJasperReports
@@ -173,9 +172,9 @@ public class EJJasperReports
                 EJJasperReportParameter subRPTParameter = new EJJasperReportParameter(blockRPTParam, sbBuilder.toReport());
                 reportParameters.add(subRPTParameter);
             }
-            
+
             reportParameters.addAll(Arrays.asList(parameters));
-            
+
             // JasperDesignViewer.viewReportDesign(jasperReport);
             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));
             return print;
@@ -224,16 +223,17 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(reportFile, dataSource, parameters);
         exportReport(type, jasperPrint, outputFile);
     }
-    public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile,
-            EJJasperReportParameter... parameters)
+
+    public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile, EJJasperReportParameter... parameters)
     {
-        JasperPrint jasperPrint = fillReport(manager,report,parameters);
+        JasperPrint jasperPrint = fillReport(manager, report, parameters);
         exportReport(report.getProperties().getExportType(), jasperPrint, outputFile);
     }
+
     public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile, EJReportExportType type,
             EJJasperReportParameter... parameters)
     {
-        JasperPrint jasperPrint = fillReport(manager,report,parameters);
+        JasperPrint jasperPrint = fillReport(manager, report, parameters);
         exportReport(type, jasperPrint, outputFile);
     }
 
@@ -347,7 +347,13 @@ public class EJJasperReports
                     exporter.setExporterInput(new SimpleExporterInput(print));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
                     SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+
                     configuration.setOnePagePerSheet(false);
+
+                    configuration.setDetectCellType(Boolean.TRUE);
+                    configuration.setWhitePageBackground(Boolean.FALSE);
+                    configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
+                   
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                 }
@@ -361,6 +367,14 @@ public class EJJasperReports
 
                     exporter.setExporterInput(new SimpleExporterInput(print));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
+                    SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+
+                    configuration.setOnePagePerSheet(false);
+
+                    configuration.setDetectCellType(Boolean.TRUE);
+                    configuration.setWhitePageBackground(Boolean.FALSE);
+                    configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
+                    exporter.setConfiguration(configuration);
                     exporter.exportReport();
                 }
 
@@ -407,15 +421,12 @@ public class EJJasperReports
     public static void tempEJReportRun(EJReportFrameworkManager manager, EJReport report, EJJasperReportParameter... parameters)
     {
 
-        
-
         try
         {
-           
 
             JasperPrint print = fillReport(manager, report, parameters);
-            JasperViewer.viewReport(print);
-            if (false)
+            // JasperViewer.viewReport(print);
+            if (true)
             {
                 File temp = null;
                 try
@@ -429,7 +440,7 @@ public class EJJasperReports
                     return;
                 }
                 System.out.println(temp.getAbsolutePath());
-                exportReport(EJReportExportType.PDF, print, temp.getAbsolutePath());
+                exportReport(EJReportExportType.XLS, print, temp.getAbsolutePath());
                 Desktop.getDesktop().open(temp);
             }
         }
