@@ -353,6 +353,7 @@ public class EJJasperReports
                     configuration.setDetectCellType(Boolean.TRUE);
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
+                    configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
                    
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
@@ -374,6 +375,7 @@ public class EJJasperReports
                     configuration.setDetectCellType(Boolean.TRUE);
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
+                    configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                 }
