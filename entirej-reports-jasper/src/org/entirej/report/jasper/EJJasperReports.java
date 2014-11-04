@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -48,7 +49,6 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
-import net.sf.jasperreports.view.JasperViewer;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
@@ -63,6 +63,12 @@ import org.entirej.report.jasper.data.EJReportDataSource;
 public class EJJasperReports
 {
 
+    static{
+        
+        
+        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.print.keep.full.text", "true");
+    }
+    
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
     {
         Map<String, Object> map = new HashMap<String, Object>();

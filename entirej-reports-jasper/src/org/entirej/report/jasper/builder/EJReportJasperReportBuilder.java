@@ -91,11 +91,7 @@ public class EJReportJasperReportBuilder
             createParamaters(report);
             design.setName(report.getName());
 
-            JRDesignStyle _EJ_DEAFULT = new JRDesignStyle();
-            _EJ_DEAFULT.setName("_EJ_DEAFULT");
-            _EJ_DEAFULT.setFontName("Arial");
-            _EJ_DEAFULT.setDefault(true);
-            design.addStyle(_EJ_DEAFULT);
+            addDefaultFont();
 
             EJReportProperties properties = report.getProperties();
 
@@ -186,6 +182,17 @@ public class EJReportJasperReportBuilder
         {
             throw new EJReportRuntimeException(e);
         }
+    }
+
+    private void addDefaultFont() throws JRException
+    {
+        JRDesignStyle _EJ_DEAFULT = new JRDesignStyle();
+        _EJ_DEAFULT.setName("_EJ_DEAFULT");
+        _EJ_DEAFULT.setFontName("Arial");
+        _EJ_DEAFULT.setPdfFontName("Helvetica");
+        _EJ_DEAFULT.setDefault(true);
+        _EJ_DEAFULT.setPdfEmbedded(true);
+        design.addStyle(_EJ_DEAFULT);
     }
 
     private JRDesignSubreport createSubReport(EJReport report, EJReportBlock block) throws JRException
@@ -317,11 +324,7 @@ public class EJReportJasperReportBuilder
             design.setBottomMargin(0);
             design.setLeftMargin(0);
             design.setRightMargin(0);
-            JRDesignStyle _EJ_DEAFULT = new JRDesignStyle();
-            _EJ_DEAFULT.setName("_EJ_DEAFULT");
-            _EJ_DEAFULT.setFontName("Arial");
-            _EJ_DEAFULT.setDefault(true);
-            design.addStyle(_EJ_DEAFULT);
+            addDefaultFont();
 
             EJCoreReportBlockProperties properties = block.getProperties();
             Collection<EJReportBlockItem> blockItems = block.getBlockItems();
@@ -941,10 +944,13 @@ public class EJReportJasperReportBuilder
         if (!EJReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
         {
             style.setFontName(fontName);
+            style.setPdfEmbedded(true);
         }
         else
         {
             style.setFontName("Arial");
+            style.setPdfFontName("Helvetica");
+            style.setPdfEmbedded(true);
         }
 
         float fontSize = va.getFontSize();
