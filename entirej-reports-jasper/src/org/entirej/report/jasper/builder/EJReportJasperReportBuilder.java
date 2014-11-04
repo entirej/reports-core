@@ -936,6 +936,9 @@ public class EJReportJasperReportBuilder
         if (!EJReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
         {
             style.setFontName(fontName);
+        }else
+        {
+            style.setFontName("Arial");
         }
 
         float fontSize = va.getFontSize();
