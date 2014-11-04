@@ -589,17 +589,7 @@ public class EJReportJasperReportBuilder
 
             }
 
-            if (oddEvenRowStyle != null)
-            {
-                JRDesignStaticText box = new JRDesignStaticText();
-                box.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
-                box.setStyle(oddEvenRowStyle);
-                box.setX(currentX);
-                box.setY(0);
-                box.setWidth(width);
-                box.setHeight(detailHeight);
-                detail.addElement(0, box);
-            }
+            
 
             if (addHeaderBand)
             {
@@ -613,6 +603,19 @@ public class EJReportJasperReportBuilder
                 createColumnLines(footerHeight, footer, currentX, width, col.getFooterBorderProperties());
             }
 
+            
+            if (oddEvenRowStyle != null)
+            {
+                JRDesignStaticText box = new JRDesignStaticText();
+                box.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
+                box.setStyle(oddEvenRowStyle);
+                box.setX(currentX);
+                box.setY(0);
+                box.setWidth(width);
+                box.setHeight(detailHeight);
+                detail.addElement(0, box);
+            }
+            
             currentX += width;
         }
 
@@ -704,7 +707,7 @@ public class EJReportJasperReportBuilder
             }
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
             line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
-            band.addElement(line);
+            band.addElement(0,line);
         }
         if (borderProperties.isShowRightLine())
         {
@@ -739,7 +742,7 @@ public class EJReportJasperReportBuilder
             {
                 line.setStyle(style);
             }
-            band.addElement(line);
+            band.addElement(0,line);
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
             line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
         }
@@ -776,7 +779,7 @@ public class EJReportJasperReportBuilder
                 line.setStyle(style);
             }
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_BOTTOM);
-            band.addElement(line);
+            band.addElement(0,line);
         }
         if (borderProperties.isShowTopLine())
         {
@@ -810,7 +813,7 @@ public class EJReportJasperReportBuilder
             {
                 line.setStyle(style);
             }
-            band.addElement(line);
+            band.addElement(0,line);
         }
     }
 
