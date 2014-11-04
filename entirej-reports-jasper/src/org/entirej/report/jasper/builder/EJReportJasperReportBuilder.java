@@ -1021,8 +1021,8 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-                text.getParagraph().setSpacingBefore(5);
-                text.getParagraph().setSpacingAfter(5);
+                text.getParagraph().setRightIndent(5);
+                text.getParagraph().setLeftIndent(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setStretchWithOverflow(true);
@@ -1035,8 +1035,8 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-                text.getParagraph().setSpacingBefore(5);
-                text.getParagraph().setSpacingAfter(5);
+                text.getParagraph().setRightIndent(5);
+                text.getParagraph().setLeftIndent(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -1077,8 +1077,8 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-                text.getParagraph().setSpacingBefore(5);
-                text.getParagraph().setSpacingAfter(5);
+                text.getParagraph().setRightIndent(5);
+                text.getParagraph().setLeftIndent(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -1145,8 +1145,8 @@ public class EJReportJasperReportBuilder
                 EJCoreReportScreenItemProperties.Label labelItem = (Label) item;
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
-                text.getParagraph().setSpacingBefore(5);
-                text.getParagraph().setSpacingAfter(5);
+                text.getParagraph().setRightIndent(5);
+                text.getParagraph().setLeftIndent(5);
                 text.setStretchWithOverflow(true);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(text, labelItem);
