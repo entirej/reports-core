@@ -487,6 +487,7 @@ public class EJReportJasperReportBuilder
                         if (element.getWidth() > 10 && (element.getX() + element.getWidth() >= width))
                             element.setWidth(element.getWidth() - 10);
                         element.setPositionType(PositionTypeEnum.FLOAT);
+                        element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
 
                 }
@@ -534,6 +535,7 @@ public class EJReportJasperReportBuilder
                         if (element.getWidth() > 10 && (element.getX() + element.getWidth() >= width))
                             element.setWidth(element.getWidth() - 10);
                         element.setPositionType(PositionTypeEnum.FLOAT);
+                        element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
 
                 }
@@ -579,6 +581,7 @@ public class EJReportJasperReportBuilder
                         }
 
                         element.setPositionType(PositionTypeEnum.FLOAT);
+                        element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
 
                 }
@@ -1133,11 +1136,13 @@ public class EJReportJasperReportBuilder
             case LABEL:
             {
                 EJCoreReportScreenItemProperties.Label labelItem = (Label) item;
-                JRDesignStaticText lbl = new JRDesignStaticText();
-                element = lbl;
-                lbl.setText(labelItem.getText());
-                setAlignments(lbl, labelItem);
-                setRotation(lbl, labelItem);
+                JRDesignTextField text = new JRDesignTextField();
+                element = text;
+              
+                text.setStretchWithOverflow(true);
+                text.setExpression(createTextExpression(labelItem.getText()));
+                setAlignments(text, labelItem);
+                setRotation(text, labelItem);
             }
                 break;
             case LINE:
@@ -1307,6 +1312,18 @@ public class EJReportJasperReportBuilder
             expression.setText(paramValue);
         }
 
+        return expression;
+    }
+    JRDesignExpression createTextExpression(String defaultValue)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
+        
+        if (defaultValue == null || defaultValue.trim().length() == 0)
+        {
+            return expression;
+        }
+        
+        expression.setText("\""+defaultValue.replaceAll("\"", "\\\\\"")+"\"");
         return expression;
     }
 
