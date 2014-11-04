@@ -487,8 +487,7 @@ public class EJReportJasperReportBuilder
                             element.setStyle(style);
                         }
 
-                        if (element.getWidth() > 10 && (element.getX() + element.getWidth() >= width))
-                            element.setWidth(element.getWidth() - 10);
+                       
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
@@ -535,8 +534,7 @@ public class EJReportJasperReportBuilder
                             element.setStyle(style);
                         }
 
-                        if (element.getWidth() > 10 && (element.getX() + element.getWidth() >= width))
-                            element.setWidth(element.getWidth() - 10);
+                      
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
@@ -1023,7 +1021,8 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
+                text.getParagraph().setSpacingBefore(5);
+                text.getParagraph().setSpacingAfter(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setStretchWithOverflow(true);
@@ -1036,7 +1035,8 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
+                text.getParagraph().setSpacingBefore(5);
+                text.getParagraph().setSpacingAfter(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -1077,7 +1077,8 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
-
+                text.getParagraph().setSpacingBefore(5);
+                text.getParagraph().setSpacingAfter(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
@@ -1144,7 +1145,8 @@ public class EJReportJasperReportBuilder
                 EJCoreReportScreenItemProperties.Label labelItem = (Label) item;
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
-              
+                text.getParagraph().setSpacingBefore(5);
+                text.getParagraph().setSpacingAfter(5);
                 text.setStretchWithOverflow(true);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(text, labelItem);
