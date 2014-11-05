@@ -338,6 +338,9 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     public static abstract class ValueBaseItem extends AlignmentBaseItem
     {
 
+        
+        private boolean expandToFit;
+        
         private String value;
 
         public ValueBaseItem(EJCoreReportBlockProperties blockProperties)
@@ -355,6 +358,17 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
             this.value = value;
         }
 
+        
+        public boolean isExpandToFit()
+        {
+            return expandToFit;
+        }
+        
+        public void setExpandToFit(boolean expandToFit)
+        {
+            this.expandToFit = expandToFit;
+        }
+        
     }
 
     public static class Number extends ValueBaseItem implements RotatableItem

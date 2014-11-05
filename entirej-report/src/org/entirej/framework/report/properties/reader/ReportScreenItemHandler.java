@@ -45,6 +45,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
     private static final String              ELEMENT_SCREEN_VISIBLE        = "visible";
     private static final String              ELEMENT_SCREEN_VA             = "va";
     private static final String              ELEMENT_SCREEN_VALUE_PROVIDER = "valueProvider";
+    private static final String              ELEMENT_SCREEN_EXPAND_TO_FIT  = "expandToFit";
     private static final String              ELEMENT_SCREEN_HALIGNMENT     = "hAlignment";
     private static final String              ELEMENT_SCREEN_VALIGNMENT     = "vAlignment";
     private static final String              ELEMENT_SCREEN_ROTATION       = "rotation";
@@ -121,6 +122,15 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
                 final EJCoreReportScreenItemProperties.ValueBaseItem item = (ValueBaseItem) _itemProperties;
                 item.setValue(value);
 
+            }
+        }
+        else if (name.equals(ELEMENT_SCREEN_EXPAND_TO_FIT))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.ValueBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.ValueBaseItem item = (ValueBaseItem) _itemProperties;
+                item.setExpandToFit(Boolean.parseBoolean(value));
+                
             }
         }
         else if (name.equals(ELEMENT_SCREEN_HALIGNMENT))
