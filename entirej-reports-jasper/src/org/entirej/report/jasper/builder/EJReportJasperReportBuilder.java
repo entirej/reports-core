@@ -1028,7 +1028,7 @@ public class EJReportJasperReportBuilder
                 text.getParagraph().setLeftIndent(5);
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
-                text.setStretchWithOverflow(true);
+                text.setStretchWithOverflow(false);
                 text.setBlankWhenNull(true);
             }
                 break;
@@ -1043,7 +1043,7 @@ public class EJReportJasperReportBuilder
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
-                text.setStretchWithOverflow(true);
+                text.setStretchWithOverflow(false);
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
                 {
                     text.setPattern(textItem.getManualFormat());
@@ -1085,7 +1085,7 @@ public class EJReportJasperReportBuilder
                 setAlignments(text, textItem);
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
-                text.setStretchWithOverflow(true);
+                text.setStretchWithOverflow(false);
                 Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
 
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
@@ -1150,7 +1150,7 @@ public class EJReportJasperReportBuilder
                 element = text;
                 text.getParagraph().setRightIndent(5);
                 text.getParagraph().setLeftIndent(5);
-                text.setStretchWithOverflow(true);
+                text.setStretchWithOverflow(false);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(text, labelItem);
                 setRotation(text, labelItem);
