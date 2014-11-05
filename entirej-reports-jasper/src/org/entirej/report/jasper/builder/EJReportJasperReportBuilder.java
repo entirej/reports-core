@@ -360,9 +360,9 @@ public class EJReportJasperReportBuilder
 
         boolean addHeaderBand = false;
         boolean addFooterBand = false;
-        int headerHeight = 0;
-        int detailHeight = 0;
-        int footerHeight = 0;
+        int headerHeight = screenProperties.getHeaderColumnHeight();
+        int detailHeight = screenProperties.getDetailColumnHeight();
+        int footerHeight = screenProperties.getFooterColumnHeight();
 
         JRDesignStyle oddEvenRowStyle = createOddEvenRowStyle(screenProperties);
 
