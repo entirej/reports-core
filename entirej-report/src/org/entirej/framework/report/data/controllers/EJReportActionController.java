@@ -78,28 +78,7 @@ public class EJReportActionController implements Serializable
 
     }
 
-    public void newBlockInstance(EJReport report, String blockName)
-    {
-        logger.trace("START newBlockInstance. Report: {}, Block: {}", report.getName(), blockName);
-        EJManagedReportFrameworkConnection connection = report.getConnection();
-        try
-        {
-            _reportLevelActionProcessor.preReport(report, blockName);
-        }
-        catch (Exception e)
-        {
-            if (connection != null)
-            {
-                connection.rollback();
-            }
-            throw new EJReportRuntimeException(e);
-        }
-        finally
-        {
-            connection.close();
-        }
-        logger.trace("END newBlockInstance");
-    }
+
 
     public void newReportInstance(EJReport report)
     {

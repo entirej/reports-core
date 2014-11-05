@@ -74,7 +74,6 @@ public class EJReportController implements Serializable
 
         initialiseController();
 
-
         LOGGER.trace("END Constructor");
     }
 

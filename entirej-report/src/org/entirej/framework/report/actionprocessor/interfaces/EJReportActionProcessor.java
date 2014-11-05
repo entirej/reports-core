@@ -34,13 +34,5 @@ public interface EJReportActionProcessor extends EJReportBlockActionProcessor
      */
     public void newReportInstance(EJReport report) throws EJReportActionProcessorException;
 
-    /**
-     * Called whenever the user navigates to a different block within the report
-     * 
-     * @param report
-     *            The report from which this method is called
-     * @param blockName
-     *            The name of the block that gained focus
-     */
-    public void preReport(EJReport report, String blockName) throws EJReportActionProcessorException;
+ 
 }
