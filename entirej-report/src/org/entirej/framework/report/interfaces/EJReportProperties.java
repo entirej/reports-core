@@ -87,6 +87,10 @@ public interface EJReportProperties extends Serializable
      * @return The required margin of the report from Left
      */
     public int getMarginLeft();
+    
+    
+    
+    public boolean isIgnorePagination();
 
     /**
      * Returns the required Margin of the report from Right

@@ -33,6 +33,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -72,11 +73,12 @@ public class EJJasperReports
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
     {
         Map<String, Object> map = new HashMap<String, Object>();
+        
         for (EJJasperReportParameter reportParameter : parameters)
         {
             map.put(reportParameter.getName(), reportParameter.getValue());
         }
-
+        
         return map;
     }
 
@@ -180,6 +182,7 @@ public class EJJasperReports
             }
 
             reportParameters.addAll(Arrays.asList(parameters));
+           
 
             // JasperDesignViewer.viewReportDesign(jasperReport);
             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));

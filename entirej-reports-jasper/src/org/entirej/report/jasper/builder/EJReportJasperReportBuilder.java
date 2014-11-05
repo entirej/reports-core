@@ -90,7 +90,7 @@ public class EJReportJasperReportBuilder
         {
             createParamaters(report);
             design.setName(report.getName());
-
+            design.setIgnorePagination(report.getProperties().isIgnorePagination());
             addDefaultFont();
 
             EJReportProperties properties = report.getProperties();

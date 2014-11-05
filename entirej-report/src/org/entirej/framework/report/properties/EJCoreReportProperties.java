@@ -45,6 +45,8 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     private String                              _reportDisplayName        = "";
 
     private String                              _actionProcessorClassName = "";
+    
+    private boolean                             _ignorePagination;
 
     private List<EJReportRuntimeLevelParameter> _reportParameters;
     private HashMap<String, String>             _applicationProperties;
@@ -128,6 +130,18 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
         this._reportDisplayName = _reportDisplayName;
     }
 
+    
+    
+    @Override
+    public boolean isIgnorePagination()
+    {
+        return _ignorePagination;
+    }
+    
+    public void setIgnorePagination(boolean ignorePagination)
+    {
+        this._ignorePagination = ignorePagination;
+    }
     /**
      * Sets the title of this report.
      * 
