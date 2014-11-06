@@ -109,6 +109,10 @@ public class EJReportDataItem implements Serializable
             throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
         }
 
+        if (!vaProperties.isUsedAsDynamicVA())
+        {
+            throw new IllegalArgumentException(" Visual attribute with the name " + visualAttributeName + " on this report is not marked as 'Used as Dynamic VA' .");
+        }
         _vaProperties = vaProperties;
     }
 

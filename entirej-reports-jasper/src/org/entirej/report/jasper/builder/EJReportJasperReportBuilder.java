@@ -60,6 +60,7 @@ import org.entirej.framework.report.interfaces.EJReportColumnProperties;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
+import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
@@ -328,6 +329,17 @@ public class EJReportJasperReportBuilder
 
             EJCoreReportBlockProperties properties = block.getProperties();
             Collection<EJReportBlockItem> blockItems = block.getBlockItems();
+            
+            {
+                
+                
+                JRDesignField field = new JRDesignField();
+
+                field.setName("_EJ_VA_CONTEXT");
+                field.setValueClass(org.entirej.report.jasper.data.EjReportBlockItemVAContext.class);
+                design.addField(field);
+            }
+            
             for (EJReportBlockItem item : blockItems)
             {
 
@@ -478,16 +490,9 @@ public class EJReportJasperReportBuilder
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         header.addElement(element);
-                        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                        if (va != null)
-                        {
 
-                            JRDesignStyle style = toStyle(va);
+                        processItemStyle(item, element);
 
-                            element.setStyle(style);
-                        }
-
-                       
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
@@ -525,16 +530,8 @@ public class EJReportJasperReportBuilder
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         detail.addElement(element);
-                        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                        if (va != null)
-                        {
+                        processItemStyle(item, element);
 
-                            JRDesignStyle style = toStyle(va);
-
-                            element.setStyle(style);
-                        }
-
-                      
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
@@ -572,14 +569,7 @@ public class EJReportJasperReportBuilder
                         element.setWidth(item.getWidth());
                         element.setHeight(item.getHeight());
                         footer.addElement(element);
-                        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                        if (va != null)
-                        {
-
-                            JRDesignStyle style = toStyle(va);
-
-                            element.setStyle(style);
-                        }
+                        processItemStyle(item, element);
 
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
@@ -588,8 +578,6 @@ public class EJReportJasperReportBuilder
                 }
 
             }
-
-            
 
             if (addHeaderBand)
             {
@@ -603,7 +591,6 @@ public class EJReportJasperReportBuilder
                 createColumnLines(footerHeight, footer, currentX, width, col.getFooterBorderProperties());
             }
 
-            
             if (oddEvenRowStyle != null)
             {
                 JRDesignStaticText box = new JRDesignStaticText();
@@ -615,10 +602,98 @@ public class EJReportJasperReportBuilder
                 box.setHeight(detailHeight);
                 detail.addElement(0, box);
             }
-            
+
             currentX += width;
         }
 
+    }
+
+    private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element) throws JRException
+    {
+        if (item instanceof ValueBaseItem)
+        {
+            ValueBaseItem valueBaseItem = (ValueBaseItem) item;
+            
+            String defaultValue = valueBaseItem.getValue();
+            if (valueBaseItem.getValue() != null && valueBaseItem.getValue().length() > 0)
+            {
+                String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
+                String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
+                if ("BLOCK_ITEM".equals(paramTypeCode))
+                {
+                    JRDesignStyle style = createItemBaseStyle(item,paramValue);
+
+                    element.setStyle(style);
+
+                }
+                else
+                {
+                    EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+                    if (va != null)
+                    {
+
+                        JRDesignStyle style = toStyle(va);
+
+                        element.setStyle(style);
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+            if (va != null)
+            {
+
+                JRDesignStyle style = toStyle(va);
+
+                element.setStyle(style);
+            }
+        }
+    }
+
+    private JRDesignStyle createItemBaseStyle(EJCoreReportScreenItemProperties item, String paramValue) throws JRException
+    {
+       
+        String vaName = String.format("_IVA_%s", paramValue);
+        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+        if (va != null)
+        {
+            vaName = String.format("%s_%s", vaName,va.getName());
+        }
+        JRDesignStyle style = (JRDesignStyle) design.getStylesMap().get(vaName);
+        if (style != null)
+        {
+            return style;
+        }
+        style = new JRDesignStyle();
+
+        style.setName(vaName);
+        design.addStyle(style);
+        
+        
+        
+       if (va != null)
+        {
+            vaToStyle(va, style);
+        }
+       
+        Collection<EJReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributes();
+        for (EJReportVisualAttributeProperties properties : visualAttributes)
+        {
+            if(properties.isUsedAsDynamicVA())
+            {
+                JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+                conditionalStyle.setConditionExpression(createItemVAExpression(paramValue, properties.getName()));
+                vaToStyle(properties, conditionalStyle);
+                
+                style.addConditionalStyle(conditionalStyle);
+            }
+        }
+       
+        
+        return style;
     }
 
     private JRDesignStyle createOddEvenRowStyle(EJCoreReportScreenProperties screenProperties) throws JRException
@@ -707,7 +782,7 @@ public class EJReportJasperReportBuilder
             }
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
             line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
-            band.addElement(0,line);
+            band.addElement(0, line);
         }
         if (borderProperties.isShowRightLine())
         {
@@ -742,7 +817,7 @@ public class EJReportJasperReportBuilder
             {
                 line.setStyle(style);
             }
-            band.addElement(0,line);
+            band.addElement(0, line);
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
             line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
         }
@@ -779,7 +854,7 @@ public class EJReportJasperReportBuilder
                 line.setStyle(style);
             }
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_BOTTOM);
-            band.addElement(0,line);
+            band.addElement(0, line);
         }
         if (borderProperties.isShowTopLine())
         {
@@ -813,7 +888,7 @@ public class EJReportJasperReportBuilder
             {
                 line.setStyle(style);
             }
-            band.addElement(0,line);
+            band.addElement(0, line);
         }
     }
 
@@ -863,14 +938,7 @@ public class EJReportJasperReportBuilder
                 element.setPositionType(PositionTypeEnum.FLOAT);
                 detail.addElement(element);
 
-                EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                if (va != null)
-                {
-
-                    JRDesignStyle style = toStyle(va);
-
-                    element.setStyle(style);
-                }
+                processItemStyle(item, element);
 
             }
 
@@ -1325,16 +1393,26 @@ public class EJReportJasperReportBuilder
 
         return expression;
     }
+
     JRDesignExpression createTextExpression(String defaultValue)
     {
         JRDesignExpression expression = new JRDesignExpression();
-        
+
         if (defaultValue == null || defaultValue.trim().length() == 0)
         {
             return expression;
         }
+
+        expression.setText("\"" + defaultValue.replaceAll("\"", "\\\\\"") + "\"");
+        return expression;
+    }
+    JRDesignExpression createItemVAExpression(String item,String vaName)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
         
-        expression.setText("\""+defaultValue.replaceAll("\"", "\\\\\"")+"\"");
+       
+        
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item,vaName));
         return expression;
     }
 
