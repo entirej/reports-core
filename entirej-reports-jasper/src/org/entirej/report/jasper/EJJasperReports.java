@@ -363,7 +363,7 @@ public class EJJasperReports
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
                     configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
-                    configuration.setWrapText(true);
+                    configuration.setWrapText(false);
                     configuration.setIgnorePageMargins(true);
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
@@ -379,7 +379,7 @@ public class EJJasperReports
                     exporter.setExporterInput(new SimpleExporterInput(print));
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
                     SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-                    configuration.setWrapText(true);
+                    configuration.setWrapText(false);
                     configuration.setOnePagePerSheet(false);
                     configuration.setIgnorePageMargins(true);
                     configuration.setDetectCellType(Boolean.TRUE);
