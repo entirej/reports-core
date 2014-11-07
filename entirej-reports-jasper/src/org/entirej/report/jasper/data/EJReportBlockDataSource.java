@@ -20,9 +20,6 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -72,7 +69,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
 
         }
         
-        List<EJReportRecord> blockRecords = new ArrayList<EJReportRecord>(block.getBlockRecords());
        
         String name = field.getName();
         
@@ -82,7 +78,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
             String itemName = name.substring(name.indexOf('.') + 1);
             if(blockName.equals(block.getName()))
             {
-                EJReportRecord record = blockRecords.get(index);
+                EJReportRecord record = block.getFocusedRecord();
                 
                 return record.getValue(itemName);
             }
@@ -102,7 +98,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
         }
         else
         {
-            EJReportRecord record = blockRecords.get(index);
+            EJReportRecord record = block.getFocusedRecord();
             return record.getValue(name);
         }
             
@@ -114,10 +110,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
     {
         
         index++;
-        Collection<EJReportRecord> blockRecords = block.getBlockRecords();
-        
-       
-        boolean hasRecord = index < blockRecords.size();
+      
+        boolean hasRecord = index < block.getBlockRecordCount();
         if(hasRecord)
         {
             block.navigateToNextRecord();
@@ -129,7 +123,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
     public boolean isActive(String item, String vaName)
     {
         String name = item;
-        List<EJReportRecord> blockRecords = new ArrayList<EJReportRecord>(block.getBlockRecords());
+       
         
         if(name.contains("."))
         {
@@ -137,7 +131,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
             String itemName = name.substring(name.indexOf('.') + 1);
             if(blockName.equals(block.getName()))
             {
-                EJReportRecord record = blockRecords.get(index);
+                EJReportRecord record = block.getFocusedRecord();
                 
               
                 EJReportVisualAttributeProperties visualAttribute = record.getItem(itemName).getVisualAttribute();
@@ -160,7 +154,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
         }
         else
         {
-            EJReportRecord record = blockRecords.get(index);
+            EJReportRecord record = block.getFocusedRecord();
             EJReportVisualAttributeProperties visualAttribute = record.getItem(name).getVisualAttribute();
             return visualAttribute!=null && visualAttribute.getName().equals(vaName);
         }

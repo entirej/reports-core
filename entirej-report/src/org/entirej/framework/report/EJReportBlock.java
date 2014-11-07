@@ -261,6 +261,12 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         _block.nextRecord();
     }
+    
+    
+    public int getBlockRecordCount()
+    {
+       return _block.getBlockRecordCount();
+    }
 
     /**
      * Returns an immutable collection if IDataRecords for this block Retrieving

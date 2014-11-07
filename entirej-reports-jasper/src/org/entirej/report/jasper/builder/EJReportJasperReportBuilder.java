@@ -1104,6 +1104,29 @@ public class EJReportJasperReportBuilder
             }
         }
     }
+    private void configMarkup(JRDesignTextField textField, EJCoreReportScreenItemProperties item) 
+    {
+        //http://jasperreports.sourceforge.net/sample.reference/markup/
+        if (item instanceof ValueBaseItem)
+        {
+            ValueBaseItem vaItem = (ValueBaseItem) item;
+            
+            switch (vaItem.getMarkup())
+            {
+                case HTML:
+                    textField.setMarkup("html");
+                    break;
+                case RTF:
+                    textField.setMarkup("rtf");
+                    break;
+                case STYLE:
+                    textField.setMarkup("styled");
+                    break;
+
+               
+            }
+        }
+    }
 
     private JRDesignElement createScrrenItem(EJReportBlock block, EJCoreReportScreenItemProperties item)
     {
@@ -1122,6 +1145,7 @@ public class EJReportJasperReportBuilder
                 setRotation(text, textItem);
                 text.setStretchWithOverflow(textItem.isExpandToFit());
                 text.setBlankWhenNull(true);
+                configMarkup(text, item);
             }
                 break;
             case NUMBER:
@@ -1136,6 +1160,7 @@ public class EJReportJasperReportBuilder
                 setRotation(text, textItem);
                 text.setBlankWhenNull(true);
                 text.setStretchWithOverflow(textItem.isExpandToFit());
+                
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
                 {
                     text.setPattern(textItem.getManualFormat());
