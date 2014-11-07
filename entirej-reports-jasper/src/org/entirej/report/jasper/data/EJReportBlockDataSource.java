@@ -20,12 +20,15 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
 import org.entirej.framework.report.EJReportBlock;
+import org.entirej.framework.report.EJReportItem;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
@@ -35,6 +38,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
 
     private final EJReportBlock block;
     private int           index = -1;
+    private Map<String,Object> fieldCache = new WeakHashMap<String, Object>();
+    private Map<String,EJReportItem> itemCache = new WeakHashMap<String, EJReportItem>();
 
     public EJReportBlockDataSource(EJReportBlock block)
     {
@@ -72,6 +77,11 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
        
         String name = field.getName();
         
+        if(fieldCache.containsKey(name))
+        {
+            return fieldCache.get(name);
+        }
+        
         if(name.contains("."))
         {
             String blockName = name.substring(0, name.indexOf('.'));
@@ -80,7 +90,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
             {
                 EJReportRecord record = block.getFocusedRecord();
                 
-                return record.getValue(itemName);
+                Object value = record.getValue(itemName);
+                fieldCache.put(name, value);
+                return value;
             }
             else
             {
@@ -89,7 +101,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
                 {
                     EJReportRecord focusedRecord = otherBlock.getFocusedRecord();
                     if(focusedRecord!=null){
-                        return focusedRecord.getValue(itemName);
+                        Object value = focusedRecord.getValue(itemName);
+                        fieldCache.put(name, value);
+                        return value;
                     }
                                 
                 }
@@ -99,7 +113,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
         else
         {
             EJReportRecord record = block.getFocusedRecord();
-            return record.getValue(name);
+            Object value = record.getValue(name);
+            fieldCache.put(name, value);
+            return value;
         }
             
         return null;
@@ -108,7 +124,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
     @Override
     public boolean next() throws JRException
     {
-        
+        fieldCache.clear();
+        itemCache.clear();
         index++;
       
         boolean hasRecord = index < block.getBlockRecordCount();
@@ -124,6 +141,12 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
     {
         String name = item;
        
+        if(itemCache.containsKey(item))
+        {
+            EJReportItem reportItem = itemCache.get(item);
+            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+            return visualAttribute!=null && visualAttribute.getName().equals(vaName);
+        }
         
         if(name.contains("."))
         {
@@ -134,7 +157,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
                 EJReportRecord record = block.getFocusedRecord();
                 
               
-                EJReportVisualAttributeProperties visualAttribute = record.getItem(itemName).getVisualAttribute();
+                EJReportItem reportItem = record.getItem(itemName);
+                itemCache.put(item, reportItem);
+                EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
                 return visualAttribute!=null && visualAttribute.getName().equals(vaName);
             }
             else
@@ -144,7 +169,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
                 {
                     EJReportRecord focusedRecord = otherBlock.getFocusedRecord();
                     if(focusedRecord!=null){
-                        EJReportVisualAttributeProperties visualAttribute = focusedRecord.getItem(itemName).getVisualAttribute();
+                        EJReportItem reportItem = focusedRecord.getItem(itemName);
+                        itemCache.put(item, reportItem);
+                        EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
                         return visualAttribute!=null && visualAttribute.getName().equals(vaName);
                     }
                                 
@@ -155,7 +182,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
         else
         {
             EJReportRecord record = block.getFocusedRecord();
-            EJReportVisualAttributeProperties visualAttribute = record.getItem(name).getVisualAttribute();
+            EJReportItem reportItem = record.getItem(name);
+            itemCache.put(item, reportItem);
+            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
             return visualAttribute!=null && visualAttribute.getName().equals(vaName);
         }
         return false;
