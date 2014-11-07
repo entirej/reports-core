@@ -1113,12 +1113,7 @@ public class EJReportJasperReportBuilder
             
             switch (vaItem.getMarkup())
             {
-                case HTML:
-                    textField.setMarkup("html");
-                    break;
-                case RTF:
-                    textField.setMarkup("rtf");
-                    break;
+             
                 case STYLE:
                     textField.setMarkup("styled");
                     break;
