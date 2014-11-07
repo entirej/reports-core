@@ -532,6 +532,24 @@ public class EJReportJasperReportBuilder
                         detail.addElement(element);
                         processItemStyle(item, element);
 
+                       
+                        /*if(element.getStyle() instanceof JRDesignStyle)
+                        {
+                            JRDesignStyle style = (JRDesignStyle) element.getStyle();
+                            
+                            EJReportVisualAttributeProperties vaOdd = screenProperties.getOddVAProperties();
+                            EJReportVisualAttributeProperties vaEven = screenProperties.getEvenVAProperties();
+                            if (vaOdd != null || vaEven != null)
+                            {
+
+                                
+
+                                buildOddEvenStyle(screenProperties, vaOdd, vaEven, style);
+                               
+
+                            }
+                        }*/
+                        
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                     }
@@ -706,37 +724,43 @@ public class EJReportJasperReportBuilder
 
             JRDesignStyle style = new JRDesignStyle();
 
-            if (vaOdd != null)
-            {
-                style.setName(String.format("%s.odd", screenProperties.getBlockProperties().getName()));
-
-                JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-                vaToStyle(vaOdd, conditionalStyle);
-
-                JRDesignExpression expression = new JRDesignExpression();
-                expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
-                conditionalStyle.setConditionExpression(expression);
-
-                style.addConditionalStyle(conditionalStyle);
-            }
-            if (vaEven != null)
-            {
-                style.setName(String.format("%s.even", screenProperties.getBlockProperties().getName()));
-
-                JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-                vaToStyle(vaEven, conditionalStyle);
-
-                JRDesignExpression expression = new JRDesignExpression();
-                expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
-                conditionalStyle.setConditionExpression(expression);
-
-                style.addConditionalStyle(conditionalStyle);
-            }
+            buildOddEvenStyle(screenProperties, vaOdd, vaEven, style);
             design.addStyle(style);
             return style;
 
         }
         return null;
+    }
+
+    private void buildOddEvenStyle(EJCoreReportScreenProperties screenProperties, EJReportVisualAttributeProperties vaOdd,
+            EJReportVisualAttributeProperties vaEven, JRDesignStyle style)
+    {
+        if (vaOdd != null)
+        {
+            style.setName(String.format("%s.odd", screenProperties.getBlockProperties().getName()));
+
+            JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+            vaToStyle(vaOdd, conditionalStyle);
+
+            JRDesignExpression expression = new JRDesignExpression();
+            expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
+            conditionalStyle.setConditionExpression(expression);
+
+            style.addConditionalStyle(conditionalStyle);
+        }
+        if (vaEven != null)
+        {
+            style.setName(String.format("%s.even", screenProperties.getBlockProperties().getName()));
+
+            JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+            vaToStyle(vaEven, conditionalStyle);
+
+            JRDesignExpression expression = new JRDesignExpression();
+            expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
+            conditionalStyle.setConditionExpression(expression);
+
+            style.addConditionalStyle(conditionalStyle);
+        }
     }
 
     private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int width, EJReportBorderProperties borderProperties) throws JRException

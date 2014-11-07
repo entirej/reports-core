@@ -33,7 +33,6 @@ import java.util.Map;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -60,25 +59,28 @@ import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParamet
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EJJasperReports
 {
+    final static Logger LOGGER = LoggerFactory.getLogger(EJJasperReports.class);
 
-    static{
-        
-        
+    static
+    {
+
         DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.print.keep.full.text", "true");
     }
-    
+
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
     {
         Map<String, Object> map = new HashMap<String, Object>();
-        
+
         for (EJJasperReportParameter reportParameter : parameters)
         {
             map.put(reportParameter.getName(), reportParameter.getValue());
         }
-        
+
         return map;
     }
 
@@ -131,6 +133,7 @@ public class EJJasperReports
     {
         try
         {
+
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
             return reportToFile;
 
@@ -149,6 +152,9 @@ public class EJJasperReports
             EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
 
             builder.buildDesign(report);
+
+            long start = System.currentTimeMillis();
+            LOGGER.info("START Genarate EjReport -> Jasper Report :" + report.getName());
 
             JasperReport jasperReport = builder.toReport();
 
@@ -182,10 +188,15 @@ public class EJJasperReports
             }
 
             reportParameters.addAll(Arrays.asList(parameters));
-           
+
+            LOGGER.info("END Genarate EjReport -> Jasper Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
             // JasperDesignViewer.viewReportDesign(jasperReport);
+            LOGGER.info("START Filling  Report :" + report.getName());
+            start = System.currentTimeMillis();
             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));
+            LOGGER.info("END Filling  Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
+
             return print;
 
         }
@@ -230,20 +241,29 @@ public class EJJasperReports
             EJJasperReportParameter... parameters)
     {
         JasperPrint jasperPrint = fillReport(reportFile, dataSource, parameters);
+        
         exportReport(type, jasperPrint, outputFile);
     }
 
     public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile, EJJasperReportParameter... parameters)
     {
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
+        LOGGER.info("START Export  Report :" + report.getName());
+        long start = System.currentTimeMillis();
         exportReport(report.getProperties().getExportType(), jasperPrint, outputFile);
+        LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
+
     }
 
     public static void exportReport(EJReportFrameworkManager manager, EJReport report, String outputFile, EJReportExportType type,
             EJJasperReportParameter... parameters)
     {
+
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
+        LOGGER.info("START Export  Report :" + report.getName());
+        long start = System.currentTimeMillis();
         exportReport(type, jasperPrint, outputFile);
+        LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
     }
 
     public static void exportReport(String reportFile, String outputFile, EJReportExportType type, Connection connection, EJJasperReportParameter... parameters)
