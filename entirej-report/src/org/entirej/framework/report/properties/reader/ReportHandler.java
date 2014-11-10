@@ -31,6 +31,7 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
 
     private static final String    ELEMENT_REPORT_TITLE           = "reportTitle";
     private static final String    ELEMENT_REPORT_DISPLAY_NAME    = "reportDisplayName";
+    private static final String    ELEMENT_REPORT_VA              = "va";
     private static final String    ELEMENT_REPORT_WIDTH           = "width";
     private static final String    ELEMENT_MARGIN_TOP             = "marginTop";
     private static final String    ELEMENT_MARGIN_BOTTOM          = "marginBottom";
@@ -262,6 +263,10 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
         else if (name.equals(ELEMENT_ACTION_PROCESSOR))
         {
             _reportProperties.setActionProcessorClassName(value);
+        }
+        else if (name.equals(ELEMENT_REPORT_VA))
+        {
+            _reportProperties.setVisualAttributeName(value);
         }
         else if (name.equals(ELEMENT_REPORT_ORIENTATION))
         {

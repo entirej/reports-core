@@ -91,7 +91,7 @@ public class EJReportJasperReportBuilder
             createParamaters(report);
             design.setName(report.getName());
             design.setIgnorePagination(report.getProperties().isIgnorePagination());
-            addDefaultFont();
+            addDefaultFont(report);
 
             EJReportProperties properties = report.getProperties();
 
@@ -184,7 +184,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private void addDefaultFont() throws JRException
+    private void addDefaultFont(EJReport report) throws JRException
     {
         JRDesignStyle _EJ_DEAFULT = new JRDesignStyle();
         _EJ_DEAFULT.setName("_EJ_DEAFULT");
@@ -192,6 +192,13 @@ public class EJReportJasperReportBuilder
         _EJ_DEAFULT.setPdfFontName("Helvetica");
         _EJ_DEAFULT.setDefault(true);
         _EJ_DEAFULT.setPdfEmbedded(true);
+        
+        EJReportVisualAttributeProperties va = report.getProperties().getVisualAttributeProperties();
+        if(va!=null)
+        {
+            vaToStyle(va, _EJ_DEAFULT);
+        }
+        
         design.addStyle(_EJ_DEAFULT);
     }
 
@@ -325,7 +332,7 @@ public class EJReportJasperReportBuilder
             design.setBottomMargin(0);
             design.setLeftMargin(0);
             design.setRightMargin(0);
-            addDefaultFont();
+            addDefaultFont(block.getReport());
 
             EJCoreReportBlockProperties properties = block.getProperties();
             Collection<EJReportBlockItem> blockItems = block.getBlockItems();
@@ -1222,6 +1229,11 @@ public class EJReportJasperReportBuilder
     {
         JRDesignElement element = null;
         JRDesignStyle itemStyle = createScreenItemStyle();
+        EJReportVisualAttributeProperties properties = block.getReport().getProperties().getVisualAttributeProperties();
+        if(properties!=null)
+        {
+            vaToStyle(properties, itemStyle);
+        }
         switch (item.getType())
         {
             case TEXT:

@@ -48,8 +48,13 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     
     private boolean                             _ignorePagination;
 
+    
+
+    private String                              _visualAttributeName;
     private List<EJReportRuntimeLevelParameter> _reportParameters;
     private HashMap<String, String>             _applicationProperties;
+    
+    
 
     // Display Properties
     private int                                 _reportWidth;
@@ -252,6 +257,23 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     public void setMarginRight(int _marginRight)
     {
         this._marginRight = _marginRight;
+    }
+    
+    @Override
+    public EJReportVisualAttributeProperties getVisualAttributeProperties()
+    {
+
+        return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(_visualAttributeName);
+    }
+    
+    public String getVisualAttributeName()
+    {
+        return _visualAttributeName;
+    }
+
+    public void setVisualAttributeName(String _visualAttributeName)
+    {
+        this._visualAttributeName = _visualAttributeName;
     }
 
     /**
