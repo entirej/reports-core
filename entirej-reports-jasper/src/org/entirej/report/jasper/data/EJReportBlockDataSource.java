@@ -20,8 +20,8 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -38,8 +38,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
 
     private final EJReportBlock block;
     private int           index = -1;
-    private Map<String,Object> fieldCache = new WeakHashMap<String, Object>();
-    private Map<String,EJReportItem> itemCache = new WeakHashMap<String, EJReportItem>();
+    private Map<String,Object> fieldCache = new HashMap<String, Object>();
+    private Map<String,EJReportItem> itemCache = new HashMap<String, EJReportItem>();
 
     public EJReportBlockDataSource(EJReportBlock block)
     {
