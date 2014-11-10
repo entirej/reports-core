@@ -23,25 +23,36 @@ import java.io.Serializable;
 
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
+import org.entirej.framework.report.enumerations.EJReportMarkupType;
+import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
+import org.entirej.framework.report.enumerations.EJReportVAPattern;
 
 public class EJReportVisualAttributeProperties implements Comparable<EJReportVisualAttributeProperties>, Serializable
 {
-    public static final String UNSPECIFIED           = "Unspecified";
+    public static final String      UNSPECIFIED     = "Unspecified";
 
     /**
      * The available font weights for use within the
      * {@link EJReportVisualAttributeProperties}
      */
 
-    private String             _name;
-    private String             _foregroundRgb        = UNSPECIFIED;
-    private String             _backgroundRgb        = UNSPECIFIED;
+    private String                  _name;
+    private String                  _foregroundRgb  = UNSPECIFIED;
+    private String                  _backgroundRgb  = UNSPECIFIED;
 
-    private String             _fontName             = UNSPECIFIED;
-    private int                _fontSize             = -1;
-    private boolean            _useAsDYnamicVA       = false;
-    private EJReportFontStyle  _fontStyle            = EJReportFontStyle.Unspecified;
-    private EJReportFontWeight _fontWeight           = EJReportFontWeight.Unspecified;
+    private String                  _fontName       = UNSPECIFIED;
+    private int                     _fontSize       = -1;
+    private boolean                 _useAsDYnamicVA = false;
+    private EJReportFontStyle       _fontStyle      = EJReportFontStyle.Unspecified;
+    private EJReportFontWeight      _fontWeight     = EJReportFontWeight.Unspecified;
+
+    private EJReportMarkupType      _markupType     = EJReportMarkupType.NONE;
+
+    private EJReportScreenAlignment _hAlignment     = EJReportScreenAlignment.NONE;
+    private EJReportScreenAlignment _vAlignment     = EJReportScreenAlignment.NONE;
+
+    private EJReportVAPattern       _localePattern  = EJReportVAPattern.NONE;
+    private String                  _manualFormat;
 
     public EJReportVisualAttributeProperties()
     {
@@ -333,6 +344,57 @@ public class EJReportVisualAttributeProperties implements Comparable<EJReportVis
         return _backgroundRgb;
     }
 
+    public EJReportMarkupType getMarkupType()
+    {
+        return _markupType;
+    }
+
+    public void setMarkupType(EJReportMarkupType _markupType)
+    {
+        this._markupType = _markupType;
+    }
+
+    public void setHAlignment(EJReportScreenAlignment _hAlignment)
+    {
+        this._hAlignment = _hAlignment;
+    }
+
+    public void setVAlignment(EJReportScreenAlignment _vAlignment)
+    {
+        this._vAlignment = _vAlignment;
+    }
+
+    public EJReportScreenAlignment getHAlignment()
+    {
+        return _hAlignment;
+    }
+
+    public EJReportScreenAlignment getVAlignment()
+    {
+        return _vAlignment;
+    }
+
+    public EJReportVAPattern getLocalePattern()
+    {
+        return _localePattern;
+    }
+
+    public void setLocalePattern(EJReportVAPattern localePattern)
+    {
+        this._localePattern = localePattern;
+    }
+    
+    
+    public String getManualPattern()
+    {
+        return _manualFormat;
+    }
+    
+    public void setManualPattern(String manualFormat)
+    {
+        this._manualFormat = manualFormat;
+    }
+
     private Color getColor(String colorString)
     {
         if (colorString == null)
@@ -373,7 +435,11 @@ public class EJReportVisualAttributeProperties implements Comparable<EJReportVis
         props.setFontStyle(_fontStyle);
         props.setFontWeight(_fontWeight);
         props.setUsedAsDynamicVA(_useAsDYnamicVA);
-
+        props.setMarkupType(_markupType);
+        props.setHAlignment(_hAlignment);
+        props.setVAlignment(_vAlignment);
+        props.setLocalePattern(_localePattern);
+        props.setManualPattern(_manualFormat);
         return props;
     }
 

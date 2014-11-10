@@ -19,6 +19,9 @@ package org.entirej.framework.report.properties.reader;
 
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
+import org.entirej.framework.report.enumerations.EJReportMarkupType;
+import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
+import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -36,6 +39,11 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
     private static final String               WEIGHT            = "weight";
     private static final String               FOREGROUND_COLOR  = "foregroundColor";
     private static final String               BACKGROUND_COLOR  = "backgroundColor";
+    private static final String               MARKUP            = "markup";
+    private static final String               HALIGNMENT        = "hAlignment";
+    private static final String               VALIGNMENT        = "vAlignment";
+    private static final String               MANUALFORMAT      = "manualFormat";
+    private static final String               LOCALEFORMAT      = "localeFormat";
 
     @Override
     public void startLocalElement(String name, Attributes attributes) throws SAXException
@@ -84,6 +92,41 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
             if (value.length() > 0)
             {
                 _vaProperties.setFontWeight(EJReportFontWeight.valueOf(value));
+            }
+        }
+        else if (name.equals(MARKUP))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setMarkupType(EJReportMarkupType.valueOf(value));
+            }
+        }
+        else if (name.equals(HALIGNMENT))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setHAlignment(EJReportScreenAlignment.valueOf(value));
+            }
+        }
+        else if (name.equals(VALIGNMENT))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setVAlignment(EJReportScreenAlignment.valueOf(value));
+            }
+        }
+        else if (name.equals(LOCALEFORMAT))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setLocalePattern(EJReportVAPattern.valueOf(value));
+            }
+        }
+        else if (name.equals(MANUALFORMAT))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setManualPattern(value);
             }
         }
         else if (name.equals(STYLE))
