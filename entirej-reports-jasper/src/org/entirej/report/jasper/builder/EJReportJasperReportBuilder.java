@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import javax.jws.soap.SOAPBinding.Style;
-
-import net.sf.jasperreports.engine.JRAlignment;
-import net.sf.jasperreports.engine.JRCommonText;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
@@ -350,7 +346,7 @@ public class EJReportJasperReportBuilder
 
                 field.setName(String.format("%s.%s", block.getName(), item.getName()));
                 field.setDescription(item.getFieldName());
-                field.setValueClass(item.getDataType());
+                field.setValueClass(Object.class);
                 design.addField(field);
             }
 

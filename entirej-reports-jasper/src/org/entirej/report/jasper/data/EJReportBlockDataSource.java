@@ -20,7 +20,9 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -30,32 +32,73 @@ import net.sf.jasperreports.engine.JRField;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportItem;
 import org.entirej.framework.report.EJReportRecord;
+import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
-
-public class EJReportBlockDataSource implements JRDataSource, Serializable,EjReportBlockItemVAContext
+public class EJReportBlockDataSource implements JRDataSource, Serializable, EjReportBlockItemVAContext
 {
 
-    private final EJReportBlock block;
-    private int           index = -1;
-    private Map<String,Object> fieldCache = new HashMap<String, Object>();
-    private Map<String,EJReportItem> itemCache = new HashMap<String, EJReportItem>();
+    private final EJReportBlock       block;
+    private int                       index      = -1;
+    private Map<String, Object>       fieldCache = new HashMap<String, Object>();
+    private Map<String, EJReportItem> itemCache  = new HashMap<String, EJReportItem>();
+    private Locale                    defaultLocale;
 
     public EJReportBlockDataSource(EJReportBlock block)
     {
         this.block = block;
-        
+        defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
     }
 
     @Override
     public Object getFieldValue(JRField field) throws JRException
     {
 
-        if("_EJ_VA_CONTEXT".equals(field.getName()))
+        Object value = getValue(field);
+        if (value instanceof String)
+        {
+            EJReportItem reportItem = getReportItem(field.getName());
+
+            if (reportItem == null)
+                return value;
+            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+
+            if (visualAttribute != null)
+            {
+
+                EJReportVAPattern localePattern = visualAttribute.getLocalePattern();
+                switch (localePattern)
+                {
+                    case CURRENCY:
+                    case NUMBER:
+                    case INTEGER:
+                    case PERCENT:
+                        try
+                        {
+
+                            return new BigDecimal((String) value);
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            // ignore
+                        }
+
+                    default:
+                        break;
+                }
+            }
+
+        }
+        return value;
+    }
+
+    private Object getValue(JRField field)
+    {
+        if ("_EJ_VA_CONTEXT".equals(field.getName()))
         {
             return this;
         }
-        
+
         if (field.getName().startsWith("EJRJ_BLOCK_DS_"))
         {
             EJReportBlock subBlock = null;
@@ -73,23 +116,22 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
             }
 
         }
-        
-       
+
         String name = field.getName();
-        
-        if(fieldCache.containsKey(name))
+
+        if (fieldCache.containsKey(name))
         {
             return fieldCache.get(name);
         }
-        
-        if(name.contains("."))
+
+        if (name.contains("."))
         {
             String blockName = name.substring(0, name.indexOf('.'));
             String itemName = name.substring(name.indexOf('.') + 1);
-            if(blockName.equals(block.getName()))
+            if (blockName.equals(block.getName()))
             {
                 EJReportRecord record = block.getFocusedRecord();
-                
+
                 Object value = record.getValue(itemName);
                 fieldCache.put(name, value);
                 return value;
@@ -97,18 +139,19 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
             else
             {
                 EJReportBlock otherBlock = block.getReport().getBlock(blockName);
-                if(otherBlock!=null)
+                if (otherBlock != null)
                 {
                     EJReportRecord focusedRecord = otherBlock.getFocusedRecord();
-                    if(focusedRecord!=null){
+                    if (focusedRecord != null)
+                    {
                         Object value = focusedRecord.getValue(itemName);
                         fieldCache.put(name, value);
                         return value;
                     }
-                                
+
                 }
             }
-            
+
         }
         else
         {
@@ -117,7 +160,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
             fieldCache.put(name, value);
             return value;
         }
-            
+
         return null;
     }
 
@@ -127,9 +170,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
         fieldCache.clear();
         itemCache.clear();
         index++;
-      
+
         boolean hasRecord = index < block.getBlockRecordCount();
-        if(hasRecord)
+        if (hasRecord)
         {
             block.navigateToNextRecord();
         }
@@ -139,55 +182,57 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable,EjRep
     @Override
     public boolean isActive(String item, String vaName)
     {
-        String name = item;
-       
-        if(itemCache.containsKey(item))
+        EJReportItem reportItem = getReportItem(item);
+
+        if (reportItem == null)
+            return false;
+        EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+        return visualAttribute != null && visualAttribute.getName().equals(vaName);
+    }
+
+    private EJReportItem getReportItem(String item)
+    {
+        EJReportItem reportItem = null;
+        if (itemCache.containsKey(item))
         {
-            EJReportItem reportItem = itemCache.get(item);
-            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-            return visualAttribute!=null && visualAttribute.getName().equals(vaName);
+            reportItem = itemCache.get(item);
+
         }
-        
-        if(name.contains("."))
+
+        if (item.contains("."))
         {
-            String blockName = name.substring(0, name.indexOf('.'));
-            String itemName = name.substring(name.indexOf('.') + 1);
-            if(blockName.equals(block.getName()))
+            String blockName = item.substring(0, item.indexOf('.'));
+            String itemName = item.substring(item.indexOf('.') + 1);
+            if (blockName.equals(block.getName()))
             {
                 EJReportRecord record = block.getFocusedRecord();
-                
-              
-                EJReportItem reportItem = record.getItem(itemName);
+
+                reportItem = record.getItem(itemName);
                 itemCache.put(item, reportItem);
-                EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-                return visualAttribute!=null && visualAttribute.getName().equals(vaName);
             }
             else
             {
                 EJReportBlock otherBlock = block.getReport().getBlock(blockName);
-                if(otherBlock!=null)
+                if (otherBlock != null)
                 {
                     EJReportRecord focusedRecord = otherBlock.getFocusedRecord();
-                    if(focusedRecord!=null){
-                        EJReportItem reportItem = focusedRecord.getItem(itemName);
+                    if (focusedRecord != null)
+                    {
+                        reportItem = focusedRecord.getItem(itemName);
                         itemCache.put(item, reportItem);
-                        EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-                        return visualAttribute!=null && visualAttribute.getName().equals(vaName);
                     }
-                                
+
                 }
             }
-            
+
         }
         else
         {
             EJReportRecord record = block.getFocusedRecord();
-            EJReportItem reportItem = record.getItem(name);
+            reportItem = record.getItem(item);
             itemCache.put(item, reportItem);
-            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-            return visualAttribute!=null && visualAttribute.getName().equals(vaName);
         }
-        return false;
+        return reportItem;
     }
 
 }
