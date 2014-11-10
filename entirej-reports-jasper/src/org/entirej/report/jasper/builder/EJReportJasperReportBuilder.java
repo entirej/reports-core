@@ -6,6 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
+
+import javax.jws.soap.SOAPBinding.Style;
 
 import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRCommonText;
@@ -630,6 +633,14 @@ public class EJReportJasperReportBuilder
 
     private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element) throws JRException
     {
+        
+        JRDesignStyle style  = (JRDesignStyle) element.getStyle();
+        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
+        if (va != null)
+        {
+
+            vaToStyle(va, style);
+        }
         if (item instanceof ValueBaseItem)
         {
             ValueBaseItem valueBaseItem = (ValueBaseItem) item;
@@ -641,61 +652,21 @@ public class EJReportJasperReportBuilder
                 String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
                 if ("BLOCK_ITEM".equals(paramTypeCode))
                 {
-                    JRDesignStyle style = createItemBaseStyle(item, paramValue);
+                     createItemBaseStyle(style, paramValue);
 
-                    element.setStyle(style);
+                   // element.setStyle(style);
 
                 }
-                else
-                {
-                    EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-                    if (va != null)
-                    {
+                
 
-                        JRDesignStyle style = toStyle(va);
-
-                        element.setStyle(style);
-                    }
-                }
-
-            }
-        }
-        else
-        {
-            EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-            if (va != null)
-            {
-
-                JRDesignStyle style = toStyle(va);
-
-                element.setStyle(style);
             }
         }
     }
 
-    private JRDesignStyle createItemBaseStyle(EJCoreReportScreenItemProperties item, String paramValue) throws JRException
+    private JRDesignStyle createItemBaseStyle(JRDesignStyle style, String paramValue) throws JRException
     {
 
-        String vaName = String.format("_IVA_%s", paramValue);
-        EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
-        if (va != null)
-        {
-            vaName = String.format("%s_%s", vaName, va.getName());
-        }
-        JRDesignStyle style = (JRDesignStyle) design.getStylesMap().get(vaName);
-        if (style != null)
-        {
-            return style;
-        }
-        style = new JRDesignStyle();
-
-        style.setName(vaName);
-        design.addStyle(style);
-
-        if (va != null)
-        {
-            vaToStyle(va, style);
-        }
+      
 
         Collection<EJReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
@@ -1219,7 +1190,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private void configMarkup(JRDesignTextField textField, EJCoreReportScreenItemProperties item)
+    private void configMarkup(JRDesignStyle textField, EJCoreReportScreenItemProperties item)
     {
         // http://jasperreports.sourceforge.net/sample.reference/markup/
         if (item instanceof ValueBaseItem)
@@ -1237,9 +1208,24 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private JRDesignElement createScrrenItem(EJReportBlock block, EJCoreReportScreenItemProperties item)
+    
+    
+    
+    private JRDesignStyle createScreenItemStyle() throws JRException
+    {
+        JRDesignStyle style = new JRDesignStyle();
+
+        style.setName(UUID.randomUUID().toString());
+        design.addStyle(style);
+        
+        return style;
+    }
+    
+    
+    private JRDesignElement createScrrenItem(EJReportBlock block, EJCoreReportScreenItemProperties item) throws JRException
     {
         JRDesignElement element = null;
+        JRDesignStyle itemStyle = createScreenItemStyle();
         switch (item.getType())
         {
             case TEXT:
@@ -1250,11 +1236,11 @@ public class EJReportJasperReportBuilder
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
                 text.getParagraph().setRightIndent(5);
                 text.getParagraph().setLeftIndent(5);
-                setAlignments(text, textItem);
-                setRotation(text, textItem);
+                setAlignments(itemStyle, textItem);
+                setRotation(itemStyle, textItem);
                 text.setStretchWithOverflow(textItem.isExpandToFit());
                 text.setBlankWhenNull(true);
-                configMarkup(text, item);
+                configMarkup(itemStyle, item);
             }
                 break;
             case NUMBER:
@@ -1265,8 +1251,8 @@ public class EJReportJasperReportBuilder
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
                 text.getParagraph().setRightIndent(5);
                 text.getParagraph().setLeftIndent(5);
-                setAlignments(text, textItem);
-                setRotation(text, textItem);
+                setAlignments(itemStyle, textItem);
+                setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
                 text.setStretchWithOverflow(textItem.isExpandToFit());
 
@@ -1308,8 +1294,8 @@ public class EJReportJasperReportBuilder
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
                 text.getParagraph().setRightIndent(5);
                 text.getParagraph().setLeftIndent(5);
-                setAlignments(text, textItem);
-                setRotation(text, textItem);
+                setAlignments(itemStyle, textItem);
+                setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
                 text.setStretchWithOverflow(textItem.isExpandToFit());
                 Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
@@ -1378,8 +1364,8 @@ public class EJReportJasperReportBuilder
                 text.getParagraph().setLeftIndent(5);
                 text.setStretchWithOverflow(true);
                 text.setExpression(createTextExpression(labelItem.getText()));
-                setAlignments(text, labelItem);
-                setRotation(text, labelItem);
+                setAlignments(itemStyle, labelItem);
+                setRotation(itemStyle, labelItem);
             }
                 break;
             case LINE:
@@ -1454,16 +1440,17 @@ public class EJReportJasperReportBuilder
 
                 image.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
                 image.setUsingCache(true);
-                setAlignments(image, imageItem);
+                setAlignments(itemStyle, imageItem);
             }
                 break;
             default:
                 break;
         }
+        element.setStyle(itemStyle);
         return element;
     }
 
-    void setAlignments(JRAlignment elm, AlignmentBaseItem alignmentBaseItem)
+    void setAlignments(JRDesignStyle elm, AlignmentBaseItem alignmentBaseItem)
     {
         switch (alignmentBaseItem.getVAlignment())
         {
@@ -1503,7 +1490,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    void setRotation(JRCommonText elm, RotatableItem rotatableItem)
+    void setRotation(JRDesignStyle elm, RotatableItem rotatableItem)
     {
         switch (rotatableItem.getRotation())
         {
