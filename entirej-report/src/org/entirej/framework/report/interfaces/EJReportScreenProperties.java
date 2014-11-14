@@ -60,4 +60,7 @@ public interface EJReportScreenProperties extends Serializable
     EJReportVisualAttributeProperties getOddVAProperties();
     
     EJReportVisualAttributeProperties getEvenVAProperties();
+    
+    
+    boolean isStartOnNewPage();
 }

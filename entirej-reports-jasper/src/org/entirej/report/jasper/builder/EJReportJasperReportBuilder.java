@@ -12,6 +12,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPen;
+import net.sf.jasperreports.engine.JRPropertyExpression;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
@@ -24,6 +25,7 @@ import net.sf.jasperreports.engine.design.JRDesignField;
 import net.sf.jasperreports.engine.design.JRDesignImage;
 import net.sf.jasperreports.engine.design.JRDesignLine;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
+import net.sf.jasperreports.engine.design.JRDesignPropertyExpression;
 import net.sf.jasperreports.engine.design.JRDesignRectangle;
 import net.sf.jasperreports.engine.design.JRDesignSection;
 import net.sf.jasperreports.engine.design.JRDesignStaticText;
@@ -32,6 +34,7 @@ import net.sf.jasperreports.engine.design.JRDesignSubreport;
 import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
@@ -174,7 +177,10 @@ public class EJReportJasperReportBuilder
                 subreport.setY(screenProperties.getY());
                 subreport.setWidth(screenProperties.getWidth());
                 subreport.setHeight(screenProperties.getHeight());
+
                 detail.addElement(subreport);
+
+                subreport.getPropertiesMap().setProperty("net.sf.jasperreports.export.xls.break.before.row", "true");
             }
 
         }
@@ -192,13 +198,13 @@ public class EJReportJasperReportBuilder
         _EJ_DEAFULT.setPdfFontName("Helvetica");
         _EJ_DEAFULT.setDefault(true);
         _EJ_DEAFULT.setPdfEmbedded(true);
-        
+
         EJReportVisualAttributeProperties va = report.getProperties().getVisualAttributeProperties();
-        if(va!=null)
+        if (va != null)
         {
             vaToStyle(va, _EJ_DEAFULT);
         }
-        
+
         design.addStyle(_EJ_DEAFULT);
     }
 
@@ -332,6 +338,7 @@ public class EJReportJasperReportBuilder
             design.setBottomMargin(0);
             design.setLeftMargin(0);
             design.setRightMargin(0);
+         
             addDefaultFont(block.getReport());
 
             EJCoreReportBlockProperties properties = block.getProperties();
@@ -460,7 +467,7 @@ public class EJReportJasperReportBuilder
         detail.setSplitType(SplitTypeEnum.STRETCH);
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
-
+        boolean addBrake = screenProperties.isStartOnNewPage();
         int currentX = 0;
         for (EJReportColumnProperties col : allColumns)
         {
@@ -490,6 +497,11 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
+                        if(addBrake)
+                        {
+                            addPageBreak(block, element);
+                            addBrake = false;
+                        }
 
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
@@ -634,10 +646,19 @@ public class EJReportJasperReportBuilder
 
     }
 
+    private void addPageBreak(EJReportBlock block, JRDesignElement element)
+    {
+        element.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW,"true");
+        JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
+        expression.setName("net.sf.jasperreports.export.xls.sheet.name");
+        expression.setValueExpression(createTextExpression(block.getName()));
+        element.addPropertyExpression(expression);
+    }
+
     private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element) throws JRException
     {
-        
-        JRDesignStyle style  = (JRDesignStyle) element.getStyle();
+
+        JRDesignStyle style = (JRDesignStyle) element.getStyle();
         EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
         if (va != null)
         {
@@ -655,12 +676,11 @@ public class EJReportJasperReportBuilder
                 String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
                 if ("BLOCK_ITEM".equals(paramTypeCode))
                 {
-                     createItemBaseStyle(style, paramValue);
+                    createItemBaseStyle(style, paramValue);
 
-                   // element.setStyle(style);
+                    // element.setStyle(style);
 
                 }
-                
 
             }
         }
@@ -668,8 +688,6 @@ public class EJReportJasperReportBuilder
 
     private JRDesignStyle createItemBaseStyle(JRDesignStyle style, String paramValue) throws JRException
     {
-
-      
 
         Collection<EJReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
@@ -1211,26 +1229,22 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    
-    
-    
     private JRDesignStyle createScreenItemStyle() throws JRException
     {
         JRDesignStyle style = new JRDesignStyle();
 
         style.setName(UUID.randomUUID().toString());
         design.addStyle(style);
-        
+
         return style;
     }
-    
-    
+
     private JRDesignElement createScrrenItem(EJReportBlock block, EJCoreReportScreenItemProperties item) throws JRException
     {
         JRDesignElement element = null;
         JRDesignStyle itemStyle = createScreenItemStyle();
         EJReportVisualAttributeProperties properties = block.getReport().getProperties().getVisualAttributeProperties();
-        if(properties!=null)
+        if (properties != null)
         {
             vaToStyle(properties, itemStyle);
         }
