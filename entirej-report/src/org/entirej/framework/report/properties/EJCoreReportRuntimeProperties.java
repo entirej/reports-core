@@ -28,16 +28,19 @@ import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParamet
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.interfaces.EJEntireJReportProperties;
 import org.entirej.framework.report.interfaces.EJReportConnectionFactory;
+import org.entirej.framework.report.interfaces.EJReportRunner;
 import org.entirej.framework.report.interfaces.EJReportTranslator;
 
 public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
 {
 
-    private String                               _version = "1.0";           // default
+    private String                               _version               = "1.0";                                           // default
 
     private ArrayList<String>                    _reportPackageNames;
     private String                               _connectionFactoryClassName;
     private String                               _translatorClassName;
+    private String                               _reportRunnerClassName = "org.entirej.report.jasper.EJJasperReportRunner";
+
     private EJReportVisualAttributeContainer     _visualAttributeContainer;
 
     private List<EJReportRuntimeLevelParameter>  _runtimeLevelParameters;
@@ -64,6 +67,56 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         _runtimeLevelParameters = new ArrayList<EJReportRuntimeLevelParameter>();
     }
 
+    public String getReportRunnerClassName()
+    {
+        return _reportRunnerClassName;
+    }
+
+    public void setReportRunnerClassName(String reportRunnerClassName)
+    {
+        _reportRunnerClassName = reportRunnerClassName;
+
+    }
+
+    public EJReportRunner newReportRunner()
+    {
+        if (_reportRunnerClassName == null || _reportRunnerClassName.trim().length() == 0)
+        {
+            return null;
+        }
+
+        try
+        {
+            Class<?> rendererClass = Class.forName(_reportRunnerClassName);
+            Object obj = rendererClass.newInstance();
+
+            if (obj instanceof EJReportRunner)
+            {
+                return (EJReportRunner) obj;
+            }
+            else
+            {
+                throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.INVALID_REPORT_RUNNER_NAME,
+                        _reportRunnerClassName, "EJReportRunner"));
+            }
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_REPORT_RUNNER,
+                    _reportRunnerClassName), e);
+        }
+        catch (InstantiationException e)
+        {
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_REPORT_RUNNER,
+                    _reportRunnerClassName), e);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_REPORT_RUNNER,
+                    _reportRunnerClassName), e);
+        }
+    }
+
     public String getVersion()
     {
         return _version;
@@ -87,15 +140,14 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         {
             _connectionFactoryClassName = null;
         }
-        
-        
+
         try
         {
             _connectionFactoryClassName = className;
-            
+
             Class<?> factoryClass = Class.forName(className);
             Object obj = factoryClass.newInstance();
-            
+
             if (obj instanceof EJReportConnectionFactory)
             {
                 EJCoreReportManagedConnectionFactory.getInstane().setConnectionFactory((EJReportConnectionFactory) obj);
@@ -107,18 +159,18 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
         }
         catch (ClassNotFoundException e)
         {
-            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className),
-                    e);
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
+                    EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className), e);
         }
         catch (InstantiationException e)
         {
-            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className),
-                    e);
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
+                    EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className), e);
         }
         catch (IllegalAccessException e)
         {
-            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className),
-                    e);
+            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
+                    EJReportFrameworkMessage.UNABLE_TO_CREATE_TRANSACTION_FACTORY, className), e);
         }
     }
 

@@ -31,6 +31,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
 
     private static final String           CONNECTION_FACTORY_CLASS_NAME = "connectionFactoryClassName";
     private static final String           TRANSLATOR_CLASS_NAME         = "translatorClassName";
+    private static final String           REPORTRUNNER_CLASS_NAME       = "reportRunnerClassName";
     private static final String           APPLICATION_LEVEL_PARAMETER   = "appicationLevelParameter";
     private static final String           REPORT_PACKAGE                 = "reportPackage";
 
@@ -96,6 +97,10 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
         else if (name.equals(TRANSLATOR_CLASS_NAME))
         {
             _properties.setTranslatorClassName(value);
+        }
+        else if (name.equals(REPORTRUNNER_CLASS_NAME))
+        {
+            _properties.setReportRunnerClassName(value);
         }
 
         else if (name.equals(REPORT_PACKAGE))

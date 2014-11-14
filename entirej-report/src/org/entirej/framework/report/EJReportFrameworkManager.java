@@ -26,6 +26,7 @@ import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.data.controllers.EJReportControllerFactory;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportTranslationController;
+import org.entirej.framework.report.interfaces.EJReportRunner;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
@@ -73,7 +74,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
         }
 
     }
-    
+
     public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
     {
         return _runtimeLevelParameters.values();
@@ -142,6 +143,16 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     public EJReportTranslationController getTranslationController()
     {
         return _translationController;
+    }
+
+    public EJReportRunner createReportRunner()
+    {
+        EJReportRunner newReportRunner = EJCoreReportRuntimeProperties.getInstance().newReportRunner();
+        if(newReportRunner!=null)
+        {
+            newReportRunner.init(this);
+        }
+        return newReportRunner;
     }
 
     /**
