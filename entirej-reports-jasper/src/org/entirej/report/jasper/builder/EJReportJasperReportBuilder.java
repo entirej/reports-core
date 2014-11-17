@@ -18,6 +18,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignBreak;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
@@ -35,6 +36,7 @@ import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
+import net.sf.jasperreports.engine.type.BreakTypeEnum;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
@@ -468,6 +470,16 @@ public class EJReportJasperReportBuilder
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
         boolean addBrake = screenProperties.isStartOnNewPage();
+        if(addBrake)
+        {
+            
+            JRDesignBand band = new JRDesignBand();
+            band.setHeight(1);
+            addPageBreak(band, block);
+            design.setTitle(band);
+        }
+        
+        
         int currentX = 0;
         for (EJReportColumnProperties col : allColumns)
         {
@@ -497,11 +509,7 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
-                        if(addBrake)
-                        {
-                            addPageBreak(block, element);
-                            addBrake = false;
-                        }
+                      
 
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
@@ -542,7 +550,7 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
-
+                       
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
@@ -601,7 +609,7 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
-
+                        
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
@@ -646,13 +654,27 @@ public class EJReportJasperReportBuilder
 
     }
 
-    private void addPageBreak(EJReportBlock block, JRDesignElement element)
+    private void addPageBreak(JRDesignBand band, EJReportBlock block)
     {
-        element.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW,"true");
+        
+        JRDesignStaticText text = new JRDesignStaticText();
+        text.setHeight(1);
+        text.setWidth(1);
+        JRDesignBreak breakPage = new JRDesignBreak();
+        text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW,"true");
         JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
         expression.setName("net.sf.jasperreports.export.xls.sheet.name");
         expression.setValueExpression(createTextExpression(block.getName()));
-        element.addPropertyExpression(expression);
+        text.addPropertyExpression(expression);
+        text.setX(0);
+        text.setY(0);
+        breakPage.setX(0);
+        breakPage.setY(0);
+        breakPage.setType(BreakTypeEnum.PAGE);
+        band.addElement(breakPage);
+        band.addElement(text);
+       text.setMode(ModeEnum.TRANSPARENT);
+        
     }
 
     private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element) throws JRException
@@ -917,7 +939,15 @@ public class EJReportJasperReportBuilder
         {
             crateValueRefField(item);
         }
-
+        boolean addBrake = screenProperties.isStartOnNewPage();
+        if(addBrake)
+        {
+            
+            JRDesignBand band = new JRDesignBand();
+            band.setHeight(1);
+            addPageBreak(band, block);
+            design.setTitle(band);
+        }
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         JRDesignBand detail = new JRDesignBand();
         detail.setSplitType(SplitTypeEnum.STRETCH);
