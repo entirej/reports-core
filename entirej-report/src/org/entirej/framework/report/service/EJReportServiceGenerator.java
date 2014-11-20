@@ -28,7 +28,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportPojoHelper;
 import org.entirej.framework.report.EJReportRuntimeException;
 
-public class DefaultServiceGenerator implements EJReportServiceContentGenerator
+public class EJReportServiceGenerator implements EJReportServiceContentGenerator
 {
 
     protected final static String PACKAGE     = "package ";

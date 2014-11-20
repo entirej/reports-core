@@ -26,7 +26,7 @@ import java.util.TreeSet;
 
 import org.entirej.framework.report.EJReportFieldName;
 
-public class DefaultReportPojoGenerator implements EJReportPojoContentGenerator
+public class EJReportPojoGenerator implements EJReportPojoContentGenerator
 {
 
     protected static final String EJ_FIELD_ANNOTATION = "@EJReportFieldName";
