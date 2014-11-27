@@ -104,77 +104,7 @@ public class EJReportItem implements Serializable
         return _dataItem.getVisualAttribute();
     }
 
-    /**
-     * Used to set the item instance tool tip text
-     * <P>
-     * An item instance tool tip will be displayed when the record this item is
-     * contained within is displayed to the user. Depending on how the block
-     * renderer is displaying the blocks records will depend on how this tool
-     * tip is displayed. If for example the block is displaying records in a
-     * table, then the item instance tool tip will be a cell in the table.
-     * Whereas setting the screen item tool tip will set the tool tip to the
-     * entire column
-     * <p>
-     * Setting the tool tip to <code>null</code> will remove the tool tip
-     * <p>
-     * 
-     * @param text
-     *            The tool tip text to set
-     * 
-     * @see #setHint(String, boolean)
-     * @see #getHint()
-     */
-    public void setHint(String hint)
-    {
-        setHint(hint, false);
-    }
 
-    /**
-     * Used to set the item instance tool tip text
-     * <P>
-     * An item instance tool tip will be displayed when the record this item is
-     * contained within is displayed to the user. Depending on how the block
-     * renderer is displaying the blocks records will depend on how this tool
-     * tip is displayed. If for example the block is displaying records in a
-     * table, then the item instance tool tip will be a cell in the table.
-     * Whereas setting the screen item tool tip will set the tool tip to the
-     * entire column
-     * <p>
-     * Setting the tool tip to <code>null</code> will remove the tool tip
-     * <p>
-     * 
-     * @param text
-     *            The tool tip text to set
-     * @param translate
-     *            Indicates if the text specified should be translated using the
-     *            projects translator, before displaying the hint
-     * 
-     * @see #setHint(String)
-     * @see #getHint()
-     */
-    public void setHint(String hint, boolean translate)
-    {
-        String hintToSet = hint;
-        if (translate && hint != null)
-        {
-            hintToSet = _block.getReport().translateText(hint);
-        }
-
-        _dataItem.setHint(hintToSet);
-
-    }
-
-    /**
-     * Returns the hint text set on this item or <code>null</code> if no hint
-     * has been set
-     * 
-     * @return The hint set to this item or <code>null</code> if not text has
-     *         been displayed
-     */
-    public String getHint()
-    {
-        return _dataItem.getHint();
-    }
 
     /**
      * Used to retrieve this items value
