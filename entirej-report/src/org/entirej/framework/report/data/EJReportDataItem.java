@@ -20,22 +20,40 @@ package org.entirej.framework.report.data;
 
 import java.io.Serializable;
 
+import org.entirej.framework.report.EJReportMessageFactory;
+import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJReportController;
+import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 /**
  * Contains the actual data for a specific item.
  */
-public abstract class EJReportDataItem implements Serializable
+public class EJReportDataItem implements Serializable
 {
-   
+    private Object                            _value;
+    private EJReportController                _reportController;
+    private EJReportVisualAttributeProperties _vaProperties;
+    private String                            _hint;
+    private EJCoreReportItemProperties        _itemProperties;
+
+    EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties)
+    {
+        _reportController = reportController;
+        _itemProperties = itemProperties;
+
+    }
 
     /**
      * Return the name of this item
      * 
      * @return This items name
      */
-    public abstract  String getName();
+    public String getName()
+    {
+        return _itemProperties.getName();
+    }
 
     /**
      * Sets the item with the given name to the given value
@@ -43,31 +61,92 @@ public abstract class EJReportDataItem implements Serializable
      * @param value
      *            The value to set
      */
-    public  abstract   void setValue(Object value);
+    public void setValue(Object value)
+    {
+        if (value != null)
+        {
+            if (!_itemProperties.getDataTypeClass().isAssignableFrom(value.getClass()))
+            {
+                throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM,
+                        _itemProperties.getName(), _itemProperties.getDataTypeClassName(), value.getClass().getName()));
+            }
+        }
+        _value = value;
 
+    }
 
     /**
      * Used to retrieve this items value
      * 
      * @return The items value
      */
-    public  abstract   Object getValue();
-
+    public Object getValue()
+    {
+        return _value;
+    }
 
     /**
      * Returns the properties object of this report.
      * 
      * @return This reports properties
      */
-    public  abstract   EJCoreReportItemProperties getProperties();
+    public EJCoreReportItemProperties getProperties()
+    {
+        return _itemProperties;
+    }
 
-    public  abstract   void setVisualAttribute(String visualAttributeName);
+    public void setVisualAttribute(String visualAttributeName)
+    {
+        if (visualAttributeName == null || visualAttributeName.trim().length() == 0)
+        {
+            _vaProperties = null;
+            return;
+        }
 
+        EJReportVisualAttributeProperties vaProperties = _reportController.getInternalReport().getVisualAttribute(visualAttributeName);
+        if (vaProperties == null)
+        {
+            throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
+        }
 
-    public  abstract   EJReportVisualAttributeProperties getVisualAttribute();
+        if (!vaProperties.isUsedAsDynamicVA())
+        {
+            throw new IllegalArgumentException(" Visual attribute with the name " + visualAttributeName + " on this report is not marked as 'Used as Dynamic VA' .");
+        }
+        _vaProperties = vaProperties;
+    }
 
+    public EJReportVisualAttributeProperties getVisualAttribute()
+    {
+        return _vaProperties;
+    }
 
- 
+    /**
+     * Sets this item hint
+     * <p>
+     * Hints set on data items will be displayed when the record containing the
+     * item gains focus. Setting the hint to <code>null</code> removes the hint
+     * text
+     * 
+     * @param text
+     *            The hint to set or <code>null</code> if no hint should be
+     *            shown
+     */
+    public void setHint(String text)
+    {
+        _hint = text;
+    }
+
+    /**
+     * Returns the hint set for this item instance
+     * 
+     * @return This items hint or <code>null</code> if no item level hint has
+     *         been defined
+     */
+    public String getHint()
+    {
+        return _hint;
+    }
 
     /**
      * Returns true or false depending on whether this item receives its value
@@ -77,12 +156,14 @@ public abstract class EJReportDataItem implements Serializable
      * @return <code>true</code> if this is item receives its value from the
      *         blocks service otherwise <code>false</code>
      */
-    public  abstract   boolean isBlockServiceItem();
+    public boolean isBlockServiceItem()
+    {
+        return _itemProperties.isBlockServiceItem();
+    }
 
     public String toString()
     {
-        Object _value = getValue();
-        return getName() + ": " + (_value == null ? "NULL" : _value);
+        return _itemProperties.getName() + ": " + (_value == null ? "NULL" : _value);
     }
 
 }

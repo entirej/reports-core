@@ -23,31 +23,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.entirej.framework.report.EJReportMessage;
-import org.entirej.framework.report.EJReportMessageFactory;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportController;
-import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
-import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReportDataRecord implements Serializable
 {
-    private EJReportController    _reportController;
-    private EJReportDataRecord    _baseRecord;
-    private Object                _servicePojo;
-    private EJInternalReportBlock _block;
+    private EJReportController                _reportController;
+    private EJReportDataRecord                _baseRecord;
+    private Object                            _servicePojo;
+    private EJInternalReportBlock             _block;
 
-    private boolean               _queriedRecord     = false;
-
-    private Map<String, String>   _vaMap             = new HashMap<String, String>();
-    private Map<String, Object>   _noneServiceValMap = new HashMap<String, Object>();
+    private HashMap<String, EJReportDataItem> _itemList;
+    private boolean                           _queriedRecord = false;
 
     /**
      * Returns the properties of the block that contains this record
@@ -59,6 +51,8 @@ public class EJReportDataRecord implements Serializable
         _reportController = reportController;
         _block = block;
         _servicePojo = getBlock().getServicePojoHelper().createNewPojoFromService();
+        _itemList = new HashMap<String, EJReportDataItem>();
+        initialiseRecord(reportController, null);
     }
 
     /**
@@ -71,6 +65,8 @@ public class EJReportDataRecord implements Serializable
         _reportController = reportController;
         _block = block;
         _servicePojo = servicePojo;
+        _itemList = new HashMap<String, EJReportDataItem>();
+        initialiseRecord(reportController, servicePojo);
     }
 
     /**
@@ -87,6 +83,8 @@ public class EJReportDataRecord implements Serializable
         _reportController = reportController;
         _block = block;
         _servicePojo = servicePojo;
+        _itemList = new HashMap<String, EJReportDataItem>();
+        initialiseRecord(reportController, sourceEntityObject);
     }
 
     /**
@@ -132,6 +130,32 @@ public class EJReportDataRecord implements Serializable
         return _servicePojo;
     }
 
+    private void initialiseRecord(EJReportController reportController, Object sourceEntityObject)
+    {
+        for (EJCoreReportItemProperties itemProps : _block.getProperties().getItemContainer().getAllItemProperties())
+        {
+            EJReportDataItem item = new EJReportDataItem(reportController, itemProps);
+            addItem(item);
+        }
+
+        if (sourceEntityObject != null)
+        {
+            copyValuesFromEntityObject(sourceEntityObject);
+        }
+
+        // Setup this record to listen to item value changes
+        // This must be done after initial values have been copied otherwise
+        // change notifications will fire when not expected
+        for (EJReportDataItem item : getAllItems())
+        {
+            if (!item.getProperties().isBlockServiceItem())
+            {
+                continue;
+            }
+
+        }
+    }
+
     public void copyValuesFromEntityObject(Object servicePojo)
     {
         // Check that both the data entity passed is compatible with the one
@@ -149,7 +173,7 @@ public class EJReportDataRecord implements Serializable
             return;
         }
 
-        _block.getServicePojoHelper().copyValuesFromServicePojo(getAllItems(), servicePojo);
+        _block.getServicePojoHelper().copyValuesFromServicePojo(_itemList.values(), servicePojo);
     }
 
     public EJInternalReportBlock getBlock()
@@ -179,6 +203,27 @@ public class EJReportDataRecord implements Serializable
     }
 
     /**
+     * Adds a new dataItem to this record. Only items added to the record can be
+     * modified. Trying to change an item that has not been added to the record
+     * will result in an <code>InvalidColumnNameException</code>
+     * 
+     * @exception EJDuplicateColumnException
+     *                Thrown if an attempt is made to add an item that has
+     *                already been added
+     */
+    private void addItem(EJReportDataItem item)
+    {
+        if (item != null)
+        {
+            if (_itemList.containsKey(item.getName().toLowerCase()))
+            {
+                throw new IllegalArgumentException("This record already contains an item. Item name: " + item.getName());
+            }
+            _itemList.put(item.getName().toLowerCase(), item);
+        }
+    }
+
+    /**
      * Checks if a specific item name exists within the record. This can be used
      * before setting an items value so that no
      * <code>InvalidColumnNameException</code> is thrown.
@@ -194,7 +239,7 @@ public class EJReportDataRecord implements Serializable
             return false;
         }
 
-        return _block.getProperties().getItemContainer().contains(itemName);
+        return _itemList.containsKey(itemName.toLowerCase());
     }
 
     /**
@@ -214,110 +259,14 @@ public class EJReportDataRecord implements Serializable
             throw new IllegalArgumentException("The item name passd to getItem is either a zero lenght string or null");
         }
 
-        final EJCoreReportItemProperties itemProperties = _block.getProperties().getItemContainer().getItemProperties(itemName);
+        EJReportDataItem item = _itemList.get(itemName.toLowerCase());
 
-        if (itemProperties != null)
+        if (item != null)
         {
-            final String name = itemProperties.getName();
-            final EJReportDefaultServicePojoHelper servicePojoHelper = _block.getServicePojoHelper();
-            EJReportDataItem item = newDataItem(itemProperties, name, servicePojoHelper);
             return item;
         }
 
         throw new IllegalArgumentException("No such item called " + itemName + " within block " + getBlockName());
-    }
-
-    private EJReportDataItem newDataItem(final EJCoreReportItemProperties itemProperties, final String name,
-            final EJReportDefaultServicePojoHelper servicePojoHelper)
-    {
-        return new EJReportDataItem()
-        {
-
-            @Override
-            public void setVisualAttribute(String visualAttributeName)
-            {
-
-                if (visualAttributeName == null || visualAttributeName.trim().length() == 0)
-                {
-                    _vaMap.remove(name);
-                    return;
-                }
-
-                EJReportVisualAttributeProperties vaProperties = _reportController.getInternalReport().getVisualAttribute(visualAttributeName);
-                if (vaProperties == null)
-                {
-                    throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
-                }
-
-                if (!vaProperties.isUsedAsDynamicVA())
-                {
-                    throw new IllegalArgumentException(" Visual attribute with the name " + visualAttributeName
-                            + " on this report is not marked as 'Used as Dynamic VA' .");
-                }
-                _vaMap.put(name, visualAttributeName);
-            }
-
-            @Override
-            public void setValue(Object value)
-            {
-
-                if (value != null)
-                {
-                    if (!itemProperties.getDataTypeClass().isAssignableFrom(value.getClass()))
-                    {
-                        throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
-                                EJReportFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, itemProperties.getName(), itemProperties.getDataTypeClassName(),
-                                value.getClass().getName()));
-                    }
-                }
-                if (itemProperties.isBlockServiceItem())
-                {
-                    servicePojoHelper.setValue(name, _servicePojo, value);
-                }
-                else
-                {
-                    _noneServiceValMap.put(name, value);
-                }
-
-            }
-
-            @Override
-            public boolean isBlockServiceItem()
-            {
-                return itemProperties.isBlockServiceItem();
-            }
-
-            @Override
-            public EJReportVisualAttributeProperties getVisualAttribute()
-            {
-                String va = _vaMap.get(name);
-                if (va != null)
-                {
-                    return _reportController.getEJReport().getVisualAttribute(va);
-
-                }
-                return null;
-            }
-
-            @Override
-            public Object getValue()
-            {
-                return itemProperties.isBlockServiceItem() ? servicePojoHelper.getValue(name, _servicePojo) : _noneServiceValMap.get(name);
-            }
-
-            @Override
-            public EJCoreReportItemProperties getProperties()
-            {
-                return itemProperties;
-            }
-
-            @Override
-            public String getName()
-            {
-
-                return name;
-            }
-        };
     }
 
     /**
@@ -371,14 +320,7 @@ public class EJReportDataRecord implements Serializable
      */
     public Collection<String> getColumnNames()
     {
-        List<String> names = new ArrayList<String>();
-
-        List<EJCoreReportItemProperties> itemProperties = _block.getProperties().getItemContainer().getAllItemProperties();
-        for (EJCoreReportItemProperties properties : itemProperties)
-        {
-            names.add(properties.getName().toLowerCase());
-        }
-        return names;
+        return _itemList.keySet();
     }
 
     /**
@@ -389,19 +331,7 @@ public class EJReportDataRecord implements Serializable
      */
     public Collection<EJReportDataItem> getAllItems()
     {
-        List<EJReportDataItem> items = new ArrayList<EJReportDataItem>();
-        final EJReportDefaultServicePojoHelper servicePojoHelper = _block.getServicePojoHelper();
-        List<EJCoreReportItemProperties> itemProperties = _block.getProperties().getItemContainer().getAllItemProperties();
-
-        for (EJCoreReportItemProperties properties : itemProperties)
-        {
-            final String name = properties.getName();
-
-            EJReportDataItem item = newDataItem(properties, name, servicePojoHelper);
-            items.add(item);
-        }
-
-        return items;
+        return _itemList.values();
     }
 
     /**
@@ -433,10 +363,17 @@ public class EJReportDataRecord implements Serializable
      */
     public Collection<EJCoreReportItemProperties> getAllItemProperties()
     {
+        ArrayList<EJCoreReportItemProperties> properties = new ArrayList<EJCoreReportItemProperties>();
 
-        List<EJCoreReportItemProperties> itemProperties = _block.getProperties().getItemContainer().getAllItemProperties();
+        Iterator<EJReportDataItem> values = _itemList.values().iterator();
 
-        return new ArrayList<EJCoreReportItemProperties>(itemProperties);
+        while (values.hasNext())
+        {
+            EJReportDataItem item = values.next();
+
+            properties.add(item.getProperties());
+        }
+        return properties;
     }
 
     /**
@@ -529,7 +466,7 @@ public class EJReportDataRecord implements Serializable
         StringBuffer buffer = new StringBuffer();
         buffer.append("Record:\n");
 
-        Iterator<EJReportDataItem> items = getAllItems().iterator();
+        Iterator<EJReportDataItem> items = _itemList.values().iterator();
         while (items.hasNext())
         {
             buffer.append("    ");

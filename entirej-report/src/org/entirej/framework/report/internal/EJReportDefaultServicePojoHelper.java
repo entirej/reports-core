@@ -103,18 +103,6 @@ public class EJReportDefaultServicePojoHelper implements Serializable
         invokePojoMethod(dataEntity, methodName, itemProperties.getDataTypeClass(), value);
 
     }
-    
-    public Object getValue(String itemName, Object dataEntity)
-    {
-        
-        String firstLetter = itemName.substring(0, 1);
-        firstLetter = firstLetter.toUpperCase();
-        StringBuilder builder = new StringBuilder();
-        String methodName = builder.append("get").append(firstLetter).append(itemName.substring(1)).toString();
-
-        Object value = invokePojoMethod(dataEntity, methodName, null);
-        return value;
-    }
 
     /**
      * Copy all values from the source pojo to the data items specified
