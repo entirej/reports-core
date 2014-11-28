@@ -339,17 +339,6 @@ public class EJInternalReportBlock implements Serializable
         logger.trace("END nextRecord");
     }
 
-    /**
-     * Instructs the block to navigate to the previous record<
-     * <p>
-     * If the block is already on the first record, then nothing will happen
-     */
-    public void previousRecord()
-    {
-        logger.trace("START previousRecord");
-        _blockController.previousRecord();
-        logger.trace("END previousRecord");
-    }
 
     /**
      * Returns a collection if IDataRecords for this block Retrieving all

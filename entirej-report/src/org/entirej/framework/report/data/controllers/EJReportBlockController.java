@@ -67,9 +67,8 @@ public class EJReportBlockController implements Serializable
         return getBlock().getReport();
     }
 
-    
-    private int           index = -1;
-    
+    private int index = -1;
+
     public EJInternalReportBlock getBlock()
     {
         return _internalBlock;
@@ -80,17 +79,23 @@ public class EJReportBlockController implements Serializable
      */
     public void nextRecord()
     {
+        EJReportDataRecord focusedRecord = getFocusedRecord();
+        if (focusedRecord != null && focusedRecord.isInitialised())
+        {
+            focusedRecord.dispose();
+        }
         index++;
+
+        focusedRecord = getFocusedRecord();
+        if (focusedRecord != null && !focusedRecord.isInitialised())
+        {
+            focusedRecord.initialise();
+            getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
+        }
+        
     }
 
-    /**
-     * Indicates that the user want to navigate to the previous record
-     */
-    public void previousRecord()
-    {
-
-        index--;
-    }
+  
 
     /**
      * Creates a controller for the given data block
@@ -230,12 +235,12 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord getFocusedRecord()
     {
-        if(index==-1 && _dataBlock.getBlockRecordCount()>0)
+        if (index == -1 && _dataBlock.getBlockRecordCount() > 0)
         {
             return getRecord(0);
         }
-        
-        if(_dataBlock.getBlockRecordCount()>0 && index > -1 &&index< _dataBlock.getBlockRecordCount())
+
+        if (_dataBlock.getBlockRecordCount() > 0 && index > -1 && index < _dataBlock.getBlockRecordCount())
         {
             return getRecord(index);
         }
@@ -269,7 +274,6 @@ public class EJReportBlockController implements Serializable
         EJReportDataRecord record;
         record = createNewRecord();
 
-      
         return record;
     }
 
@@ -299,7 +303,7 @@ public class EJReportBlockController implements Serializable
      * <code>recordCreated</code> will mark the record as new and add it to the
      * blocks list of record.
      * 
-    
+     * 
      * @return A new record
      */
     protected EJReportDataRecord createNewRecord()
@@ -349,7 +353,6 @@ public class EJReportBlockController implements Serializable
             }
         }
 
-       
         logger.trace("END  copyFocusedRecord");
         return record;
     }
@@ -487,7 +490,7 @@ public class EJReportBlockController implements Serializable
         if (record != null)
         {
             _dataBlock.addQueriedRecord(record);
-            getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(record));
+
         }
     }
 
@@ -529,7 +532,7 @@ public class EJReportBlockController implements Serializable
         logger.trace("START clearBlock");
 
         _dataBlock.clearBlock();
-        index=-1;
+        index = -1;
 
         logger.trace("END clearBlock");
     }

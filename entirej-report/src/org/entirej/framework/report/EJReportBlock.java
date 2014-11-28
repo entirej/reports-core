@@ -242,15 +242,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return _block.getFrameworkManager();
     }
 
-    /**
-     * Navigates to the first record within this block
-     * <p>
-     * If the block has no records then no action will be performed
-     */
-    public void navigateToPreviousRecord()
-    {
-        _block.previousRecord();
-    }
+   
 
     /**
      * Navigates to the next record of this block

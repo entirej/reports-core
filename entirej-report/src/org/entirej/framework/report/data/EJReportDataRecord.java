@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportRuntimeException;
@@ -41,6 +42,8 @@ public class EJReportDataRecord implements Serializable
     private HashMap<String, EJReportDataItem> _itemList;
     private boolean                           _queriedRecord = false;
 
+    private AtomicBoolean                     init           = new AtomicBoolean();
+
     /**
      * Returns the properties of the block that contains this record
      * 
@@ -52,7 +55,7 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = getBlock().getServicePojoHelper().createNewPojoFromService();
         _itemList = new HashMap<String, EJReportDataItem>();
-        initialiseRecord(reportController, null);
+
     }
 
     /**
@@ -66,25 +69,6 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = servicePojo;
         _itemList = new HashMap<String, EJReportDataItem>();
-        initialiseRecord(reportController, servicePojo);
-    }
-
-    /**
-     * Creates a data record with all values copied from the given source entity
-     * object
-     * 
-     * @param reportController
-     * @param block
-     * @param entityObject
-     * @param sourceEntityObject
-     */
-    public EJReportDataRecord(EJReportController reportController, EJInternalReportBlock block, Object servicePojo, Object sourceEntityObject)
-    {
-        _reportController = reportController;
-        _block = block;
-        _servicePojo = servicePojo;
-        _itemList = new HashMap<String, EJReportDataItem>();
-        initialiseRecord(reportController, sourceEntityObject);
     }
 
     /**
@@ -130,6 +114,27 @@ public class EJReportDataRecord implements Serializable
         return _servicePojo;
     }
 
+    public boolean isInitialised()
+    {
+        return init.get();
+    }
+
+    public void initialise()
+    {
+
+        initialiseRecord(_reportController, _servicePojo);
+        init.set(true);
+    }
+
+    public void dispose()
+    {
+        init.set(false);
+        _itemList = null;
+        _servicePojo = null;
+        _reportController = null;
+        _block = null;
+    }
+
     private void initialiseRecord(EJReportController reportController, Object sourceEntityObject)
     {
         for (EJCoreReportItemProperties itemProps : _block.getProperties().getItemContainer().getAllItemProperties())
@@ -143,17 +148,6 @@ public class EJReportDataRecord implements Serializable
             copyValuesFromEntityObject(sourceEntityObject);
         }
 
-        // Setup this record to listen to item value changes
-        // This must be done after initial values have been copied otherwise
-        // change notifications will fire when not expected
-        for (EJReportDataItem item : getAllItems())
-        {
-            if (!item.getProperties().isBlockServiceItem())
-            {
-                continue;
-            }
-
-        }
     }
 
     public void copyValuesFromEntityObject(Object servicePojo)
@@ -445,20 +439,6 @@ public class EJReportDataRecord implements Serializable
             }
         }
         return record;
-    }
-
-    /**
-     * Returns a copy of this record
-     * 
-     * @return The new record
-     */
-    public EJReportDataRecord copy()
-    {
-        // Create a new record copying all values from this record entity object
-        EJReportDataRecord newRec = new EJReportDataRecord(_reportController, _block, _block.getServicePojoHelper().createNewServicePojo(getServicePojo()),
-                _servicePojo);
-        copyValuesToRecord(newRec);
-        return newRec;
     }
 
     public String toString()

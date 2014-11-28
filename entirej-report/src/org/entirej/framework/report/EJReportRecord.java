@@ -187,13 +187,5 @@ public class EJReportRecord implements Serializable
         _dataRecord.copyValuesFromEntityObject(entityObject);
     }
 
-    /**
-     * Returns a copy of this record
-     * 
-     * @return The new record
-     */
-    public EJReportDataRecord copy()
-    {
-        return _dataRecord.copy();
-    }
+    
 }
