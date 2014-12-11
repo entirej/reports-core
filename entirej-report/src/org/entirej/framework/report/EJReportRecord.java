@@ -108,7 +108,7 @@ public class EJReportRecord implements Serializable
      */
     public void setValue(String itemName, Object value)
     {
-        setValue(itemName, value);
+        _dataRecord.setValue(itemName, value);
     }
 
     /**
