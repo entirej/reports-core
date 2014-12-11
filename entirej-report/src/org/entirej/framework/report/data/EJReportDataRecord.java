@@ -55,6 +55,11 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = getBlock().getServicePojoHelper().createNewPojoFromService();
         _itemList = new HashMap<String, EJReportDataItem>();
+        
+        if(_block.getProperties().isControlBlock())
+        {
+            initialise();
+        }
 
     }
 
@@ -69,6 +74,10 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = servicePojo;
         _itemList = new HashMap<String, EJReportDataItem>();
+        if(_block.getProperties().isControlBlock())
+        {
+            initialise();
+        }
     }
 
     /**

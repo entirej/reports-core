@@ -80,7 +80,7 @@ public class EJReportBlockController implements Serializable
     public void nextRecord()
     {
         EJReportDataRecord focusedRecord = getFocusedRecord();
-        if (focusedRecord != null && focusedRecord.isInitialised())
+        if (focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
         {
             focusedRecord.dispose();
         }
