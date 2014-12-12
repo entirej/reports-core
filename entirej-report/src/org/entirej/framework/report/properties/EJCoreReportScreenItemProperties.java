@@ -503,6 +503,20 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     public static class Image extends ValueBaseItem
     {
 
+        
+        private String defaultImage;
+        
+        
+        public String getDefaultImage()
+        {
+            return defaultImage;
+        }
+        
+        public void setDefaultImage(String defaultImage)
+        {
+            this.defaultImage = defaultImage;
+        }
+        
         public Image(EJCoreReportBlockProperties blockProperties)
         {
             super(blockProperties);

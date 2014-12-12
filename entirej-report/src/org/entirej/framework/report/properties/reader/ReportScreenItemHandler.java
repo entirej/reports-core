@@ -58,6 +58,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
     private static final String              ELEMENT_SCREEN_LINE_WIDTH     = "lineWidth";
     private static final String              ELEMENT_SCREEN_LINE_DIRECTION = "lineDirection";
     private static final String              ELEMENT_SCREEN_RECT_RADIUS    = "rectRadius";
+    private static final String              ELEMENT_SCREEN_DEFAULT_IMAGE  = "defaultImage";
 
     public ReportScreenItemHandler(EJCoreReportScreenProperties blockProperties)
     {
@@ -141,7 +142,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
             {
                 final EJCoreReportScreenItemProperties.ValueBaseItem item = (ValueBaseItem) _itemProperties;
                 item.setMarkup(EJReportMarkupType.valueOf(value));
-                
+
             }
         }
         else if (name.equals(ELEMENT_SCREEN_HALIGNMENT))
@@ -243,6 +244,16 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
                 item.setManualFormat(value);
 
             }
+        }
+        else if (name.equals(ELEMENT_SCREEN_DEFAULT_IMAGE))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.Image)
+            {
+                final EJCoreReportScreenItemProperties.Image item = (EJCoreReportScreenItemProperties.Image) _itemProperties;
+                item.setDefaultImage(name);
+
+            }
+
         }
 
         else if (name.equals(ELEMENT_SCREEN_LINE_STYLE))

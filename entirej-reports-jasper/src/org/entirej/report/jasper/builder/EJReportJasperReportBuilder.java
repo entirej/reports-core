@@ -340,7 +340,7 @@ public class EJReportJasperReportBuilder
             design.setBottomMargin(0);
             design.setLeftMargin(0);
             design.setRightMargin(0);
-         
+
             addDefaultFont(block.getReport());
 
             EJCoreReportBlockProperties properties = block.getProperties();
@@ -470,16 +470,15 @@ public class EJReportJasperReportBuilder
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
         boolean addBrake = screenProperties.isStartOnNewPage();
-        if(addBrake)
+        if (addBrake)
         {
-            
+
             JRDesignBand band = new JRDesignBand();
             band.setHeight(1);
             addPageBreak(band, block);
             design.setTitle(band);
         }
-        
-        
+
         int currentX = 0;
         for (EJReportColumnProperties col : allColumns)
         {
@@ -509,7 +508,6 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
-                      
 
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
@@ -550,7 +548,7 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
-                       
+
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
@@ -609,7 +607,7 @@ public class EJReportJasperReportBuilder
 
                     if (element != null)
                     {
-                        
+
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(item.getWidth());
@@ -656,12 +654,12 @@ public class EJReportJasperReportBuilder
 
     private void addPageBreak(JRDesignBand band, EJReportBlock block)
     {
-        
+
         JRDesignStaticText text = new JRDesignStaticText();
         text.setHeight(1);
         text.setWidth(1);
         JRDesignBreak breakPage = new JRDesignBreak();
-        text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW,"true");
+        text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW, "true");
         JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
         expression.setName("net.sf.jasperreports.export.xls.sheet.name");
         expression.setValueExpression(createTextExpression(block.getName()));
@@ -673,8 +671,8 @@ public class EJReportJasperReportBuilder
         breakPage.setType(BreakTypeEnum.PAGE);
         band.addElement(breakPage);
         band.addElement(text);
-       text.setMode(ModeEnum.TRANSPARENT);
-        
+        text.setMode(ModeEnum.TRANSPARENT);
+
     }
 
     private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element) throws JRException
@@ -940,9 +938,9 @@ public class EJReportJasperReportBuilder
             crateValueRefField(item);
         }
         boolean addBrake = screenProperties.isStartOnNewPage();
-        if(addBrake)
+        if (addBrake)
         {
-            
+
             JRDesignBand band = new JRDesignBand();
             band.setHeight(1);
             addPageBreak(band, block);
@@ -1488,7 +1486,7 @@ public class EJReportJasperReportBuilder
 
                 element = image;
 
-                image.setExpression(createImageValueExpression(block.getReport(), imageItem.getValue()));
+                image.setExpression(createImageValueExpression(block.getReport(), imageItem.getValue(), imageItem.getDefaultImage()));
 
                 image.setScaleImage(ScaleImageEnum.RETAIN_SHAPE);
                 image.setUsingCache(true);
@@ -1612,15 +1610,27 @@ public class EJReportJasperReportBuilder
         return expression;
     }
 
-    JRDesignExpression createImageValueExpression(EJReport report, String defaultValue)
+    JRDesignExpression createImageValueExpression(EJReport report, String defaultValue, String deafultImage)
     {
         JRDesignExpression expression = createValueExpression(report, defaultValue);
 
-        if (expression.getText() != null && !expression.getText().isEmpty())
+        String text = expression.getText();
+        if (text != null && !text.isEmpty())
         {
-            expression.setText(String.format("new ByteArrayInputStream((byte[]) %s)", expression.getText()));
-        }
+            if (deafultImage != null && !deafultImage.isEmpty())
+            {
+                expression.setText(String.format(
+                        " %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(%s)", text, text,
+                        deafultImage));
 
+            }
+            else
+            {
+                expression.setText(String.format(" new ByteArrayInputStream((byte[]) %s) ", text));
+
+            }
+
+        }
         return expression;
     }
 
