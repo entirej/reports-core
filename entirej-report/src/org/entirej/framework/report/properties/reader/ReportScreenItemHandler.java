@@ -250,7 +250,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
             if (_itemProperties instanceof EJCoreReportScreenItemProperties.Image)
             {
                 final EJCoreReportScreenItemProperties.Image item = (EJCoreReportScreenItemProperties.Image) _itemProperties;
-                item.setDefaultImage(name);
+                item.setDefaultImage(value);
 
             }
 

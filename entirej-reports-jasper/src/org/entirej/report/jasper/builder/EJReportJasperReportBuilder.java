@@ -1619,8 +1619,17 @@ public class EJReportJasperReportBuilder
         {
             if (deafultImage != null && !deafultImage.isEmpty())
             {
+                
+                if (deafultImage.startsWith("/"))
+                {
+                    deafultImage = deafultImage.substring(1);
+                }
+                if (deafultImage.startsWith("\\s"))
+                {
+                    deafultImage = deafultImage.substring(1);
+                }
                 expression.setText(String.format(
-                        " %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(%s)", text, text,
+                        " %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(\"%s\")", text, text,
                         deafultImage));
 
             }
