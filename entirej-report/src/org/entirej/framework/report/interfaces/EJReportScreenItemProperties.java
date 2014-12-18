@@ -58,6 +58,10 @@ public interface EJReportScreenItemProperties extends Serializable
      */
     public int getHeight();
 
+    public boolean isWidthAsPercentage();
+
+    public boolean isHeightAsPercentage();
+
     /**
      * @return Returns the X of this canvas
      */

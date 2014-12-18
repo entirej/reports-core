@@ -18,6 +18,8 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
 
     private int                         x, y, width, height;
 
+    private boolean                     widthAsPercentage, heightAsPercentage;
+
     private EJCoreReportBlockProperties blockProperties;
 
     public EJCoreReportScreenItemProperties(EJCoreReportBlockProperties blockProperties)
@@ -52,6 +54,26 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     public void setHeight(int height)
     {
         this.height = height;
+    }
+
+    public boolean isWidthAsPercentage()
+    {
+        return widthAsPercentage;
+    }
+
+    public void setWidthAsPercentage(boolean widthAsPercentage)
+    {
+        this.widthAsPercentage = widthAsPercentage;
+    }
+
+    public boolean isHeightAsPercentage()
+    {
+        return heightAsPercentage;
+    }
+
+    public void setHeightAsPercentage(boolean heightAsPercentage)
+    {
+        this.heightAsPercentage = heightAsPercentage;
     }
 
     @Override
@@ -339,12 +361,11 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     public static abstract class ValueBaseItem extends AlignmentBaseItem
     {
 
-        
-        private boolean expandToFit;
-        
+        private boolean            expandToFit;
+
         private EJReportMarkupType markup = EJReportMarkupType.NONE;
-        
-        private String value;
+
+        private String             value;
 
         public ValueBaseItem(EJCoreReportBlockProperties blockProperties)
         {
@@ -361,28 +382,26 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
             this.value = value;
         }
 
-        
         public boolean isExpandToFit()
         {
             return expandToFit;
         }
-        
+
         public void setExpandToFit(boolean expandToFit)
         {
             this.expandToFit = expandToFit;
         }
-        
+
         public EJReportMarkupType getMarkup()
         {
             return markup;
         }
-        
+
         public void setMarkup(EJReportMarkupType markup)
         {
             this.markup = markup;
         }
-        
-        
+
     }
 
     public static class Number extends ValueBaseItem implements RotatableItem
@@ -503,20 +522,18 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     public static class Image extends ValueBaseItem
     {
 
-        
         private String defaultImage;
-        
-        
+
         public String getDefaultImage()
         {
             return defaultImage;
         }
-        
+
         public void setDefaultImage(String defaultImage)
         {
             this.defaultImage = defaultImage;
         }
-        
+
         public Image(EJCoreReportBlockProperties blockProperties)
         {
             super(blockProperties);
