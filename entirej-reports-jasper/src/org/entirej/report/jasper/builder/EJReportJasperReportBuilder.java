@@ -194,6 +194,8 @@ public class EJReportJasperReportBuilder
 
     private void addDefaultFont(EJReport report) throws JRException
     {
+        
+        
         JRDesignStyle _EJ_DEAFULT = new JRDesignStyle();
         _EJ_DEAFULT.setName("_EJ_DEAFULT");
         _EJ_DEAFULT.setFontName("Arial");
@@ -1122,7 +1124,7 @@ public class EJReportJasperReportBuilder
         else
         {
             style.setFontName("Arial");
-            style.setPdfFontName("Helvetica");
+          
             style.setPdfEmbedded(true);
         }
 
@@ -1196,7 +1198,8 @@ public class EJReportJasperReportBuilder
         {
             case Bold:
                 style.setBold(true);
-
+                style.setPdfFontName("Helvetica-Bold");
+                break;
             default:
                 break;
         }

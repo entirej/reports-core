@@ -33,6 +33,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -70,6 +71,9 @@ public class EJJasperReports
     {
 
         DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.print.keep.full.text", "true");
+        
+        
+        
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
