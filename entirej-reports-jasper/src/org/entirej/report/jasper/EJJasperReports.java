@@ -71,9 +71,9 @@ public class EJJasperReports
     {
 
         DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.print.keep.full.text", "true");
-        
-        
-        
+        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.text.truncate.at.char", "true");
+        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.text.truncate.suffix", "...");
+
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
@@ -245,7 +245,7 @@ public class EJJasperReports
             EJJasperReportParameter... parameters)
     {
         JasperPrint jasperPrint = fillReport(reportFile, dataSource, parameters);
-        
+
         exportReport(type, jasperPrint, outputFile);
     }
 
