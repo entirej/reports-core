@@ -128,10 +128,13 @@ public class EJReportJasperReportBuilder
                 footer = new JRDesignBand();
                 footer.setSplitType(SplitTypeEnum.STRETCH);
                 footer.setHeight(properties.getFooterSectionHeight());
-                design.setPageFooter(footer);
+                design.setLastPageFooter(footer);
+               
                 height -= properties.getFooterSectionHeight();
             }
-
+            design.setSummaryNewPage(false);
+            design.setPageFooter(null);
+            design.setSummary(null);
             for (EJReportBlock block : report.getHeaderBlocks())
             {
                 JRDesignSubreport subreport = createSubReport(report, block);
@@ -342,6 +345,10 @@ public class EJReportJasperReportBuilder
             design.setBottomMargin(0);
             design.setLeftMargin(0);
             design.setRightMargin(0);
+            design.setSummaryNewPage(false);
+            design.setPageFooter(null);
+            design.setSummary(null);
+            design.setLastPageFooter(null);
 
             addDefaultFont(block.getReport());
 
@@ -407,9 +414,14 @@ public class EJReportJasperReportBuilder
                 addHeaderBand = true;
                 for (EJReportScreenItemProperties item : col.getHeaderScreen().getScreenItems())
                 {
-                    if (headerHeight < (item.getY() + item.getHeight()))
+                    int height = item.getHeight();
+                    if (item.isHeightAsPercentage())
                     {
-                        headerHeight = (item.getY() + item.getHeight());
+                        height = (int) (((double)  screenProperties.getHeaderColumnHeight()/100) * height);
+                    }
+                    if (headerHeight < (item.getY() + height))
+                    {
+                        headerHeight = (item.getY() + height);
                     }
                     crateValueRefField((EJCoreReportScreenItemProperties) item);
                 }
@@ -423,9 +435,14 @@ public class EJReportJasperReportBuilder
             for (EJReportScreenItemProperties item : col.getDetailScreen().getScreenItems())
             {
 
-                if (detailHeight < (item.getY() + item.getHeight()))
+                int height = item.getHeight();
+                if (item.isHeightAsPercentage())
                 {
-                    detailHeight = (item.getY() + item.getHeight());
+                    height = (int) (((double)  screenProperties.getDetailColumnHeight()/100) * height);
+                }
+                if (detailHeight < (item.getY() + height))
+                {
+                    detailHeight = (item.getY() + height);
                 }
                 crateValueRefField((EJCoreReportScreenItemProperties) item);
             }
@@ -439,9 +456,14 @@ public class EJReportJasperReportBuilder
                 addFooterBand = true;
                 for (EJReportScreenItemProperties item : col.getFooterScreen().getScreenItems())
                 {
-                    if (footerHeight < (item.getY() + item.getHeight()))
+                    int height = item.getHeight();
+                    if (item.isHeightAsPercentage())
                     {
-                        footerHeight = (item.getY() + item.getHeight());
+                        height = (int) (((double)  screenProperties.getFooterColumnHeight()/100) * height);
+                    }
+                    if (footerHeight < (item.getY() + height))
+                    {
+                        footerHeight = (item.getY() + height);
                     }
                     crateValueRefField((EJCoreReportScreenItemProperties) item);
                 }
@@ -465,7 +487,7 @@ public class EJReportJasperReportBuilder
             footer = new JRDesignBand();
             footer.setSplitType(SplitTypeEnum.STRETCH);
             footer.setHeight(footerHeight);
-            design.setColumnFooter(footer);
+            design.setLastPageFooter(footer);
         }
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         detail = new JRDesignBand();
