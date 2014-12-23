@@ -121,6 +121,8 @@ public class EJReportJasperReportBuilder
                 header.setHeight(properties.getHeaderSectionHeight());
                 design.setPageHeader(header);
                 height -= properties.getHeaderSectionHeight();
+                
+                
             }
             JRDesignBand footer = null;
             if (properties.getFooterSectionHeight() > 0)
@@ -147,6 +149,7 @@ public class EJReportJasperReportBuilder
                 subreport.setWidth(screenProperties.getWidth());
                 subreport.setHeight(screenProperties.getHeight());
                 subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
+                
                 header.addElement(subreport);
             }
             for (EJReportBlock block : report.getFooterBlocks())
@@ -184,7 +187,7 @@ public class EJReportJasperReportBuilder
                 subreport.setHeight(screenProperties.getHeight());
 
                 detail.addElement(subreport);
-
+              
                 subreport.getPropertiesMap().setProperty("net.sf.jasperreports.export.xls.break.before.row", "true");
             }
 

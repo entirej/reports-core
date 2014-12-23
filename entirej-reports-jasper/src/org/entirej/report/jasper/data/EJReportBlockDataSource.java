@@ -176,6 +176,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
         {
             block.navigateToNextRecord();
         }
+        if(!hasRecord)
+        {
+            index=-1;
+        }
         return hasRecord;
     }
 
