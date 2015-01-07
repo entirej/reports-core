@@ -132,6 +132,11 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
             {
                 EJReportRecord record = block.getFocusedRecord();
 
+                if(record==null)
+                {
+                    System.out.println(block.getBlockRecords().size());
+                }
+                
                 Object value = record.getValue(itemName);
                 fieldCache.put(name, value);
                 return value;
@@ -171,7 +176,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
         itemCache.clear();
         index++;
 
-        boolean hasRecord = index < block.getBlockRecordCount();
+        boolean hasRecord = (index+1) < block.getBlockRecordCount();
         if (hasRecord)
         {
             block.navigateToNextRecord();
