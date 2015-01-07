@@ -84,7 +84,11 @@ public class EJReportBlockController implements Serializable
         {
             focusedRecord.dispose();
         }
-        index++;
+        if((index+1)<_dataBlock.getBlockRecordCount())
+        {
+            index++;
+        }
+       
 
         focusedRecord = getFocusedRecord();
         if (focusedRecord != null && !focusedRecord.isInitialised())

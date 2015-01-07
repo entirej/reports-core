@@ -176,7 +176,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
         itemCache.clear();
         index++;
 
-        boolean hasRecord = (index+1) < block.getBlockRecordCount();
+        boolean hasRecord = index < block.getBlockRecordCount();
         if (hasRecord)
         {
             block.navigateToNextRecord();
