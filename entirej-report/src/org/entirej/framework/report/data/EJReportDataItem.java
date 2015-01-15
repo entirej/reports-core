@@ -36,6 +36,7 @@ public class EJReportDataItem implements Serializable
     private EJReportController                _reportController;
     private EJReportVisualAttributeProperties _vaProperties;
     private String                            _hint;
+    private boolean                           _visible = true;
     private EJCoreReportItemProperties        _itemProperties;
 
     EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties)
@@ -111,7 +112,8 @@ public class EJReportDataItem implements Serializable
 
         if (!vaProperties.isUsedAsDynamicVA())
         {
-            throw new IllegalArgumentException(" Visual attribute with the name " + visualAttributeName + " on this report is not marked as 'Used as Dynamic VA' .");
+            throw new IllegalArgumentException(" Visual attribute with the name " + visualAttributeName
+                    + " on this report is not marked as 'Used as Dynamic VA' .");
         }
         _vaProperties = vaProperties;
     }
@@ -146,6 +148,31 @@ public class EJReportDataItem implements Serializable
     public String getHint()
     {
         return _hint;
+    }
+
+    /**
+     * Sets this item visible
+     * <p>
+     * visible set on data items will be displayed when the record containing
+     * the item gains focus. Setting the visible to <code>false</code> removes
+     * the item from print
+     * 
+     * @param visible
+     *            The Visible to Item true/false
+     */
+    public void setVisible(boolean visible)
+    {
+        _visible = visible;
+    }
+
+    /**
+     * Returns the visible set for this item instance
+     * 
+     * @return This items visible true/false
+     */
+    public boolean isVisible()
+    {
+        return _visible;
     }
 
     /**

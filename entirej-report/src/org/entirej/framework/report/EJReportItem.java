@@ -175,7 +175,35 @@ public class EJReportItem implements Serializable
     {
         return _dataItem.getHint();
     }
+    
+    
+    /**
+     * Returns the Visible set on this item true/false
+     * 
+     * @return The Visible set to this item o
+     */
+    public boolean isVisible()
+    {
+        return _dataItem.isVisible();
+    }
+    
+    /**
+     * Sets this item visible
+     * <p>
+     * visible set on data items will be displayed when the record containing
+     * the item gains focus. Setting the visible to <code>false</code> removes
+     * the item from print
+     * 
+     * @param visible
+     *            The Visible to Item true/false
+     */
+    public void setVisible(boolean visible)
+    {
+         _dataItem.setVisible(visible);
+    }
 
+    
+    
     /**
      * Used to retrieve this items value
      * 

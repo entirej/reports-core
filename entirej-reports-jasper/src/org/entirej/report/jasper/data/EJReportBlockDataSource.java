@@ -198,6 +198,17 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
         EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
         return visualAttribute != null && visualAttribute.getName().equals(vaName);
     }
+    
+    @Override
+    public boolean isVisible(String item)
+    {
+        EJReportItem reportItem = getReportItem(item);
+
+        if (reportItem == null)
+            return false;
+        
+        return reportItem.isVisible();
+    }
 
     private EJReportItem getReportItem(String item)
     {

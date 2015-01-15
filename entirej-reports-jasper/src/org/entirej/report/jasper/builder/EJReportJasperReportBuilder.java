@@ -527,7 +527,10 @@ public class EJReportJasperReportBuilder
                 
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
-
+                    if(!item.isVisible())
+                    {
+                        continue;
+                    }
                     int itemWidth = item.getWidth();
                     int itemHeight = item.getHeight();
                     
@@ -586,7 +589,10 @@ public class EJReportJasperReportBuilder
                     sectionHeight = screenProperties.getDetailColumnHeight();
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
-
+                    if(!item.isVisible())
+                    {
+                        continue;
+                    }
                     int itemWidth = item.getWidth();
                     int itemHeight = item.getHeight();
                     
@@ -659,6 +665,10 @@ public class EJReportJasperReportBuilder
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
 
+                    if(!item.isVisible())
+                    {
+                        continue;
+                    }
                     int itemWidth = item.getWidth();
                     int itemHeight = item.getHeight();
                     
@@ -772,6 +782,7 @@ public class EJReportJasperReportBuilder
                 {
                     createItemBaseStyle(style, paramValue);
 
+                    element.setPrintWhenExpression(createItemVisibleExpression(paramValue));
                     // element.setStyle(style);
 
                 }
@@ -1035,6 +1046,10 @@ public class EJReportJasperReportBuilder
         for (EJCoreReportScreenItemProperties item : screenItems)
         {
 
+            if(!item.isVisible())
+            {
+                continue;
+            }
             int itemWidth = item.getWidth();
             int itemHeight = item.getHeight();
 
@@ -1070,7 +1085,6 @@ public class EJReportJasperReportBuilder
                 detail.addElement(element);
 
                 processItemStyle(item, element);
-
             }
 
         }
@@ -1695,6 +1709,14 @@ public class EJReportJasperReportBuilder
         JRDesignExpression expression = new JRDesignExpression();
 
         expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item, vaName));
+        return expression;
+    }
+    
+    JRDesignExpression createItemVisibleExpression(String item)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
+        
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\")", item));
         return expression;
     }
 
