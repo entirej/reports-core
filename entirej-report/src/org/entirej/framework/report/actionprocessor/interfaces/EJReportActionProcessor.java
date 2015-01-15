@@ -24,15 +24,9 @@ import org.entirej.framework.report.EJReportActionProcessorException;
 public interface EJReportActionProcessor extends EJReportBlockActionProcessor
 {
 
-    /**
-     * Called when a user selects a new report to be opened. This will be called
-     * before displaying the report to the user
-     * <p>
-     * 
-     * @param report
-     *            The report that is opening
-     */
-    public void newReportInstance(EJReport report) throws EJReportActionProcessorException;
+    
+    public void beforeReport(EJReport report) throws EJReportActionProcessorException;
 
- 
+    public void afterReport(EJReport report) throws EJReportActionProcessorException;
+
 }

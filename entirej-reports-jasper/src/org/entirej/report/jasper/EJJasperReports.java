@@ -199,6 +199,7 @@ public class EJJasperReports
             LOGGER.info("START Filling  Report :" + report.getName());
             start = System.currentTimeMillis();
             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));
+            report.getActionController().afterReport(report);
             LOGGER.info("END Filling  Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
             return print;

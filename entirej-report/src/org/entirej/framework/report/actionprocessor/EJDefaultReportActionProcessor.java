@@ -28,38 +28,32 @@ import org.entirej.framework.report.service.EJReportQueryCriteria;
 public class EJDefaultReportActionProcessor implements EJReportActionProcessor
 {
 
-    
-
-    public void newReportInstance(EJReport report) throws EJReportActionProcessorException
+    @Override
+    public void beforeReport(EJReport report) throws EJReportActionProcessorException
     {
+      
+
+    }
+
+    @Override
+    public void afterReport(EJReport report) throws EJReportActionProcessorException
+    {
+        
+
     }
 
     public void postQuery(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
     {
     }
 
-    public void postBlockQuery(EJReport report, EJReportBlock block) throws EJReportActionProcessorException
+    public void preBlockQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
     {
     }
 
-    public void newRecordInstance(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
+    
+    @Override
+    public boolean canShowBlock(EJReport report,String blockName)
     {
+        return true;
     }
-
-    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
-    {
-    }
-
-    public void preUpdate(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
-    {
-    }
-
-    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
-    {
-    }
-
-    public void initialiseRecord(EJReport report, EJReportRecord record) throws EJReportActionProcessorException
-    {
-    }
-
 }

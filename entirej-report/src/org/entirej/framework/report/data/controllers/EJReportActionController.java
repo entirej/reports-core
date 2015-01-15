@@ -78,15 +78,13 @@ public class EJReportActionController implements Serializable
 
     }
 
-
-
-    public void newReportInstance(EJReport report)
+    public void beforeReport(EJReport report)
     {
-        logger.trace("START newReportInstance. Report: {}", report.getName());
+        logger.trace("START beforeReport. Report: {}", report.getName());
         EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
-            _reportLevelActionProcessor.newReportInstance(report);
+            _reportLevelActionProcessor.beforeReport(report);
         }
         catch (Exception e)
         {
@@ -100,7 +98,30 @@ public class EJReportActionController implements Serializable
         {
             connection.close();
         }
-        logger.trace("END newReportInstance");
+        logger.trace("END beforeReport");
+    }
+
+    public void afterReport(EJReport report)
+    {
+        logger.trace("START afterReport. Report: {}", report.getName());
+        EJManagedReportFrameworkConnection connection = report.getConnection();
+        try
+        {
+            _reportLevelActionProcessor.afterReport(report);
+        }
+        catch (Exception e)
+        {
+            if (connection != null)
+            {
+                connection.rollback();
+            }
+            throw new EJReportRuntimeException(e);
+        }
+        finally
+        {
+            connection.close();
+        }
+        logger.trace("END afterReport");
     }
 
     public void postQuery(EJReport report, EJReportRecord record)
@@ -141,7 +162,47 @@ public class EJReportActionController implements Serializable
         logger.trace("END postQuery");
     }
 
-    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria)
+    public boolean canShowBlock(EJReport report, String blockName)
+    {
+        logger.trace("START canShowBlock. Report: {}", report.getName());
+
+        EJManagedReportFrameworkConnection connection = report.getConnection();
+        try
+        {
+
+            if (_blockLevelActionProcessors.containsKey(blockName))
+            {
+                logger.trace("Calling block level canShowBlock. Block: {}", blockName);
+                boolean canShowBlock = _blockLevelActionProcessors.get(blockName).canShowBlock(report, blockName);
+                logger.trace("Called block level canShowBlock");
+                return canShowBlock;
+            }
+            else
+            {
+                logger.trace("Calling report level canShowBlock");
+                boolean canShowBlock = _reportLevelActionProcessor.canShowBlock(report, blockName);
+                logger.trace("Called report level canShowBlock");
+                return canShowBlock;
+            }
+
+        }
+        catch (Exception e)
+        {
+            if (connection != null)
+            {
+                connection.rollback();
+            }
+            throw new EJReportRuntimeException(e);
+        }
+        finally
+        {
+            connection.close();
+            logger.trace("END canShowBlock");
+        }
+
+    }
+
+    public void preBlockQuery(EJReport report, EJReportQueryCriteria queryCriteria)
     {
         logger.trace("START preQuery. Report: {}", report.getName());
 
@@ -153,15 +214,15 @@ public class EJReportActionController implements Serializable
             {
                 if (_blockLevelActionProcessors.containsKey(blockName))
                 {
-                    logger.trace("Calling block level preQuery. Block: {}", blockName);
-                    _blockLevelActionProcessors.get(blockName).preQuery(report, queryCriteria);
-                    logger.trace("Called block level preQuery");
+                    logger.trace("Calling block level preBlockQuery. Block: {}", blockName);
+                    _blockLevelActionProcessors.get(blockName).preBlockQuery(report, queryCriteria);
+                    logger.trace("Called block level preBlockQuery");
                 }
                 else
                 {
-                    logger.trace("Calling report level preQuery");
-                    _reportLevelActionProcessor.preQuery(report, queryCriteria);
-                    logger.trace("Called report level preQuery");
+                    logger.trace("Calling report level preBlockQuery");
+                    _reportLevelActionProcessor.preBlockQuery(report, queryCriteria);
+                    logger.trace("Called report level preBlockQuery");
                 }
             }
         }
@@ -180,77 +241,4 @@ public class EJReportActionController implements Serializable
         logger.trace("END preQuery");
     }
 
-    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria)
-    {
-        logger.trace("START validateQueryCriteria. Report: {}", report.getName());
-
-        EJManagedReportFrameworkConnection connection = report.getConnection();
-        try
-        {
-            String blockName = queryCriteria == null ? "" : queryCriteria.getBlockName();
-
-            if (_blockLevelActionProcessors.containsKey(blockName))
-            {
-                logger.trace("Calling block level validateQueryCiteria. Block: {}", blockName);
-                _blockLevelActionProcessors.get(blockName).validateQueryCriteria(report, queryCriteria);
-                logger.trace("Called block level validateQueryCriteria");
-            }
-            else
-            {
-                logger.trace("Calling report level validateQueryCriteria");
-                _reportLevelActionProcessor.validateQueryCriteria(report, queryCriteria);
-                logger.trace("Called report level validateQueryCriteria");
-            }
-
-        }
-        catch (Exception e)
-        {
-            if (connection != null)
-            {
-                connection.rollback();
-            }
-            throw new EJReportRuntimeException(e);
-        }
-        finally
-        {
-            connection.close();
-        }
-        logger.trace("END validateQueryCriteria");
-    }
-
-    public void postBlockQuery(EJReport report, EJReportBlock block)
-    {
-        logger.trace("START postBlockQuery. Report: {}, Block: {}", report.getName(), block.getName());
-        EJManagedReportFrameworkConnection connection = report.getConnection();
-        try
-        {
-
-            if (_blockLevelActionProcessors.containsKey(block.getName()))
-            {
-                logger.trace("Calling block level postBlockQuery. Block: {}", block.getName());
-                _blockLevelActionProcessors.get(block.getName()).postBlockQuery(report, block);
-                logger.trace("Called block level postBlockQuery");
-            }
-            else
-            {
-                logger.trace("Calling report level postBlockQuery");
-                _reportLevelActionProcessor.postBlockQuery(report, block);
-                logger.trace("Called report level postBlockQuery");
-            }
-
-        }
-        catch (Exception e)
-        {
-            if (connection != null)
-            {
-                connection.rollback();
-            }
-            throw new EJReportRuntimeException(e);
-        }
-        finally
-        {
-            connection.close();
-        }
-        logger.trace("END postBlockQuery");
-    }
 }

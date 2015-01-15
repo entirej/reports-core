@@ -29,7 +29,7 @@ import net.sf.jasperreports.engine.JRField;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 
-public class EJReportDataSource implements JRDataSource, Serializable
+public class EJReportDataSource implements JRDataSource, Serializable, EjReportActionContextContext
 {
 
     private final EJReport report;
@@ -64,6 +64,12 @@ public class EJReportDataSource implements JRDataSource, Serializable
 
         }
 
+        if ("_EJ_AP_CONTEXT".equals(field.getName()))
+        {
+
+            return this;
+        }
+
         return null;
     }
 
@@ -71,6 +77,12 @@ public class EJReportDataSource implements JRDataSource, Serializable
     public boolean next() throws JRException
     {
         return firstRUn.getAndSet(false);
+    }
+
+    @Override
+    public boolean canShowBlock(String blockName)
+    {
+        return report.getActionController().canShowBlock(report, blockName);
     }
 
 }

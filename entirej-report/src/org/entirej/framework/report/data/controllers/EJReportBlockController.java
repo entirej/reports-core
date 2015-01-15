@@ -422,8 +422,7 @@ public class EJReportBlockController implements Serializable
         // Clear the block so that it is ready for the newly queried records
         try
         {
-            getReportController().getActionController().validateQueryCriteria(getReportController().getEJReport(), getQueryCriteria());
-            getReportController().getActionController().preQuery(getReportController().getEJReport(), getQueryCriteria());
+            getReportController().getActionController().preBlockQuery(getReportController().getEJReport(), getQueryCriteria());
 
             // Clear the block so that it is ready for the newly queried
             // records

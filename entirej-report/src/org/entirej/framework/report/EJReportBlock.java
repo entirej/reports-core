@@ -51,6 +51,8 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return new EJReport(_block.getReport());
     }
 
+    
+    
     public Collection<EJReportBlockItem> getBlockItems()
     {
         ArrayList<EJReportBlockItem> blockItems = new ArrayList<EJReportBlockItem>();

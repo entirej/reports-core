@@ -35,7 +35,7 @@ import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
-public class EJReportBlockDataSource implements JRDataSource, Serializable, EjReportBlockItemVAContext
+public class EJReportBlockDataSource implements JRDataSource, Serializable, EjReportBlockItemVAContext, EjReportActionContextContext
 {
 
     private final EJReportBlock       block;
@@ -96,6 +96,11 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
     {
         if ("_EJ_VA_CONTEXT".equals(field.getName()))
         {
+            return this;
+        }
+        if ("_EJ_AP_CONTEXT".equals(field.getName()))
+        {
+            
             return this;
         }
 
@@ -253,6 +258,12 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
             itemCache.put(item, reportItem);
         }
         return reportItem;
+    }
+
+    @Override
+    public boolean canShowBlock(String blockName)
+    {
+        return block.getReport().getActionController().canShowBlock(block.getReport(), blockName);
     }
 
 }

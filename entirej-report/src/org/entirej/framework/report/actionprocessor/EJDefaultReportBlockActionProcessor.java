@@ -31,21 +31,14 @@ public class EJDefaultReportBlockActionProcessor implements EJReportBlockActionP
     {
     }
 
-    public void postBlockQuery(EJReport report, EJReportBlock block) throws EJReportActionProcessorException
+    public void preBlockQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
     {
     }
 
-    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
+    @Override
+    public boolean canShowBlock(EJReport report,String blockName)
     {
+        return true;
     }
-
-
-
-    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException
-    {
-    }
-
-  
-
 
 }

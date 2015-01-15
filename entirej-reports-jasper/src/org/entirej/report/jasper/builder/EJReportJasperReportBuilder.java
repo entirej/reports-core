@@ -12,7 +12,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPen;
-import net.sf.jasperreports.engine.JRPropertyExpression;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
@@ -53,6 +52,7 @@ import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportBlockItem;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
@@ -75,6 +75,7 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+import org.entirej.report.jasper.data.EjReportActionContextContext;
 
 public class EJReportJasperReportBuilder
 {
@@ -111,6 +112,16 @@ public class EJReportJasperReportBuilder
             design.setColumnWidth(width);
             design.setPageHeight(properties.getReportHeight());
 
+            {
+                
+                JRDesignField field = new JRDesignField();
+                
+                field.setName("_EJ_AP_CONTEXT");
+                field.setValueClass(EjReportActionContextContext.class);
+                design.addField(field);
+            }
+
+            
             JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
 
             JRDesignBand header = null;
@@ -289,6 +300,7 @@ public class EJReportJasperReportBuilder
                 subreportParameter.setExpression(expression);
                 subreport.addParameter(subreportParameter);
             }
+            subreport.setPrintWhenExpression(createBlockVisibleExpression(block.getName()));
             return subreport;
 
         }
@@ -364,6 +376,14 @@ public class EJReportJasperReportBuilder
 
                 field.setName("_EJ_VA_CONTEXT");
                 field.setValueClass(org.entirej.report.jasper.data.EjReportBlockItemVAContext.class);
+                design.addField(field);
+            }
+            {
+                
+                JRDesignField field = new JRDesignField();
+                
+                field.setName("_EJ_AP_CONTEXT");
+                field.setValueClass(EjReportActionContextContext.class);
                 design.addField(field);
             }
 
@@ -1717,6 +1737,14 @@ public class EJReportJasperReportBuilder
         JRDesignExpression expression = new JRDesignExpression();
         
         expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\")", item));
+        return expression;
+    }
+    
+    JRDesignExpression createBlockVisibleExpression(String name)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
+        
+        expression.setText(String.format("($F{_EJ_AP_CONTEXT}).canShowBlock(\"%s\")", name));
         return expression;
     }
 

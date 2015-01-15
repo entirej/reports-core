@@ -45,7 +45,7 @@ public interface EJReportBlockActionProcessor extends Serializable
      * @param queryCriteria
      *            The query criteria for this block
      */
-    public void preQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException;
+    public void preBlockQuery(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException;
 
     /**
      * Called for each record of a queried block. The <code>EJrRecord</code> is
@@ -65,38 +65,6 @@ public interface EJReportBlockActionProcessor extends Serializable
      */
     public void postQuery(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 
-    /**
-     * Called after a block has fully completed its query action
-     * <p>
-     * this is different from the
-     * <code>{@link #postQuery(EJReport, EJReportRecord)}</code> method in that
-     * this method is called once after all data has been retrieved and not for
-     * each record
-     * 
-     * @param report
-     *            The report from which this method is called
-     * @param block
-     *            The block upon which the query was made
-     * @throws EJReportActionProcessorException
-     */
-    public void postBlockQuery(EJReport report, EJReportBlock block) throws EJReportActionProcessorException;
+    public boolean canShowBlock(EJReport report,String blockName);
 
-
-
-    /**
-     * Used to validate the given query criteria before a query is made on the
-     * block
-     * <p>
-     * If the record is not valid for the given operation then an
-     * <code>ActionProcessorException</code> should be thrown
-     * <p>
-     * 
-     * @param report
-     *            The report from which this method is called
-     * @param queryCriteria
-     *            The query criteria that should be validated
-     */
-    public void validateQueryCriteria(EJReport report, EJReportQueryCriteria queryCriteria) throws EJReportActionProcessorException;
-
- 
 }
