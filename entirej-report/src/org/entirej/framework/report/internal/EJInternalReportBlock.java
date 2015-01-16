@@ -26,6 +26,7 @@ import java.util.Collections;
 import org.entirej.framework.report.EJManagedReportFrameworkConnection;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.EJReportDataBlock;
 import org.entirej.framework.report.data.EJReportDataRecord;
@@ -306,8 +307,15 @@ public class EJInternalReportBlock implements Serializable
      */
     public EJReportDataRecord getFocusedRecord()
     {
-        //FIXME
-        return _blockController.getFocusedRecord();
+
+        EJReportDataRecord focusedRecord = _blockController.getFocusedRecord();
+        if (focusedRecord != null && !focusedRecord.isInitialised())
+        {
+            focusedRecord.initialise();
+            _blockController.getReportController().getActionController()
+                    .postQuery(_blockController.getReportController().getEJReport(), new EJReportRecord(focusedRecord));
+        }
+        return focusedRecord;
     }
 
     /**
@@ -338,7 +346,6 @@ public class EJInternalReportBlock implements Serializable
         _blockController.nextRecord();
         logger.trace("END nextRecord");
     }
-
 
     /**
      * Returns a collection if IDataRecords for this block Retrieving all
