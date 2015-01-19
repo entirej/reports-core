@@ -1,6 +1,6 @@
 package org.entirej.report.jasper.data;
 
-public interface EjReportBlockItemVAContext
+public interface EJReportBlockItemVAContext
 {
     boolean isActive(String item,String vaName);
     

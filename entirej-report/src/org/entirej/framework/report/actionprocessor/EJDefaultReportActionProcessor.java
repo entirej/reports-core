@@ -62,4 +62,10 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     {
         return true;
     }
+    
+    @Override
+    public boolean canShowScreenColumn(EJReport report, String blockName, String columnName)
+    {
+        return true;
+    }
 }

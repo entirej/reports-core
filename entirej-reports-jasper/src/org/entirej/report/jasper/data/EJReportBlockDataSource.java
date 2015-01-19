@@ -36,7 +36,7 @@ import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActi
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
-public class EJReportBlockDataSource implements JRDataSource, Serializable, EjReportBlockItemVAContext, EjReportActionContextContext
+public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext
 {
 
     private final EJReportBlock       block;

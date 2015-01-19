@@ -202,17 +202,18 @@ public class EJReportActionController implements Serializable
         }
 
     }
+
     public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
     {
         logger.trace("START canShowScreenItem. Report: {}", report.getName());
-        
+
         EJManagedReportFrameworkConnection connection = report.getConnection();
         try
         {
-            
+
             if (_blockLevelActionProcessors.containsKey(blockName))
             {
-                logger.trace("Calling block level canShowBlock. Block: {}", blockName,screenItem,  section);
+                logger.trace("Calling block level canShowBlock. Block: {}", blockName, screenItem, section);
                 boolean canShowBlock = _blockLevelActionProcessors.get(blockName).canShowScreenItem(report, blockName, screenItem, section);
                 logger.trace("Called block level canShowBlock");
                 return canShowBlock;
@@ -224,7 +225,7 @@ public class EJReportActionController implements Serializable
                 logger.trace("Called report level canShowScreenItem");
                 return canShowBlock;
             }
-            
+
         }
         catch (Exception e)
         {
@@ -239,7 +240,47 @@ public class EJReportActionController implements Serializable
             connection.close();
             logger.trace("END canShowScreenItem");
         }
-        
+
+    }
+
+    public boolean canShowScreenColumn(EJReport report, String blockName, String columnName)
+    {
+        logger.trace("START canShowScreenColumn. Report: {}", report.getName());
+
+        EJManagedReportFrameworkConnection connection = report.getConnection();
+        try
+        {
+
+            if (_blockLevelActionProcessors.containsKey(blockName))
+            {
+                logger.trace("Calling block level canShowScreenColumn. Block: {}", blockName, columnName);
+                boolean canShowBlock = _blockLevelActionProcessors.get(blockName).canShowScreenColumn(report, blockName, columnName);
+                logger.trace("Called block level canShowScreenColumn");
+                return canShowBlock;
+            }
+            else
+            {
+                logger.trace("Calling report level canShowScreenColumn");
+                boolean canShowBlock = _reportLevelActionProcessor.canShowScreenColumn(report, blockName, columnName);
+                logger.trace("Called report level canShowScreenColumn");
+                return canShowBlock;
+            }
+
+        }
+        catch (Exception e)
+        {
+            if (connection != null)
+            {
+                connection.rollback();
+            }
+            throw new EJReportRuntimeException(e);
+        }
+        finally
+        {
+            connection.close();
+            logger.trace("END canShowScreenColumn");
+        }
+
     }
 
     public void preBlockQuery(EJReport report, EJReportQueryCriteria queryCriteria)

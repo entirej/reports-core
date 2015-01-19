@@ -3,6 +3,7 @@ package org.entirej.report.jasper.builder;
 import java.awt.Color;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -54,6 +55,7 @@ import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
+import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
@@ -76,7 +78,8 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
-import org.entirej.report.jasper.data.EjReportActionContextContext;
+import org.entirej.report.jasper.data.EJReportActionContext;
+import org.entirej.report.jasper.data.EJReportBlockContext;
 
 public class EJReportJasperReportBuilder
 {
@@ -118,7 +121,7 @@ public class EJReportJasperReportBuilder
                 JRDesignField field = new JRDesignField();
 
                 field.setName("_EJ_AP_CONTEXT");
-                field.setValueClass(EjReportActionContextContext.class);
+                field.setValueClass(EJReportActionContext.class);
                 design.addField(field);
             }
 
@@ -260,7 +263,7 @@ public class EJReportJasperReportBuilder
             subreport.setDataSourceExpression(expressionDS);
 
             JRDesignExpression expressionRPT = new JRDesignExpression();
-            expressionRPT.setText(String.format("$P{%s}", String.format("EJRJ_BLOCK_RPT_%s", block.getName())));
+            expressionRPT.setText(String.format("$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")", block.getName()));
             subreport.setExpression(expressionRPT);
 
             for (EJReportRuntimeLevelParameter parameter : report.getRuntimeLevelParameters())
@@ -287,17 +290,14 @@ public class EJReportJasperReportBuilder
                 subreport.addParameter(subreportParameter);
             }
 
-            Collection<EJReportBlock> allBlocks = report.getAllBlocks();
-            for (EJReportBlock ejReportBlock : allBlocks)
-            {
-                String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", ejReportBlock.getName());
-                JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
-                subreportParameter.setName(blockRPTParam);
-                JRDesignExpression expression = new JRDesignExpression();
-                expression.setText(String.format("$P{%s}", blockRPTParam));
-                subreportParameter.setExpression(expression);
-                subreport.addParameter(subreportParameter);
-            }
+            String blockRPTParam = String.format("EJRJ_BLOCK_RPT");
+            JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
+            subreportParameter.setName(blockRPTParam);
+            JRDesignExpression expression = new JRDesignExpression();
+            expression.setText("$P{EJRJ_BLOCK_RPT}");
+            subreportParameter.setExpression(expression);
+            subreport.addParameter(subreportParameter);
+
             subreport.setPrintWhenExpression(createBlockVisibleExpression(block.getName()));
             return subreport;
 
@@ -328,20 +328,18 @@ public class EJReportJasperReportBuilder
             designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
         }
-        Collection<EJReportBlock> allBlocks = report.getAllBlocks();
-        for (EJReportBlock block : allBlocks)
-        {
-            createBlockRPTParamater(block);
-        }
+       
+            createBlockRPTParamater();
+        
     }
 
-    void createBlockRPTParamater(EJReportBlock block) throws JRException
+    void createBlockRPTParamater() throws JRException
     {
-        String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
+        String blockRPTParam = "EJRJ_BLOCK_RPT";
 
         JRDesignParameter rptParameter = new JRDesignParameter();
         rptParameter.setName(blockRPTParam);
-        rptParameter.setValueClass(JasperReport.class);
+        rptParameter.setValueClass(EJReportBlockContext.class);
         design.addParameter(rptParameter);
 
     }
@@ -373,7 +371,7 @@ public class EJReportJasperReportBuilder
                 JRDesignField field = new JRDesignField();
 
                 field.setName("_EJ_VA_CONTEXT");
-                field.setValueClass(org.entirej.report.jasper.data.EjReportBlockItemVAContext.class);
+                field.setValueClass(org.entirej.report.jasper.data.EJReportBlockItemVAContext.class);
                 design.addField(field);
             }
             {
@@ -381,7 +379,7 @@ public class EJReportJasperReportBuilder
                 JRDesignField field = new JRDesignField();
 
                 field.setName("_EJ_AP_CONTEXT");
-                field.setValueClass(EjReportActionContextContext.class);
+                field.setValueClass(EJReportActionContext.class);
                 design.addField(field);
             }
 
@@ -412,7 +410,16 @@ public class EJReportJasperReportBuilder
     {
         EJCoreReportScreenProperties screenProperties = properties.getLayoutScreenProperties();
 
-        Collection<? extends EJReportColumnProperties> allColumns = screenProperties.getAllColumns();
+        List<EJReportColumnProperties> allColumns = new ArrayList<EJReportColumnProperties>();
+        EJReportActionController controller = block.getReport().getActionController();
+        for (EJReportColumnProperties columnProperties : screenProperties.getAllColumns())
+        {
+            if(controller.canShowScreenColumn(block.getReport(), block.getName(), columnProperties.getName()))
+            {
+                allColumns.add(columnProperties);
+            }
+        }
+        
         // create all ref fields
 
         boolean addHeaderBand = false;

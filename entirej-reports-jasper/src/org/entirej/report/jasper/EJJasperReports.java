@@ -59,6 +59,7 @@ import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
+import org.entirej.report.jasper.data.EJReportBlockContext;
 import org.entirej.report.jasper.data.EJReportDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +150,7 @@ public class EJJasperReports
         }
     }
 
-    public static JasperPrint fillReport(EJReportFrameworkManager manager, EJReport report, EJJasperReportParameter... parameters)
+    public static JasperPrint fillReport(EJReportFrameworkManager manager, final EJReport report, EJJasperReportParameter... parameters)
     {
         try
         {
@@ -178,18 +179,26 @@ public class EJJasperReports
             }
 
             // add Block datasource
-
-            Collection<EJReportBlock> allBlocks = report.getAllBlocks();
-            for (EJReportBlock block : allBlocks)
+            
+            
+            EJReportBlockContext blockContext = new EJReportBlockContext()
             {
+                
+                @Override
+                public JasperReport getBlockReport(String blockName)
+                {
+                    EJReportBlock block = report.getBlock(blockName);
+                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+                    sbBuilder.buildDesign(block);
+                    
+                    return sbBuilder.toReport();
+                }
+            };  
+            
+            EJJasperReportParameter subRPTParameter = new EJJasperReportParameter("EJRJ_BLOCK_RPT", blockContext);
+            reportParameters.add(subRPTParameter);
 
-                EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
-                sbBuilder.buildDesign(block);
-
-                String blockRPTParam = String.format("EJRJ_BLOCK_RPT_%s", block.getName());
-                EJJasperReportParameter subRPTParameter = new EJJasperReportParameter(blockRPTParam, sbBuilder.toReport());
-                reportParameters.add(subRPTParameter);
-            }
+            
 
             reportParameters.addAll(Arrays.asList(parameters));
 

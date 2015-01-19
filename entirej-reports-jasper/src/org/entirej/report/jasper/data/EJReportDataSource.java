@@ -30,7 +30,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
 
-public class EJReportDataSource implements JRDataSource, Serializable, EjReportActionContextContext
+public class EJReportDataSource implements JRDataSource, Serializable, EJReportActionContext
 {
 
     private final EJReport report;
