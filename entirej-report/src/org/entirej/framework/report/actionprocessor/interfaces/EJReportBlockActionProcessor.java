@@ -29,6 +29,12 @@ import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public interface EJReportBlockActionProcessor extends Serializable
 {
+
+    public enum SECTION
+    {
+        HEADER, DETAIL, FOOTER
+    };
+
     /**
      * Called before a query is executed. The <code>IQueryCriteria</code> given,
      * holds the query criteria for this block
@@ -65,6 +71,8 @@ public interface EJReportBlockActionProcessor extends Serializable
      */
     public void postQuery(EJReport report, EJReportRecord record) throws EJReportActionProcessorException;
 
-    public boolean canShowBlock(EJReport report,String blockName);
+    public boolean canShowBlock(EJReport report, String blockName);
+
+    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section);
 
 }

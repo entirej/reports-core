@@ -32,6 +32,7 @@ import net.sf.jasperreports.engine.JRField;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportItem;
 import org.entirej.framework.report.EJReportRecord;
+import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
@@ -264,6 +265,13 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EjRe
     public boolean canShowBlock(String blockName)
     {
         return block.getReport().getActionController().canShowBlock(block.getReport(), blockName);
+    }
+
+    @Override
+    public boolean canShowScreenItem(String blockName, String screenItem, String section)
+    {
+        
+         return block.getReport().getActionController().canShowScreenItem(block.getReport(), blockName, screenItem, SECTION.valueOf(section));
     }
 
 }

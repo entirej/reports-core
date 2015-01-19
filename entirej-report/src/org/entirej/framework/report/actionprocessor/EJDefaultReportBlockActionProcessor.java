@@ -23,6 +23,7 @@ import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
+import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJDefaultReportBlockActionProcessor implements EJReportBlockActionProcessor
@@ -37,6 +38,12 @@ public class EJDefaultReportBlockActionProcessor implements EJReportBlockActionP
 
     @Override
     public boolean canShowBlock(EJReport report,String blockName)
+    {
+        return true;
+    }
+    
+    @Override
+    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
     {
         return true;
     }

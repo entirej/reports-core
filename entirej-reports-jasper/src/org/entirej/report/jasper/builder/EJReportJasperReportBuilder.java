@@ -53,6 +53,7 @@ import org.entirej.framework.report.EJReportBlockItem;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
+import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
@@ -113,15 +114,14 @@ public class EJReportJasperReportBuilder
             design.setPageHeight(properties.getReportHeight());
 
             {
-                
+
                 JRDesignField field = new JRDesignField();
-                
+
                 field.setName("_EJ_AP_CONTEXT");
                 field.setValueClass(EjReportActionContextContext.class);
                 design.addField(field);
             }
 
-            
             JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
 
             JRDesignBand header = null;
@@ -132,8 +132,7 @@ public class EJReportJasperReportBuilder
                 header.setHeight(properties.getHeaderSectionHeight());
                 design.setPageHeader(header);
                 height -= properties.getHeaderSectionHeight();
-                
-                
+
             }
             JRDesignBand footer = null;
             if (properties.getFooterSectionHeight() > 0)
@@ -142,7 +141,7 @@ public class EJReportJasperReportBuilder
                 footer.setSplitType(SplitTypeEnum.STRETCH);
                 footer.setHeight(properties.getFooterSectionHeight());
                 design.setLastPageFooter(footer);
-               
+
                 height -= properties.getFooterSectionHeight();
             }
             design.setSummaryNewPage(false);
@@ -160,7 +159,7 @@ public class EJReportJasperReportBuilder
                 subreport.setWidth(screenProperties.getWidth());
                 subreport.setHeight(screenProperties.getHeight());
                 subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
-                
+
                 header.addElement(subreport);
             }
             for (EJReportBlock block : report.getFooterBlocks())
@@ -198,7 +197,7 @@ public class EJReportJasperReportBuilder
                 subreport.setHeight(screenProperties.getHeight());
 
                 detail.addElement(subreport);
-              
+
                 subreport.getPropertiesMap().setProperty("net.sf.jasperreports.export.xls.break.before.row", "true");
             }
 
@@ -211,8 +210,7 @@ public class EJReportJasperReportBuilder
 
     private void addDefaultFont(EJReport report) throws JRException
     {
-        
-        
+
         JRDesignStyle _EJ_DEAFULT = new JRDesignStyle();
         _EJ_DEAFULT.setName("_EJ_DEAFULT");
         _EJ_DEAFULT.setFontName("Arial");
@@ -379,9 +377,9 @@ public class EJReportJasperReportBuilder
                 design.addField(field);
             }
             {
-                
+
                 JRDesignField field = new JRDesignField();
-                
+
                 field.setName("_EJ_AP_CONTEXT");
                 field.setValueClass(EjReportActionContextContext.class);
                 design.addField(field);
@@ -440,7 +438,7 @@ public class EJReportJasperReportBuilder
                     int height = item.getHeight();
                     if (item.isHeightAsPercentage())
                     {
-                        height = (int) (((double)  screenProperties.getHeaderColumnHeight()/100) * height);
+                        height = (int) (((double) screenProperties.getHeaderColumnHeight() / 100) * height);
                     }
                     if (headerHeight < (item.getY() + height))
                     {
@@ -461,7 +459,7 @@ public class EJReportJasperReportBuilder
                 int height = item.getHeight();
                 if (item.isHeightAsPercentage())
                 {
-                    height = (int) (((double)  screenProperties.getDetailColumnHeight()/100) * height);
+                    height = (int) (((double) screenProperties.getDetailColumnHeight() / 100) * height);
                 }
                 if (detailHeight < (item.getY() + height))
                 {
@@ -482,7 +480,7 @@ public class EJReportJasperReportBuilder
                     int height = item.getHeight();
                     if (item.isHeightAsPercentage())
                     {
-                        height = (int) (((double)  screenProperties.getFooterColumnHeight()/100) * height);
+                        height = (int) (((double) screenProperties.getFooterColumnHeight() / 100) * height);
                     }
                     if (footerHeight < (item.getY() + height))
                     {
@@ -540,29 +538,28 @@ public class EJReportJasperReportBuilder
                 Collection<EJCoreReportScreenItemProperties> screenItems = (Collection<EJCoreReportScreenItemProperties>) col.getHeaderScreen()
                         .getScreenItems();
 
-                
                 int sectionHeight = col.getHeaderScreen().getHeight();
-                if(sectionHeight==0)
+                if (sectionHeight == 0)
                     sectionHeight = screenProperties.getHeaderColumnHeight();
-                
+
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
-                    if(!item.isVisible())
+                    if (!item.isVisible())
                     {
                         continue;
                     }
                     int itemWidth = item.getWidth();
                     int itemHeight = item.getHeight();
-                    
+
                     if (item.isWidthAsPercentage())
                     {
-                        itemWidth = (int) (((double)  width/100) * itemWidth);
+                        itemWidth = (int) (((double) width / 100) * itemWidth);
                     }
                     if (item.isHeightAsPercentage())
                     {
-                        itemHeight = (int) (((double)  sectionHeight/100) * itemHeight);
+                        itemHeight = (int) (((double) sectionHeight / 100) * itemHeight);
                     }
-                    
+
                     if (width < (item.getX() + itemWidth))
                     {
                         itemWidth = itemWidth - ((item.getX() + itemWidth) - width);
@@ -578,11 +575,11 @@ public class EJReportJasperReportBuilder
                         element.setX(currentX + item.getX());
                         element.setY(item.getY());
                         element.setWidth(itemWidth);
-                      
+
                         element.setHeight(itemHeight);
                         header.addElement(element);
 
-                        processItemStyle(item, element);
+                        processItemStyle(item, element, SECTION.HEADER);
 
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
@@ -603,26 +600,25 @@ public class EJReportJasperReportBuilder
                 Collection<EJCoreReportScreenItemProperties> screenItems = (Collection<EJCoreReportScreenItemProperties>) col.getDetailScreen()
                         .getScreenItems();
 
-                
                 int sectionHeight = col.getDetailScreen().getHeight();
-                if(sectionHeight==0)
+                if (sectionHeight == 0)
                     sectionHeight = screenProperties.getDetailColumnHeight();
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
-                    if(!item.isVisible())
+                    if (!item.isVisible())
                     {
                         continue;
                     }
                     int itemWidth = item.getWidth();
                     int itemHeight = item.getHeight();
-                    
+
                     if (item.isWidthAsPercentage())
                     {
-                        itemWidth = (int) (((double)  width/100) * itemWidth);
+                        itemWidth = (int) (((double) width / 100) * itemWidth);
                     }
                     if (item.isHeightAsPercentage())
                     {
-                        itemHeight = (int) (((double)  sectionHeight/100) * itemHeight);
+                        itemHeight = (int) (((double) sectionHeight / 100) * itemHeight);
                     }
                     if (width < (item.getX() + itemWidth))
                     {
@@ -641,7 +637,7 @@ public class EJReportJasperReportBuilder
                         element.setWidth(itemWidth);
                         element.setHeight(itemHeight);
                         detail.addElement(element);
-                        processItemStyle(item, element);
+                        processItemStyle(item, element, SECTION.DETAIL);
 
                         /*
                          * if(element.getStyle() instanceof JRDesignStyle) {
@@ -678,27 +674,26 @@ public class EJReportJasperReportBuilder
                 Collection<EJCoreReportScreenItemProperties> screenItems = (Collection<EJCoreReportScreenItemProperties>) col.getFooterScreen()
                         .getScreenItems();
 
-                
                 int sectionHeight = col.getFooterScreen().getHeight();
-                if(sectionHeight==0)
+                if (sectionHeight == 0)
                     sectionHeight = screenProperties.getFooterColumnHeight();
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
 
-                    if(!item.isVisible())
+                    if (!item.isVisible())
                     {
                         continue;
                     }
                     int itemWidth = item.getWidth();
                     int itemHeight = item.getHeight();
-                    
+
                     if (item.isWidthAsPercentage())
                     {
-                        itemWidth = (int) (((double)  width/100) * itemWidth);
+                        itemWidth = (int) (((double) width / 100) * itemWidth);
                     }
                     if (item.isHeightAsPercentage())
                     {
-                        itemHeight = (int) (((double)  sectionHeight/100) * itemHeight);
+                        itemHeight = (int) (((double) sectionHeight / 100) * itemHeight);
                     }
                     if (width < (item.getX() + itemWidth))
                     {
@@ -717,7 +712,7 @@ public class EJReportJasperReportBuilder
                         element.setWidth(itemWidth);
                         element.setHeight(itemHeight);
                         footer.addElement(element);
-                        processItemStyle(item, element);
+                        processItemStyle(item, element, SECTION.FOOTER);
 
                         element.setPositionType(PositionTypeEnum.FLOAT);
                         element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
@@ -779,7 +774,7 @@ public class EJReportJasperReportBuilder
 
     }
 
-    private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element) throws JRException
+    private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element, SECTION section) throws JRException
     {
 
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
@@ -809,6 +804,19 @@ public class EJReportJasperReportBuilder
 
             }
         }
+
+        if (element.getPrintWhenExpression() instanceof JRDesignExpression)
+        {
+            JRDesignExpression visibleExpression = createScreenItemVisibleExpression(item.getBlockProperties().getName(), item.getName(), section);
+
+            visibleExpression.setText(String.format("%s && %s", visibleExpression.getText(), (element.getPrintWhenExpression().getText())));
+            element.setPrintWhenExpression(visibleExpression);
+        }
+        else
+        {
+            element.setPrintWhenExpression(createScreenItemVisibleExpression(item.getBlockProperties().getName(), item.getName(), section));
+        }
+
     }
 
     private JRDesignStyle createItemBaseStyle(JRDesignStyle style, String paramValue) throws JRException
@@ -1066,7 +1074,7 @@ public class EJReportJasperReportBuilder
         for (EJCoreReportScreenItemProperties item : screenItems)
         {
 
-            if(!item.isVisible())
+            if (!item.isVisible())
             {
                 continue;
             }
@@ -1075,11 +1083,11 @@ public class EJReportJasperReportBuilder
 
             if (item.isWidthAsPercentage())
             {
-                itemWidth = (int) (((double)  screenProperties.getWidth()/100) * itemWidth);
+                itemWidth = (int) (((double) screenProperties.getWidth() / 100) * itemWidth);
             }
             if (item.isHeightAsPercentage())
             {
-                itemHeight = (int) (((double)  screenProperties.getHeight()/100) * itemHeight);
+                itemHeight = (int) (((double) screenProperties.getHeight() / 100) * itemHeight);
             }
 
             if (width < (item.getX() + itemWidth))
@@ -1104,7 +1112,7 @@ public class EJReportJasperReportBuilder
                 element.setPositionType(PositionTypeEnum.FLOAT);
                 detail.addElement(element);
 
-                processItemStyle(item, element);
+                processItemStyle(item, element, SECTION.DETAIL);
             }
 
         }
@@ -1183,7 +1191,7 @@ public class EJReportJasperReportBuilder
         else
         {
             style.setFontName("Arial");
-          
+
             style.setPdfEmbedded(true);
         }
 
@@ -1731,19 +1739,27 @@ public class EJReportJasperReportBuilder
         expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item, vaName));
         return expression;
     }
-    
+
     JRDesignExpression createItemVisibleExpression(String item)
     {
         JRDesignExpression expression = new JRDesignExpression();
-        
+
         expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\")", item));
         return expression;
     }
-    
+
+    JRDesignExpression createScreenItemVisibleExpression(String block, String item, SECTION section)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
+
+        expression.setText(String.format("($F{_EJ_AP_CONTEXT}).canShowScreenItem(\"%s\",\"%s\",\"%s\")", block, item, section.name()));
+        return expression;
+    }
+
     JRDesignExpression createBlockVisibleExpression(String name)
     {
         JRDesignExpression expression = new JRDesignExpression();
-        
+
         expression.setText(String.format("($F{_EJ_AP_CONTEXT}).canShowBlock(\"%s\")", name));
         return expression;
     }

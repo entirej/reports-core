@@ -56,4 +56,10 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     {
         return true;
     }
+    
+    @Override
+    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
+    {
+        return true;
+    }
 }

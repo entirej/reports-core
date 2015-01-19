@@ -30,6 +30,7 @@ import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.actionprocessor.EJDefaultReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
+import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
 import org.entirej.framework.report.processorfactories.EJReportActionProcessorFactory;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
@@ -200,6 +201,45 @@ public class EJReportActionController implements Serializable
             logger.trace("END canShowBlock");
         }
 
+    }
+    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
+    {
+        logger.trace("START canShowScreenItem. Report: {}", report.getName());
+        
+        EJManagedReportFrameworkConnection connection = report.getConnection();
+        try
+        {
+            
+            if (_blockLevelActionProcessors.containsKey(blockName))
+            {
+                logger.trace("Calling block level canShowBlock. Block: {}", blockName,screenItem,  section);
+                boolean canShowBlock = _blockLevelActionProcessors.get(blockName).canShowScreenItem(report, blockName, screenItem, section);
+                logger.trace("Called block level canShowBlock");
+                return canShowBlock;
+            }
+            else
+            {
+                logger.trace("Calling report level canShowScreenItem");
+                boolean canShowBlock = _reportLevelActionProcessor.canShowScreenItem(report, blockName, screenItem, section);
+                logger.trace("Called report level canShowScreenItem");
+                return canShowBlock;
+            }
+            
+        }
+        catch (Exception e)
+        {
+            if (connection != null)
+            {
+                connection.rollback();
+            }
+            throw new EJReportRuntimeException(e);
+        }
+        finally
+        {
+            connection.close();
+            logger.trace("END canShowScreenItem");
+        }
+        
     }
 
     public void preBlockQuery(EJReport report, EJReportQueryCriteria queryCriteria)
