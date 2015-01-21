@@ -328,9 +328,9 @@ public class EJReportJasperReportBuilder
             designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
         }
-       
-            createBlockRPTParamater();
-        
+
+        createBlockRPTParamater();
+
     }
 
     void createBlockRPTParamater() throws JRException
@@ -414,12 +414,12 @@ public class EJReportJasperReportBuilder
         EJReportActionController controller = block.getReport().getActionController();
         for (EJReportColumnProperties columnProperties : screenProperties.getAllColumns())
         {
-            if(controller.canShowScreenColumn(block.getReport(), block.getName(), columnProperties.getName()))
+            if (controller.canShowScreenColumn(block.getReport(), block.getName(), columnProperties.getName()))
             {
                 allColumns.add(columnProperties);
             }
         }
-        
+
         // create all ref fields
 
         boolean addHeaderBand = false;
@@ -430,10 +430,13 @@ public class EJReportJasperReportBuilder
 
         JRDesignStyle oddEvenRowStyle = createOddEvenRowStyle(screenProperties);
 
+        boolean canShowBlockHeader = block.getReport().getActionController().canShowBlockHeader(block.getReport(), block.getName());
+        boolean canShowBlockFooter = block.getReport().getActionController().canShowBlockFooter(block.getReport(), block.getName());
+
         for (EJReportColumnProperties col : allColumns)
         {
 
-            if (col.isShowHeader())
+            if (canShowBlockHeader && col.isShowHeader())
             {
                 if (headerHeight < col.getHeaderScreen().getHeight())
                 {
@@ -475,7 +478,7 @@ public class EJReportJasperReportBuilder
                 crateValueRefField((EJCoreReportScreenItemProperties) item);
             }
             // ----------
-            if (col.isShowFooter())
+            if (canShowBlockFooter && col.isShowFooter())
             {
                 if (footerHeight < col.getFooterScreen().getHeight())
                 {
@@ -538,7 +541,13 @@ public class EJReportJasperReportBuilder
 
             int width = col.getDetailScreen().getWidth();
 
-            if (col.isShowHeader())
+            
+            boolean screenColumnSectionH = canShowBlockHeader && block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), SECTION.HEADER);
+            
+            boolean screenColumnSectionD = block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), SECTION.DETAIL);
+            boolean screenColumnSectionF = canShowBlockFooter&& block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), SECTION.FOOTER);
+           
+            if (canShowBlockHeader && col.isShowHeader())
             {
 
                 @SuppressWarnings("unchecked")
@@ -549,6 +558,7 @@ public class EJReportJasperReportBuilder
                 if (sectionHeight == 0)
                     sectionHeight = screenProperties.getHeaderColumnHeight();
 
+                
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
                     if (!item.isVisible())
@@ -574,22 +584,25 @@ public class EJReportJasperReportBuilder
                             itemWidth = 0;
                     }
 
-                    JRDesignElement element = createScrrenItem(block, item);
-
-                    if (element != null)
+                    if (screenColumnSectionH)
                     {
+                        JRDesignElement element = createScrrenItem(block, item);
 
-                        element.setX(currentX + item.getX());
-                        element.setY(item.getY());
-                        element.setWidth(itemWidth);
+                        if (element != null)
+                        {
 
-                        element.setHeight(itemHeight);
-                        header.addElement(element);
+                            element.setX(currentX + item.getX());
+                            element.setY(item.getY());
+                            element.setWidth(itemWidth);
 
-                        processItemStyle(item, element, SECTION.HEADER);
+                            element.setHeight(itemHeight);
+                            header.addElement(element);
 
-                        element.setPositionType(PositionTypeEnum.FLOAT);
-                        element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                            processItemStyle(item, element, SECTION.HEADER);
+
+                            element.setPositionType(PositionTypeEnum.FLOAT);
+                            element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                        }
                     }
 
                 }
@@ -634,47 +647,50 @@ public class EJReportJasperReportBuilder
                             itemWidth = 0;
                     }
 
-                    JRDesignElement element = createScrrenItem(block, item);
-
-                    if (element != null)
+                    if (screenColumnSectionD)
                     {
+                        JRDesignElement element = createScrrenItem(block, item);
 
-                        element.setX(currentX + item.getX());
-                        element.setY(item.getY());
-                        element.setWidth(itemWidth);
-                        element.setHeight(itemHeight);
-                        detail.addElement(element);
-                        processItemStyle(item, element, SECTION.DETAIL);
+                        if (element != null)
+                        {
 
-                        /*
-                         * if(element.getStyle() instanceof JRDesignStyle) {
-                         * JRDesignStyle style = (JRDesignStyle)
-                         * element.getStyle();
-                         * 
-                         * EJReportVisualAttributeProperties vaOdd =
-                         * screenProperties.getOddVAProperties();
-                         * EJReportVisualAttributeProperties vaEven =
-                         * screenProperties.getEvenVAProperties(); if (vaOdd !=
-                         * null || vaEven != null) {
-                         * 
-                         * 
-                         * 
-                         * buildOddEvenStyle(screenProperties, vaOdd, vaEven,
-                         * style);
-                         * 
-                         * 
-                         * } }
-                         */
+                            element.setX(currentX + item.getX());
+                            element.setY(item.getY());
+                            element.setWidth(itemWidth);
+                            element.setHeight(itemHeight);
+                            detail.addElement(element);
+                            processItemStyle(item, element, SECTION.DETAIL);
 
-                        element.setPositionType(PositionTypeEnum.FLOAT);
-                        element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                            /*
+                             * if(element.getStyle() instanceof JRDesignStyle) {
+                             * JRDesignStyle style = (JRDesignStyle)
+                             * element.getStyle();
+                             * 
+                             * EJReportVisualAttributeProperties vaOdd =
+                             * screenProperties.getOddVAProperties();
+                             * EJReportVisualAttributeProperties vaEven =
+                             * screenProperties.getEvenVAProperties(); if (vaOdd
+                             * != null || vaEven != null) {
+                             * 
+                             * 
+                             * 
+                             * buildOddEvenStyle(screenProperties, vaOdd,
+                             * vaEven, style);
+                             * 
+                             * 
+                             * } }
+                             */
+
+                            element.setPositionType(PositionTypeEnum.FLOAT);
+                            element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                        }
                     }
 
                 }
 
             }
 
-            if (col.isShowFooter())
+            if (canShowBlockFooter && col.isShowFooter())
             {
 
                 @SuppressWarnings("unchecked")
@@ -708,35 +724,38 @@ public class EJReportJasperReportBuilder
                         if (itemWidth < 0)
                             itemWidth = 0;
                     }
-
-                    JRDesignElement element = createScrrenItem(block, item);
-
-                    if (element != null)
+                    if (screenColumnSectionF)
                     {
+                        JRDesignElement element = createScrrenItem(block, item);
 
-                        element.setX(currentX + item.getX());
-                        element.setY(item.getY());
-                        element.setWidth(itemWidth);
-                        element.setHeight(itemHeight);
-                        footer.addElement(element);
-                        processItemStyle(item, element, SECTION.FOOTER);
+                        if (element != null)
+                        {
 
-                        element.setPositionType(PositionTypeEnum.FLOAT);
-                        element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                            element.setX(currentX + item.getX());
+                            element.setY(item.getY());
+                            element.setWidth(itemWidth);
+                            element.setHeight(itemHeight);
+                            footer.addElement(element);
+                            processItemStyle(item, element, SECTION.FOOTER);
+
+                            element.setPositionType(PositionTypeEnum.FLOAT);
+                            element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                        }
                     }
 
                 }
 
             }
 
-            if (addHeaderBand)
+            if (addHeaderBand&&screenColumnSectionH)
             {
                 createColumnLines(headerHeight, header, currentX, width, col.getHeaderBorderProperties());
             }
 
-            createColumnLines(detailHeight, detail, currentX, width, col.getDetailBorderProperties());
+            if(screenColumnSectionD)
+                createColumnLines(detailHeight, detail, currentX, width, col.getDetailBorderProperties());
 
-            if (addFooterBand)
+            if (addFooterBand&&screenColumnSectionF)
             {
                 createColumnLines(footerHeight, footer, currentX, width, col.getFooterBorderProperties());
             }

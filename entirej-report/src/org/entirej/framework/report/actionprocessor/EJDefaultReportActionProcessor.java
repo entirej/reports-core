@@ -31,14 +31,12 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     @Override
     public void beforeReport(EJReport report) throws EJReportActionProcessorException
     {
-      
 
     }
 
     @Override
     public void afterReport(EJReport report) throws EJReportActionProcessorException
     {
-        
 
     }
 
@@ -50,21 +48,38 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     {
     }
 
-    
     @Override
-    public boolean canShowBlock(EJReport report,String blockName)
+    public boolean canShowBlock(EJReport report, String blockName)
     {
         return true;
     }
-    
+
     @Override
     public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
     {
         return true;
     }
-    
+
     @Override
     public boolean canShowScreenColumn(EJReport report, String blockName, String columnName)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canShowBlockFooter(EJReport report, String blockName)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canShowBlockHeader(EJReport report, String blockName)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, SECTION section)
     {
         return true;
     }

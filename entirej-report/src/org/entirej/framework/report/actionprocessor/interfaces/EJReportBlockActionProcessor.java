@@ -74,7 +74,15 @@ public interface EJReportBlockActionProcessor extends Serializable
     public boolean canShowBlock(EJReport report, String blockName);
 
     public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section);
-
+    
+ 
     public boolean canShowScreenColumn(EJReport report, String blockName, String columnName);
 
+    public boolean canShowBlockHeader(EJReport report, String blockName);
+
+    public boolean canShowBlockFooter(EJReport report, String blockName);
+
+    public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, SECTION section);
+
+    
 }
