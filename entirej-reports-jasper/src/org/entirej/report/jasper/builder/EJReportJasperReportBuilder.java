@@ -53,14 +53,13 @@ import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportBlockItem;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
-import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
+import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportBorderProperties;
 import org.entirej.framework.report.interfaces.EJReportColumnProperties;
@@ -542,10 +541,10 @@ public class EJReportJasperReportBuilder
             int width = col.getDetailScreen().getWidth();
 
             
-            boolean screenColumnSectionH = canShowBlockHeader && block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), SECTION.HEADER);
+            boolean screenColumnSectionH = canShowBlockHeader && block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.HEADER);
             
-            boolean screenColumnSectionD = block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), SECTION.DETAIL);
-            boolean screenColumnSectionF = canShowBlockFooter&& block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), SECTION.FOOTER);
+            boolean screenColumnSectionD = block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.DETAIL);
+            boolean screenColumnSectionF = canShowBlockFooter&& block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.FOOTER);
            
             if (canShowBlockHeader && col.isShowHeader())
             {
@@ -598,7 +597,7 @@ public class EJReportJasperReportBuilder
                             element.setHeight(itemHeight);
                             header.addElement(element);
 
-                            processItemStyle(item, element, SECTION.HEADER);
+                            processItemStyle(item, element, EJReportScreenSection.HEADER);
 
                             element.setPositionType(PositionTypeEnum.FLOAT);
                             element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
@@ -659,7 +658,7 @@ public class EJReportJasperReportBuilder
                             element.setWidth(itemWidth);
                             element.setHeight(itemHeight);
                             detail.addElement(element);
-                            processItemStyle(item, element, SECTION.DETAIL);
+                            processItemStyle(item, element, EJReportScreenSection.DETAIL);
 
                             /*
                              * if(element.getStyle() instanceof JRDesignStyle) {
@@ -736,7 +735,7 @@ public class EJReportJasperReportBuilder
                             element.setWidth(itemWidth);
                             element.setHeight(itemHeight);
                             footer.addElement(element);
-                            processItemStyle(item, element, SECTION.FOOTER);
+                            processItemStyle(item, element, EJReportScreenSection.FOOTER);
 
                             element.setPositionType(PositionTypeEnum.FLOAT);
                             element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
@@ -800,7 +799,7 @@ public class EJReportJasperReportBuilder
 
     }
 
-    private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element, SECTION section) throws JRException
+    private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element, EJReportScreenSection section) throws JRException
     {
 
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
@@ -810,26 +809,8 @@ public class EJReportJasperReportBuilder
 
             vaToStyle(va, style);
         }
-        if (item instanceof ValueBaseItem)
-        {
-            ValueBaseItem valueBaseItem = (ValueBaseItem) item;
-
-            String defaultValue = valueBaseItem.getValue();
-            if (valueBaseItem.getValue() != null && valueBaseItem.getValue().length() > 0)
-            {
-                String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
-                String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
-                if ("BLOCK_ITEM".equals(paramTypeCode))
-                {
-                    createItemBaseStyle(style, paramValue);
-
-                    element.setPrintWhenExpression(createItemVisibleExpression(paramValue));
-                    // element.setStyle(style);
-
-                }
-
-            }
-        }
+        createScreenItemBaseStyle(style, item.getName(), section);
+        element.setPrintWhenExpression(createItemVisibleExpression(item.getName(),section));
 
         if (element.getPrintWhenExpression() instanceof JRDesignExpression)
         {
@@ -845,7 +826,7 @@ public class EJReportJasperReportBuilder
 
     }
 
-    private JRDesignStyle createItemBaseStyle(JRDesignStyle style, String paramValue) throws JRException
+    private JRDesignStyle createScreenItemBaseStyle(JRDesignStyle style, String item, EJReportScreenSection section) throws JRException
     {
 
         Collection<EJReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
@@ -855,7 +836,7 @@ public class EJReportJasperReportBuilder
             if (properties.isUsedAsDynamicVA())
             {
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-                conditionalStyle.setConditionExpression(createItemVAExpression(paramValue, properties.getName()));
+                conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(),section));
                 vaToStyle(properties, conditionalStyle);
 
                 style.addConditionalStyle(conditionalStyle);
@@ -1138,7 +1119,7 @@ public class EJReportJasperReportBuilder
                 element.setPositionType(PositionTypeEnum.FLOAT);
                 detail.addElement(element);
 
-                processItemStyle(item, element, SECTION.DETAIL);
+                processItemStyle(item, element, EJReportScreenSection.DETAIL);
             }
 
         }
@@ -1758,23 +1739,23 @@ public class EJReportJasperReportBuilder
         return expression;
     }
 
-    JRDesignExpression createItemVAExpression(String item, String vaName)
+    JRDesignExpression createItemVAExpression(String item, String vaName , EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item, vaName));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item,section.name(), vaName));
         return expression;
     }
 
-    JRDesignExpression createItemVisibleExpression(String item)
+    JRDesignExpression createItemVisibleExpression(String item, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\")", item));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\",\"%s\")", item,section.name()));
         return expression;
     }
 
-    JRDesignExpression createScreenItemVisibleExpression(String block, String item, SECTION section)
+    JRDesignExpression createScreenItemVisibleExpression(String block, String item, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 

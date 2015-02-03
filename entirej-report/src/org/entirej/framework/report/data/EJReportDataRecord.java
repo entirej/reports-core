@@ -28,21 +28,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportController;
+import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 
 public class EJReportDataRecord implements Serializable
 {
-    private EJReportController                _reportController;
-    private EJReportDataRecord                _baseRecord;
-    private Object                            _servicePojo;
-    private EJInternalReportBlock             _block;
+    private EJReportController                  _reportController;
+    private EJReportDataRecord                  _baseRecord;
+    private Object                              _servicePojo;
+    private EJInternalReportBlock               _block;
 
-    private HashMap<String, EJReportDataItem> _itemList;
-    private boolean                           _queriedRecord = false;
+    private HashMap<String, EJReportDataItem>   _itemList;
+    private HashMap<String, EJReportDataScreenItem> _itemListH;
+    private HashMap<String, EJReportDataScreenItem> _itemListD;
+    private HashMap<String, EJReportDataScreenItem> _itemListF;
+    private boolean                             _queriedRecord = false;
 
-    private AtomicBoolean                     init           = new AtomicBoolean();
+    private AtomicBoolean                       init           = new AtomicBoolean();
 
     /**
      * Returns the properties of the block that contains this record
@@ -55,8 +59,8 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = getBlock().getServicePojoHelper().createNewPojoFromService();
         _itemList = new HashMap<String, EJReportDataItem>();
-        
-        if(_block.getProperties().isControlBlock())
+
+        if (_block.getProperties().isControlBlock())
         {
             initialise();
         }
@@ -74,7 +78,7 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = servicePojo;
         _itemList = new HashMap<String, EJReportDataItem>();
-        if(_block.getProperties().isControlBlock())
+        if (_block.getProperties().isControlBlock())
         {
             initialise();
         }
@@ -139,6 +143,9 @@ public class EJReportDataRecord implements Serializable
     {
         init.set(false);
         _itemList = null;
+        _itemListF = null;
+        _itemListD = null;
+        _itemListH = null;
         _servicePojo = null;
         _reportController = null;
         _block = null;
@@ -270,6 +277,57 @@ public class EJReportDataRecord implements Serializable
         }
 
         throw new IllegalArgumentException("No such item called " + itemName + " within block " + getBlockName());
+    }
+
+    /**
+     * Returns the <code>EJReportDataScreenItem</code> from this record with the
+     * name specified
+     * 
+     * @param itemName
+     *            The item to return
+     * @param section
+     *            The EJReportScreenSection where screen item belong
+     * @return The <code>EJReportDataScreenItem</code> with the given name,
+     */
+    public EJReportDataScreenItem getScreenItem(String itemName, EJReportScreenSection section)
+    {
+        if (itemName == null || itemName.trim().length() == 0)
+        {
+            throw new IllegalArgumentException("The screen item name passd to getItem is either a zero lenght string or null");
+        }
+
+        HashMap<String, EJReportDataScreenItem> map;
+
+        switch (section)
+        {
+            case HEADER:
+                if (_itemListH == null)
+                    _itemListH = new HashMap<String, EJReportDataScreenItem>();
+                map = _itemListH;
+                break;
+            case DETAIL:
+                if (_itemListD == null)
+                    _itemListD = new HashMap<String, EJReportDataScreenItem>();
+                map = _itemListD;
+                break;
+            case FOOTER:
+                if (_itemListF == null)
+                    _itemListF = new HashMap<String, EJReportDataScreenItem>();
+                map = _itemListF;
+                break;
+
+            default:
+                return null;
+        }
+
+        EJReportDataScreenItem item = map.get(itemName);
+
+        if (item == null)
+        {
+            item = new EJReportDataScreenItem(_reportController, itemName);
+            map.put(itemName, item);
+        }
+        return item;
     }
 
     /**

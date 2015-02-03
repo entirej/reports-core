@@ -24,6 +24,8 @@ import java.util.Collections;
 
 import org.entirej.framework.report.data.EJReportDataItem;
 import org.entirej.framework.report.data.EJReportDataRecord;
+import org.entirej.framework.report.data.EJReportDataScreenItem;
+import org.entirej.framework.report.enumerations.EJReportScreenSection;
 
 public class EJReportRecord implements Serializable
 {
@@ -89,6 +91,28 @@ public class EJReportRecord implements Serializable
         }
 
         return new EJReportItem(_dataRecord.getBlock(), _dataRecord, item);
+    }
+
+    /**
+     * Returns the {@link EJReportScreenItem} from this record with the name specified
+     * 
+     * @param itemName
+     *            The item to return
+     * @param section
+     *            The EJReportScreenSection where screen item belong
+     * @param itemName
+     *            The item to return
+     * @return The {@link EJReportScreenItem} with the given name
+     */
+    public EJReportScreenItem getScreenItem(String itemName, EJReportScreenSection section)
+    {
+        EJReportDataScreenItem item = _dataRecord.getScreenItem(itemName, section);
+        if (item == null)
+        {
+            return null;
+        }
+
+        return new EJReportScreenItem(_dataRecord.getBlock(), item);
     }
 
     /**
@@ -187,5 +211,4 @@ public class EJReportRecord implements Serializable
         _dataRecord.copyValuesFromEntityObject(entityObject);
     }
 
-    
 }

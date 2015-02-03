@@ -25,18 +25,14 @@ import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 /**
  * Contains the actual data for a specific item.
  */
-public class EJReportDataItem implements Serializable
+public class EJReportDataItem implements Serializable 
 {
     private Object                            _value;
     private EJReportController                _reportController;
-    private EJReportVisualAttributeProperties _vaProperties;
-    private String                            _hint;
-    private boolean                           _visible = true;
     private EJCoreReportItemProperties        _itemProperties;
 
     EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties)
@@ -96,84 +92,13 @@ public class EJReportDataItem implements Serializable
         return _itemProperties;
     }
 
-    public void setVisualAttribute(String visualAttributeName)
+
+    public Class<?> getDataTypeClass()
     {
-        if (visualAttributeName == null || visualAttributeName.trim().length() == 0)
-        {
-            _vaProperties = null;
-            return;
-        }
-
-        EJReportVisualAttributeProperties vaProperties = _reportController.getInternalReport().getVisualAttribute(visualAttributeName);
-        if (vaProperties == null)
-        {
-            throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
-        }
-
-        if (!vaProperties.isUsedAsDynamicVA())
-        {
-            throw new IllegalArgumentException(" Visual attribute with the name " + visualAttributeName
-                    + " on this report is not marked as 'Used as Dynamic VA' .");
-        }
-        _vaProperties = vaProperties;
+        return _itemProperties.getDataTypeClass();
     }
 
-    public EJReportVisualAttributeProperties getVisualAttribute()
-    {
-        return _vaProperties;
-    }
 
-    /**
-     * Sets this item hint
-     * <p>
-     * Hints set on data items will be displayed when the record containing the
-     * item gains focus. Setting the hint to <code>null</code> removes the hint
-     * text
-     * 
-     * @param text
-     *            The hint to set or <code>null</code> if no hint should be
-     *            shown
-     */
-    public void setHint(String text)
-    {
-        _hint = text;
-    }
-
-    /**
-     * Returns the hint set for this item instance
-     * 
-     * @return This items hint or <code>null</code> if no item level hint has
-     *         been defined
-     */
-    public String getHint()
-    {
-        return _hint;
-    }
-
-    /**
-     * Sets this item visible
-     * <p>
-     * visible set on data items will be displayed when the record containing
-     * the item gains focus. Setting the visible to <code>false</code> removes
-     * the item from print
-     * 
-     * @param visible
-     *            The Visible to Item true/false
-     */
-    public void setVisible(boolean visible)
-    {
-        _visible = visible;
-    }
-
-    /**
-     * Returns the visible set for this item instance
-     * 
-     * @return This items visible true/false
-     */
-    public boolean isVisible()
-    {
-        return _visible;
-    }
 
     /**
      * Returns true or false depending on whether this item receives its value

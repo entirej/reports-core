@@ -20,9 +20,9 @@ package org.entirej.framework.report.actionprocessor;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportActionProcessorException;
-import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
+import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJDefaultReportActionProcessor implements EJReportActionProcessor
@@ -55,7 +55,7 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     }
 
     @Override
-    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
+    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, EJReportScreenSection section)
     {
         return true;
     }
@@ -79,7 +79,7 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     }
 
     @Override
-    public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, SECTION section)
+    public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, EJReportScreenSection section)
     {
         return true;
     }

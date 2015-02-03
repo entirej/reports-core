@@ -24,13 +24,12 @@ import java.util.Iterator;
 
 import org.entirej.framework.report.EJManagedReportFrameworkConnection;
 import org.entirej.framework.report.EJReport;
-import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.actionprocessor.EJDefaultReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
-import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
+import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.processorfactories.EJReportActionProcessorFactory;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
@@ -203,7 +202,7 @@ public class EJReportActionController implements Serializable
 
     }
 
-    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, SECTION section)
+    public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, EJReportScreenSection section)
     {
         logger.trace("START canShowScreenItem. Report: {}", report.getName());
 
@@ -363,7 +362,7 @@ public class EJReportActionController implements Serializable
 
     }
 
-    public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, SECTION section)
+    public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, EJReportScreenSection section)
     {
         logger.trace("START canShowScreenColumnSection. Report: {}", report.getName());
 

@@ -28,7 +28,7 @@ import net.sf.jasperreports.engine.JRField;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
-import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor.SECTION;
+import org.entirej.framework.report.enumerations.EJReportScreenSection;
 
 public class EJReportDataSource implements JRDataSource, Serializable, EJReportActionContext
 {
@@ -91,6 +91,6 @@ public class EJReportDataSource implements JRDataSource, Serializable, EJReportA
     public boolean canShowScreenItem(String blockName, String screenItem, String section)
     {
         
-         return report.getActionController().canShowScreenItem(report, blockName, screenItem, SECTION.valueOf(section));
+         return report.getActionController().canShowScreenItem(report, blockName, screenItem, EJReportScreenSection.valueOf(section));
     }
 }
