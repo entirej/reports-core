@@ -20,6 +20,7 @@ package org.entirej.framework.report;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import org.entirej.framework.report.data.controllers.EJReportActionController;
@@ -30,6 +31,7 @@ import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
+import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReport implements EJReportFrameworkHelper
@@ -51,12 +53,12 @@ public class EJReport implements EJReportFrameworkHelper
         return _report.getProperties();
     }
 
-    
     public EJReportFrameworkManager getFrameworkManager()
     {
         return _report.getFrameworkManager();
-        
+
     }
+
     /**
      * Returns the action controller for this report
      * 
@@ -146,7 +148,8 @@ public class EJReport implements EJReportFrameworkHelper
     }
 
     /**
-     * Returns an immutable collection of all blocks available within this report
+     * Returns an immutable collection of all blocks available within this
+     * report
      * 
      * @return All blocks within this report
      */
@@ -161,46 +164,42 @@ public class EJReport implements EJReportFrameworkHelper
 
         return blocks;
     }
-    /**
-     * Returns an immutable collection of all blocks available within this report
-     * 
-     * @return All blocks within this report
-     */
-    public Collection<EJReportBlock> getRootBlocks()
+
+    public Collection<EJReportPage> getPages()
     {
-        ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
-        
-        for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getRootBlockProperties())
+        ArrayList<EJReportPage> pages = new ArrayList<EJReportPage>();
+
+        for (BlockGroup blockGroup : _report.getProperties().getBlockContainer().getPages())
         {
-            
-            blocks.add(getBlock(blockProp.getName()));
+            pages.add(new EJReportPage(this, blockGroup));
         }
-        
-        return blocks;
+
+        return pages;
     }
+
     public Collection<EJReportBlock> getHeaderBlocks()
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
-        
+
         for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getHeaderSection().getAllBlockProperties())
         {
-            
+
             blocks.add(getBlock(blockProp.getName()));
         }
-        
+
         return blocks;
     }
-    
+
     public Collection<EJReportBlock> getFooterBlocks()
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
-        
+
         for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getFooterSection().getAllBlockProperties())
         {
-            
+
             blocks.add(getBlock(blockProp.getName()));
         }
-        
+
         return blocks;
     }
 
@@ -287,12 +286,12 @@ public class EJReport implements EJReportFrameworkHelper
         return _report.getRuntimeLevelParameter(paramName);
     }
 
-    
     @Override
     public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
     {
         return _report.getRuntimeLevelParameters();
     }
+
     /**
      * Sets the given report parameter to the given value
      * 
@@ -394,8 +393,8 @@ public class EJReport implements EJReportFrameworkHelper
      * <p>
      * the parameter list is a list of properties that were declared for the
      * report within the EntireJ Report Plugin. These parameters are used when
-     * either calling another report or when another report calls this report. They
-     * are used to pass values to and from the calling reports
+     * either calling another report or when another report calls this report.
+     * They are used to pass values to and from the calling reports
      * 
      * @return This reports parameter list
      */

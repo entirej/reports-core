@@ -15,9 +15,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
 
     private int                         x, y, width, height;
     
-    
-    private boolean                     startOnNewPage;
-
     private int                         headerColumnHeight;
     private int                         detailColumnHeight;
     private int                         footerColumnHeight;
@@ -54,18 +51,7 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
     {
         this.width = width;
     }
-    
-    
-    @Override
-    public boolean isStartOnNewPage()
-    {
-        return startOnNewPage;
-    }
-    
-    public void setStartOnNewPage(boolean startOnNewpage)
-    {
-        this.startOnNewPage = startOnNewpage;
-    }
+
 
     @Override
     public int getHeight()

@@ -291,12 +291,13 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
     {
         if (name.equals(ELEMENT_BLOCK))
         {
-            _reportProperties.getBlockContainer().addBlockProperties(((ReportBlockHandler) currentDelegate).getBlockProperties());
+            //compatibility
+            _reportProperties.getBlockContainer().getFirstPage().addBlockProperties(((ReportBlockHandler) currentDelegate).getBlockProperties());
             return;
         }
         else if (name.equals(ELEMENT_BLOCK_GROUP))
         {
-            _reportProperties.getBlockContainer().addBlockProperties(((ReportBlockGroupHandler) currentDelegate).getBlockGroup());
+            _reportProperties.getBlockContainer().addPage(((ReportBlockGroupHandler) currentDelegate).getBlockGroup());
             return;
         }
         else if (name.equals(ELEMENT_BLOCK_HEADER))

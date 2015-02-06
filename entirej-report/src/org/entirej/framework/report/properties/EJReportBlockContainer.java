@@ -23,7 +23,7 @@ import java.util.List;
 
 public class EJReportBlockContainer
 {
-    private List<BlockContainerItem> _blockProperties;
+    private List<BlockGroup> _blockProperties;
     private EJCoreReportProperties   _reportProperties;
 
     private BlockGroup               headerSection = new BlockGroup("Header");
@@ -32,7 +32,7 @@ public class EJReportBlockContainer
     public EJReportBlockContainer(EJCoreReportProperties reportProperties)
     {
         _reportProperties = reportProperties;
-        _blockProperties = new ArrayList<BlockContainerItem>();
+        _blockProperties = new ArrayList<BlockGroup>();
     }
 
     public EJCoreReportProperties getReportProperties()
@@ -72,7 +72,7 @@ public class EJReportBlockContainer
         return getBlockProperties(blockName)!=null;
     }
 
-    public void addBlockProperties(BlockContainerItem blockProperties)
+    public void addPage(BlockGroup blockProperties)
     {
         if (blockProperties != null)
         {
@@ -80,7 +80,7 @@ public class EJReportBlockContainer
         }
     }
 
-    public void removeBlockContainerItem(BlockContainerItem blockProperties)
+    public void removePage(BlockGroup blockProperties)
     {
         if (blockProperties != null)
         {
@@ -90,7 +90,7 @@ public class EJReportBlockContainer
 
 
 
-    public void addBlockProperties(int index, BlockContainerItem blockProperties)
+    public void addPage(int index, BlockGroup blockProperties)
     {
         if (blockProperties != null)
         {
@@ -112,33 +112,19 @@ public class EJReportBlockContainer
     public EJCoreReportBlockProperties getBlockProperties(String blockName)
     {
 
-        Iterator<BlockContainerItem> iti = _blockProperties.iterator();
+        Iterator<BlockGroup> iti = _blockProperties.iterator();
 
         while (iti.hasNext())
         {
 
-            BlockContainerItem containerItem = iti.next();
-            if ((containerItem instanceof BlockGroup))
-            {
-                EJCoreReportBlockProperties blockProperties = ((BlockGroup) containerItem).getBlockProperties(blockName);
+            BlockGroup containerItem = iti.next();
+           
+                EJCoreReportBlockProperties blockProperties = ( containerItem).getBlockProperties(blockName);
                 if (blockProperties != null)
                 {
                     return blockProperties;
                 }
-                continue;
-            }
-            EJCoreReportBlockProperties props = (EJCoreReportBlockProperties) containerItem;
-
-            if (props.getName().equalsIgnoreCase(blockName))
-            {
-                return props;
-            }
-
-            EJCoreReportBlockProperties blockProperties = props.getLayoutScreenProperties().getSubBlocks().getBlockProperties(blockName);
-            if (blockProperties != null)
-            {
-                return blockProperties;
-            }
+          
         }
         
         EJCoreReportBlockProperties blockProperties = headerSection.getBlockProperties(blockName);
@@ -176,18 +162,14 @@ public class EJReportBlockContainer
     {
         List<EJCoreReportBlockProperties> list = new ArrayList<EJCoreReportBlockProperties>();
 
-        Iterator<BlockContainerItem> iti = _blockProperties.iterator();
+        Iterator<BlockGroup> iti = _blockProperties.iterator();
         while (iti.hasNext())
         {
 
-            BlockContainerItem containerItem = iti.next();
-            if ((containerItem instanceof BlockGroup))
-            {
-                list.addAll(((BlockGroup) containerItem).getAllBlockProperties());
-                continue;
-            }
-            EJCoreReportBlockProperties props = (EJCoreReportBlockProperties) containerItem;
-            list.add(props);
+            BlockGroup containerItem = iti.next();
+            
+                list.addAll(( containerItem).getAllBlockProperties());
+          
         }
 
         return list;
@@ -203,7 +185,7 @@ public class EJReportBlockContainer
         }
     }
 
-    public List<BlockContainerItem> getBlockContainerItems()
+    public List<BlockGroup> getPages()
     {
         return _blockProperties;
     }
@@ -344,4 +326,17 @@ public class EJReportBlockContainer
         }
     }
 
+    
+    public BlockGroup getFirstPage()
+    {
+       if(_blockProperties.size()>0)
+       {
+           return _blockProperties.get(0);
+       }
+       BlockGroup page = new BlockGroup("PAGE1");
+       _blockProperties.add(page);
+       return page;
+        
+    }
+    
 }

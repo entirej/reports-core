@@ -18,7 +18,6 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignBand;
-import net.sf.jasperreports.engine.design.JRDesignBreak;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
@@ -36,7 +35,6 @@ import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
-import net.sf.jasperreports.engine.type.BreakTypeEnum;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
@@ -51,6 +49,7 @@ import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportBlockItem;
+import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
@@ -96,6 +95,13 @@ public class EJReportJasperReportBuilder
     {
         try
         {
+            design.setSummaryNewPage(false);
+            design.setPageFooter(null);
+            design.setSummary(null);
+            design.setColumnHeader(null);
+            design.setColumnFooter(null);
+            design.setNoData(null);
+            design.setTitle(null);
             defaultLocale = report.getFrameworkManager().getCurrentLocale();
             createParamaters(report);
             design.setName(report.getName());
@@ -126,6 +132,7 @@ public class EJReportJasperReportBuilder
 
             JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
 
+          
             JRDesignBand header = null;
             if (properties.getHeaderSectionHeight() > 0)
             {
@@ -146,9 +153,8 @@ public class EJReportJasperReportBuilder
 
                 height -= properties.getFooterSectionHeight();
             }
-            design.setSummaryNewPage(false);
-            design.setPageFooter(null);
-            design.setSummary(null);
+          
+            
             for (EJReportBlock block : report.getHeaderBlocks())
             {
                 JRDesignSubreport subreport = createSubReport(report, block);
@@ -179,29 +185,58 @@ public class EJReportJasperReportBuilder
                 footer.addElement(subreport);
             }
 
-            JRDesignBand detail = new JRDesignBand();
-            detail.setSplitType(SplitTypeEnum.STRETCH);
-            detail.setHeight(height);
-
-            detailSection.addBand(detail);
-
-            Collection<EJReportBlock> rootbBlocks = report.getRootBlocks();
-            for (EJReportBlock block : rootbBlocks)
+            boolean addPageBrake=false;
+            for (EJReportPage page : report.getPages())
             {
-                JRDesignSubreport subreport = createSubReport(report, block);
-                if (subreport == null)
-                    continue;
-                EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
+                JRDesignBand detail = new JRDesignBand();
+                detail.setSplitType(SplitTypeEnum.STRETCH);
+                detail.setHeight(height);
 
-                subreport.setX(screenProperties.getX());
-                subreport.setY(screenProperties.getY());
-                subreport.setWidth(screenProperties.getWidth());
-                subreport.setHeight(screenProperties.getHeight());
+                detailSection.addBand(detail);
 
-                detail.addElement(subreport);
+                Collection<EJReportBlock> rootbBlocks = page.getRootBlocks();
+                boolean usePageBrake = addPageBrake;
+                for (EJReportBlock block : rootbBlocks)
+                {
+                    
+                    if(usePageBrake)
+                    {
+                        JRDesignStaticText text = new JRDesignStaticText();
+                        text.setHeight(1);
+                        text.setWidth(1);
+                      
+                        text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW, "true");
+                        JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
+                        expression.setName("net.sf.jasperreports.export.xls.sheet.name");
+                        expression.setValueExpression(createTextExpression(page.getName()));
+                        text.addPropertyExpression(expression);
+                        text.setX(0);
+                        text.setY(0);
+                      
+                      
+                        detail.addElement(text);
+                        text.setMode(ModeEnum.TRANSPARENT);
+                        usePageBrake= false;
+                    }
+                    JRDesignSubreport subreport = createSubReport(report, block);
+                    if (subreport == null)
+                        continue;
+                    EJCoreReportScreenProperties screenProperties = block.getProperties().getLayoutScreenProperties();
 
-                subreport.getPropertiesMap().setProperty("net.sf.jasperreports.export.xls.break.before.row", "true");
+                    subreport.setX(screenProperties.getX());
+                    subreport.setY(screenProperties.getY());
+                    subreport.setWidth(screenProperties.getWidth());
+                    subreport.setHeight(screenProperties.getHeight());
+                    
+
+                    detail.addElement(subreport);
+
+                    subreport.getPropertiesMap().setProperty("net.sf.jasperreports.export.xls.break.before.row", "true");
+                }
+                
+                addPageBrake = true;
             }
+            //JasperDesignViewer.viewReportDesign(design);
 
         }
         catch (JRException e)
@@ -358,7 +393,10 @@ public class EJReportJasperReportBuilder
             design.setSummaryNewPage(false);
             design.setPageFooter(null);
             design.setSummary(null);
-            design.setLastPageFooter(null);
+            design.setColumnHeader(null);
+            design.setColumnFooter(null);
+            design.setNoData(null);
+            design.setTitle(null);
 
             addDefaultFont(block.getReport());
 
@@ -524,15 +562,7 @@ public class EJReportJasperReportBuilder
         detail.setSplitType(SplitTypeEnum.STRETCH);
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
-        boolean addBrake = screenProperties.isStartOnNewPage();
-        if (addBrake)
-        {
-
-            JRDesignBand band = new JRDesignBand();
-            band.setHeight(1);
-            addPageBreak(band, block);
-            design.setTitle(band);
-        }
+       
 
         int currentX = 0;
         for (EJReportColumnProperties col : allColumns)
@@ -540,12 +570,16 @@ public class EJReportJasperReportBuilder
 
             int width = col.getDetailScreen().getWidth();
 
-            
-            boolean screenColumnSectionH = canShowBlockHeader && block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.HEADER);
-            
-            boolean screenColumnSectionD = block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.DETAIL);
-            boolean screenColumnSectionF = canShowBlockFooter&& block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.FOOTER);
-           
+            boolean screenColumnSectionH = canShowBlockHeader
+                    && block.getReport().getActionController()
+                            .canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.HEADER);
+
+            boolean screenColumnSectionD = block.getReport().getActionController()
+                    .canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.DETAIL);
+            boolean screenColumnSectionF = canShowBlockFooter
+                    && block.getReport().getActionController()
+                            .canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.FOOTER);
+
             if (canShowBlockHeader && col.isShowHeader())
             {
 
@@ -557,7 +591,6 @@ public class EJReportJasperReportBuilder
                 if (sectionHeight == 0)
                     sectionHeight = screenProperties.getHeaderColumnHeight();
 
-                
                 for (EJCoreReportScreenItemProperties item : screenItems)
                 {
                     if (!item.isVisible())
@@ -746,15 +779,15 @@ public class EJReportJasperReportBuilder
 
             }
 
-            if (addHeaderBand&&screenColumnSectionH)
+            if (addHeaderBand && screenColumnSectionH)
             {
                 createColumnLines(headerHeight, header, currentX, width, col.getHeaderBorderProperties());
             }
 
-            if(screenColumnSectionD)
+            if (screenColumnSectionD)
                 createColumnLines(detailHeight, detail, currentX, width, col.getDetailBorderProperties());
 
-            if (addFooterBand&&screenColumnSectionF)
+            if (addFooterBand && screenColumnSectionF)
             {
                 createColumnLines(footerHeight, footer, currentX, width, col.getFooterBorderProperties());
             }
@@ -776,28 +809,7 @@ public class EJReportJasperReportBuilder
 
     }
 
-    private void addPageBreak(JRDesignBand band, EJReportBlock block)
-    {
-
-        JRDesignStaticText text = new JRDesignStaticText();
-        text.setHeight(1);
-        text.setWidth(1);
-        JRDesignBreak breakPage = new JRDesignBreak();
-        text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW, "true");
-        JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
-        expression.setName("net.sf.jasperreports.export.xls.sheet.name");
-        expression.setValueExpression(createTextExpression(block.getName()));
-        text.addPropertyExpression(expression);
-        text.setX(0);
-        text.setY(0);
-        breakPage.setX(0);
-        breakPage.setY(0);
-        breakPage.setType(BreakTypeEnum.PAGE);
-        band.addElement(breakPage);
-        band.addElement(text);
-        text.setMode(ModeEnum.TRANSPARENT);
-
-    }
+  
 
     private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element, EJReportScreenSection section) throws JRException
     {
@@ -810,7 +822,7 @@ public class EJReportJasperReportBuilder
             vaToStyle(va, style);
         }
         createScreenItemBaseStyle(style, item.getName(), section);
-        element.setPrintWhenExpression(createItemVisibleExpression(item.getName(),section));
+        element.setPrintWhenExpression(createItemVisibleExpression(item.getName(), section));
 
         if (element.getPrintWhenExpression() instanceof JRDesignExpression)
         {
@@ -836,7 +848,7 @@ public class EJReportJasperReportBuilder
             if (properties.isUsedAsDynamicVA())
             {
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-                conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(),section));
+                conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
                 vaToStyle(properties, conditionalStyle);
 
                 style.addConditionalStyle(conditionalStyle);
@@ -1057,15 +1069,7 @@ public class EJReportJasperReportBuilder
         {
             crateValueRefField(item);
         }
-        boolean addBrake = screenProperties.isStartOnNewPage();
-        if (addBrake)
-        {
-
-            JRDesignBand band = new JRDesignBand();
-            band.setHeight(1);
-            addPageBreak(band, block);
-            design.setTitle(band);
-        }
+        
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         JRDesignBand detail = new JRDesignBand();
         detail.setSplitType(SplitTypeEnum.STRETCH);
@@ -1739,11 +1743,11 @@ public class EJReportJasperReportBuilder
         return expression;
     }
 
-    JRDesignExpression createItemVAExpression(String item, String vaName , EJReportScreenSection section)
+    JRDesignExpression createItemVAExpression(String item, String vaName, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item,section.name(), vaName));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item, section.name(), vaName));
         return expression;
     }
 
@@ -1751,7 +1755,7 @@ public class EJReportJasperReportBuilder
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\",\"%s\")", item,section.name()));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\",\"%s\")", item, section.name()));
         return expression;
     }
 

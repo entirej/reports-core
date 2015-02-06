@@ -27,13 +27,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
+import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -94,6 +95,7 @@ public class EJJasperReports
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), dataSource);
+            removeBlankPage(reportToFile.getPages());
             return reportToFile;
 
         }
@@ -109,6 +111,7 @@ public class EJJasperReports
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), dataSource);
+            removeBlankPage(reportToFile.getPages());
             return reportToFile;
 
         }
@@ -124,6 +127,7 @@ public class EJJasperReports
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), dataSource);
+            removeBlankPage(reportToFile.getPages());
             return reportToFile;
 
         }
@@ -140,6 +144,7 @@ public class EJJasperReports
         {
 
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
+            removeBlankPage(reportToFile.getPages());
             return reportToFile;
 
         }
@@ -226,6 +231,7 @@ public class EJJasperReports
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
+            removeBlankPage(reportToFile.getPages());
             return reportToFile;
 
         }
@@ -241,6 +247,7 @@ public class EJJasperReports
         try
         {
             JasperPrint reportToFile = JasperFillManager.fillReport(reportFile, toParameters(parameters), connection);
+            removeBlankPage(reportToFile.getPages());
             return reportToFile;
 
         }
@@ -493,6 +500,17 @@ public class EJJasperReports
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+
+    }
+    
+    private static void removeBlankPage(List<JRPrintPage> pages) {
+
+        if(pages.size()>0)
+        {
+            JRPrintPage lastpage = pages.get(pages.size()-1);
+            if (lastpage.getElements().size() == 0)
+                pages.remove(lastpage);
         }
 
     }
