@@ -13,6 +13,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPen;
+import net.sf.jasperreports.engine.JRSection;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
@@ -20,8 +21,10 @@ import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignElementGroup;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignGroup;
 import net.sf.jasperreports.engine.design.JRDesignImage;
 import net.sf.jasperreports.engine.design.JRDesignLine;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
@@ -130,9 +133,8 @@ public class EJReportJasperReportBuilder
                 design.addField(field);
             }
 
-            JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
-
-          
+           
+           
             JRDesignBand header = null;
             if (properties.getHeaderSectionHeight() > 0)
             {
@@ -191,8 +193,14 @@ public class EJReportJasperReportBuilder
                 JRDesignBand detail = new JRDesignBand();
                 detail.setSplitType(SplitTypeEnum.STRETCH);
                 detail.setHeight(height);
+                JRDesignGroup group = new JRDesignGroup();
+                group.setName(page.getName());
+                JRDesignSection groupHeaderSection = (JRDesignSection) group.getGroupHeaderSection();
+               
 
-                detailSection.addBand(detail);
+                groupHeaderSection.addBand(detail);
+                design.addGroup(group);
+                
 
                 Collection<EJReportBlock> rootbBlocks = page.getRootBlocks();
                 boolean usePageBrake = addPageBrake;
@@ -201,9 +209,13 @@ public class EJReportJasperReportBuilder
                     
                     if(usePageBrake)
                     {
+                        group.setStartNewPage(true);
+                        
                         JRDesignStaticText text = new JRDesignStaticText();
                         text.setHeight(1);
                         text.setWidth(1);
+                        
+                        
                       
                         text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW, "true");
                         JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
