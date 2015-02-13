@@ -21,17 +21,9 @@ package org.entirej.framework.report;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
-import org.entirej.framework.report.data.EJReportDataRecord;
-import org.entirej.framework.report.data.controllers.EJReportBlockController;
-import org.entirej.framework.report.data.controllers.EJReportItemController;
-import org.entirej.framework.report.internal.EJInternalReportBlock;
-import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
-import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
-import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJReportPage implements Serializable
 {

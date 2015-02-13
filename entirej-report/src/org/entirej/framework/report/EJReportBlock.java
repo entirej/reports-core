@@ -25,7 +25,6 @@ import java.util.Collections;
 
 import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.data.controllers.EJReportBlockController;
-import org.entirej.framework.report.data.controllers.EJReportItemController;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
@@ -55,9 +54,9 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         ArrayList<EJReportBlockItem> blockItems = new ArrayList<EJReportBlockItem>();
 
-        for (EJReportItemController controller : _block.getAllBlockItemControllers())
+        for (EJCoreReportItemProperties item : _block.getProperties().getAllItemProperties())
         {
-            blockItems.add(new EJReportBlockItem(controller.getProperties()));
+            blockItems.add(new EJReportBlockItem(item));
         }
 
         return blockItems;
@@ -209,16 +208,6 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
             return new EJReportRecord(record);
         }
     }
-//
-//    /**
-//     * Returns the <code>FrameworkManager</code>
-//     * 
-//     * @return The {@link EJReportFrameworkManager}
-//     */
-//    public EJReportFrameworkManager getFrameworkManager()
-//    {
-//        return _block.getFrameworkManager();
-//    }
 
     /**
      * Navigates to the next record of this block

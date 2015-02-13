@@ -20,19 +20,15 @@ package org.entirej.framework.report.data.controllers;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.entirej.framework.report.EJManagedReportFrameworkConnection;
-import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
 import org.entirej.framework.report.data.EJReportDataBlock;
-import org.entirej.framework.report.data.EJReportDataItem;
 import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.enumerations.EJReportMessageLevel;
 import org.entirej.framework.report.internal.EJInternalReport;
@@ -46,21 +42,21 @@ import org.slf4j.LoggerFactory;
 
 public class EJReportBlockController implements Serializable
 {
-    final Logger                                          logger          = LoggerFactory.getLogger(EJReportBlockController.class);
+    final Logger                                              logger          = LoggerFactory.getLogger(EJReportBlockController.class);
 
     /**
      * Used in conjunction with the deferred query property. This criteria will
      * contain the query criteria for the query to be executed
      */
-    private EJReportQueryCriteria                         _queryCriteria  = null;
+    private EJReportQueryCriteria                             _queryCriteria  = null;
 
-    private EJReportFrameworkManager                      _frameworkManager;
-    private EJReportController                            _reportController;
-    private EJReportDataBlock                             _dataBlock;
-    private EJCoreReportBlockProperties                   _blockProperties;
+    private EJReportFrameworkManager                          _frameworkManager;
+    private EJReportController                                _reportController;
+    private EJReportDataBlock                                 _dataBlock;
+    private EJCoreReportBlockProperties                       _blockProperties;
 
-    private LinkedHashMap<String, EJReportItemController> _itemProperties = new LinkedHashMap<String, EJReportItemController>();
-    private final EJInternalReportBlock                   _internalBlock;
+    private LinkedHashMap<String, EJCoreReportItemProperties> _itemProperties = new LinkedHashMap<String, EJCoreReportItemProperties>();
+    private final EJInternalReportBlock                       _internalBlock;
 
     public EJInternalReport getReport()
     {
@@ -136,7 +132,7 @@ public class EJReportBlockController implements Serializable
 
         for (EJCoreReportItemProperties props : _blockProperties.getItemContainer().getAllItemProperties())
         {
-            _itemProperties.put(props.getName(), new EJReportItemController(this, props));
+            _itemProperties.put(props.getName(), props);
 
         }
 
@@ -165,32 +161,6 @@ public class EJReportBlockController implements Serializable
     public EJReportQueryCriteria getQueryCriteria()
     {
         return _queryCriteria;
-    }
-
-    /**
-     * Returns a collection of all <code>EJDefaultItemController</code> for this
-     * block controller
-     * 
-     * @return A <code>Collection</code> of <code>EJDefaultItemController</code>
-     *         that have been added to this block controller
-     */
-    public Collection<EJReportItemController> getAllBlockItemControllers()
-    {
-        return _itemProperties.values();
-    }
-
-    /**
-     * Returns the <code>EJDefaultItemController</code> for the item with the
-     * given name
-     * 
-     * @param itemName
-     *            The name of the item
-     * @return The block item or <code>null</code> if there is no item with the
-     *         given name
-     */
-    public EJReportItemController getBlockItemController(String itemName)
-    {
-        return _itemProperties.get(itemName);
     }
 
     /**
@@ -271,106 +241,6 @@ public class EJReportBlockController implements Serializable
         _dataBlock.addQueriedRecord(record);
         return record;
     }
-
-    // /**
-    // * Creates a record without calling the
-    // * {@link EJReportBlockActionProcessor#initialiseRecord(EJReport,
-    // EJReportRecord,EJRecordType)}
-    // * method
-    // * <p>
-    // * The values defined by the
-    // * {@link EJCoreReportItemProperties#getDefaultInsertValue()} will be
-    // * ignored. If these values should be used then use the
-    // * {@link #createNewRecord(boolean)} method
-    // *
-    // * @return A new record
-    // * @see {@link #createRecord()}
-    // */
-    // public EJReportDataRecord createRecordNoAction()
-    // {
-    // return createNewRecord();
-    // }
-
-    // /**
-    // * Creates a new record based upon the items within defined within the
-    // * blocks list of items. The record will be neutral, meaning that it is
-    // * neither dirty or marked as new. These statuses will be added when
-    // adding
-    // * the record to the block. If this is a new record, then calling the
-    // * <code>recordCreated</code> will mark the record as new and add it to
-    // the
-    // * blocks list of record.
-    // *
-    // *
-    // * @return A new record
-    // */
-    // protected EJReportDataRecord createNewRecord()
-    // {
-    // EJReportDataRecord record = new EJReportDataRecord(_reportController,
-    // getBlock());
-    // _dataBlock.addQueriedRecord(record);
-    // return record;
-    // }
-    //
-    // /**
-    // * Copies the blocks focused record
-    // * <p>
-    // * All record items and values will be copied. The record will be marked
-    // as
-    // * insert and therefore can be added to the blocks list of inserted
-    // records.
-    // * If the record contains a primary key, then these values will need to be
-    // * changed before inserting the record to ensure that no integrity
-    // * constraints will be broken
-    // *
-    // * After the record has been copied, the reports action processors
-    // * <code>initialiseRecord</code> will be called
-    // *
-    // * @return The record copied from the current record
-    // */
-    // public EJReportDataRecord copyFocusedRecord()
-    // {
-    // logger.trace("START copyFocusedRecord");
-    //
-    // if (getFocusedRecord() == null)
-    // {
-    // return null;
-    // }
-    //
-    // EJReportDataRecord record = createRecordNoAction();
-    //
-    // if (getFocusedRecord() == null)
-    // {
-    // return record;
-    // }
-    //
-    // Iterator<EJReportDataItem> dataItems =
-    // getFocusedRecord().getAllItems().iterator();
-    // while (dataItems.hasNext())
-    // {
-    // EJReportDataItem item = dataItems.next();
-    // if (record.containsItem(item.getName()))
-    // {
-    // record.getItem(item.getName()).setValue(item.getValue());
-    // }
-    // }
-    //
-    // logger.trace("END  copyFocusedRecord");
-    // return record;
-    // }
-    //
-    // /**
-    // * Re-Executes the last query
-    // *
-    // * @throws EJBlockControllerException
-    // */
-    // public void executeLastQuery()
-    // {
-    // if (_queryCriteria != null)
-    // {
-    // executeQuery(_queryCriteria);
-    // }
-    // }
 
     /**
      * Executes a query on this controllers underlying block. If this record is

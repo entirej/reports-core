@@ -31,7 +31,6 @@ import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.EJReportDataBlock;
 import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.data.controllers.EJReportBlockController;
-import org.entirej.framework.report.data.controllers.EJReportItemController;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
@@ -97,29 +96,6 @@ public class EJInternalReportBlock implements Serializable
     }
 
     /**
-     * Returns a collection of all item controllers available on this block
-     * 
-     * @return A {@link Collection} of all item controllers within this block
-     */
-    public Collection<EJReportItemController> getAllBlockItemControllers()
-    {
-        return _blockController.getAllBlockItemControllers();
-    }
-
-    /**
-     * Returns the block item controller with the given name or
-     * <code>null</code> if there is no item with the given name
-     * 
-     * @param itemName
-     *            The name of the required item
-     * @return The block item controller with the given name
-     */
-    public EJReportItemController getBlockItemController(String itemName)
-    {
-        return _blockController.getBlockItemController(itemName);
-    }
-
-    /**
      * Returns the <code>FrameworkManager</code>
      * 
      * <p>
@@ -143,32 +119,6 @@ public class EJInternalReportBlock implements Serializable
         _blockController.clearBlock();
     }
 
-    //
-    // /**
-    // * Instructs EntireJ to clear the current focused record of this block
-    // */
-    // public void clearFocusedRecord()
-    // {
-    // logger.trace("START clearFocusedRecord");
-    // EJReportDataRecord record = _blockController.getFocusedRecord();
-    // if (record != null)
-    // {
-    // record.clear();
-    // }
-    // logger.trace("END clearFocusedRecord");
-    // }
-    //
-    // /**
-    // * Makes a copy of the current record of this block
-    // *
-    // * @return A copy of the current record of this block
-    // */
-    // public EJReportDataRecord copyFocusedRecord()
-    // {
-    // logger.trace("START copyFocusedRecord");
-    // return _blockController.copyFocusedRecord();
-    // }
-    //
     /**
      * Creates an empty query criteria for this block
      * <p>
@@ -196,20 +146,6 @@ public class EJInternalReportBlock implements Serializable
     {
         return _blockController.createRecord();
     }
-
-    //
-    // /**
-    // * Used to create an empty record for this block without firing the
-    // * whenCreateRecord action within the blocks action mediator
-    // * <p>
-    // *
-    // * @return The newly created record
-    // */
-    // public EJReportDataRecord createRecordNoAction()
-    // {
-    // logger.trace("START createRecordNoAction - Returning directly");
-    // return _blockController.createRecordNoAction();
-    // }
 
     /**
      * Instructs EntireJ to perform a query on the given block using the
@@ -260,39 +196,6 @@ public class EJInternalReportBlock implements Serializable
         logger.trace("END executeQuery");
     }
 
-    //
-    // /**
-    // * Instructs EntireJ to re-query this block using the query criteria
-    // * previously entered
-    // */
-    // public void executeLastQuery()
-    // {
-    // logger.trace("START executeLastQuery");
-    // EJManagedReportFrameworkConnection connection = null;
-    // try
-    // {
-    // connection = _blockController.getFrameworkManager().getConnection();
-    // _blockController.executeLastQuery();
-    // }
-    // catch (Exception e)
-    // {
-    // if (connection != null)
-    // {
-    // connection.rollback();
-    // }
-    // _blockController.getFrameworkManager().handleException(e);
-    // }
-    // finally
-    // {
-    // if (connection != null)
-    // {
-    // connection.commit();
-    // connection.close();
-    // }
-    // }
-    // logger.trace("END executeLastQuery");
-    // }
-    //
     /**
      * Retrieves the current record for the given block
      * 
