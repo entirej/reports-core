@@ -12,6 +12,7 @@ import java.util.UUID;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.JRPen;
 import net.sf.jasperreports.engine.JRSection;
 import net.sf.jasperreports.engine.JRStyle;
@@ -61,6 +62,7 @@ import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParamet
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
+import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportBorderProperties;
@@ -837,6 +839,16 @@ public class EJReportJasperReportBuilder
     private void processItemStyle(EJCoreReportScreenItemProperties item, JRDesignElement element, EJReportScreenSection section) throws JRException
     {
 
+        if(item.getType()==EJReportScreenItemType.TEXT)
+        {
+            
+            JRDesignTextField textField = (JRDesignTextField) element;
+            JRDesignExpression expression = (JRDesignExpression) textField.getExpression();
+            
+            textField.setExpression(createVABaseValueExpression(expression, item.getName(),  section));
+        }
+        
+        
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
         EJReportVisualAttributeProperties va = item.getVisualAttributeProperties();
         if (va != null)
@@ -864,6 +876,9 @@ public class EJReportJasperReportBuilder
     private JRDesignStyle createScreenItemBaseStyle(JRDesignStyle style, String item, EJReportScreenSection section) throws JRException
     {
 
+        
+        
+        
         Collection<EJReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
         for (EJReportVisualAttributeProperties properties : visualAttributes)
@@ -1447,7 +1462,10 @@ public class EJReportJasperReportBuilder
                 EJCoreReportScreenItemProperties.Text textItem = (EJCoreReportScreenItemProperties.Text) item;
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
-                text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
+                JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
+                
+                
+                text.setExpression(valueExpression);
                 text.getParagraph().setRightIndent(5);
                 text.getParagraph().setLeftIndent(5);
                 setAlignments(itemStyle, textItem);
@@ -1771,6 +1789,13 @@ public class EJReportJasperReportBuilder
         JRDesignExpression expression = new JRDesignExpression();
 
         expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item, section.name(), vaName));
+        return expression;
+    }
+    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, EJReportScreenSection section)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
+        
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\")",valueExpression.getText(), item, section.name()));
         return expression;
     }
 

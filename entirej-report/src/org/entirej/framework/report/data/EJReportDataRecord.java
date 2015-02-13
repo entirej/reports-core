@@ -29,9 +29,11 @@ import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
+import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 
 public class EJReportDataRecord implements Serializable
 {
@@ -324,6 +326,27 @@ public class EJReportDataRecord implements Serializable
 
         if (item == null)
         {
+            /*TODO:EJCoreReportScreenProperties layoutScreenProperties = _block.getProperties().getLayoutScreenProperties();
+            if(layoutScreenProperties.getScreenType()==EJReportScreenType.FORM_LATOUT)
+            {
+                layoutScreenProperties.get
+            }
+            switch (section)
+            {
+                case HEADER:
+                 
+                    break;
+                case DETAIL:
+                   
+                    break;
+                case FOOTER:
+                   
+                    break;
+
+                default:
+                    return null;
+            }*/
+            
             item = new EJReportDataScreenItem(_reportController, itemName);
             map.put(itemName, item);
         }

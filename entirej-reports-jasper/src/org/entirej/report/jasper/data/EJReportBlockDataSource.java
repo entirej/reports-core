@@ -20,6 +20,7 @@
 package org.entirej.report.jasper.data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -29,10 +30,10 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
 import org.entirej.framework.report.EJReportBlock;
-import org.entirej.framework.report.EJReportItem;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportScreenItem;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
+import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext
@@ -163,14 +164,14 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     {
         EJReportScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
-//        System.err.println(item +" B="+block.getName());
+        // System.err.println(item +" B="+block.getName());
         if (reportItem == null)
             return false;
         EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-//        if(visualAttribute!=null)
-//        {
-//            System.err.println("FOUND="+item +" B="+block.getName());
-//        }
+        // if(visualAttribute!=null)
+        // {
+        // System.err.println("FOUND="+item +" B="+block.getName());
+        // }
         return visualAttribute != null && visualAttribute.getName().equals(vaName);
     }
 
@@ -183,6 +184,43 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             return false;
 
         return reportItem.isVisible();
+    }
+
+    @Override
+    public Object getVABaseValue(Object value, String item, String section)
+    {
+        if (value instanceof String)
+        {
+            EJReportScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+
+            if (reportItem == null)
+                return value;
+            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+            if (visualAttribute == null)
+                return value;
+            EJReportVAPattern localePattern = visualAttribute.getLocalePattern();
+            switch (localePattern)
+            {
+                case CURRENCY:
+                case NUMBER:
+                case INTEGER:
+                case PERCENT:
+                    try
+                    {
+
+                        return new BigDecimal((String) value);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        // ignore
+                    }
+
+                default:
+                    break;
+            }
+        }
+
+        return value;
     }
 
     private EJReportScreenItem getReportScreenItem(String item, EJReportScreenSection section)
