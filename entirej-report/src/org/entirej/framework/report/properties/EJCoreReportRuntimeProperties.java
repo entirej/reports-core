@@ -62,7 +62,7 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
     public EJCoreReportRuntimeProperties()
     {
         _reportPackageNames = new ArrayList<String>();
-        _visualAttributeContainer = new EJReportVisualAttributeContainer(new ArrayList<EJReportVisualAttributeProperties>());
+        _visualAttributeContainer = new EJReportVisualAttributeContainer(new ArrayList<EJCoreReportVisualAttributeProperties>());
 
         _runtimeLevelParameters = new ArrayList<EJApplicationLevelParameter>();
     }

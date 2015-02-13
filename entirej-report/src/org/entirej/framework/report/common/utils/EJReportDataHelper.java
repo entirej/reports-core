@@ -43,7 +43,7 @@ public class EJReportDataHelper
 
     private static Object getDefaultValue(EJReport report, EJReportBlockItem item, String defaultValue)
     {
-        logger.trace("START getDefaultValue. Report: {}, Item: {}, defaultValue: {}", report.getProperties().getName(), item.getName(), defaultValue);
+        logger.trace("START getDefaultValue. Report: {}, Item: {}, defaultValue: {}", report.getName(), item.getName(), defaultValue);
 
         if (defaultValue == null || defaultValue.trim().length() == 0)
         {
@@ -87,7 +87,7 @@ public class EJReportDataHelper
             if (block == null)
             {
                 throw new EJReportRuntimeException(new EJReportMessage(report, "Trying to retrieve a default value from a Block.Item value: " + blockName + "."
-                        + itemName + ", but there is not a block with the given name within this report: " + report.getProperties().getName()));
+                        + itemName + ", but there is not a block with the given name within this report: " + report.getName()));
             }
             record = report.getBlock(blockName).getFocusedRecord();
 

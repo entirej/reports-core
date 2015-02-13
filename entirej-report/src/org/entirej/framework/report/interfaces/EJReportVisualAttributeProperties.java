@@ -1,4 +1,4 @@
-package org.entirej.framework.report.properties;
+package org.entirej.framework.report.interfaces;
 
 import java.awt.Color;
 

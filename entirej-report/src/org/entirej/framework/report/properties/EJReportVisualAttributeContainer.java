@@ -26,12 +26,12 @@ import java.util.List;
 
 public class EJReportVisualAttributeContainer implements Serializable
 {
-    private List<EJReportVisualAttributeProperties> _visualAttributeList;
+    private List<EJCoreReportVisualAttributeProperties> _visualAttributeList;
     private EJReportVisualAttributeProperties       _lastAddedVisualAttribute;
 
-    public EJReportVisualAttributeContainer(Collection<EJReportVisualAttributeProperties> properties)
+    public EJReportVisualAttributeContainer(Collection<EJCoreReportVisualAttributeProperties> properties)
     {
-        _visualAttributeList = new ArrayList<EJReportVisualAttributeProperties>();
+        _visualAttributeList = new ArrayList<EJCoreReportVisualAttributeProperties>();
         if (properties != null)
         {
             _visualAttributeList.addAll(properties);
@@ -40,7 +40,7 @@ public class EJReportVisualAttributeContainer implements Serializable
 
     public boolean contains(String name)
     {
-        Iterator<EJReportVisualAttributeProperties> attributes = _visualAttributeList.iterator();
+        Iterator<EJCoreReportVisualAttributeProperties> attributes = _visualAttributeList.iterator();
 
         while (attributes.hasNext())
         {
@@ -57,7 +57,7 @@ public class EJReportVisualAttributeContainer implements Serializable
      * the given name
      * <p>
      * A copy is returned as the
-     * <code>{@link EJReportVisualAttributeProperties}</code> are reused across
+     * <code>{@link EJCoreReportVisualAttributeProperties}</code> are reused across
      * the entire application. If one user was to modify a VisualAttribute, then
      * it will be so for the entire application. For this reason, a copy is
      * made. The copy can be modified as required without effecting other forms
@@ -77,11 +77,11 @@ public class EJReportVisualAttributeContainer implements Serializable
         }
         else
         {
-            Iterator<EJReportVisualAttributeProperties> iti = _visualAttributeList.iterator();
+            Iterator<EJCoreReportVisualAttributeProperties> iti = _visualAttributeList.iterator();
 
             while (iti.hasNext())
             {
-                EJReportVisualAttributeProperties props = iti.next();
+                EJCoreReportVisualAttributeProperties props = iti.next();
 
                 if (props.getName().equalsIgnoreCase(vaPropertiesName))
                 {
@@ -92,7 +92,7 @@ public class EJReportVisualAttributeContainer implements Serializable
         }
     }
 
-    public Collection<EJReportVisualAttributeProperties> getVisualAttributes()
+    public Collection<EJCoreReportVisualAttributeProperties> getVisualAttributes()
     {
         return _visualAttributeList;
     }
@@ -104,7 +104,7 @@ public class EJReportVisualAttributeContainer implements Serializable
      * @param visualAttribute
      *            The <code>VisualAttribute</code> to add
      */
-    public void addVisualAttribute(EJReportVisualAttributeProperties visualAttribute)
+    public void addVisualAttribute(EJCoreReportVisualAttributeProperties visualAttribute)
     {
         if (visualAttribute != null)
         {
@@ -114,7 +114,7 @@ public class EJReportVisualAttributeContainer implements Serializable
         }
     }
 
-    public void replaceVisualAttribute(EJReportVisualAttributeProperties visualAttribute)
+    public void replaceVisualAttribute(EJCoreReportVisualAttributeProperties visualAttribute)
     {
         if (_visualAttributeList.contains(visualAttribute))
         {
@@ -141,7 +141,7 @@ public class EJReportVisualAttributeContainer implements Serializable
 
     public Collection<String> getVisualAttributeNames()
     {
-        Iterator<EJReportVisualAttributeProperties> visualAttributeNames = _visualAttributeList.iterator();
+        Iterator<EJCoreReportVisualAttributeProperties> visualAttributeNames = _visualAttributeList.iterator();
 
         ArrayList<String> names = new ArrayList<String>();
 

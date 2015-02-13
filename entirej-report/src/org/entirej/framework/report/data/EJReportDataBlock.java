@@ -53,6 +53,18 @@ public class EJReportDataBlock implements Serializable
         return _blockRecords.contains(record);
     }
 
+    
+    /**
+     * Clears all the blocks records and returns its dirty state, if it was
+     * changed, to not dirty.
+     * 
+     * 
+     */
+    public void clearBlock()
+    {
+        _blockRecords.clear();
+    }
+    
     /**
      * Return the number of records within this block
      * 
@@ -76,45 +88,6 @@ public class EJReportDataBlock implements Serializable
     {
         queriedRecord.markAsQueried(true);
         _blockRecords.add(queriedRecord);
-    }
-
-    /**
-     * Clears all the blocks records and returns its dirty state, if it was
-     * changed, to not dirty.
-     * 
-     * 
-     */
-    public void clearBlock()
-    {
-        _blockRecords.clear();
-
-    }
-
-    /**
-     * Adds a new record to this blocks list of records. All records added by
-     * this method should be new records.
-     * <p>
-     * A newly created record will be placed after the current record. Pass this
-     * method the current record number of the number beneath which the new
-     * record will be placed.
-     * 
-     * @param newRecord
-     *            The new record
-     * @param position
-     *            The position beneath which the newly created record will be
-     *            placed
-     */
-    public void recordCreated(EJReportDataRecord newRecord, EJReportDataRecord currRecord)
-    {
-
-        if (currRecord == null || _blockRecords.indexOf(currRecord) == -1)
-        {
-            _blockRecords.add(0, newRecord);
-        }
-        else
-        {
-            _blockRecords.add(_blockRecords.indexOf(currRecord) + 1, newRecord);
-        }
     }
 
     /**
@@ -184,85 +157,6 @@ public class EJReportDataBlock implements Serializable
         }
 
         return (EJReportDataRecord) _blockRecords.get(recordNumber);
-    }
-
-    /**
-     * Returns the record after the given record in this blocks list of records
-     * <p>
-     * If the record passed is already the last record in the block, i.e. there
-     * are no more records after the given record, then null will be returned
-     * 
-     * @param record
-     *            The current record
-     * @return The record after the current record passed or null if the current
-     *         record is already the last record in this blocks list of records
-     * @throws NullPointerException
-     *             if the record passed is null
-     * @throws IllegalArgumentException
-     *             if the record passed is not part of this blocks list of
-     *             records
-     */
-    public EJReportDataRecord getRecordAfter(EJReportDataRecord record)
-    {
-        if (record == null)
-        {
-            throw new NullPointerException("The record passed to getRecordAfter is null.");
-        }
-        if (!containsRecord(record))
-        {
-            throw new IllegalArgumentException("The record passed to getRecordAfter does not exists in this blocks list of records.");
-        }
-        int recordIndex = _blockRecords.indexOf(record);
-
-        if (recordIndex + 1 >= _blockRecords.size())
-        {
-            return null;
-        }
-        else
-        {
-            // Return the next record
-            return (EJReportDataRecord) _blockRecords.get(recordIndex + 1);
-        }
-    }
-
-    /**
-     * Returns the record brefore the given record in this blocks list of
-     * records
-     * <p>
-     * If the record passed is already the first record in the block, i.e. there
-     * are no more records before the given record, then null will be returned
-     * 
-     * @param record
-     *            The current record
-     * @return The record before the current record passed or null if the
-     *         current record is already the first record in this blocks list of
-     *         records
-     * @throws NullPointerException
-     *             if the record passed is null
-     * @throws IllegalArgumentException
-     *             if the record passed is not part of this blocks list of
-     *             records
-     */
-    public EJReportDataRecord getRecordBefore(EJReportDataRecord record)
-    {
-        if (record == null)
-        {
-            throw new NullPointerException("The record passed to getRecordBefore is null.");
-        }
-        if (!containsRecord(record))
-        {
-            throw new IllegalArgumentException("The record passed to getRecordBefore does not exists in this blocks list of records.");
-        }
-        int recordIndex = _blockRecords.indexOf(record);
-
-        if (recordIndex - 1 < 0)
-        {
-            return null;
-        }
-        else
-        {
-            return (EJReportDataRecord) _blockRecords.get(recordIndex - 1);
-        }
     }
 
 }

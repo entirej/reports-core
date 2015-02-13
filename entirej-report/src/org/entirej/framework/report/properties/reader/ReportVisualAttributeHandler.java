@@ -22,13 +22,13 @@ import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
-import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandler
 {
-    private EJReportVisualAttributeProperties _vaProperties;
+    private EJCoreReportVisualAttributeProperties _vaProperties;
 
     private static final String               VISUAL_ATTRIBUTE  = "visualAttribute";
     private static final String               FONT_NAME         = "fontName";
@@ -51,11 +51,11 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
         if (name.equals(VISUAL_ATTRIBUTE))
         {
             String vaName = attributes.getValue("name");
-            _vaProperties = new EJReportVisualAttributeProperties(vaName);
+            _vaProperties = new EJCoreReportVisualAttributeProperties(vaName);
         }
     }
 
-    public EJReportVisualAttributeProperties getProperties()
+    public EJCoreReportVisualAttributeProperties getProperties()
     {
         return _vaProperties;
     }

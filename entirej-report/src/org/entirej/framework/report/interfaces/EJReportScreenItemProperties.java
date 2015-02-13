@@ -21,6 +21,7 @@ package org.entirej.framework.report.interfaces;
 import java.io.Serializable;
 
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
+import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public interface EJReportScreenItemProperties extends Serializable
@@ -32,7 +33,7 @@ public interface EJReportScreenItemProperties extends Serializable
      * If the visual attribute properties are set to <code>null</code> then the
      * item should be displayed using its default display properties
      * 
-     * @return The {@link EJReportVisualAttributeProperties} that should be used
+     * @return The {@link EJCoreReportVisualAttributeProperties} that should be used
      *         for this item
      */
     public EJReportVisualAttributeProperties getVisualAttributeProperties();

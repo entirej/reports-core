@@ -39,6 +39,7 @@ import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
+import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJInternalReport implements Serializable
@@ -79,18 +80,6 @@ public class EJInternalReport implements Serializable
     public void handleException(Exception exception)
     {
         _reportController.getFrameworkManager().handleException(exception);
-    }
-
-    /**
-     * Instructs EntireJ to clear the report
-     * <p>
-     * If <code>disregardChanges</code> is <code>true</code> then all changes
-     * made within the report will be disregarded
-     * 
-     */
-    public void clear()
-    {
-        _reportController.clearReport();
     }
 
     /**
@@ -177,7 +166,7 @@ public class EJInternalReport implements Serializable
      * @param vaProperties
      *            The visual attribute to add
      */
-    public void addVisualAttribute(EJReportVisualAttributeProperties vaProperties)
+    public void addVisualAttribute(EJCoreReportVisualAttributeProperties vaProperties)
     {
         EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().replaceVisualAttribute(vaProperties);
     }

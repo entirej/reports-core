@@ -26,6 +26,7 @@ import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportDateHelper;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
+import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
@@ -57,15 +58,11 @@ public class EJReport implements EJReportFrameworkHelper
         return _report.getFrameworkManager();
 
     }
+    
 
-    /**
-     * Returns the action controller for this report
-     * 
-     * @return This reports {@link EJReportActionController}
-     */
-    public EJReportActionController getActionController()
+    public EJReportExportType getExportType()
     {
-        return _report.getActionController();
+        return _report.getProperties().getExportType();
     }
 
     /**
@@ -92,18 +89,6 @@ public class EJReport implements EJReportFrameworkHelper
     public void handleException(Exception exception)
     {
         _report.handleException(exception);
-    }
-
-    /**
-     * Instructs EntireJ to clear the report
-     * <p>
-     * If <code>disregardChanges</code> is <code>true</code> then all changes
-     * made within the report will be disregarded
-     * 
-     */
-    public void clear()
-    {
-        _report.clear();
     }
 
     /**
@@ -240,21 +225,6 @@ public class EJReport implements EJReportFrameworkHelper
     public EJReportVisualAttributeProperties getVisualAttribute(String vaName)
     {
         return _report.getVisualAttribute(vaName);
-    }
-
-    /**
-     * Adds the given <code>VisualAttributeProperties</code> to the frameworks
-     * list of Visual Attributes
-     * <p>
-     * The given visual attribute will replace any visual attribute that
-     * currently exists with the same name
-     * 
-     * @param vaProperties
-     *            The visual attribute to add
-     */
-    public void addVisualAttribute(EJReportVisualAttributeProperties vaProperties)
-    {
-        _report.addVisualAttribute(vaProperties);
     }
 
     /**

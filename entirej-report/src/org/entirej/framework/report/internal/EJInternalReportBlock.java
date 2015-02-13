@@ -87,23 +87,6 @@ public class EJInternalReportBlock implements Serializable
     }
 
     /**
-     * Indicates if this block contains the specified record
-     * <p>
-     * The record must exist within the blocks list of records for this method
-     * to return true. If the record has not yet been added to the block, then
-     * this method will return false
-     * 
-     * @param record
-     *            The record to check
-     * @return <code>true</code> if the specified record exists within this
-     *         block
-     */
-    public boolean containsRecord(EJReportDataRecord record)
-    {
-        return _blockController.containsRecord(record);
-    }
-
-    /**
      * Returns a collection of all item controllers available on this block
      * 
      * @return A {@link Collection} of all item controllers within this block

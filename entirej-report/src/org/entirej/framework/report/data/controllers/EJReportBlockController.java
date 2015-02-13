@@ -211,11 +211,6 @@ public class EJReportBlockController implements Serializable
         return _frameworkManager;
     }
 
-    public boolean containsRecord(EJReportDataRecord record)
-    {
-        return _dataBlock.containsRecord(record);
-    }
-
     public EJReportBlockService<?> getBlockService()
     {
         return _blockProperties.getBlockService();
