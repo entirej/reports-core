@@ -74,26 +74,6 @@ public class EJReportRecord implements Serializable
     }
 
     /**
-     * Returns the {@link EJReportItem} from this record with the name specified
-     * 
-     * @param itemName
-     *            The item to return
-     * @return The {@link EJReportItem} with the given name, or
-     *         <code>null</code> if there is no item within this record with the
-     *         given name
-     */
-    public EJReportItem getItem(String itemName)
-    {
-        EJReportDataItem item = _dataRecord.getItem(itemName);
-        if (item == null)
-        {
-            return null;
-        }
-
-        return new EJReportItem(_dataRecord.getBlock(), _dataRecord, item);
-    }
-
-    /**
      * Returns the {@link EJReportScreenItem} from this record with the name specified
      * 
      * @param itemName
@@ -112,7 +92,7 @@ public class EJReportRecord implements Serializable
             return null;
         }
 
-        return new EJReportScreenItem(_dataRecord.getBlock(), item);
+        return new EJReportScreenItem(item);
     }
 
     /**

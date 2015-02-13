@@ -78,5 +78,4 @@ public class EJCoreReport
     {
         return _report.getVisualAttribute(vaName);
     }
-
 }

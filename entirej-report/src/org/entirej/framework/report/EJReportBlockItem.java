@@ -34,7 +34,7 @@ public class EJReportBlockItem implements Serializable
     /**
      * Returns the data type of this item
      * 
-     * @return The Class of the datatype of this item
+     * @return The Class of the data type of this item
      */
     public Class<?> getDataType()
     {

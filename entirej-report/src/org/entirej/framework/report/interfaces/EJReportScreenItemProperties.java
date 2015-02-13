@@ -27,6 +27,8 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 public interface EJReportScreenItemProperties extends Serializable
 {
 
+    public void setVisualAttribute(String visualAttributeName);
+    
     /**
      * gets the visual attribute properties that should be used for this item
      * <p>
@@ -47,6 +49,8 @@ public interface EJReportScreenItemProperties extends Serializable
      */
     public boolean isVisible();
 
+    public void setVisible(Boolean visible);
+    
     public EJReportScreenItemType getType();
 
     /**

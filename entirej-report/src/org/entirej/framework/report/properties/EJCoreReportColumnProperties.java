@@ -1,107 +1,112 @@
 package org.entirej.framework.report.properties;
 
+import java.math.BigDecimal;
+
 import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportBlockProperties;
-import org.entirej.framework.report.interfaces.EJReportColumnProperties;
 
-public class EJCoreReportColumnProperties implements EJReportColumnProperties
+public class EJCoreReportColumnProperties
 {
 
     private EJCoreReportBlockProperties  blockProperties;
 
-    private String                       name;
-    private boolean                      showHeader;
-    private boolean                      showFooter;
+    private String                       _name;
+    private boolean                      _showHeader;
+    private boolean                      _showFooter;
+    private int                          _width;
 
-    private EJCoreReportScreenProperties header;
-    private EJCoreReportScreenProperties detail;
-    private EJCoreReportScreenProperties footer;
+    private EJCoreReportScreenProperties _header;
+    private EJCoreReportScreenProperties _detail;
+    private EJCoreReportScreenProperties _footer;
 
-    private EJCoreReportBorderProperties headerBorderProperties = new EJCoreReportBorderProperties();
-    private EJCoreReportBorderProperties detailBorderProperties = new EJCoreReportBorderProperties();
-    private EJCoreReportBorderProperties footerBorderProperties = new EJCoreReportBorderProperties();
+    private EJCoreReportBorderProperties _headerBorderProperties = new EJCoreReportBorderProperties();
+    private EJCoreReportBorderProperties _detailBorderProperties = new EJCoreReportBorderProperties();
+    private EJCoreReportBorderProperties _footerBorderProperties = new EJCoreReportBorderProperties();
 
     public EJCoreReportColumnProperties(EJCoreReportBlockProperties blockProperties)
     {
         this.blockProperties = blockProperties;
-        header = new EJCoreReportScreenProperties(blockProperties);
-        detail = new EJCoreReportScreenProperties(blockProperties);
-        footer = new EJCoreReportScreenProperties(blockProperties);
-        header.setScreenType(EJReportScreenType.FORM_LATOUT);
-        detail.setScreenType(EJReportScreenType.FORM_LATOUT);
-        footer.setScreenType(EJReportScreenType.FORM_LATOUT);
+        _header = new EJCoreReportScreenProperties(blockProperties);
+        _detail = new EJCoreReportScreenProperties(blockProperties);
+        _footer = new EJCoreReportScreenProperties(blockProperties);
+        _header.setScreenType(EJReportScreenType.FORM_LATOUT);
+        _detail.setScreenType(EJReportScreenType.FORM_LATOUT);
+        _footer.setScreenType(EJReportScreenType.FORM_LATOUT);
     }
 
-    @Override
+    public String getName()
+    {
+        return _name;
+    }
+
+    public void setName(String name)
+    {
+        _name = name;
+    }
+
     public EJReportBlockProperties getBlockProperties()
     {
         return blockProperties;
     }
 
-    public boolean isShowHeader()
+    public boolean showHeader()
     {
-        return showHeader;
+        return _showHeader;
     }
 
     public void setShowHeader(boolean showHeader)
     {
-        this.showHeader = showHeader;
+        _showHeader = showHeader;
     }
 
-    public boolean isShowFooter()
+    public boolean showFooter()
     {
-        return showFooter;
+        return _showFooter;
     }
 
     public void setShowFooter(boolean showFooter)
     {
-        this.showFooter = showFooter;
+        _showFooter = showFooter;
     }
-
-    @Override
-    public EJCoreReportScreenProperties getHeaderScreen()
+    
+    public void setWidth(int width)
     {
-        return header;
+        _width = width;
     }
-
-    @Override
-    public EJCoreReportScreenProperties getDetailScreen()
+    
+    public int getWidth()
     {
-        return detail;
+        return _width;
     }
 
-    @Override
-    public EJCoreReportScreenProperties getFooterScreen()
+    public EJCoreReportScreenProperties getHeaderScreenProperties()
     {
-        return footer;
+        return _header;
     }
 
-    public String getName()
+    public EJCoreReportScreenProperties getDetailScreenProperties()
     {
-        return name;
+        return _detail;
     }
 
-    public void setName(String name)
+    public EJCoreReportScreenProperties getFooterScreenProperties()
     {
-        this.name = name;
+        return _footer;
     }
 
-    @Override
     public EJCoreReportBorderProperties getHeaderBorderProperties()
     {
-        return headerBorderProperties;
+        return _headerBorderProperties;
     }
 
-    @Override
     public EJCoreReportBorderProperties getDetailBorderProperties()
     {
-        return detailBorderProperties;
+        return _detailBorderProperties;
     }
 
-    @Override
     public EJCoreReportBorderProperties getFooterBorderProperties()
     {
-        return footerBorderProperties;
+        return _footerBorderProperties;
     }
 
 }

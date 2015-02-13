@@ -21,22 +21,29 @@ package org.entirej.framework.report;
 import java.io.Serializable;
 
 import org.entirej.framework.report.data.EJReportDataScreenItem;
-import org.entirej.framework.report.internal.EJInternalReportBlock;
-import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
 
 /**
  * Contains the actual data for a specific item.
  */
 public class EJReportScreenItem implements Serializable
 {
-    private EJInternalReportBlock  _block;
-    private EJReportDataScreenItem _dataItem;
+    private boolean                      _useDataItem = true;
 
-    public EJReportScreenItem(EJInternalReportBlock block, EJReportDataScreenItem item)
+    private EJReportDataScreenItem       _dataItem;
+    private EJReportScreenItemProperties _itemProps;
+
+    public EJReportScreenItem(EJReportScreenItemProperties item)
     {
-        _block = block;
-        _dataItem = item;
+        _useDataItem = false;
+        _itemProps = item;
     }
+
+//    public EJReportScreenItem(EJReportDataScreenItem item)
+//    {
+//        _useDataItem = true;
+//        _dataItem = item;
+//    }
 
     /**
      * Return the name of this item
@@ -45,49 +52,34 @@ public class EJReportScreenItem implements Serializable
      */
     public String getName()
     {
-        return _dataItem.getName();
+        if (_useDataItem)
+        {
+            return _dataItem.getName();
+        }
+        else
+        {
+            return _itemProps.getName();
+        }
     }
 
     /**
-     * Used to set the item instance visual attribute
-     * <P>
-     * An item instance visual attribute will be displayed when the record this
-     * item is contained within is displayed to the user. Depending on how the
-     * block renderer is displaying the blocks records will depend on how this
-     * visual attribute is displayed. If for example the block is displaying
-     * records in a table, then the item instance visual attribute will be a
-     * cell in the table. Whereas setting the screen item visual attribute will
-     * set the visual attribute to the entire column
-     * <p>
-     * Setting the visual attribute to <code>null</code> will return the item
-     * instance to its default visual attributes
-     * <p>
+     * Used to set the visual attribute of this ite,
      * 
      * @param visualAttributeName
      *            The name of the visual attribute to set
      * @throws {@link IllegalArgumentException} if there is no visual attribute
      *         with the given name
-     * 
-     * @see #getVisualAttribute()
      */
     public void setVisualAttribute(String visualAttributeName)
     {
-        _dataItem.setVisualAttribute(visualAttributeName);
-
-    }
-
-    /**
-     * Returns the visual attribute properties set on this item or
-     * <code>null</code> if no visual attribute has been set
-     * 
-     * @return The visual attribute properties of this item or <code>null</code>
-     *         if no visual attribute has been set
-     * 
-     * @see #setVisualAttribute(String)
-     */
-    public EJReportVisualAttributeProperties getVisualAttribute()
-    {
-        return _dataItem.getVisualAttribute();
+        if (_useDataItem)
+        {
+            _dataItem.setVisualAttribute(visualAttributeName);
+        }
+        else
+        {
+            _itemProps.setVisualAttribute(visualAttributeName);
+        }
     }
 
     /**
@@ -97,7 +89,14 @@ public class EJReportScreenItem implements Serializable
      */
     public boolean isVisible()
     {
-        return _dataItem.isVisible();
+        if (_useDataItem)
+        {
+            return _dataItem.isVisible();
+        }
+        else
+        {
+            return _itemProps.isVisible();
+        }
     }
 
     /**
@@ -112,12 +111,25 @@ public class EJReportScreenItem implements Serializable
      */
     public void setVisible(boolean visible)
     {
-        _dataItem.setVisible(visible);
+        if (_useDataItem)
+        {
+            _dataItem.setVisible(visible);
+        }
+        else
+        {
+            _itemProps.setVisible(visible);
+        }
     }
 
     public String toString()
     {
-        return _dataItem.toString();
+        if (_useDataItem)
+        {
+            return _dataItem.toString();
+        }
+        else
+        {
+            return _itemProps.getName();
+        }
     }
-
 }

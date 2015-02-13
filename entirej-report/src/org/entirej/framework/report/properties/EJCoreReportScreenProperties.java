@@ -4,11 +4,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.entirej.framework.report.enumerations.EJReportScreenType;
-import org.entirej.framework.report.interfaces.EJReportColumnProperties;
-import org.entirej.framework.report.interfaces.EJReportScreenProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
 
-public class EJCoreReportScreenProperties implements EJReportScreenProperties
+public class EJCoreReportScreenProperties
 {
 
     private EJCoreReportBlockProperties blockProperties;
@@ -35,13 +33,11 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         _columnContainer = new EJReportColumnContainer(blockProperties);
     }
 
-    @Override
     public EJCoreReportBlockProperties getBlockProperties()
     {
         return blockProperties;
     }
 
-    @Override
     public int getWidth()
     {
         return width;
@@ -52,8 +48,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.width = width;
     }
 
-
-    @Override
     public int getHeight()
     {
         return height;
@@ -64,7 +58,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.height = height;
     }
 
-    @Override
     public int getX()
     {
         return x;
@@ -75,7 +68,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.x = x;
     }
 
-    @Override
     public int getY()
     {
 
@@ -87,7 +79,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.y = y;
     }
 
-    @Override
     public EJReportScreenType getScreenType()
     {
         return screenType;
@@ -98,7 +89,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.screenType = screenType;
     }
 
-    @Override
     public List<EJCoreReportBlockProperties> getAllSubBlocks()
     {
         return subBlocks.getAllBlockProperties();
@@ -109,7 +99,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         return subBlocks;
     }
 
-    @Override
     public Collection<EJCoreReportScreenItemProperties> getScreenItems()
     {
         return _screenItemContainer.getAllItemProperties();
@@ -125,8 +114,7 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         return _columnContainer;
     }
 
-    @Override
-    public Collection<? extends EJReportColumnProperties> getAllColumns()
+    public Collection<? extends EJCoreReportColumnProperties> getAllColumns()
     {
         return _columnContainer.getAllColumnProperties();
     }
@@ -151,10 +139,6 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.evenRowVAName = evenRowVAName;
     }
     
-    
-    
-    
-
     public int getHeaderColumnHeight()
     {
         return headerColumnHeight;
@@ -185,13 +169,11 @@ public class EJCoreReportScreenProperties implements EJReportScreenProperties
         this.footerColumnHeight = footerColumnHeight;
     }
 
-    @Override
     public EJReportVisualAttributeProperties getOddVAProperties()
     {
         return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(oddRowVAName);
     }
 
-    @Override
     public EJReportVisualAttributeProperties getEvenVAProperties()
     {
         return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(evenRowVAName);

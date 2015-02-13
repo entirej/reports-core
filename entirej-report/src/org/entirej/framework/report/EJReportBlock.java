@@ -25,9 +25,9 @@ import java.util.Collections;
 
 import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.data.controllers.EJReportBlockController;
+import org.entirej.framework.report.interfaces.EJReportBlockProperties;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
-import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
 
@@ -83,7 +83,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return _block.getProperties().isControlBlock();
     }
 
-    public EJCoreReportBlockProperties getProperties()
+    public EJReportBlockProperties getProperties()
     {
         return _block.getProperties();
     }
