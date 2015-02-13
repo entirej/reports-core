@@ -34,35 +34,16 @@ import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
-public class EJReport implements EJReportFrameworkHelper
+public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
 {
-    private EJInternalReport _report;
-
     public EJReport(EJInternalReport report)
     {
-        _report = report;
+        super(report);
     }
-
-    /**
-     * Returns the properties for of this report
-     * 
-     * @return This reports properties
-     */
-    public EJReportProperties getProperties()
-    {
-        return _report.getProperties();
-    }
-
-    public EJReportFrameworkManager getFrameworkManager()
-    {
-        return _report.getFrameworkManager();
-
-    }
-    
 
     public EJReportExportType getExportType()
     {
-        return _report.getProperties().getExportType();
+        return getInternalReport().getProperties().getExportType();
     }
 
     /**
@@ -72,7 +53,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String getName()
     {
-        return _report.getProperties().getName();
+        return getInternalReport().getProperties().getName();
     }
 
     /**
@@ -88,7 +69,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void handleException(Exception exception)
     {
-        _report.handleException(exception);
+        getInternalReport().handleException(exception);
     }
 
     /**
@@ -104,7 +85,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void changeLocale(Locale locale)
     {
-        _report.getFrameworkManager().changeLocale(locale);
+        getInternalReport().getFrameworkManager().changeLocale(locale);
     }
 
     /**
@@ -118,7 +99,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public Locale getCurrentLocale()
     {
-        return _report.getFrameworkManager().getCurrentLocale();
+        return getInternalReport().getFrameworkManager().getCurrentLocale();
     }
 
     /**
@@ -128,7 +109,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJManagedReportFrameworkConnection getConnection()
     {
-        return _report.getFrameworkManager().getConnection();
+        return getInternalReport().getFrameworkManager().getConnection();
     }
 
     /**
@@ -141,7 +122,7 @@ public class EJReport implements EJReportFrameworkHelper
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
 
-        for (EJInternalReportBlock block : _report.getAllBlocks())
+        for (EJInternalReportBlock block : getInternalReport().getAllBlocks())
         {
             blocks.add(new EJReportBlock(block));
         }
@@ -153,7 +134,7 @@ public class EJReport implements EJReportFrameworkHelper
     {
         ArrayList<EJReportPage> pages = new ArrayList<EJReportPage>();
 
-        for (BlockGroup blockGroup : _report.getProperties().getBlockContainer().getPages())
+        for (BlockGroup blockGroup : getInternalReport().getProperties().getBlockContainer().getPages())
         {
             pages.add(new EJReportPage(this, blockGroup));
         }
@@ -165,7 +146,7 @@ public class EJReport implements EJReportFrameworkHelper
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
 
-        for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getHeaderSection().getAllBlockProperties())
+        for (EJCoreReportBlockProperties blockProp : getInternalReport().getProperties().getBlockContainer().getHeaderSection().getAllBlockProperties())
         {
 
             blocks.add(getBlock(blockProp.getName()));
@@ -178,7 +159,7 @@ public class EJReport implements EJReportFrameworkHelper
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
 
-        for (EJCoreReportBlockProperties blockProp : _report.getProperties().getBlockContainer().getFooterSection().getAllBlockProperties())
+        for (EJCoreReportBlockProperties blockProp : getInternalReport().getProperties().getBlockContainer().getFooterSection().getAllBlockProperties())
         {
 
             blocks.add(getBlock(blockProp.getName()));
@@ -199,7 +180,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJReportBlock getBlock(String blockName)
     {
-        EJInternalReportBlock block = _report.getBlock(blockName);
+        EJInternalReportBlock block = getInternalReport().getBlock(blockName);
         if (block == null)
         {
             return null;
@@ -212,22 +193,6 @@ public class EJReport implements EJReportFrameworkHelper
     }
 
     /**
-     * Returns the <code>VisualAttributeProperties</code> with the given name or
-     * <code>null</code> if there is no visual attribute with the given name
-     * 
-     * @param vaName
-     *            the name of the required <code>VisualAttribute</code>
-     * 
-     * @return The required <code>VisualAttributeProperties</code> or
-     *         <code>null</code> if there was no Visual Attribute with the given
-     *         name
-     */
-    public EJReportVisualAttributeProperties getVisualAttribute(String vaName)
-    {
-        return _report.getVisualAttribute(vaName);
-    }
-
-    /**
      * Used to set the value of an application level parameter
      * 
      * @param valueName
@@ -237,7 +202,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void setApplicationLevelParameter(String valueName, Object value)
     {
-        _report.setApplicationLevelParameter(valueName, value);
+        getInternalReport().setApplicationLevelParameter(valueName, value);
     }
 
     /**
@@ -252,13 +217,13 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJApplicationLevelParameter getApplicationLevelParameter(String paramName)
     {
-        return _report.getApplicationLevelParameter(paramName);
+        return getInternalReport().getApplicationLevelParameter(paramName);
     }
 
     @Override
     public Collection<EJApplicationLevelParameter> getApplicationLevelParameters()
     {
-        return _report.getApplicationLevelParameters();
+        return getInternalReport().getApplicationLevelParameters();
     }
 
     /**
@@ -275,7 +240,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public void setReportParameter(String name, Object value)
     {
-        _report.setReportParameter(name, value);
+        getInternalReport().setReportParameter(name, value);
     }
 
     /**
@@ -289,7 +254,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJReportParameter getReportParameter(String name)
     {
-        return _report.getReportParameter(name);
+        return getInternalReport().getReportParameter(name);
     }
 
     /**
@@ -305,7 +270,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateText(String textKey)
     {
-        return _report.translateText(textKey);
+        return getInternalReport().translateText(textKey);
     }
 
     /**
@@ -321,7 +286,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateText(String textKey, Locale locale)
     {
-        return _report.translateText(textKey, locale);
+        return getInternalReport().translateText(textKey, locale);
     }
 
     /**
@@ -338,7 +303,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateMessageText(String textKey)
     {
-        return _report.translateMessageText(textKey, null);
+        return getInternalReport().translateMessageText(textKey, null);
     }
 
     /**
@@ -354,7 +319,7 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public String translateMessageText(String textKey, Locale locale)
     {
-        return _report.translateMessageText(textKey, locale);
+        return getInternalReport().translateMessageText(textKey, locale);
     }
 
     /**
@@ -369,18 +334,18 @@ public class EJReport implements EJReportFrameworkHelper
      */
     public EJReportParameterList getParameterList()
     {
-        return _report.getParameterList();
+        return getInternalReport().getParameterList();
     }
 
     public EJReportDateHelper createDateHelper()
     {
-        return _report.createDateHelper();
+        return getInternalReport().createDateHelper();
     }
 
     @Override
     public EJReportTranslatorHelper getTranslatorHelper()
     {
-        return _report.getFrameworkManager().getTranslatorHelper();
+        return getInternalReport().getFrameworkManager().getTranslatorHelper();
     }
 
 }
