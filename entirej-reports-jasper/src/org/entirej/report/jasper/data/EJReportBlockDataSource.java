@@ -163,9 +163,14 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     {
         EJReportScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
+//        System.err.println(item +" B="+block.getName());
         if (reportItem == null)
             return false;
         EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+//        if(visualAttribute!=null)
+//        {
+//            System.err.println("FOUND="+item +" B="+block.getName());
+//        }
         return visualAttribute != null && visualAttribute.getName().equals(vaName);
     }
 

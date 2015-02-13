@@ -190,14 +190,25 @@ public class EJReportJasperReportBuilder
             boolean addPageBrake=false;
             for (EJReportPage page : report.getPages())
             {
-                JRDesignBand detail = new JRDesignBand();
-                detail.setSplitType(SplitTypeEnum.STRETCH);
-                detail.setHeight(height);
+                
                 JRDesignGroup group = new JRDesignGroup();
                 group.setName(page.getName());
                 JRDesignSection groupHeaderSection = (JRDesignSection) group.getGroupHeaderSection();
                
 
+                JRDesignBand newPageBand = null;
+                if(addPageBrake)
+                {
+                    newPageBand =   new JRDesignBand();
+                    newPageBand.setHeight(1);
+                    groupHeaderSection.addBand(newPageBand);
+                }
+                
+                
+                JRDesignBand detail = new JRDesignBand();
+                detail.setSplitType(SplitTypeEnum.STRETCH);
+                detail.setHeight(height);
+                
                 groupHeaderSection.addBand(detail);
                 design.addGroup(group);
                 
@@ -213,7 +224,7 @@ public class EJReportJasperReportBuilder
                         
                         JRDesignStaticText text = new JRDesignStaticText();
                         text.setHeight(1);
-                        text.setWidth(1);
+                        text.setWidth(block.getProperties().getLayoutScreenProperties().getWidth());
                         
                         
                       
@@ -226,7 +237,7 @@ public class EJReportJasperReportBuilder
                         text.setY(0);
                       
                       
-                        detail.addElement(text);
+                        newPageBand.addElement(text);
                         text.setMode(ModeEnum.TRANSPARENT);
                         usePageBrake= false;
                     }
