@@ -20,13 +20,12 @@ package org.entirej.framework.report;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportDateHelper;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
@@ -266,9 +265,9 @@ public class EJReport implements EJReportFrameworkHelper
      * @param value
      *            The parameter value
      */
-    public void setRuntimeLevelParameter(String valueName, Object value)
+    public void setApplicationLevelParameter(String valueName, Object value)
     {
-        _report.setRuntimeLevelParameter(valueName, value);
+        _report.setApplicationLevelParameter(valueName, value);
     }
 
     /**
@@ -281,15 +280,15 @@ public class EJReport implements EJReportFrameworkHelper
      *            The name of the required parameter
      * @return The value of the given parameter
      */
-    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String paramName)
+    public EJApplicationLevelParameter getApplicationLevelParameter(String paramName)
     {
-        return _report.getRuntimeLevelParameter(paramName);
+        return _report.getApplicationLevelParameter(paramName);
     }
 
     @Override
-    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
+    public Collection<EJApplicationLevelParameter> getApplicationLevelParameters()
     {
-        return _report.getRuntimeLevelParameters();
+        return _report.getApplicationLevelParameters();
     }
 
     /**

@@ -28,7 +28,7 @@ import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +57,8 @@ public class EJReportDataHelper
 
         if ("APP_PARAMETER".equals(paramTypeCode))
         {
-            EJReportRuntimeLevelParameter param = report.getRuntimeLevelParameter(paramValue);
-            logger.trace("Runtime Parameter Value: {}", param.getValue());
+            EJApplicationLevelParameter param = report.getApplicationLevelParameter(paramValue);
+            logger.trace("Application Parameter Value: {}", param.getValue());
             return param.getValue();
         }
         else if ("REPORT_PARAMETER".equals(paramTypeCode))

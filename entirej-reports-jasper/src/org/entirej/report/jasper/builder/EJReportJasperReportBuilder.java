@@ -58,7 +58,7 @@ import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
@@ -325,7 +325,7 @@ public class EJReportJasperReportBuilder
             expressionRPT.setText(String.format("$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")", block.getName()));
             subreport.setExpression(expressionRPT);
 
-            for (EJReportRuntimeLevelParameter parameter : report.getRuntimeLevelParameters())
+            for (EJApplicationLevelParameter parameter : report.getRuntimeLevelParameters())
             {
                 JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
                 subreportParameter.setName(parameter.getName());
@@ -368,9 +368,9 @@ public class EJReportJasperReportBuilder
     void createParamaters(EJReport report) throws JRException
     {
 
-        Collection<EJReportRuntimeLevelParameter> runtimeLevelParameters = report.getRuntimeLevelParameters();
+        Collection<EJApplicationLevelParameter> runtimeLevelParameters = report.getRuntimeLevelParameters();
 
-        for (EJReportRuntimeLevelParameter parameter : runtimeLevelParameters)
+        for (EJApplicationLevelParameter parameter : runtimeLevelParameters)
         {
             JRDesignParameter designParameter = new JRDesignParameter();
             designParameter.setName(parameter.getName());

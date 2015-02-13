@@ -30,12 +30,12 @@ import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportMessageFactory;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportBlockController;
 import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.data.controllers.EJReportDateHelper;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
@@ -183,16 +183,16 @@ public class EJInternalReport implements Serializable
     }
 
     /**
-     * Used to set the value of an runtime level parameter
+     * Used to set the value of an application level parameter
      * 
      * @param valueName
      *            The name of the value
      * @param value
      *            The parameter value
      */
-    public void setRuntimeLevelParameter(String valueName, Object value)
+    public void setApplicationLevelParameter(String valueName, Object value)
     {
-        _reportController.getFrameworkManager().setRuntimeLevelParameter(valueName, value);
+        _reportController.getFrameworkManager().setApplicationLevelParameter(valueName, value);
     }
 
     /**
@@ -205,14 +205,14 @@ public class EJInternalReport implements Serializable
      *            The name of the required parameter
      * @return The value of the given parameter
      */
-    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String paramName)
+    public EJApplicationLevelParameter getApplicationLevelParameter(String paramName)
     {
-        return _reportController.getFrameworkManager().getRuntimeLevelParameter(paramName);
+        return _reportController.getFrameworkManager().getApplicationLevelParameter(paramName);
     }
     
-    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters()
+    public Collection<EJApplicationLevelParameter> getApplicationLevelParameters()
     {
-        return _reportController.getFrameworkManager().getRuntimeLevelParameters();
+        return _reportController.getFrameworkManager().getApplicationLevelParameters();
     }
 
     /**

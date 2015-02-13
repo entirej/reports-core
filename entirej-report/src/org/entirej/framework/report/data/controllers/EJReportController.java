@@ -90,7 +90,7 @@ public class EJReportController implements Serializable
     private void createParameterList()
     {
         EJReportParameterList list = new EJReportParameterList();
-        for (EJReportRuntimeLevelParameter parameter : _dataReport.getProperties().getAllReportParameters())
+        for (EJApplicationLevelParameter parameter : _dataReport.getProperties().getAllReportParameters())
         {
             EJReportParameter listParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
             list.addParameter(listParameter);

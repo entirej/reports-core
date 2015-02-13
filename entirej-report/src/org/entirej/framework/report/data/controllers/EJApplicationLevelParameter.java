@@ -27,7 +27,7 @@ import org.entirej.framework.report.EJReportMessageFactory;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 
-public class EJReportRuntimeLevelParameter implements Serializable
+public class EJApplicationLevelParameter implements Serializable
 {
     private List<ParameterChangedListener> _paramChangeListeners = new ArrayList<ParameterChangedListener>();
 
@@ -35,12 +35,12 @@ public class EJReportRuntimeLevelParameter implements Serializable
     private Object                         _value                = null;
     private Class<?>                       _dataTypeClass;
 
-    public EJReportRuntimeLevelParameter(String name, String dataTypeName)
+    public EJApplicationLevelParameter(String name, String dataTypeName)
     {
         if (dataTypeName == null)
         {
             EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NULL_DATA_TYPE_PASSED_TO_METHOD,
-                    "RuntimeLevelParameter Constructor");
+                    "EJApplicationLevelParameter Constructor");
             throw new EJReportRuntimeException(message);
         }
 
@@ -48,7 +48,7 @@ public class EJReportRuntimeLevelParameter implements Serializable
         setDataTypeClass(dataTypeName);
     }
 
-    public EJReportRuntimeLevelParameter(String name, Class<?> dataType)
+    public EJApplicationLevelParameter(String name, Class<?> dataType)
     {
         _name = name;
         _dataTypeClass = dataType;

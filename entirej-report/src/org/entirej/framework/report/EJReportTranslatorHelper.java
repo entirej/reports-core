@@ -21,7 +21,7 @@ package org.entirej.framework.report;
 import java.io.Serializable;
 import java.util.Locale;
 
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 
 public class EJReportTranslatorHelper implements Serializable
 {
@@ -53,7 +53,7 @@ public class EJReportTranslatorHelper implements Serializable
      * @param parameter
      *            The parameter to add
      */
-    public void addRuntimeLevelParameter(EJReportRuntimeLevelParameter parameter)
+    public void addRuntimeLevelParameter(EJApplicationLevelParameter parameter)
     {
         _fwkManager.addRuntimeLevelParameter(parameter);
     }
@@ -72,9 +72,9 @@ public class EJReportTranslatorHelper implements Serializable
      * @param value
      *            The value
      */
-    public void setRuntimeLevelParameter(String valueName, Object value)
+    public void setApplicationLevelParameter(String valueName, Object value)
     {
-        _fwkManager.setRuntimeLevelParameter(valueName, value);
+        _fwkManager.setApplicationLevelParameter(valueName, value);
     }
 
     /**
@@ -90,9 +90,9 @@ public class EJReportTranslatorHelper implements Serializable
      *             If there is no application level parameter with the given
      *             name
      */
-    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String valueName)
+    public EJApplicationLevelParameter getApplicationLevelParameter(String valueName)
     {
-        return _fwkManager.getRuntimeLevelParameter(valueName);
+        return _fwkManager.getApplicationLevelParameter(valueName);
     }
 
     /**
@@ -106,9 +106,9 @@ public class EJReportTranslatorHelper implements Serializable
      * @return <code>true</code> if there is a parameter with the specified
      *         name, otherwise <code>false</code>
      */
-    public boolean runtimeLevelParameterExists(String parameterName)
+    public boolean applicationLevelParameterExists(String parameterName)
     {
-        return _fwkManager.runtimeLevelParameterExists(parameterName);
+        return _fwkManager.applicationLevelParameterExists(parameterName);
     }
 
 }

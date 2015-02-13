@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.entirej.framework.report.properties.reader;
 
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -60,7 +60,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
             String dataTypeName = attributes.getValue("dataType");
             String defaultValue = attributes.getValue("defaultValue");
 
-            EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(paramName, dataTypeName);
+            EJApplicationLevelParameter parameter = new EJApplicationLevelParameter(paramName, dataTypeName);
             if(defaultValue!=null && !defaultValue.isEmpty())
                 parameter.setValue(parameter.toDefaultValue(defaultValue));
             _properties.addRuntimeLevelParameter(parameter);

@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.entirej.framework.report.EJReportFrameworkManager;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
@@ -51,7 +51,7 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     
 
     private String                              _visualAttributeName;
-    private List<EJReportRuntimeLevelParameter> _reportParameters;
+    private List<EJApplicationLevelParameter> _reportParameters;
     private HashMap<String, String>             _applicationProperties;
     
     
@@ -79,7 +79,7 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
         _name = reportName;
         this._frameworkManager = _frameworkManager;
         _applicationProperties = new HashMap<String, String>();
-        _reportParameters = new ArrayList<EJReportRuntimeLevelParameter>();
+        _reportParameters = new ArrayList<EJApplicationLevelParameter>();
         blockContainer = new EJReportBlockContainer(this);
 
     }
@@ -352,12 +352,12 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
         return _applicationProperties.containsKey(name);
     }
 
-    public Collection<EJReportRuntimeLevelParameter> getAllReportParameters()
+    public Collection<EJApplicationLevelParameter> getAllReportParameters()
     {
         return _reportParameters;
     }
 
-    public void addReportParameter(EJReportRuntimeLevelParameter parameter)
+    public void addReportParameter(EJApplicationLevelParameter parameter)
     {
         if (parameter != null)
         {
@@ -365,9 +365,9 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
         }
     }
 
-    public EJReportRuntimeLevelParameter getReportParameter(String name)
+    public EJApplicationLevelParameter getReportParameter(String name)
     {
-        for (EJReportRuntimeLevelParameter parameter : _reportParameters)
+        for (EJApplicationLevelParameter parameter : _reportParameters)
         {
             if (parameter.getName().equalsIgnoreCase(name))
             {
@@ -377,14 +377,14 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
         return null;
     }
 
-    public void removeReportParameter(EJReportRuntimeLevelParameter parameter)
+    public void removeReportParameter(EJApplicationLevelParameter parameter)
     {
         _reportParameters.remove(parameter);
     }
 
     public boolean containsReportParameter(String name)
     {
-        for (EJReportRuntimeLevelParameter parameter : _reportParameters)
+        for (EJApplicationLevelParameter parameter : _reportParameters)
         {
             if (parameter.getName().equalsIgnoreCase(name))
             {

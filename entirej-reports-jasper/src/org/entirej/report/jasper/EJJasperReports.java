@@ -57,7 +57,7 @@ import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportBlockContext;
@@ -170,7 +170,7 @@ public class EJJasperReports
 
             List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>();
 
-            for (EJReportRuntimeLevelParameter parameter : manager.getRuntimeLevelParameters())
+            for (EJApplicationLevelParameter parameter : manager.getRuntimeLevelParameters())
             {
                 EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
                 reportParameters.add(jasperReportParameter);

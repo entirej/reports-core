@@ -20,7 +20,7 @@ package org.entirej.framework.report.data.controllers;
 
 import java.io.Serializable;
 
-public class EJReportParameter extends EJReportRuntimeLevelParameter implements Serializable
+public class EJReportParameter extends EJApplicationLevelParameter implements Serializable
 {
     public EJReportParameter(String name, Class<?> dataType)
     {

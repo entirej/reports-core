@@ -18,7 +18,7 @@
 package org.entirej.framework.report.properties.reader;
 
 import org.entirej.framework.report.EJReportFrameworkManager;
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportProperties.ORIENTATION;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
@@ -109,7 +109,7 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
             String dataTypeName = attributes.getValue("dataType");
             String defaultValue = attributes.getValue("defaultValue");
 
-            EJReportRuntimeLevelParameter parameter = new EJReportRuntimeLevelParameter(paramName, dataTypeName);
+            EJApplicationLevelParameter parameter = new EJApplicationLevelParameter(paramName, dataTypeName);
             parameter.setValue(parameter.toDefaultValue(defaultValue));
             _reportProperties.addReportParameter(parameter);
         }

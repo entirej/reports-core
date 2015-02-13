@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.entirej.framework.report.data.controllers.EJReportRuntimeLevelParameter;
+import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 
 public interface EJReportFrameworkHelper extends Serializable
 {
@@ -41,9 +41,9 @@ public interface EJReportFrameworkHelper extends Serializable
      *             If there is no application level parameter with the given
      *             name
      */
-    public EJReportRuntimeLevelParameter getRuntimeLevelParameter(String valueName);
+    public EJApplicationLevelParameter getApplicationLevelParameter(String valueName);
     
-    public Collection<EJReportRuntimeLevelParameter> getRuntimeLevelParameters();
+    public Collection<EJApplicationLevelParameter> getApplicationLevelParameters();
 
     /**
      * Used to set an application level parameter
@@ -59,7 +59,7 @@ public interface EJReportFrameworkHelper extends Serializable
      * @param value
      *            The value
      */
-    public void setRuntimeLevelParameter(String valueName, Object value);
+    public void setApplicationLevelParameter(String valueName, Object value);
 
     /**
      * Returns the {@link Locale} that is currently set for this application
