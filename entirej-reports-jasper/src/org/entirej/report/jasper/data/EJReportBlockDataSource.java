@@ -102,7 +102,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             String itemName = name.substring(name.indexOf('.') + 1);
             if (blockName.equals(block.getName()))
             {
-                EJReportRecord record = block.getFocusedRecord();
+                EJReportRecord record = block.getCurrentRecord();
 
                 if (record == null)
                 {
@@ -118,7 +118,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 EJReportBlock otherBlock = block.getReport().getBlock(blockName);
                 if (otherBlock != null)
                 {
-                    EJReportRecord focusedRecord = otherBlock.getFocusedRecord();
+                    EJReportRecord focusedRecord = otherBlock.getCurrentRecord();
                     if (focusedRecord != null)
                     {
                         Object value = focusedRecord.getValue(itemName);
@@ -132,7 +132,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         }
         else
         {
-            EJReportRecord record = block.getFocusedRecord();
+            EJReportRecord record = block.getCurrentRecord();
             Object value = record.getValue(name);
             fieldCache.put(name, value);
             return value;
@@ -228,7 +228,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
         EJReportScreenItem reportItem = null;
 
-        EJReportRecord record = block.getFocusedRecord();
+        EJReportRecord record = block.getCurrentRecord();
         reportItem = record.getScreenItem(item, section);
 
         return reportItem;

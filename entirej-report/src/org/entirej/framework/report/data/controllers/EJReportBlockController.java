@@ -77,36 +77,33 @@ public class EJReportBlockController implements Serializable
     /**
      * Indicates that the user want to navigate to the next record
      */
-    public void nextRecord()
+    public void navigateToNextRecord()
     {
-        EJReportDataRecord focusedRecord = getFocusedRecord();
-        if(index==-1 && focusedRecord!=null)
+        EJReportDataRecord focusedRecord = getCurrentRecord();
+        if (index == -1 && focusedRecord != null)
         {
-            index +=1;
-            return ;
+            index += 1;
+            return;
         }
-        boolean hasMore = (index+1)<_dataBlock.getBlockRecordCount();
-        if (hasMore&& focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
+        boolean hasMore = (index + 1) < _dataBlock.getBlockRecordCount();
+        if (hasMore && focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
         {
             focusedRecord.dispose();
         }
-       
-        if(hasMore)
-        {
-            index +=1;
-        }
-       
 
-        focusedRecord = getFocusedRecord();
+        if (hasMore)
+        {
+            index += 1;
+        }
+
+        focusedRecord = getCurrentRecord();
         if (focusedRecord != null && !focusedRecord.isInitialised())
         {
             focusedRecord.initialise();
             getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
         }
-        
-    }
 
-  
+    }
 
     /**
      * Creates a controller for the given data block
@@ -227,19 +224,12 @@ public class EJReportBlockController implements Serializable
     }
 
     /**
-     * Returns the current focused record
+     * Returns the blocks current record
      * <p>
-     * The current record will be used within EJ when a user wished to update or
-     * delete the current record. The current block record is not necessarily
-     * the current displayed record. This is because it is possible for the
-     * renderer to only display a subset of records. For example. If a user can
-     * filter the displayed records, then the third displayed record is not
-     * necessarily the third record the the data block. Therefore allow the
-     * renderer to decide which is the current record
      * 
-     * @return The record upon which the user currently has focus
+     * @return The record upon which the report has retreived for this block
      */
-    public EJReportDataRecord getFocusedRecord()
+    public EJReportDataRecord getCurrentRecord()
     {
         if (index == -1 && _dataBlock.getBlockRecordCount() > 0)
         {
@@ -277,104 +267,110 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord createRecord()
     {
-        EJReportDataRecord record;
-        record = createNewRecord();
-
-        return record;
-    }
-
-    /**
-     * Creates a record without calling the
-     * {@link EJReportBlockActionProcessor#initialiseRecord(EJReport, EJReportRecord,EJRecordType)}
-     * method
-     * <p>
-     * The values defined by the
-     * {@link EJCoreReportItemProperties#getDefaultInsertValue()} will be
-     * ignored. If these values should be used then use the
-     * {@link #createNewRecord(boolean)} method
-     * 
-     * @return A new record
-     * @see {@link #createRecord()}
-     */
-    public EJReportDataRecord createRecordNoAction()
-    {
-        return createNewRecord();
-    }
-
-    /**
-     * Creates a new record based upon the items within defined within the
-     * blocks list of items. The record will be neutral, meaning that it is
-     * neither dirty or marked as new. These statuses will be added when adding
-     * the record to the block. If this is a new record, then calling the
-     * <code>recordCreated</code> will mark the record as new and add it to the
-     * blocks list of record.
-     * 
-     * 
-     * @return A new record
-     */
-    protected EJReportDataRecord createNewRecord()
-    {
         EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock());
         _dataBlock.addQueriedRecord(record);
         return record;
     }
 
-    /**
-     * Copies the blocks focused record
-     * <p>
-     * All record items and values will be copied. The record will be marked as
-     * insert and therefore can be added to the blocks list of inserted records.
-     * If the record contains a primary key, then these values will need to be
-     * changed before inserting the record to ensure that no integrity
-     * constraints will be broken
-     * 
-     * After the record has been copied, the reports action processors
-     * <code>initialiseRecord</code> will be called
-     * 
-     * @return The record copied from the current record
-     */
-    public EJReportDataRecord copyFocusedRecord()
-    {
-        logger.trace("START copyFocusedRecord");
+    // /**
+    // * Creates a record without calling the
+    // * {@link EJReportBlockActionProcessor#initialiseRecord(EJReport,
+    // EJReportRecord,EJRecordType)}
+    // * method
+    // * <p>
+    // * The values defined by the
+    // * {@link EJCoreReportItemProperties#getDefaultInsertValue()} will be
+    // * ignored. If these values should be used then use the
+    // * {@link #createNewRecord(boolean)} method
+    // *
+    // * @return A new record
+    // * @see {@link #createRecord()}
+    // */
+    // public EJReportDataRecord createRecordNoAction()
+    // {
+    // return createNewRecord();
+    // }
 
-        if (getFocusedRecord() == null)
-        {
-            return null;
-        }
-
-        EJReportDataRecord record = createRecordNoAction();
-
-        if (getFocusedRecord() == null)
-        {
-            return record;
-        }
-
-        Iterator<EJReportDataItem> dataItems = getFocusedRecord().getAllItems().iterator();
-        while (dataItems.hasNext())
-        {
-            EJReportDataItem item = dataItems.next();
-            if (record.containsItem(item.getName()))
-            {
-                record.getItem(item.getName()).setValue(item.getValue());
-            }
-        }
-
-        logger.trace("END  copyFocusedRecord");
-        return record;
-    }
-
-    /**
-     * Re-Executes the last query
-     * 
-     * @throws EJBlockControllerException
-     */
-    public void executeLastQuery()
-    {
-        if (_queryCriteria != null)
-        {
-            executeQuery(_queryCriteria);
-        }
-    }
+    // /**
+    // * Creates a new record based upon the items within defined within the
+    // * blocks list of items. The record will be neutral, meaning that it is
+    // * neither dirty or marked as new. These statuses will be added when
+    // adding
+    // * the record to the block. If this is a new record, then calling the
+    // * <code>recordCreated</code> will mark the record as new and add it to
+    // the
+    // * blocks list of record.
+    // *
+    // *
+    // * @return A new record
+    // */
+    // protected EJReportDataRecord createNewRecord()
+    // {
+    // EJReportDataRecord record = new EJReportDataRecord(_reportController,
+    // getBlock());
+    // _dataBlock.addQueriedRecord(record);
+    // return record;
+    // }
+    //
+    // /**
+    // * Copies the blocks focused record
+    // * <p>
+    // * All record items and values will be copied. The record will be marked
+    // as
+    // * insert and therefore can be added to the blocks list of inserted
+    // records.
+    // * If the record contains a primary key, then these values will need to be
+    // * changed before inserting the record to ensure that no integrity
+    // * constraints will be broken
+    // *
+    // * After the record has been copied, the reports action processors
+    // * <code>initialiseRecord</code> will be called
+    // *
+    // * @return The record copied from the current record
+    // */
+    // public EJReportDataRecord copyFocusedRecord()
+    // {
+    // logger.trace("START copyFocusedRecord");
+    //
+    // if (getFocusedRecord() == null)
+    // {
+    // return null;
+    // }
+    //
+    // EJReportDataRecord record = createRecordNoAction();
+    //
+    // if (getFocusedRecord() == null)
+    // {
+    // return record;
+    // }
+    //
+    // Iterator<EJReportDataItem> dataItems =
+    // getFocusedRecord().getAllItems().iterator();
+    // while (dataItems.hasNext())
+    // {
+    // EJReportDataItem item = dataItems.next();
+    // if (record.containsItem(item.getName()))
+    // {
+    // record.getItem(item.getName()).setValue(item.getValue());
+    // }
+    // }
+    //
+    // logger.trace("END  copyFocusedRecord");
+    // return record;
+    // }
+    //
+    // /**
+    // * Re-Executes the last query
+    // *
+    // * @throws EJBlockControllerException
+    // */
+    // public void executeLastQuery()
+    // {
+    // if (_queryCriteria != null)
+    // {
+    // executeQuery(_queryCriteria);
+    // }
+    // }
 
     /**
      * Executes a query on this controllers underlying block. If this record is

@@ -51,8 +51,6 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return new EJReport(_block.getReport());
     }
 
-    
-    
     public Collection<EJReportBlockItem> getBlockItems()
     {
         ArrayList<EJReportBlockItem> blockItems = new ArrayList<EJReportBlockItem>();
@@ -90,8 +88,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         return _block.getProperties();
     }
-    
-    
+
     /**
      * Indicates if the block has an item with the given name
      * 
@@ -151,18 +148,6 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     }
 
     /**
-     * Used to create an empty record for this block without firing the
-     * whenCreateRecord action within the blocks action processor
-     * <p>
-     * 
-     * @return The newly created record
-     */
-    public EJReportRecord createRecordNoAction()
-    {
-        return new EJReportRecord(_block.createRecordNoAction());
-    }
-
-    /**
      * Clears this blocks data
      * <p>
      * Only this controllers underlying data block will be cleared, if the block
@@ -205,25 +190,16 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     }
 
     /**
-     * Instructs EntireJ to re-query this block using the query criteria
-     * previously entered
-     */
-    public void executeLastQuery()
-    {
-        _block.executeLastQuery();
-    }
-
-    /**
-     * Retrieves the focused record for the given block
+     * Retrieves the current record for the given block
      * 
      * @param blockName
      *            The name of the block
-     * @return The focused record of the given block or <code>null</code> if
-     *         there is no record focused
+     * @return The current record of the given block or <code>null</code> if
+     *         there is no current focused
      */
-    public EJReportRecord getFocusedRecord()
+    public EJReportRecord getCurrentRecord()
     {
-        EJReportDataRecord record = _block.getFocusedRecord();
+        EJReportDataRecord record = _block.getCurrentRecord();
         if (record == null)
         {
             return null;
@@ -233,18 +209,16 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
             return new EJReportRecord(record);
         }
     }
-
-    /**
-     * Returns the <code>FrameworkManager</code>
-     * 
-     * @return The {@link EJReportFrameworkManager}
-     */
-    public EJReportFrameworkManager getFrameworkManager()
-    {
-        return _block.getFrameworkManager();
-    }
-
-   
+//
+//    /**
+//     * Returns the <code>FrameworkManager</code>
+//     * 
+//     * @return The {@link EJReportFrameworkManager}
+//     */
+//    public EJReportFrameworkManager getFrameworkManager()
+//    {
+//        return _block.getFrameworkManager();
+//    }
 
     /**
      * Navigates to the next record of this block
@@ -253,13 +227,12 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
      */
     public void navigateToNextRecord()
     {
-        _block.nextRecord();
+        _block.navigateToNextRecord();
     }
-    
-    
+
     public int getBlockRecordCount()
     {
-       return _block.getBlockRecordCount();
+        return _block.getBlockRecordCount();
     }
 
     /**

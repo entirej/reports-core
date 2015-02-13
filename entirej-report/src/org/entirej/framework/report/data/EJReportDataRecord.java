@@ -19,36 +19,30 @@
 package org.entirej.framework.report.data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.entirej.framework.report.EJReportMessage;
-import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
-import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
-import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 
 public class EJReportDataRecord implements Serializable
 {
-    private EJReportController                  _reportController;
-    private EJReportDataRecord                  _baseRecord;
-    private Object                              _servicePojo;
-    private EJInternalReportBlock               _block;
+    private EJReportController                      _reportController;
+    private EJReportDataRecord                      _baseRecord;
+    private Object                                  _servicePojo;
+    private EJInternalReportBlock                   _block;
 
-    private HashMap<String, EJReportDataItem>   _itemList;
+    private HashMap<String, EJReportDataItem>       _itemList;
     private HashMap<String, EJReportDataScreenItem> _itemListH;
     private HashMap<String, EJReportDataScreenItem> _itemListD;
     private HashMap<String, EJReportDataScreenItem> _itemListF;
-    private boolean                             _queriedRecord = false;
+    private boolean                                 _queriedRecord = false;
 
-    private AtomicBoolean                       init           = new AtomicBoolean();
+    private AtomicBoolean                           init           = new AtomicBoolean();
 
     /**
      * Returns the properties of the block that contains this record
@@ -62,7 +56,7 @@ public class EJReportDataRecord implements Serializable
         _servicePojo = getBlock().getServicePojoHelper().createNewPojoFromService();
         _itemList = new HashMap<String, EJReportDataItem>();
 
-        if (_block.getProperties().isControlBlock())
+        if (_block.isControlBlock())
         {
             initialise();
         }
@@ -80,7 +74,7 @@ public class EJReportDataRecord implements Serializable
         _block = block;
         _servicePojo = servicePojo;
         _itemList = new HashMap<String, EJReportDataItem>();
-        if (_block.getProperties().isControlBlock())
+        if (_block.isControlBlock())
         {
             initialise();
         }
@@ -193,15 +187,16 @@ public class EJReportDataRecord implements Serializable
         return _block;
     }
 
-    /**
-     * Returns the properties of the block to which this record belongs
-     * 
-     * @return This records containing block
-     */
-    public EJCoreReportBlockProperties getBlockProperties()
-    {
-        return _block.getProperties();
-    }
+    //
+    // /**
+    // * Returns the properties of the block to which this record belongs
+    // *
+    // * @return This records containing block
+    // */
+    // public EJCoreReportBlockProperties getBlockProperties()
+    // {
+    // return _block.getProperties();
+    // }
 
     /**
      * This is a convenience method that returns the name of the block to which
@@ -211,7 +206,7 @@ public class EJReportDataRecord implements Serializable
      */
     public String getBlockName()
     {
-        return _block.getProperties().getName();
+        return _block.getName();
     }
 
     /**
@@ -326,27 +321,22 @@ public class EJReportDataRecord implements Serializable
 
         if (item == null)
         {
-            /*TODO:EJCoreReportScreenProperties layoutScreenProperties = _block.getProperties().getLayoutScreenProperties();
-            if(layoutScreenProperties.getScreenType()==EJReportScreenType.FORM_LATOUT)
-            {
-                layoutScreenProperties.get
-            }
-            switch (section)
-            {
-                case HEADER:
-                 
-                    break;
-                case DETAIL:
-                   
-                    break;
-                case FOOTER:
-                   
-                    break;
+            /*
+             * TODO:EJCoreReportScreenProperties layoutScreenProperties =
+             * _block.getProperties().getLayoutScreenProperties();
+             * if(layoutScreenProperties
+             * .getScreenType()==EJReportScreenType.FORM_LATOUT) {
+             * layoutScreenProperties.get } switch (section) { case HEADER:
+             * 
+             * break; case DETAIL:
+             * 
+             * break; case FOOTER:
+             * 
+             * break;
+             * 
+             * default: return null; }
+             */
 
-                default:
-                    return null;
-            }*/
-            
             item = new EJReportDataScreenItem(_reportController, itemName);
             map.put(itemName, item);
         }
@@ -417,48 +407,48 @@ public class EJReportDataRecord implements Serializable
     {
         return _itemList.values();
     }
-
-    /**
-     * Returns the properties for a given item
-     * 
-     * @param name
-     *            The name of the item
-     * @return The properties for the given item
-     * @throws EJReportRuntimeException
-     *             if the name passed is either null or of zero length
-     */
-    public EJCoreReportItemProperties getItemProperties(String name)
-    {
-        if (name == null || name.trim().length() == 0)
-        {
-            throw new EJReportRuntimeException(new EJReportMessage("The name passed to getItemProperties is either null or of zero length."));
-        }
-
-        EJReportDataItem item = getItem(name);
-        return item.getProperties();
-    }
-
-    /**
-     * Returns a <code>Collection</code> containing all
-     * <code>ItemProperties</code> contained within this <code>DataRecord</code>
-     * 
-     * @return A <code>Collection</code> of this records
-     *         <code>ItemProperties</code>
-     */
-    public Collection<EJCoreReportItemProperties> getAllItemProperties()
-    {
-        ArrayList<EJCoreReportItemProperties> properties = new ArrayList<EJCoreReportItemProperties>();
-
-        Iterator<EJReportDataItem> values = _itemList.values().iterator();
-
-        while (values.hasNext())
-        {
-            EJReportDataItem item = values.next();
-
-            properties.add(item.getProperties());
-        }
-        return properties;
-    }
+//
+//    /**
+//     * Returns the properties for a given item
+//     * 
+//     * @param name
+//     *            The name of the item
+//     * @return The properties for the given item
+//     * @throws EJReportRuntimeException
+//     *             if the name passed is either null or of zero length
+//     */
+//    public EJCoreReportItemProperties getItemProperties(String name)
+//    {
+//        if (name == null || name.trim().length() == 0)
+//        {
+//            throw new EJReportRuntimeException(new EJReportMessage("The name passed to getItemProperties is either null or of zero length."));
+//        }
+//
+//        EJReportDataItem item = getItem(name);
+//        return item.getProperties();
+//    }
+//
+//    /**
+//     * Returns a <code>Collection</code> containing all
+//     * <code>ItemProperties</code> contained within this <code>DataRecord</code>
+//     * 
+//     * @return A <code>Collection</code> of this records
+//     *         <code>ItemProperties</code>
+//     */
+//    public Collection<EJCoreReportItemProperties> getAllItemProperties()
+//    {
+//        ArrayList<EJCoreReportItemProperties> properties = new ArrayList<EJCoreReportItemProperties>();
+//
+//        Iterator<EJReportDataItem> values = _itemList.values().iterator();
+//
+//        while (values.hasNext())
+//        {
+//            EJReportDataItem item = values.next();
+//
+//            properties.add(item.getProperties());
+//        }
+//        return properties;
+//    }
 
     /**
      * Indicates how many columns the record has

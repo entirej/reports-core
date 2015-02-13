@@ -89,7 +89,7 @@ public class EJReportDataHelper
                 throw new EJReportRuntimeException(new EJReportMessage(report, "Trying to retrieve a default value from a Block.Item value: " + blockName + "."
                         + itemName + ", but there is not a block with the given name within this report: " + report.getName()));
             }
-            record = report.getBlock(blockName).getFocusedRecord();
+            record = report.getBlock(blockName).getCurrentRecord();
 
             if (record != null)
             {

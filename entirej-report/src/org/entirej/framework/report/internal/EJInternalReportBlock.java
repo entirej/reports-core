@@ -55,6 +55,11 @@ public class EJInternalReportBlock implements Serializable
         return _blockController;
     }
 
+    public String getName()
+    {
+        return _blockController.getProperties().getName();
+    }
+
     public void initialiseServicePojoHelper()
     {
         if (_servicePojoHelper == null)
@@ -74,6 +79,11 @@ public class EJInternalReportBlock implements Serializable
         }
 
         return _servicePojoHelper;
+    }
+
+    public boolean isControlBlock()
+    {
+        return _blockController.getProperties().isControlBlock();
     }
 
     /**
@@ -133,37 +143,38 @@ public class EJInternalReportBlock implements Serializable
         _blockController.clearBlock();
     }
 
-    /**
-     * Instructs EntireJ to clear the current focused record of this block
-     */
-    public void clearFocusedRecord()
-    {
-        logger.trace("START clearFocusedRecord");
-        EJReportDataRecord record = _blockController.getFocusedRecord();
-        if (record != null)
-        {
-            record.clear();
-        }
-        logger.trace("END clearFocusedRecord");
-    }
-
-    /**
-     * Makes a copy of the current record of this block
-     * 
-     * @return A copy of the current record of this block
-     */
-    public EJReportDataRecord copyFocusedRecord()
-    {
-        logger.trace("START copyFocusedRecord");
-        return _blockController.copyFocusedRecord();
-    }
-
+    //
+    // /**
+    // * Instructs EntireJ to clear the current focused record of this block
+    // */
+    // public void clearFocusedRecord()
+    // {
+    // logger.trace("START clearFocusedRecord");
+    // EJReportDataRecord record = _blockController.getFocusedRecord();
+    // if (record != null)
+    // {
+    // record.clear();
+    // }
+    // logger.trace("END clearFocusedRecord");
+    // }
+    //
+    // /**
+    // * Makes a copy of the current record of this block
+    // *
+    // * @return A copy of the current record of this block
+    // */
+    // public EJReportDataRecord copyFocusedRecord()
+    // {
+    // logger.trace("START copyFocusedRecord");
+    // return _blockController.copyFocusedRecord();
+    // }
+    //
     /**
      * Creates an empty query criteria for this block
      * <p>
      * The criteria can be used for executing a query within this block.
      * Criterion can be added to restrict the query
-     * 
+     *
      * @return
      */
     public EJReportQueryCriteria createQueryCriteria()
@@ -186,18 +197,19 @@ public class EJInternalReportBlock implements Serializable
         return _blockController.createRecord();
     }
 
-    /**
-     * Used to create an empty record for this block without firing the
-     * whenCreateRecord action within the blocks action mediator
-     * <p>
-     * 
-     * @return The newly created record
-     */
-    public EJReportDataRecord createRecordNoAction()
-    {
-        logger.trace("START createRecordNoAction - Returning directly");
-        return _blockController.createRecordNoAction();
-    }
+    //
+    // /**
+    // * Used to create an empty record for this block without firing the
+    // * whenCreateRecord action within the blocks action mediator
+    // * <p>
+    // *
+    // * @return The newly created record
+    // */
+    // public EJReportDataRecord createRecordNoAction()
+    // {
+    // logger.trace("START createRecordNoAction - Returning directly");
+    // return _blockController.createRecordNoAction();
+    // }
 
     /**
      * Instructs EntireJ to perform a query on the given block using the
@@ -248,50 +260,51 @@ public class EJInternalReportBlock implements Serializable
         logger.trace("END executeQuery");
     }
 
+    //
+    // /**
+    // * Instructs EntireJ to re-query this block using the query criteria
+    // * previously entered
+    // */
+    // public void executeLastQuery()
+    // {
+    // logger.trace("START executeLastQuery");
+    // EJManagedReportFrameworkConnection connection = null;
+    // try
+    // {
+    // connection = _blockController.getFrameworkManager().getConnection();
+    // _blockController.executeLastQuery();
+    // }
+    // catch (Exception e)
+    // {
+    // if (connection != null)
+    // {
+    // connection.rollback();
+    // }
+    // _blockController.getFrameworkManager().handleException(e);
+    // }
+    // finally
+    // {
+    // if (connection != null)
+    // {
+    // connection.commit();
+    // connection.close();
+    // }
+    // }
+    // logger.trace("END executeLastQuery");
+    // }
+    //
     /**
-     * Instructs EntireJ to re-query this block using the query criteria
-     * previously entered
-     */
-    public void executeLastQuery()
-    {
-        logger.trace("START executeLastQuery");
-        EJManagedReportFrameworkConnection connection = null;
-        try
-        {
-            connection = _blockController.getFrameworkManager().getConnection();
-            _blockController.executeLastQuery();
-        }
-        catch (Exception e)
-        {
-            if (connection != null)
-            {
-                connection.rollback();
-            }
-            _blockController.getFrameworkManager().handleException(e);
-        }
-        finally
-        {
-            if (connection != null)
-            {
-                connection.commit();
-                connection.close();
-            }
-        }
-        logger.trace("END executeLastQuery");
-    }
-
-    /**
-     * Retrieves the current focused record for the given block
+     * Retrieves the current record for the given block
      * 
      * @param blockName
      *            The name of the block
      * @return The current focused record of the given block or
      *         <code>null</code> if there is no record focused
      */
-    public EJReportDataRecord getFocusedRecord()
+    public EJReportDataRecord getCurrentRecord()
     {
 
-        EJReportDataRecord focusedRecord = _blockController.getFocusedRecord();
+        EJReportDataRecord focusedRecord = _blockController.getCurrentRecord();
         if (focusedRecord != null && !focusedRecord.isInitialised())
         {
             focusedRecord.initialise();
@@ -323,10 +336,10 @@ public class EJInternalReportBlock implements Serializable
      * <p>
      * If the user is already on the last record, then nothing will happen
      */
-    public void nextRecord()
+    public void navigateToNextRecord()
     {
         logger.trace("START nextRecord");
-        _blockController.nextRecord();
+        _blockController.navigateToNextRecord();
         logger.trace("END nextRecord");
     }
 
@@ -364,7 +377,7 @@ public class EJInternalReportBlock implements Serializable
 
     /**
      * Returns the properties of this block
-     * 
+     *
      * @return This blocks properties
      */
     public EJCoreReportBlockProperties getProperties()
