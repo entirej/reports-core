@@ -325,7 +325,7 @@ public class EJReportJasperReportBuilder
             expressionRPT.setText(String.format("$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")", block.getName()));
             subreport.setExpression(expressionRPT);
 
-            for (EJApplicationLevelParameter parameter : report.getRuntimeLevelParameters())
+            for (EJApplicationLevelParameter parameter : report.getApplicationLevelParameters())
             {
                 JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
                 subreportParameter.setName(parameter.getName());
@@ -368,7 +368,7 @@ public class EJReportJasperReportBuilder
     void createParamaters(EJReport report) throws JRException
     {
 
-        Collection<EJApplicationLevelParameter> runtimeLevelParameters = report.getRuntimeLevelParameters();
+        Collection<EJApplicationLevelParameter> runtimeLevelParameters = report.getApplicationLevelParameters();
 
         for (EJApplicationLevelParameter parameter : runtimeLevelParameters)
         {

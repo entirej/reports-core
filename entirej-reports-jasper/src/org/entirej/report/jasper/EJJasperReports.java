@@ -170,7 +170,7 @@ public class EJJasperReports
 
             List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>();
 
-            for (EJApplicationLevelParameter parameter : manager.getRuntimeLevelParameters())
+            for (EJApplicationLevelParameter parameter : manager.getApplicationLevelParameters())
             {
                 EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
                 reportParameters.add(jasperReportParameter);
