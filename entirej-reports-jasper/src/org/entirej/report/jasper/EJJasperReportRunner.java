@@ -10,6 +10,7 @@ import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
+import org.entirej.framework.report.internal.EJInternalReport;
 
 public class EJJasperReportRunner implements EJReportRunner
 {
@@ -26,7 +27,7 @@ public class EJJasperReportRunner implements EJReportRunner
     @Override
     public String runReport(EJReport report)
     {
-        return runReport(report, report.getProperties().getExportType());
+        return runReport(report, report.getExportType());
     }
 
     @Override
@@ -56,7 +57,7 @@ public class EJJasperReportRunner implements EJReportRunner
     @Override
     public void runReport(EJReport report, String outputFile)
     {
-        runReport(report, report.getProperties().getExportType(), outputFile);
+        runReport(report, report.getExportType(), outputFile);
 
     }
 

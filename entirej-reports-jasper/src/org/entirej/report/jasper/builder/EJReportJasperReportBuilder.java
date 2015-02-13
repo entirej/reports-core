@@ -80,6 +80,7 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
+import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 import org.entirej.report.jasper.data.EJReportActionContext;
 import org.entirej.report.jasper.data.EJReportBlockContext;
@@ -879,7 +880,7 @@ public class EJReportJasperReportBuilder
         
         
         
-        Collection<EJReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
+        Collection<EJCoreReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
         for (EJReportVisualAttributeProperties properties : visualAttributes)
         {
@@ -1232,7 +1233,7 @@ public class EJReportJasperReportBuilder
         }
 
         String fontName = va.getFontName();
-        if (!EJReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
+        if (!EJCoreReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
         {
             style.setFontName(fontName);
             style.setPdfEmbedded(true);

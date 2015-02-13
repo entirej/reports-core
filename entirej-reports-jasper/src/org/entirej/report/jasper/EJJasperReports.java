@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,9 +55,10 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
+import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportBlockContext;
 import org.entirej.report.jasper.data.EJReportDataSource;
@@ -271,7 +271,7 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
         LOGGER.info("START Export  Report :" + report.getName());
         long start = System.currentTimeMillis();
-        exportReport(report.getProperties().getExportType(), jasperPrint, outputFile);
+        exportReport(report.getExportType(), jasperPrint, outputFile);
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
     }
