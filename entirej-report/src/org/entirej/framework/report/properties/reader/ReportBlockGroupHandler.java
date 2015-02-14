@@ -57,8 +57,9 @@ public class ReportBlockGroupHandler extends EJCoreReportPropertiesTagHandler
 
             String value = attributes.getValue("name");
             if (value != null && value.trim().length() > 0)
+            {
                 _blockGroup.setName(value);
-
+            }
         }
         else if (name.equals(ELEMENT_BLOCK))
         {

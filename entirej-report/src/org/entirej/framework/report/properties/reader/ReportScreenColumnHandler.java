@@ -19,41 +19,35 @@ package org.entirej.framework.report.properties.reader;
 
 import org.entirej.framework.report.interfaces.EJReportBorderProperties;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
-import org.entirej.framework.report.properties.EJCoreReportBorderProperties;
-import org.entirej.framework.report.properties.EJCoreReportColumnProperties;
-import org.entirej.framework.report.properties.EJCoreReportProperties;
-import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenColumnProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenColumnSectionProperties;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
 {
-    private EJCoreReportProperties       _formProperties;
-    private EJCoreReportBlockProperties  _blockProperties;
-    private EJCoreReportColumnProperties _column;
-    private static final String          ELEMENT_ITEM            = "columnitem";
-    private static final String          ELEMENT_HEADER          = "headerScreen";
-    private static final String          ELEMENT_DETAIL          = "detailScreen";
-    private static final String          ELEMENT_FOOTER          = "footerScreen";
+    private EJCoreReportBlockProperties        _blockProperties;
+    private EJCoreReportScreenColumnProperties _column;
+    private static final String                ELEMENT_ITEM            = "columnitem";
+    private static final String                ELEMENT_HEADER          = "headerScreen";
+    private static final String                ELEMENT_DETAIL          = "detailScreen";
+    private static final String                ELEMENT_FOOTER          = "footerScreen";
+    private static final String                ELEMENT_SCREEN_HEIGHT   = "height";
+    private static final String                ELEMENT_SHOW_TOPLINE    = "showTopLine";
+    private static final String                ELEMENT_SHOW_BOTTOMLINE = "showBottomLine";
+    private static final String                ELEMENT_SHOW_LEFTLINE   = "showLeftLine";
+    private static final String                ELEMENT_SHOW_RIGHTLINE  = "showRightLine";
+    private static final String                ELEMENT_LINE_WIDTH      = "lineWidth";
+    private static final String                ELEMENT_LINE_STYLE      = "lineStyle";
+    private static final String                ELEMENT_LINE_VA         = "lineVA";
 
-    private static final String          ELEMENT_SCREEN_WIDTH    = "width";
-    private static final String          ELEMENT_SCREEN_HEIGHT   = "height";
-
-    private static final String          ELEMENT_SHOW_TOPLINE    = "showTopLine";
-    private static final String          ELEMENT_SHOW_BOTTOMLINE = "showBottomLine";
-    private static final String          ELEMENT_SHOW_LEFTLINE   = "showLeftLine";
-    private static final String          ELEMENT_SHOW_RIGHTLINE  = "showRightLine";
-    private static final String          ELEMENT_LINE_WIDTH      = "lineWidth";
-    private static final String          ELEMENT_LINE_STYLE      = "lineStyle";
-    private static final String          ELEMENT_LINE_VA         = "lineVA";
-
-    private static final String          ELEMENT_SCREEN_ITEM     = "screenitem";
+    private static final String                ELEMENT_SCREEN_ITEM     = "screenitem";
 
     public ReportScreenColumnHandler(EJCoreReportBlockProperties blockProperties)
     {
-        _formProperties = blockProperties.getReportProperties();
         _blockProperties = blockProperties;
 
+        _blockProperties.getScreenProperties();
     }
 
     public void startLocalElement(String name, Attributes attributes) throws SAXException
@@ -63,25 +57,26 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
 
             String itemname = attributes.getValue("name");
 
-            _column = new EJCoreReportColumnProperties(_blockProperties);
+            _column = new EJCoreReportScreenColumnProperties(_blockProperties);
             _column.setName(itemname);
+            _column.setWidth(Integer.valueOf(attributes.getValue("width")));
             _column.setShowHeader(Boolean.valueOf(attributes.getValue("showHeader")));
             _column.setShowFooter(Boolean.valueOf(attributes.getValue("showFooter")));
-            _blockProperties.getLayoutScreenProperties().getColumnContainer().addColumnProperties(_column);
+            _blockProperties.getScreenProperties().getColumnContainer().addColumnProperties(_column);
         }
         else if (name.equals(ELEMENT_HEADER))
         {
-            setDelegate(new ColumnHandler(name, _column.getHeaderScreen(), _column.getHeaderBorderProperties()));
+            setDelegate(new ColumnHandler(name, _column.getHeaderSectionProperties()));
             return;
         }
         else if (name.equals(ELEMENT_DETAIL))
         {
-            setDelegate(new ColumnHandler(name, _column.getDetailScreen(), _column.getDetailBorderProperties()));
+            setDelegate(new ColumnHandler(name, _column.getDetailSectionProperties()));
             return;
         }
         else if (name.equals(ELEMENT_FOOTER))
         {
-            setDelegate(new ColumnHandler(name, _column.getFooterScreen(), _column.getFooterBorderProperties()));
+            setDelegate(new ColumnHandler(name, _column.getFooterSectionProperties()));
             return;
         }
     }
@@ -104,28 +99,25 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
 
     private static class ColumnHandler extends EJCoreReportPropertiesTagHandler
     {
-        private final String                 tag;
-        private EJCoreReportScreenProperties screenProperties;
-        private EJCoreReportBorderProperties borderProperties;
+        private final String                              _tag;
+        private EJCoreReportScreenColumnSectionProperties _sectionProperties;
 
-        public ColumnHandler(String tag, EJCoreReportScreenProperties screenProperties, EJCoreReportBorderProperties borderProperties)
+        public ColumnHandler(String tag, EJCoreReportScreenColumnSectionProperties sectionProperties)
         {
-
-            this.screenProperties = screenProperties;
-            this.borderProperties = borderProperties;
-            this.tag = tag;
+            _sectionProperties = sectionProperties;
+            _tag = tag;
         }
 
         public void startLocalElement(String name, Attributes attributes) throws SAXException
         {
-            if (name.equals(tag))
+            if (name.equals(_tag))
             {
 
             }
             else if (name.equals(ELEMENT_SCREEN_ITEM))
             {
 
-                setDelegate(new ReportScreenItemHandler(screenProperties));
+                setDelegate(new ReportScreenItemHandler(_sectionProperties.getSectionItemContainer()));
                 return;
             }
 
@@ -133,46 +125,42 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
 
         public void endLocalElement(String name, String value, String untrimmedValue)
         {
-            if (name.equals(tag))
+            if (name.equals(_tag))
             {
                 quitAsDelegate();
                 return;
             }
-            else if (name.equals(ELEMENT_SCREEN_WIDTH))
-            {
-                screenProperties.setWidth(Integer.parseInt(value));
-            }
             else if (name.equals(ELEMENT_SCREEN_HEIGHT))
             {
-                screenProperties.setHeight(Integer.parseInt(value));
+                _sectionProperties.setHeight(Integer.parseInt(value));
             }
             else if (name.equals(ELEMENT_LINE_WIDTH))
             {
-                borderProperties.setLineWidth(Double.parseDouble(value));
+                _sectionProperties.setLineWidth(Double.parseDouble(value));
             }
             else if (name.equals(ELEMENT_LINE_STYLE))
             {
-                borderProperties.setLineStyle(EJReportBorderProperties.LineStyle.valueOf(value));
+                _sectionProperties.setLineStyle(EJReportBorderProperties.LineStyle.valueOf(value));
             }
             else if (name.equals(ELEMENT_LINE_VA))
             {
-                borderProperties.setVisualAttributeName(value);
+                _sectionProperties.setVisualAttributeName(value);
             }
             else if (name.equals(ELEMENT_SHOW_TOPLINE))
             {
-                borderProperties.setShowTopLine(Boolean.valueOf(value));
+                _sectionProperties.setShowTopLine(Boolean.valueOf(value));
             }
             else if (name.equals(ELEMENT_SHOW_BOTTOMLINE))
             {
-                borderProperties.setShowBottomLine(Boolean.valueOf(value));
+                _sectionProperties.setShowBottomLine(Boolean.valueOf(value));
             }
             else if (name.equals(ELEMENT_SHOW_LEFTLINE))
             {
-                borderProperties.setShowLeftLine(Boolean.valueOf(value));
+                _sectionProperties.setShowLeftLine(Boolean.valueOf(value));
             }
             else if (name.equals(ELEMENT_SHOW_RIGHTLINE))
             {
-                borderProperties.setShowRightLine(Boolean.valueOf(value));
+                _sectionProperties.setShowRightLine(Boolean.valueOf(value));
             }
 
         }

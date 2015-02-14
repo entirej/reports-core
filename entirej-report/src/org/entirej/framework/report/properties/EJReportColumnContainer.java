@@ -23,13 +23,13 @@ import java.util.List;
 
 public class EJReportColumnContainer
 {
-    private List<EJCoreReportColumnProperties> _columnProperties;
+    private List<EJCoreReportScreenColumnProperties> _columnProperties;
     private EJCoreReportBlockProperties        _blockProperties;
 
     public EJReportColumnContainer(EJCoreReportBlockProperties blockProperties)
     {
         _blockProperties = blockProperties;
-        _columnProperties = new ArrayList<EJCoreReportColumnProperties>();
+        _columnProperties = new ArrayList<EJCoreReportScreenColumnProperties>();
     }
 
     public EJCoreReportBlockProperties getBlockProperties()
@@ -37,7 +37,7 @@ public class EJReportColumnContainer
         return _blockProperties;
     }
 
-    public void addColumnProperties(EJCoreReportColumnProperties ColumnProperties)
+    public void addColumnProperties(EJCoreReportScreenColumnProperties ColumnProperties)
     {
         if (ColumnProperties != null)
         {
@@ -46,7 +46,7 @@ public class EJReportColumnContainer
         }
     }
 
-    public void addColumnProperties(int index, EJCoreReportColumnProperties ColumnProperties)
+    public void addColumnProperties(int index, EJCoreReportScreenColumnProperties ColumnProperties)
     {
         if (ColumnProperties != null)
         {
@@ -55,18 +55,18 @@ public class EJReportColumnContainer
         }
     }
 
-    public List<EJCoreReportColumnProperties> getAllColumnProperties()
+    public List<EJCoreReportScreenColumnProperties> getAllColumnProperties()
     {
         return _columnProperties;
     }
 
     public boolean contains(String name)
     {
-        Iterator<EJCoreReportColumnProperties> iti = _columnProperties.iterator();
+        Iterator<EJCoreReportScreenColumnProperties> iti = _columnProperties.iterator();
 
         while (iti.hasNext())
         {
-            EJCoreReportColumnProperties Column = iti.next();
+            EJCoreReportScreenColumnProperties Column = iti.next();
 
             if (Column.getName() != null && Column.getName().equalsIgnoreCase(name))
             {
@@ -77,14 +77,14 @@ public class EJReportColumnContainer
         return false;
     }
 
-    public EJCoreReportColumnProperties getColumnProperties(String name)
+    public EJCoreReportScreenColumnProperties getColumnProperties(String name)
     {
 
-        Iterator<EJCoreReportColumnProperties> props = _columnProperties.iterator();
+        Iterator<EJCoreReportScreenColumnProperties> props = _columnProperties.iterator();
 
         while (props.hasNext())
         {
-            EJCoreReportColumnProperties Column = props.next();
+            EJCoreReportScreenColumnProperties Column = props.next();
 
             if (Column.getName().equalsIgnoreCase(name))
             {
@@ -99,7 +99,7 @@ public class EJReportColumnContainer
         return _columnProperties.size();
     }
 
-    public void removeColumn(EJCoreReportColumnProperties column)
+    public void removeColumn(EJCoreReportScreenColumnProperties column)
     {
 
         _columnProperties.remove(column);

@@ -19,14 +19,14 @@ package org.entirej.framework.report.enumerations;
 
 public enum EJReportScreenType
 {
-    NONE, FORM_LATOUT, TABLE_LAYOUT;
+    NONE, FORM_LAYOUT, TABLE_LAYOUT;
 
     public String toString()
     {
         switch (this)
         {
 
-            case FORM_LATOUT:
+            case FORM_LAYOUT:
                 return "Form Layout";
             case TABLE_LAYOUT:
                 return "Table Layout";

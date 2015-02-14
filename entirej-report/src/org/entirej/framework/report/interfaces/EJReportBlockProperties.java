@@ -21,6 +21,7 @@ package org.entirej.framework.report.interfaces;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 import org.entirej.framework.report.service.EJReportBlockService;
 
 public interface EJReportBlockProperties extends Serializable
@@ -30,7 +31,7 @@ public interface EJReportBlockProperties extends Serializable
      * 
      * @return the main screen properties for this block
      */
-    public EJReportScreenProperties getLayoutScreenProperties();
+    public EJCoreReportScreenProperties getScreenProperties();
 
     /**
      * Returns the properties of each item defined within this block

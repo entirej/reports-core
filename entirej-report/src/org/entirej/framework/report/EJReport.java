@@ -118,7 +118,7 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
      * 
      * @return All blocks within this report
      */
-    public Collection<EJReportBlock> getAllBlocks()
+    public Collection<EJReportBlock> getBlocks()
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
 

@@ -11,20 +11,15 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
 {
 
     private boolean                     _visible = true;
-
-    private String                      name;
-
+    private String                      _name;
     private String                      _visualAttributeName;
-
-    private int                         x, y, width, height;
-
-    private boolean                     widthAsPercentage, heightAsPercentage;
-
-    private EJCoreReportBlockProperties blockProperties;
+    private int                         _xPos, _yPos, _width, _height;
+    private boolean                     _widthAsPercentage, _heightAsPercentage;
+    private EJCoreReportBlockProperties _blockProperties;
 
     public EJCoreReportScreenItemProperties(EJCoreReportBlockProperties blockProperties)
     {
-        this.blockProperties = blockProperties;
+        this._blockProperties = blockProperties;
     }
 
     @Override
@@ -54,66 +49,66 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     @Override
     public int getWidth()
     {
-        return width;
+        return _width;
     }
 
     public void setWidth(int width)
     {
-        this.width = width;
+        _width = width;
     }
 
     @Override
     public int getHeight()
     {
-        return height;
+        return _height;
     }
 
     public void setHeight(int height)
     {
-        this.height = height;
+        _height = height;
     }
 
     public boolean isWidthAsPercentage()
     {
-        return widthAsPercentage;
+        return _widthAsPercentage;
     }
 
     public void setWidthAsPercentage(boolean widthAsPercentage)
     {
-        this.widthAsPercentage = widthAsPercentage;
+        _widthAsPercentage = widthAsPercentage;
     }
 
     public boolean isHeightAsPercentage()
     {
-        return heightAsPercentage;
+        return _heightAsPercentage;
     }
 
     public void setHeightAsPercentage(boolean heightAsPercentage)
     {
-        this.heightAsPercentage = heightAsPercentage;
+        _heightAsPercentage = heightAsPercentage;
     }
 
     @Override
     public int getX()
     {
-        return x;
+        return _xPos;
     }
 
     public void setX(int x)
     {
-        this.x = x;
+        _xPos = x;
     }
 
     @Override
     public int getY()
     {
 
-        return y;
+        return _yPos;
     }
 
     public void setY(int y)
     {
-        this.y = y;
+        _yPos = y;
     }
 
     @Override
@@ -132,36 +127,35 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
         return _visualAttributeName;
     }
 
-    public void setVisualAttributeName(String _visualAttributeName)
+    public void setVisualAttributeName(String visualAttributeName)
     {
-        this._visualAttributeName = _visualAttributeName;
+        _visualAttributeName = visualAttributeName;
     }
 
     public EJCoreReportBlockProperties getBlockProperties()
     {
-        return blockProperties;
+        return _blockProperties;
     }
 
     public void setBlockProperties(EJCoreReportBlockProperties blockProperties)
     {
-        this.blockProperties = blockProperties;
+        _blockProperties = blockProperties;
     }
 
     public String getName()
     {
-        return name;
+        return _name;
     }
 
     public void setName(String name)
     {
-        this.name = name;
+        _name = name;
     }
 
     public static class Label extends AlignmentBaseItem implements RotatableItem
     {
 
         private String                 text;
-
         private EJReportScreenRotation rotation = EJReportScreenRotation.NONE;
 
         public Label(EJCoreReportBlockProperties blockProperties)
@@ -379,9 +373,7 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     {
 
         private boolean            expandToFit;
-
         private EJReportMarkupType markup = EJReportMarkupType.NONE;
-
         private String             value;
 
         public ValueBaseItem(EJCoreReportBlockProperties blockProperties)

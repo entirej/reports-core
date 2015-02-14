@@ -436,7 +436,7 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
 
         for (EJCoreReportBlockProperties properties : blockContainer.getAllBlockProperties())
         {
-            findParents(sub.getName(), properties.getLayoutScreenProperties().getSubBlocks(), blockNames);
+            findParents(sub.getName(), properties.getScreenProperties().getSubBlocks(), blockNames);
         }
         for (EJCoreReportBlockProperties properties : blockContainer.getAllBlockProperties())
         {
@@ -461,7 +461,7 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
             {
                 return true;
             }
-            if (findParents(child, properties.getLayoutScreenProperties().getSubBlocks(), blockNames))
+            if (findParents(child, properties.getScreenProperties().getSubBlocks(), blockNames))
             {
                 blockNames.add(properties.getName());
                 return true;

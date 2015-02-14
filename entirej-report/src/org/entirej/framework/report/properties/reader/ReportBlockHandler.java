@@ -75,7 +75,7 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         }
         else if (name.equals(ELEMENT_SCREEN_ITEM))
         {
-            setDelegate(new ReportScreenItemHandler(_blockProperties.getLayoutScreenProperties()));
+            setDelegate(new ReportScreenItemHandler(_blockProperties.getScreenProperties().getScreenItemContainer()));
             return;
         }
         else if (name.equals(ELEMENT_SCREEN_COLUMN))
@@ -85,7 +85,7 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         }
         else if (name.equals(ELEMENT_BLOCK_GROUP))
         {
-            setDelegate(new ReportBlockGroupHandler(_reportProperties, _blockProperties.getLayoutScreenProperties().getSubBlocks()));
+            setDelegate(new ReportBlockGroupHandler(_reportProperties, _blockProperties.getScreenProperties().getSubBlocks()));
         }
 
         if (name.equals(ELEMENT_BLOCK))
@@ -142,47 +142,47 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         }
         else if (name.equals(ELEMENT_SCREEN_TYPE))
         {
-            _blockProperties.getLayoutScreenProperties().setScreenType(EJReportScreenType.valueOf(value));
+            _blockProperties.getScreenProperties().setScreenType(EJReportScreenType.valueOf(value));
 
         }
         
         else if (name.equals(ELEMENT_ODD_VA))
         {
-            _blockProperties.getLayoutScreenProperties().setOddRowVAName(value);
+            _blockProperties.getScreenProperties().setOddRowVAName(value);
 
         }
         else if (name.equals(ELEMENT_EVEN_VA))
         {
-            _blockProperties.getLayoutScreenProperties().setEvenRowVAName(value);
+            _blockProperties.getScreenProperties().setEvenRowVAName(value);
 
         }
         else if (name.equals(ELEMENT_SCREEN_X))
         {
-            _blockProperties.getLayoutScreenProperties().setX(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setX(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_H_COL_HEIGHT))
         {
-            _blockProperties.getLayoutScreenProperties().setHeaderColumnHeight(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setHeaderColumnHeight(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_D_COL_HEIGHT))
         {
-            _blockProperties.getLayoutScreenProperties().setDetailColumnHeight(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setDetailColumnHeight(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_F_COL_HEIGHT))
         {
-            _blockProperties.getLayoutScreenProperties().setFooterColumnHeight(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setFooterColumnHeight(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_Y))
         {
-            _blockProperties.getLayoutScreenProperties().setY(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setY(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_WIDTH))
         {
-            _blockProperties.getLayoutScreenProperties().setWidth(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setWidth(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_HEIGHT))
         {
-            _blockProperties.getLayoutScreenProperties().setHeight(Integer.parseInt(value));
+            _blockProperties.getScreenProperties().setHeight(Integer.parseInt(value));
         }
     }
 

@@ -177,7 +177,7 @@ public class EJReportBlockContainer
 
     void collectSubBlocks(EJCoreReportBlockProperties blockProperties, List<EJCoreReportBlockProperties> list)
     {
-        List<EJCoreReportBlockProperties> allSubBlocks = blockProperties.getLayoutScreenProperties().getAllSubBlocks();
+        List<EJCoreReportBlockProperties> allSubBlocks = blockProperties.getScreenProperties().getAllSubBlocks();
         for (EJCoreReportBlockProperties sub : allSubBlocks)
         {
             list.add(sub);
@@ -311,7 +311,7 @@ public class EJReportBlockContainer
                 {
                     return props;
                 }
-                EJCoreReportBlockProperties blockProperties = props.getLayoutScreenProperties().getSubBlocks().getBlockProperties(blockName);
+                EJCoreReportBlockProperties blockProperties = props.getScreenProperties().getSubBlocks().getBlockProperties(blockName);
                 if (blockProperties != null)
                 {
                     return blockProperties;

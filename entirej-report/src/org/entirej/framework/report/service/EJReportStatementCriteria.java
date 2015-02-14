@@ -89,7 +89,7 @@ public class EJReportStatementCriteria implements Serializable
 
         // check if there is a field or name for this restriction
         EJReportBlockItem item = null;
-        for (EJReportBlockItem current : _block.getBlockItems())
+        for (EJReportBlockItem current : _block.getItems())
         {
             if (current.getFieldName() != null && current.getFieldName().equals(restriction.getFieldName()))
             {
@@ -152,7 +152,7 @@ public class EJReportStatementCriteria implements Serializable
         {
             if (_block != null && _block.containsItem(restriction.getBlockItemName()))
             {
-                EJReportBlockItem item = _block.getBlockItem(restriction.getBlockItemName());
+                EJReportBlockItem item = _block.getItem(restriction.getBlockItemName());
                 if (item != null)
                 {
                     restriction.setFieldName(item.getFieldName());

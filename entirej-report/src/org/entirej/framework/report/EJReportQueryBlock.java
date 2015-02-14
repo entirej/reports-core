@@ -26,7 +26,7 @@ public interface EJReportQueryBlock
 {
     public String getName();
 
-    public Collection<EJReportBlockItem> getBlockItems();
+    public Collection<EJReportBlockItem> getItems();
 
     /**
      * Indicates if the block has an item with the given name
@@ -41,7 +41,7 @@ public interface EJReportQueryBlock
 
     public EJReportDefaultServicePojoHelper getServicePojoHelper();
 
-    public EJReportBlockItem getBlockItem(String itemName);
+    public EJReportBlockItem getItem(String itemName);
 
     /**
      * Return the report to which this block belongs

@@ -24,12 +24,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.entirej.framework.report.data.EJReportDataRecord;
-import org.entirej.framework.report.data.controllers.EJReportBlockController;
-import org.entirej.framework.report.interfaces.EJReportBlockProperties;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
-import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJReportBlock implements EJReportQueryBlock, Serializable
 {
@@ -49,8 +46,13 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         return new EJReport(_block.getReport());
     }
+    
+    public EJReportScreen getScreen()
+    {
+        return new EJReportScreen(this, _block.getProperties().getScreenProperties());
+    }
 
-    public Collection<EJReportBlockItem> getBlockItems()
+    public Collection<EJReportBlockItem> getItems()
     {
         ArrayList<EJReportBlockItem> blockItems = new ArrayList<EJReportBlockItem>();
 
@@ -62,7 +64,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return blockItems;
     }
 
-    public EJReportBlockItem getBlockItem(String itemName)
+    public EJReportBlockItem getItem(String itemName)
     {
         if (_block.getProperties().getItemProperties(itemName) == null)
         {
@@ -82,11 +84,11 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         return _block.getProperties().isControlBlock();
     }
-
-    public EJReportBlockProperties getProperties()
-    {
-        return _block.getProperties();
-    }
+//
+//    public EJReportBlockProperties getProperties()
+//    {
+//        return _block.getProperties();
+//    }
 
     /**
      * Indicates if the block has an item with the given name
@@ -120,73 +122,73 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return _block.getProperties().getName();
     }
 
-    /**
-     * Creates an empty query criteria for this block
-     * <p>
-     * The criteria can be used for executing a query within this block.
-     * Criterion can be added to restrict the query
-     * 
-     * @return
-     */
-    public EJReportQueryCriteria createQueryCriteria()
-    {
-        return _block.createQueryCriteria();
-    }
-
-    /**
-     * Used to create an empty record for this block
-     * <p>
-     * The whenCreateRecord within the blocks processor will be fired once the
-     * record has been created
-     * 
-     * @return The newly created record
-     */
-    public EJReportRecord createRecord()
-    {
-        return new EJReportRecord(_block.createRecord());
-    }
-
-    /**
-     * Clears this blocks data
-     * <p>
-     * Only this controllers underlying data block will be cleared, if the block
-     * is master in a master-detail relationship then its detail blocks will be
-     * left untouched. To clear all detail blocks use the
-     * {@link EJBlock#clearAllDetailRelations(boolean))}
-     * 
-     * @see EJReportBlockController#clearAllDetailRelations()
-     */
-    public void clear()
-    {
-        _block.clear();
-    }
-
-    /**
-     * Instructs EntireJ to perform a query on the given block using no query
-     * criteria
-     * <p>
-     * The block will create an empty {@link EJReportQueryCriteria}
-     */
-    public void executeQuery()
-    {
-        _block.executeQuery(createQueryCriteria());
-    }
-
-    /**
-     * Instructs EntireJ to perform a query on the given block using the
-     * specified criteria
-     * 
-     * @param queryCriteria
-     *            The criteria for the query
-     */
-    public void executeQuery(EJReportQueryCriteria queryCriteria)
-    {
-        if (queryCriteria.getBlock() == null)
-        {
-            queryCriteria.setBlock(this);
-        }
-        _block.executeQuery(queryCriteria);
-    }
+//    /**
+//     * Creates an empty query criteria for this block
+//     * <p>
+//     * The criteria can be used for executing a query within this block.
+//     * Criterion can be added to restrict the query
+//     * 
+//     * @return
+//     */
+//    public EJReportQueryCriteria createQueryCriteria()
+//    {
+//        return _block.createQueryCriteria();
+//    }
+//
+//    /**
+//     * Used to create an empty record for this block
+//     * <p>
+//     * The whenCreateRecord within the blocks processor will be fired once the
+//     * record has been created
+//     * 
+//     * @return The newly created record
+//     */
+//    public EJReportRecord createRecord()
+//    {
+//        return new EJReportRecord(_block.createRecord());
+//    }
+//
+//    /**
+//     * Clears this blocks data
+//     * <p>
+//     * Only this controllers underlying data block will be cleared, if the block
+//     * is master in a master-detail relationship then its detail blocks will be
+//     * left untouched. To clear all detail blocks use the
+//     * {@link EJBlock#clearAllDetailRelations(boolean))}
+//     * 
+//     * @see EJReportBlockController#clearAllDetailRelations()
+//     */
+//    public void clear()
+//    {
+//        _block.clear();
+//    }
+//
+//    /**
+//     * Instructs EntireJ to perform a query on the given block using no query
+//     * criteria
+//     * <p>
+//     * The block will create an empty {@link EJReportQueryCriteria}
+//     */
+//    public void executeQuery()
+//    {
+//        _block.executeQuery(createQueryCriteria());
+//    }
+//
+//    /**
+//     * Instructs EntireJ to perform a query on the given block using the
+//     * specified criteria
+//     * 
+//     * @param queryCriteria
+//     *            The criteria for the query
+//     */
+//    public void executeQuery(EJReportQueryCriteria queryCriteria)
+//    {
+//        if (queryCriteria.getBlock() == null)
+//        {
+//            queryCriteria.setBlock(this);
+//        }
+//        _block.executeQuery(queryCriteria);
+//    }
 
     /**
      * Retrieves the current record for the given block
@@ -208,18 +210,18 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
             return new EJReportRecord(record);
         }
     }
+//
+//    /**
+//     * Navigates to the next record of this block
+//     * <p>
+//     * If this block has no records then no action will be performed
+//     */
+//    public void navigateToNextRecord()
+//    {
+//        _block.navigateToNextRecord();
+//    }
 
-    /**
-     * Navigates to the next record of this block
-     * <p>
-     * If this block has no records then no action will be performed
-     */
-    public void navigateToNextRecord()
-    {
-        _block.navigateToNextRecord();
-    }
-
-    public int getBlockRecordCount()
+    public int getRecordCount()
     {
         return _block.getBlockRecordCount();
     }
@@ -235,7 +237,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
      * @throws EJReportRuntimeException
      *             If there is no block with the given name
      */
-    public Collection<EJReportRecord> getBlockRecords()
+    public Collection<EJReportRecord> getRecords()
     {
         ArrayList<EJReportRecord> records = new ArrayList<EJReportRecord>();
         for (EJReportDataRecord record : _block.getBlockRecords())

@@ -49,7 +49,7 @@ public interface EJReportScreenItemProperties extends Serializable
      */
     public boolean isVisible();
 
-    public void setVisible(Boolean visible);
+    public void setVisible(boolean visible);
     
     public EJReportScreenItemType getType();
 

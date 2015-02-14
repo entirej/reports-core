@@ -39,11 +39,11 @@ public class EJReportScreenItem implements Serializable
         _itemProps = item;
     }
 
-//    public EJReportScreenItem(EJReportDataScreenItem item)
-//    {
-//        _useDataItem = true;
-//        _dataItem = item;
-//    }
+    public EJReportScreenItem(EJReportDataScreenItem item)
+    {
+        _useDataItem = true;
+        _dataItem = item;
+    }
 
     /**
      * Return the name of this item

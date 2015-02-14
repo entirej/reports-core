@@ -12,37 +12,30 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
 {
 
     private boolean                      _isControlBlock           = false;
-
     private String                       _blockDescription         = "";
     private boolean                      _isReferenced             = false;
-
     private EJCoreReportProperties       _reportProperties;
     private String                       _name                     = "";
-
-    private EJCoreReportScreenProperties _layoutScreenProperties;
-
+    private EJCoreReportScreenProperties _screenProperties;
     private String                       _serviceClassName;
     private String                       _actionProcessorClassName = "";
-    
-    private EJReportBlockService<?>                   _blockService;
-
+    private EJReportBlockService<?>      _blockService;
     private EJReportBlockItemContainer   _itemContainer;
 
-    
     public EJCoreReportBlockProperties(EJCoreReportProperties reportProperties, String blockName, boolean isCcontrolBlock)
     {
 
         _reportProperties = reportProperties;
         _name = blockName;
         _isControlBlock = isCcontrolBlock;
-        _layoutScreenProperties = new EJCoreReportScreenProperties(this);
+        _screenProperties = new EJCoreReportScreenProperties(this);
         _itemContainer = new EJReportBlockItemContainer(this);
     }
 
     @Override
-    public EJCoreReportScreenProperties getLayoutScreenProperties()
+    public EJCoreReportScreenProperties getScreenProperties()
     {
-        return _layoutScreenProperties;
+        return _screenProperties;
     }
 
     @Override
@@ -57,7 +50,6 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
         return _itemContainer.getItemProperties(itemName);
     }
 
- 
     @Override
     public boolean isControlBlock()
     {
@@ -137,7 +129,7 @@ public class EJCoreReportBlockProperties implements EJReportBlockProperties, Blo
     {
 
         _serviceClassName = serviceClassName;
-        
+
         if (serviceClassName != null && serviceClassName.trim().length() > 0)
         {
             _blockService = _reportProperties.getFrameworkManager().getBlockServiceFactory().createBlockService(serviceClassName);

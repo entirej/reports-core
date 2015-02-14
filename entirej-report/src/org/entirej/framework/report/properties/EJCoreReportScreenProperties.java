@@ -20,7 +20,7 @@ public class EJCoreReportScreenProperties
 
     private final BlockGroup            subBlocks  = new BlockGroup("Sub Blocks");
 
-    private EJReportScreenItemContainer _screenItemContainer;
+    private EJCoreReportSreenItemContainer _screenItemContainer;
     private EJReportColumnContainer     _columnContainer;
 
     private String                      oddRowVAName;
@@ -104,7 +104,7 @@ public class EJCoreReportScreenProperties
         return _screenItemContainer.getAllItemProperties();
     }
 
-    public EJReportScreenItemContainer getScreenItemContainer()
+    public EJCoreReportSreenItemContainer getScreenItemContainer()
     {
         return _screenItemContainer;
     }
@@ -114,7 +114,7 @@ public class EJCoreReportScreenProperties
         return _columnContainer;
     }
 
-    public Collection<? extends EJCoreReportColumnProperties> getAllColumns()
+    public Collection<? extends EJCoreReportScreenColumnProperties> getAllColumns()
     {
         return _columnContainer.getAllColumnProperties();
     }

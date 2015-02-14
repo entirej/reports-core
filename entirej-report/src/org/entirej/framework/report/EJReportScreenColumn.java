@@ -1,13 +1,13 @@
 package org.entirej.framework.report;
 
 import org.entirej.framework.report.interfaces.EJReportBlockProperties;
-import org.entirej.framework.report.properties.EJCoreReportColumnProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenColumnProperties;
 
 public class EJReportScreenColumn
 {
-    private EJCoreReportColumnProperties _properties;
+    private EJCoreReportScreenColumnProperties _properties;
     
-    public EJReportScreenColumn(EJCoreReportColumnProperties properties)
+    public EJReportScreenColumn(EJCoreReportScreenColumnProperties properties)
     {
         _properties = properties;
     }

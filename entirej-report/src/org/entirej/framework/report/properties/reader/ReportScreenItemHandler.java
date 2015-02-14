@@ -29,14 +29,14 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Number.NumberFormats;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
-import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
+import org.entirej.framework.report.properties.EJCoreReportSreenItemContainer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
 {
     private EJCoreReportScreenItemProperties _itemProperties;
-    private EJCoreReportScreenProperties     _blockProperties;
+    private EJCoreReportSreenItemContainer   _itemContainer;
 
     private static final String              ELEMENT_ITEM                        = "screenitem";
     private static final String              ELEMENT_SCREEN_X                    = "x";
@@ -62,9 +62,9 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
     private static final String              ELEMENT_SCREEN_RECT_RADIUS          = "rectRadius";
     private static final String              ELEMENT_SCREEN_DEFAULT_IMAGE        = "defaultImage";
 
-    public ReportScreenItemHandler(EJCoreReportScreenProperties blockProperties)
+    public ReportScreenItemHandler(EJCoreReportSreenItemContainer itemContainer)
     {
-        _blockProperties = blockProperties;
+        _itemContainer = itemContainer;
 
     }
 
@@ -82,7 +82,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
 
             String itemname = attributes.getValue("name");
 
-            _itemProperties = _blockProperties.getScreenItemContainer().createItem(screenItemType, itemname, -1);
+            _itemProperties = _itemContainer.createItem(screenItemType, itemname, -1);
 
         }
 

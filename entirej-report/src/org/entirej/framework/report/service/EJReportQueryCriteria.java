@@ -73,7 +73,7 @@ public class EJReportQueryCriteria extends EJReportStatementCriteria implements 
             return;
         }
 
-        for (EJReportBlockItem item : getBlock().getBlockItems())
+        for (EJReportBlockItem item : getBlock().getItems())
         {
             Object defaultValue = EJReportDataHelper.getDefaultQueryValue(getBlock().getReport(), item);
             if (defaultValue != null)
