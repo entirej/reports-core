@@ -2,12 +2,14 @@ package org.entirej.framework.report;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenColumnProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
+import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReportScreen
 {
@@ -20,6 +22,11 @@ public class EJReportScreen
         _properties = properties;
     }
 
+    public String getBlockName()
+    {
+        return _block.getName();
+    }
+    
     /**
      * @return Returns the width of this screen
      */
@@ -51,34 +58,69 @@ public class EJReportScreen
     {
         return _properties.getY();
     }
+    
+    public int getDefaultHeaderHeight()
+    {
+        return _properties.getHeaderColumnHeight();
+    }
+    
+    public int getDefaultDetailHeight()
+    {
+        return _properties.getDetailColumnHeight();
+    }
+    
+    public int getDefaultFooterHeight()
+    {
+        return _properties.getFooterColumnHeight();
+    }
+    
+    public String getOddRecotrdVisualAttributeName()
+    {
+        return _properties.getOddRowVAName();
+    }
 
+    public String getEvenRecotrdVisualAttributeName()
+    {
+        return _properties.getEvenRowVAName();
+    }
+    
+    public EJReportVisualAttributeProperties getOddRecotrdVisualAttributes()
+    {
+        return _properties.getOddVAProperties();
+    }
+
+    public EJReportVisualAttributeProperties getEvenRecotrdVisualAttributes()
+    {
+        return _properties.getEvenVAProperties();
+    }
+    
     /**
      * Returns the type of this screen
      * 
      * @return The screens type
      */
-    public EJReportScreenType getScreenType()
+    public EJReportScreenType getType()
     {
         return _properties.getScreenType();
     }
 
-    public Collection<? extends EJReportScreenItem> getScreenItems()
+    public Collection<EJReportScreenItem> getScreenItems()
     {
         ArrayList<EJReportScreenItem> items = new ArrayList<EJReportScreenItem>();
         for (EJReportScreenItemProperties itemProps : _properties.getScreenItems())
         {
-            EJReportScreenItem item = new EJReportScreenItem(itemProps);
+            EJReportScreenItem item = new EJReportScreenItem(_block, itemProps);
             items.add(item);
         }
         return items;
     }
 
-    public Collection<? extends EJReportScreenColumn> getScreenColumns()
+    public Collection<EJReportScreenColumn> getScreenColumns()
     {
         ArrayList<EJReportScreenColumn> columns = new ArrayList<EJReportScreenColumn>();
         for (EJCoreReportScreenColumnProperties col : _properties.getColumnContainer().getAllColumnProperties())
         {
-            columns.add(new EJReportScreenColumn(col));
+            columns.add(new EJReportScreenColumn(_block, col));
         }
 
         return columns;
@@ -89,7 +131,7 @@ public class EJReportScreen
         return _block.getReport().getBlock(blockName);
     }
 
-    public Collection<? extends EJReportBlock> getSubBlocks()
+    public List<EJReportBlock> getSubBlocks()
     {
         ArrayList<EJReportBlock> blocks = new ArrayList<EJReportBlock>();
         for (EJCoreReportBlockProperties blockProps : _properties.getSubBlocks().getAllBlockProperties())

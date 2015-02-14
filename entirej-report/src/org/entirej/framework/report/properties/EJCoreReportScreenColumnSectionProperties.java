@@ -67,7 +67,7 @@ public class EJCoreReportScreenColumnSectionProperties implements EJReportBorder
         this.lineWidth = lineWidth;
     }
 
-    public boolean isShowTopLine()
+    public boolean showTopLine()
     {
         return showTopLine;
     }
@@ -77,7 +77,7 @@ public class EJCoreReportScreenColumnSectionProperties implements EJReportBorder
         this.showTopLine = showTopLine;
     }
 
-    public boolean isShowBottomLine()
+    public boolean showBottomLine()
     {
         return showBottomLine;
     }
@@ -87,7 +87,7 @@ public class EJCoreReportScreenColumnSectionProperties implements EJReportBorder
         this.showBottomLine = showBottomLine;
     }
 
-    public boolean isShowLeftLine()
+    public boolean showLeftLine()
     {
         return showLeftLine;
     }
@@ -97,7 +97,7 @@ public class EJCoreReportScreenColumnSectionProperties implements EJReportBorder
         this.showLeftLine = showLeftLine;
     }
 
-    public boolean isShowRightLine()
+    public boolean showRightLine()
     {
         return showRightLine;
     }

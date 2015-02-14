@@ -17,12 +17,12 @@ public interface EJReportBorderProperties
 
     EJReportVisualAttributeProperties getVisualAttributeProperties();
 
-    boolean isShowTopLine();
+    boolean showTopLine();
 
-    boolean isShowBottomLine();
+    boolean showBottomLine();
 
-    boolean isShowLeftLine();
+    boolean showLeftLine();
 
-    boolean isShowRightLine();
+    boolean showRightLine();
 
 }

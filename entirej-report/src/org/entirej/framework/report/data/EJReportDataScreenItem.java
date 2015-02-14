@@ -26,9 +26,9 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 /**
  * Contains the actual data for a specific item.
  */
-public class EJReportDataScreenItem implements Serializable 
+public class EJReportDataScreenItem implements Serializable
 {
-    private final String name;
+    private final String                      name;
     private EJReportController                _reportController;
     private EJReportVisualAttributeProperties _vaProperties;
     private boolean                           _visible = true;
@@ -36,7 +36,7 @@ public class EJReportDataScreenItem implements Serializable
     EJReportDataScreenItem(EJReportController reportController, final String name)
     {
         _reportController = reportController;
-        this.name =name;
+        this.name = name;
 
     }
 
@@ -49,10 +49,6 @@ public class EJReportDataScreenItem implements Serializable
     {
         return name;
     }
-
-  
-
-   
 
     public void setVisualAttribute(String visualAttributeName)
     {
@@ -81,8 +77,6 @@ public class EJReportDataScreenItem implements Serializable
         return _vaProperties;
     }
 
-  
-
     /**
      * Sets this item visible
      * <p>
@@ -107,8 +101,6 @@ public class EJReportDataScreenItem implements Serializable
     {
         return _visible;
     }
-
-    
 
     public String toString()
     {

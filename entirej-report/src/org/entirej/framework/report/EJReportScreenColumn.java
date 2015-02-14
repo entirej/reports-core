@@ -5,10 +5,12 @@ import org.entirej.framework.report.properties.EJCoreReportScreenColumnPropertie
 
 public class EJReportScreenColumn
 {
+    private EJReportBlock _block;
     private EJCoreReportScreenColumnProperties _properties;
     
-    public EJReportScreenColumn(EJCoreReportScreenColumnProperties properties)
+    public EJReportScreenColumn(EJReportBlock block, EJCoreReportScreenColumnProperties properties)
     {
+        _block = block;
         _properties = properties;
     }
     
@@ -36,35 +38,21 @@ public class EJReportScreenColumn
     {
         return _properties.getWidth();
     }
-//
-//    public EJCoreReportScreenProperties getHeaderScreenProperties()
-//    {
-//        return _properties.getHeaderScreenProperties();
-//    }
-//
-//    public EJCoreReportScreenProperties getDetailScreenProperties()
-//    {
-//        return _properties.getDetailScreenProperties();
-//    }
-//
-//    public EJCoreReportScreenProperties getFooterScreenProperties()
-//    {
-//        return _properties.getFooterScreenProperties();
-//    }
-//
-//    public EJCoreReportBorderProperties getHeaderBorderProperties()
-//    {
-//        return _properties.getHeaderBorderProperties();
-//    }
-//
-//    public EJCoreReportBorderProperties getDetailBorderProperties()
-//    {
-//        return _properties.getDetailBorderProperties();
-//    }
-//
-//    public EJCoreReportBorderProperties getFooterBorderProperties()
-//    {
-//        return _properties.getFooterBorderProperties();
-//    }
+
+    public EJReportScreenColumnSection getHeaderSection()
+    {
+        return new EJReportScreenColumnSection(_block, _properties.getHeaderSectionProperties());
+    }
+
+    public EJReportScreenColumnSection getDetailSection()
+    {
+        return new EJReportScreenColumnSection(_block, _properties.getDetailSectionProperties());
+    }
+
+    public EJReportScreenColumnSection getFooterSection()
+    {
+        return new EJReportScreenColumnSection(_block, _properties.getFooterSectionProperties());
+    }
+
 
 }

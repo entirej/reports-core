@@ -27,6 +27,7 @@ import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
+import org.entirej.framework.report.service.EJReportQueryCriteria;
 
 public class EJReportBlock implements EJReportQueryBlock, Serializable
 {
@@ -122,18 +123,18 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return _block.getProperties().getName();
     }
 
-//    /**
-//     * Creates an empty query criteria for this block
-//     * <p>
-//     * The criteria can be used for executing a query within this block.
-//     * Criterion can be added to restrict the query
-//     * 
-//     * @return
-//     */
-//    public EJReportQueryCriteria createQueryCriteria()
-//    {
-//        return _block.createQueryCriteria();
-//    }
+    /**
+     * Creates an empty query criteria for this block
+     * <p>
+     * The criteria can be used for executing a query within this block.
+     * Criterion can be added to restrict the query
+     * 
+     * @return
+     */
+    public EJReportQueryCriteria createQueryCriteria()
+    {
+        return _block.createQueryCriteria();
+    }
 //
 //    /**
 //     * Used to create an empty record for this block
@@ -163,16 +164,16 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
 //        _block.clear();
 //    }
 //
-//    /**
-//     * Instructs EntireJ to perform a query on the given block using no query
-//     * criteria
-//     * <p>
-//     * The block will create an empty {@link EJReportQueryCriteria}
-//     */
-//    public void executeQuery()
-//    {
-//        _block.executeQuery(createQueryCriteria());
-//    }
+    /**
+     * Instructs EntireJ to perform a query on the given block using no query
+     * criteria
+     * <p>
+     * The block will create an empty {@link EJReportQueryCriteria}
+     */
+    public void executeQuery()
+    {
+        _block.executeQuery(createQueryCriteria());
+    }
 //
 //    /**
 //     * Instructs EntireJ to perform a query on the given block using the
@@ -210,16 +211,16 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
             return new EJReportRecord(record);
         }
     }
-//
-//    /**
-//     * Navigates to the next record of this block
-//     * <p>
-//     * If this block has no records then no action will be performed
-//     */
-//    public void navigateToNextRecord()
-//    {
-//        _block.navigateToNextRecord();
-//    }
+
+    /**
+     * Navigates to the next record of this block
+     * <p>
+     * If this block has no records then no action will be performed
+     */
+    public void navigateToNextRecord()
+    {
+        _block.navigateToNextRecord();
+    }
 
     public int getRecordCount()
     {

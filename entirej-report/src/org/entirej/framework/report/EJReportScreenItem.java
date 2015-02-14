@@ -20,29 +20,64 @@ package org.entirej.framework.report;
 
 import java.io.Serializable;
 
-import org.entirej.framework.report.data.EJReportDataScreenItem;
+import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
+import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
+import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
+import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 /**
  * Contains the actual data for a specific item.
  */
 public class EJReportScreenItem implements Serializable
 {
-    private boolean                      _useDataItem = true;
-
-    private EJReportDataScreenItem       _dataItem;
+    private EJReportBlock                _block;
     private EJReportScreenItemProperties _itemProps;
 
-    public EJReportScreenItem(EJReportScreenItemProperties item)
+    public EJReportScreenItem(EJReportBlock block, EJReportScreenItemProperties item)
     {
-        _useDataItem = false;
+        _block = block;
         _itemProps = item;
     }
 
-    public EJReportScreenItem(EJReportDataScreenItem item)
+    public String getBlockName()
     {
-        _useDataItem = true;
-        _dataItem = item;
+        return _block.getName();
+    }
+
+    public EJReportScreenItemType getType()
+    {
+        return _itemProps.getType();
+    }
+
+    public int getWidth()
+    {
+        return _itemProps.getWidth();
+    }
+
+    public int getHeight()
+    {
+        return _itemProps.getHeight();
+    }
+
+    public boolean isWidthAsPercentage()
+    {
+        return _itemProps.isWidthAsPercentage();
+    }
+
+    public boolean isHeightAsPercentage()
+    {
+        return _itemProps.isHeightAsPercentage();
+    }
+
+    public int getXPos()
+    {
+        return _itemProps.getX();
+    }
+
+    public int getYPos()
+    {
+        return _itemProps.getY();
     }
 
     /**
@@ -52,14 +87,7 @@ public class EJReportScreenItem implements Serializable
      */
     public String getName()
     {
-        if (_useDataItem)
-        {
-            return _dataItem.getName();
-        }
-        else
-        {
-            return _itemProps.getName();
-        }
+        return _itemProps.getName();
     }
 
     /**
@@ -72,14 +100,12 @@ public class EJReportScreenItem implements Serializable
      */
     public void setVisualAttribute(String visualAttributeName)
     {
-        if (_useDataItem)
-        {
-            _dataItem.setVisualAttribute(visualAttributeName);
-        }
-        else
-        {
-            _itemProps.setVisualAttribute(visualAttributeName);
-        }
+        _itemProps.setVisualAttribute(visualAttributeName);
+    }
+    
+    public EJReportVisualAttributeProperties getVisualAttributes()
+    {
+        return _itemProps.getVisualAttributeProperties();
     }
 
     /**
@@ -89,14 +115,7 @@ public class EJReportScreenItem implements Serializable
      */
     public boolean isVisible()
     {
-        if (_useDataItem)
-        {
-            return _dataItem.isVisible();
-        }
-        else
-        {
-            return _itemProps.isVisible();
-        }
+        return _itemProps.isVisible();
     }
 
     /**
@@ -111,25 +130,11 @@ public class EJReportScreenItem implements Serializable
      */
     public void setVisible(boolean visible)
     {
-        if (_useDataItem)
-        {
-            _dataItem.setVisible(visible);
-        }
-        else
-        {
-            _itemProps.setVisible(visible);
-        }
+        _itemProps.setVisible(visible);
     }
 
     public String toString()
     {
-        if (_useDataItem)
-        {
-            return _dataItem.toString();
-        }
-        else
-        {
-            return _itemProps.getName();
-        }
+        return _itemProps.getName();
     }
 }

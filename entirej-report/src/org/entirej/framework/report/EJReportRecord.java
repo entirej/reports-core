@@ -84,15 +84,9 @@ public class EJReportRecord implements Serializable
      *            The item to return
      * @return The {@link EJReportScreenItem} with the given name
      */
-    public EJReportScreenItem getScreenItem(String itemName, EJReportScreenSection section)
+    public EJReportDataScreenItem getScreenItem(String itemName, EJReportScreenSection section)
     {
-        EJReportDataScreenItem item = _dataRecord.getScreenItem(itemName, section);
-        if (item == null)
-        {
-            return null;
-        }
-
-        return new EJReportScreenItem(item);
+        return _dataRecord.getScreenItem(itemName, section);
     }
 
     /**

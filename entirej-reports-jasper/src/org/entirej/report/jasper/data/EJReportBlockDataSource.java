@@ -32,6 +32,7 @@ import net.sf.jasperreports.engine.JRField;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportScreenItem;
+import org.entirej.framework.report.data.EJReportDataScreenItem;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
@@ -106,7 +107,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
                 if (record == null)
                 {
-                    System.out.println(block.getBlockRecords().size());
+                    System.out.println(block.getRecords().size());
                 }
 
                 Object value = record.getValue(itemName);
@@ -147,7 +148,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         fieldCache.clear();
         index++;
 
-        boolean hasRecord = index < block.getBlockRecordCount();
+        boolean hasRecord = index < block.getRecordCount();
         if (hasRecord)
         {
             block.navigateToNextRecord();
@@ -162,7 +163,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     @Override
     public boolean isActive(String item, String section, String vaName)
     {
-        EJReportScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+        EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
         // System.err.println(item +" B="+block.getName());
         if (reportItem == null)
@@ -178,7 +179,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     @Override
     public boolean isVisible(String item, String section)
     {
-        EJReportScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+        EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
         if (reportItem == null)
             return false;
@@ -191,7 +192,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     {
         if (value instanceof String)
         {
-            EJReportScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+            EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
             if (reportItem == null)
                 return value;
@@ -223,10 +224,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         return value;
     }
 
-    private EJReportScreenItem getReportScreenItem(String item, EJReportScreenSection section)
+    private EJReportDataScreenItem getReportScreenItem(String item, EJReportScreenSection section)
     {
 
-        EJReportScreenItem reportItem = null;
+        EJReportDataScreenItem reportItem = null;
 
         EJReportRecord record = block.getCurrentRecord();
         reportItem = record.getScreenItem(item, section);
