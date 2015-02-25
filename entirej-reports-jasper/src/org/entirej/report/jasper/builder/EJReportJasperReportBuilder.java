@@ -844,8 +844,8 @@ public class EJReportJasperReportBuilder
             
             JRDesignTextField textField = (JRDesignTextField) element;
             JRDesignExpression expression = (JRDesignExpression) textField.getExpression();
-            
-            textField.setExpression(createVABaseValueExpression(expression, item.getName(),  section));
+            if(!expression.getText().isEmpty())
+                textField.setExpression(createVABaseValueExpression(expression, item.getName(),  section));
         }
         
         
