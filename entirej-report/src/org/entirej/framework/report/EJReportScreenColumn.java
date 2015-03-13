@@ -5,15 +5,15 @@ import org.entirej.framework.report.properties.EJCoreReportScreenColumnPropertie
 
 public class EJReportScreenColumn
 {
-    private EJReportBlock _block;
+    private EJReportBlock                      _block;
     private EJCoreReportScreenColumnProperties _properties;
-    
+
     public EJReportScreenColumn(EJReportBlock block, EJCoreReportScreenColumnProperties properties)
     {
         _block = block;
         _properties = properties;
     }
-    
+
     public String getName()
     {
         return _properties.getName();
@@ -53,6 +53,5 @@ public class EJReportScreenColumn
     {
         return new EJReportScreenColumnSection(_block, _properties.getFooterSectionProperties());
     }
-
 
 }

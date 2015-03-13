@@ -291,7 +291,7 @@ public class ReportHandler extends EJCoreReportPropertiesTagHandler
     {
         if (name.equals(ELEMENT_BLOCK))
         {
-            //compatibility
+            // compatibility
             _reportProperties.getBlockContainer().getFirstPage().addBlockProperties(((ReportBlockHandler) currentDelegate).getBlockProperties());
             return;
         }

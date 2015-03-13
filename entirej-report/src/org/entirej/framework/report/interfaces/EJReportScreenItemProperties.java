@@ -28,15 +28,15 @@ public interface EJReportScreenItemProperties extends Serializable
 {
 
     public void setVisualAttribute(String visualAttributeName);
-    
+
     /**
      * gets the visual attribute properties that should be used for this item
      * <p>
      * If the visual attribute properties are set to <code>null</code> then the
      * item should be displayed using its default display properties
      * 
-     * @return The {@link EJCoreReportVisualAttributeProperties} that should be used
-     *         for this item
+     * @return The {@link EJCoreReportVisualAttributeProperties} that should be
+     *         used for this item
      */
     public EJReportVisualAttributeProperties getVisualAttributeProperties();
 
@@ -50,7 +50,7 @@ public interface EJReportScreenItemProperties extends Serializable
     public boolean isVisible();
 
     public void setVisible(boolean visible);
-    
+
     public EJReportScreenItemType getType();
 
     /**

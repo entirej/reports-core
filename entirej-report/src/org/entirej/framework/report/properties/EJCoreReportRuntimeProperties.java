@@ -43,7 +43,7 @@ public class EJCoreReportRuntimeProperties implements EJEntireJReportProperties
 
     private EJReportVisualAttributeContainer     _visualAttributeContainer;
 
-    private List<EJApplicationLevelParameter>  _runtimeLevelParameters;
+    private List<EJApplicationLevelParameter>    _runtimeLevelParameters;
 
     private static EJCoreReportRuntimeProperties _instance;
 

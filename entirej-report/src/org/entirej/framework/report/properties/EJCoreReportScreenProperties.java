@@ -9,22 +9,22 @@ import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup
 public class EJCoreReportScreenProperties
 {
 
-    private EJCoreReportBlockProperties blockProperties;
+    private EJCoreReportBlockProperties    blockProperties;
 
-    private int                         x, y, width, height;
-    
-    private int                         headerColumnHeight;
-    private int                         detailColumnHeight;
-    private int                         footerColumnHeight;
-    private EJReportScreenType          screenType = EJReportScreenType.NONE;
+    private int                            x, y, width, height;
 
-    private final BlockGroup            subBlocks  = new BlockGroup("Sub Blocks");
+    private int                            headerColumnHeight;
+    private int                            detailColumnHeight;
+    private int                            footerColumnHeight;
+    private EJReportScreenType             screenType = EJReportScreenType.NONE;
+
+    private final BlockGroup               subBlocks  = new BlockGroup("Sub Blocks");
 
     private EJCoreReportSreenItemContainer _screenItemContainer;
-    private EJReportColumnContainer     _columnContainer;
+    private EJReportColumnContainer        _columnContainer;
 
-    private String                      oddRowVAName;
-    private String                      evenRowVAName;
+    private String                         oddRowVAName;
+    private String                         evenRowVAName;
 
     public EJCoreReportScreenProperties(EJCoreReportBlockProperties blockProperties)
     {
@@ -138,7 +138,7 @@ public class EJCoreReportScreenProperties
     {
         this.evenRowVAName = evenRowVAName;
     }
-    
+
     public int getHeaderColumnHeight()
     {
         return headerColumnHeight;

@@ -37,7 +37,8 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
             return;
         }
 
-        EJReportVisualAttributeProperties vaProperties = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(visualAttributeName);
+        EJReportVisualAttributeProperties vaProperties = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
+                .getVisualAttributeProperties(visualAttributeName);
         if (vaProperties == null)
         {
             throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
@@ -45,7 +46,7 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
 
         _visualAttributeName = visualAttributeName;
     }
-    
+
     @Override
     public int getWidth()
     {

@@ -29,11 +29,11 @@ import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 /**
  * Contains the actual data for a specific item.
  */
-public class EJReportDataItem implements Serializable 
+public class EJReportDataItem implements Serializable
 {
-    private Object                            _value;
-    private EJReportController                _reportController;
-    private EJCoreReportItemProperties        _itemProperties;
+    private Object                     _value;
+    private EJReportController         _reportController;
+    private EJCoreReportItemProperties _itemProperties;
 
     EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties)
     {
@@ -92,13 +92,10 @@ public class EJReportDataItem implements Serializable
         return _itemProperties;
     }
 
-
     public Class<?> getDataTypeClass()
     {
         return _itemProperties.getDataTypeClass();
     }
-
-
 
     /**
      * Returns true or false depending on whether this item receives its value

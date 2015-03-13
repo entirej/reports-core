@@ -53,7 +53,6 @@ public class EJReportDataBlock implements Serializable
         return _blockRecords.contains(record);
     }
 
-    
     /**
      * Clears all the blocks records and returns its dirty state, if it was
      * changed, to not dirty.
@@ -64,7 +63,7 @@ public class EJReportDataBlock implements Serializable
     {
         _blockRecords.clear();
     }
-    
+
     /**
      * Return the number of records within this block
      * 

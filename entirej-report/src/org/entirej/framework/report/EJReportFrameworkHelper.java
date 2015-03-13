@@ -42,7 +42,7 @@ public interface EJReportFrameworkHelper extends Serializable
      *             name
      */
     public EJApplicationLevelParameter getApplicationLevelParameter(String valueName);
-    
+
     public Collection<EJApplicationLevelParameter> getApplicationLevelParameters();
 
     /**

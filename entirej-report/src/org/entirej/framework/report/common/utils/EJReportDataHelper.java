@@ -27,8 +27,8 @@ import org.entirej.framework.report.EJReportBlockItem;
 import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

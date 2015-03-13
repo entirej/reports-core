@@ -88,7 +88,8 @@ public class EJReportControllerFactory implements Serializable
     {
         if (reportProperties == null)
         {
-            EJReportMessage message = EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.NULL_REPORT_CONTROLLER_PASSED_TO_REPORT_PROPS);
+            EJReportMessage message = EJReportMessageFactory.getInstance()
+                    .createMessage(EJReportFrameworkMessage.NULL_REPORT_CONTROLLER_PASSED_TO_REPORT_PROPS);
             throw new EJReportRuntimeException(message);
         }
 

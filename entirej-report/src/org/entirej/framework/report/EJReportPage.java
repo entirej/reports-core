@@ -48,7 +48,7 @@ public class EJReportPage implements Serializable
 
         return blocks;
     }
-    
+
     public String getName()
     {
         return _group.getName();

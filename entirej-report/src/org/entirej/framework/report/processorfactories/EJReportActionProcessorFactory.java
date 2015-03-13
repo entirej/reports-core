@@ -145,8 +145,8 @@ public class EJReportActionProcessorFactory implements Serializable
     }
 
     /**
-     * Creates a new <code>EJReportActionProcessor</code> from the class instance
-     * stored within the cache
+     * Creates a new <code>EJReportActionProcessor</code> from the class
+     * instance stored within the cache
      * 
      * @param processorName
      *            The name of the processor

@@ -32,12 +32,13 @@ public class EJReportRecordDataSource implements JRDataSource, Serializable
 {
 
     private final EJReportRecord[] data;
-    private int              index = -1;
+    private int                    index = -1;
 
     public EJReportRecordDataSource(EJReportRecord... data)
     {
         this.data = data;
     }
+
     public EJReportRecordDataSource(Collection<EJReportRecord> records)
     {
         this.data = records.toArray(new EJReportRecord[0]);

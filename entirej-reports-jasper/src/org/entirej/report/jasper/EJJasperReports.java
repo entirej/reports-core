@@ -58,7 +58,6 @@ import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
-import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportBlockContext;
 import org.entirej.report.jasper.data.EJReportDataSource;
@@ -184,26 +183,23 @@ public class EJJasperReports
             }
 
             // add Block datasource
-            
-            
+
             EJReportBlockContext blockContext = new EJReportBlockContext()
             {
-                
+
                 @Override
                 public JasperReport getBlockReport(String blockName)
                 {
                     EJReportBlock block = report.getBlock(blockName);
                     EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
                     sbBuilder.buildDesign(block);
-                    
+
                     return sbBuilder.toReport();
                 }
-            };  
-            
+            };
+
             EJJasperReportParameter subRPTParameter = new EJJasperReportParameter("EJRJ_BLOCK_RPT", blockContext);
             reportParameters.add(subRPTParameter);
-
-            
 
             reportParameters.addAll(Arrays.asList(parameters));
 
@@ -503,12 +499,13 @@ public class EJJasperReports
         }
 
     }
-    
-    private static void removeBlankPage(List<JRPrintPage> pages) {
 
-        if(pages.size()>0)
+    private static void removeBlankPage(List<JRPrintPage> pages)
+    {
+
+        if (pages.size() > 0)
         {
-            JRPrintPage lastpage = pages.get(pages.size()-1);
+            JRPrintPage lastpage = pages.get(pages.size() - 1);
             if (lastpage.getElements().size() == 0)
                 pages.remove(lastpage);
         }

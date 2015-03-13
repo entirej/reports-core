@@ -10,7 +10,6 @@ import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
-import org.entirej.framework.report.internal.EJInternalReport;
 
 public class EJJasperReportRunner implements EJReportRunner
 {

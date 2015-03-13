@@ -23,16 +23,13 @@ import java.util.Collection;
 import java.util.Locale;
 
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
-import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportDateHelper;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
-import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup;
-import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
 {

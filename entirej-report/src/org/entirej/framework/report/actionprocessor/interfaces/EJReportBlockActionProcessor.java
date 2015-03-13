@@ -30,7 +30,6 @@ import org.entirej.framework.report.service.EJReportQueryCriteria;
 public interface EJReportBlockActionProcessor extends Serializable
 {
 
-   
     /**
      * Called before a query is executed. The <code>IQueryCriteria</code> given,
      * holds the query criteria for this block
@@ -70,8 +69,7 @@ public interface EJReportBlockActionProcessor extends Serializable
     public boolean canShowBlock(EJReport report, String blockName);
 
     public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, EJReportScreenSection section);
-    
- 
+
     public boolean canShowScreenColumn(EJReport report, String blockName, String columnName);
 
     public boolean canShowBlockHeader(EJReport report, String blockName);
@@ -80,5 +78,4 @@ public interface EJReportBlockActionProcessor extends Serializable
 
     public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, EJReportScreenSection section);
 
-    
 }

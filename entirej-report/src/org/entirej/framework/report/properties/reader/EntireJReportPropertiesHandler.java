@@ -33,7 +33,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
     private static final String           TRANSLATOR_CLASS_NAME         = "translatorClassName";
     private static final String           REPORTRUNNER_CLASS_NAME       = "reportRunnerClassName";
     private static final String           APPLICATION_LEVEL_PARAMETER   = "appicationLevelParameter";
-    private static final String           REPORT_PACKAGE                 = "reportPackage";
+    private static final String           REPORT_PACKAGE                = "reportPackage";
 
     private static final String           VISUAL_ATTRIBUTE              = "visualAttribute";
 
@@ -61,7 +61,7 @@ public class EntireJReportPropertiesHandler extends EJCoreReportPropertiesTagHan
             String defaultValue = attributes.getValue("defaultValue");
 
             EJApplicationLevelParameter parameter = new EJApplicationLevelParameter(paramName, dataTypeName);
-            if(defaultValue!=null && !defaultValue.isEmpty())
+            if (defaultValue != null && !defaultValue.isEmpty())
                 parameter.setValue(parameter.toDefaultValue(defaultValue));
             _properties.addRuntimeLevelParameter(parameter);
         }

@@ -29,25 +29,25 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
     private EJCoreReportBlockProperties _blockProperties;
     private EJCoreReportProperties      _reportProperties;
 
-    private static final String         ELEMENT_BLOCK                 = "block";
-    private static final String         ELEMENT_DESCRIPTION           = "description";
-    private static final String         ELEMENT_SERVICE_CLASS_NAME    = "serviceClassName";
-    private static final String         ELEMENT_ACTION_PROCESSOR      = "actionProcessorClassName";
-    private static final String         ELEMENT_SCREEN_TYPE           = "screenType";
-    private static final String         ELEMENT_ODD_VA                = "oddVA";
-    private static final String         ELEMENT_EVEN_VA               = "evenVA";
-    private static final String         ELEMENT_SCREEN_H_COL_HEIGHT   = "headerColHeight";
-    private static final String         ELEMENT_SCREEN_D_COL_HEIGHT   = "detailColHeight";
-    private static final String         ELEMENT_SCREEN_F_COL_HEIGHT   = "footerColHeight";
-    private static final String         ELEMENT_SCREEN_X              = "x";
-    private static final String         ELEMENT_SCREEN_Y              = "y";
-    private static final String         ELEMENT_SCREEN_WIDTH          = "width";
-    private static final String         ELEMENT_SCREEN_HEIGHT         = "height";
+    private static final String         ELEMENT_BLOCK               = "block";
+    private static final String         ELEMENT_DESCRIPTION         = "description";
+    private static final String         ELEMENT_SERVICE_CLASS_NAME  = "serviceClassName";
+    private static final String         ELEMENT_ACTION_PROCESSOR    = "actionProcessorClassName";
+    private static final String         ELEMENT_SCREEN_TYPE         = "screenType";
+    private static final String         ELEMENT_ODD_VA              = "oddVA";
+    private static final String         ELEMENT_EVEN_VA             = "evenVA";
+    private static final String         ELEMENT_SCREEN_H_COL_HEIGHT = "headerColHeight";
+    private static final String         ELEMENT_SCREEN_D_COL_HEIGHT = "detailColHeight";
+    private static final String         ELEMENT_SCREEN_F_COL_HEIGHT = "footerColHeight";
+    private static final String         ELEMENT_SCREEN_X            = "x";
+    private static final String         ELEMENT_SCREEN_Y            = "y";
+    private static final String         ELEMENT_SCREEN_WIDTH        = "width";
+    private static final String         ELEMENT_SCREEN_HEIGHT       = "height";
 
-    private static final String         ELEMENT_BLOCK_GROUP           = "blockGroup";
-    private static final String         ELEMENT_ITEM                  = "item";
-    private static final String         ELEMENT_SCREEN_ITEM           = "screenitem";
-    private static final String         ELEMENT_SCREEN_COLUMN         = "columnitem";
+    private static final String         ELEMENT_BLOCK_GROUP         = "blockGroup";
+    private static final String         ELEMENT_ITEM                = "item";
+    private static final String         ELEMENT_SCREEN_ITEM         = "screenitem";
+    private static final String         ELEMENT_SCREEN_COLUMN       = "columnitem";
 
     public ReportBlockHandler(EJCoreReportProperties formProperties)
     {
@@ -142,10 +142,18 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         }
         else if (name.equals(ELEMENT_SCREEN_TYPE))
         {
+            if (value.equals("FORM_LATOUT"))
+            {
+                value = "FORM_LAYOUT";// typofix
+            }
+            if (value.equals("TABLE_LATOUT"))
+            {
+                value = "TABLE_LAYOUT";// typofix
+            }
             _blockProperties.getScreenProperties().setScreenType(EJReportScreenType.valueOf(value));
 
         }
-        
+
         else if (name.equals(ELEMENT_ODD_VA))
         {
             _blockProperties.getScreenProperties().setOddRowVAName(value);

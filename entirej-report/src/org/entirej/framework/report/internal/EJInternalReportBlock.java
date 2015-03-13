@@ -124,7 +124,7 @@ public class EJInternalReportBlock implements Serializable
      * <p>
      * The criteria can be used for executing a query within this block.
      * Criterion can be added to restrict the query
-     *
+     * 
      * @return
      */
     public EJReportQueryCriteria createQueryCriteria()
@@ -280,7 +280,7 @@ public class EJInternalReportBlock implements Serializable
 
     /**
      * Returns the properties of this block
-     *
+     * 
      * @return This blocks properties
      */
     public EJCoreReportBlockProperties getProperties()

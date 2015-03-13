@@ -26,7 +26,7 @@ public class EJReportScreen
     {
         return _block.getName();
     }
-    
+
     /**
      * @return Returns the width of this screen
      */
@@ -58,22 +58,22 @@ public class EJReportScreen
     {
         return _properties.getY();
     }
-    
+
     public int getDefaultHeaderHeight()
     {
         return _properties.getHeaderColumnHeight();
     }
-    
+
     public int getDefaultDetailHeight()
     {
         return _properties.getDetailColumnHeight();
     }
-    
+
     public int getDefaultFooterHeight()
     {
         return _properties.getFooterColumnHeight();
     }
-    
+
     public String getOddRecotrdVisualAttributeName()
     {
         return _properties.getOddRowVAName();
@@ -83,7 +83,7 @@ public class EJReportScreen
     {
         return _properties.getEvenRowVAName();
     }
-    
+
     public EJReportVisualAttributeProperties getOddRecotrdVisualAttributes()
     {
         return _properties.getOddVAProperties();
@@ -93,7 +93,7 @@ public class EJReportScreen
     {
         return _properties.getEvenVAProperties();
     }
-    
+
     /**
      * Returns the type of this screen
      * 

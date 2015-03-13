@@ -24,7 +24,6 @@ import org.entirej.framework.report.EJReportActionProcessorException;
 public interface EJReportActionProcessor extends EJReportBlockActionProcessor
 {
 
-    
     public void beforeReport(EJReport report) throws EJReportActionProcessorException;
 
     public void afterReport(EJReport report) throws EJReportActionProcessorException;

@@ -103,7 +103,8 @@ public class EJInternalReport implements Serializable
     }
 
     /**
-     * Returns an immutable collection of all blocks available within this report
+     * Returns an immutable collection of all blocks available within this
+     * report
      * 
      * @return All blocks within this report
      */
@@ -198,7 +199,7 @@ public class EJInternalReport implements Serializable
     {
         return _reportController.getFrameworkManager().getApplicationLevelParameter(paramName);
     }
-    
+
     public Collection<EJApplicationLevelParameter> getApplicationLevelParameters()
     {
         return _reportController.getFrameworkManager().getApplicationLevelParameters();
@@ -401,8 +402,8 @@ public class EJInternalReport implements Serializable
      * <p>
      * the parameter list is a list of properties that were declared for the
      * report within the EntireJ Report Plugin. These parameters are used when
-     * either calling another report or when another report calls this report. They
-     * are used to pass values to and from the calling reports
+     * either calling another report or when another report calls this report.
+     * They are used to pass values to and from the calling reports
      * 
      * @return This reports parameter list
      */

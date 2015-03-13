@@ -22,8 +22,6 @@ import java.io.Serializable;
 
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
-import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
-import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 /**
@@ -48,6 +46,11 @@ public class EJReportScreenItem implements Serializable
     public EJReportScreenItemType getType()
     {
         return _itemProps.getType();
+    }
+
+    public EJReportScreenItemProperties getItemProps()
+    {
+        return _itemProps;
     }
 
     public int getWidth()
@@ -102,7 +105,7 @@ public class EJReportScreenItem implements Serializable
     {
         _itemProps.setVisualAttribute(visualAttributeName);
     }
-    
+
     public EJReportVisualAttributeProperties getVisualAttributes()
     {
         return _itemProps.getVisualAttributeProperties();

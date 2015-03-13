@@ -7,6 +7,7 @@ import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
+import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 
 public interface EJReportVisualAttributeProperties
 {

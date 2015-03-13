@@ -407,48 +407,52 @@ public class EJReportDataRecord implements Serializable
     {
         return _itemList.values();
     }
-//
-//    /**
-//     * Returns the properties for a given item
-//     * 
-//     * @param name
-//     *            The name of the item
-//     * @return The properties for the given item
-//     * @throws EJReportRuntimeException
-//     *             if the name passed is either null or of zero length
-//     */
-//    public EJCoreReportItemProperties getItemProperties(String name)
-//    {
-//        if (name == null || name.trim().length() == 0)
-//        {
-//            throw new EJReportRuntimeException(new EJReportMessage("The name passed to getItemProperties is either null or of zero length."));
-//        }
-//
-//        EJReportDataItem item = getItem(name);
-//        return item.getProperties();
-//    }
-//
-//    /**
-//     * Returns a <code>Collection</code> containing all
-//     * <code>ItemProperties</code> contained within this <code>DataRecord</code>
-//     * 
-//     * @return A <code>Collection</code> of this records
-//     *         <code>ItemProperties</code>
-//     */
-//    public Collection<EJCoreReportItemProperties> getAllItemProperties()
-//    {
-//        ArrayList<EJCoreReportItemProperties> properties = new ArrayList<EJCoreReportItemProperties>();
-//
-//        Iterator<EJReportDataItem> values = _itemList.values().iterator();
-//
-//        while (values.hasNext())
-//        {
-//            EJReportDataItem item = values.next();
-//
-//            properties.add(item.getProperties());
-//        }
-//        return properties;
-//    }
+
+    //
+    // /**
+    // * Returns the properties for a given item
+    // *
+    // * @param name
+    // * The name of the item
+    // * @return The properties for the given item
+    // * @throws EJReportRuntimeException
+    // * if the name passed is either null or of zero length
+    // */
+    // public EJCoreReportItemProperties getItemProperties(String name)
+    // {
+    // if (name == null || name.trim().length() == 0)
+    // {
+    // throw new EJReportRuntimeException(new
+    // EJReportMessage("The name passed to getItemProperties is either null or of zero length."));
+    // }
+    //
+    // EJReportDataItem item = getItem(name);
+    // return item.getProperties();
+    // }
+    //
+    // /**
+    // * Returns a <code>Collection</code> containing all
+    // * <code>ItemProperties</code> contained within this
+    // <code>DataRecord</code>
+    // *
+    // * @return A <code>Collection</code> of this records
+    // * <code>ItemProperties</code>
+    // */
+    // public Collection<EJCoreReportItemProperties> getAllItemProperties()
+    // {
+    // ArrayList<EJCoreReportItemProperties> properties = new
+    // ArrayList<EJCoreReportItemProperties>();
+    //
+    // Iterator<EJReportDataItem> values = _itemList.values().iterator();
+    //
+    // while (values.hasNext())
+    // {
+    // EJReportDataItem item = values.next();
+    //
+    // properties.add(item.getProperties());
+    // }
+    // return properties;
+    // }
 
     /**
      * Indicates how many columns the record has

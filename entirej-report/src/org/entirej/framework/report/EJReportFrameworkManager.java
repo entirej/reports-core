@@ -39,14 +39,14 @@ import org.slf4j.LoggerFactory;
 
 public class EJReportFrameworkManager implements EJReportFrameworkHelper
 {
-    private final Logger                                   LOGGER         = LoggerFactory.getLogger(this.getClass());
+    private final Logger                                 LOGGER         = LoggerFactory.getLogger(this.getClass());
 
-    private EJReportConnectionRetriever                    _connectionRetriever;
-    private Locale                                         _currentLocale = Locale.ENGLISH;
-    private EJReportPropertiesFactory                      _reportPropertiesFactory;
-    private EJReportControllerFactory                      _reportControllerFactory;
-    private EJReportTranslationController                  _translationController;
-    private EJReportBlockServiceFactory                    _blockServiceFactory;
+    private EJReportConnectionRetriever                  _connectionRetriever;
+    private Locale                                       _currentLocale = Locale.ENGLISH;
+    private EJReportPropertiesFactory                    _reportPropertiesFactory;
+    private EJReportControllerFactory                    _reportControllerFactory;
+    private EJReportTranslationController                _translationController;
+    private EJReportBlockServiceFactory                  _blockServiceFactory;
 
     private HashMap<String, EJApplicationLevelParameter> _applicationLevelParameters;
 
@@ -148,7 +148,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
     public EJReportRunner createReportRunner()
     {
         EJReportRunner newReportRunner = EJCoreReportRuntimeProperties.getInstance().newReportRunner();
-        if(newReportRunner!=null)
+        if (newReportRunner != null)
         {
             newReportRunner.init(this);
         }

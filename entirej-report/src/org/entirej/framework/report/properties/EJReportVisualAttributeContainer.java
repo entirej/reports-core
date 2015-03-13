@@ -27,7 +27,7 @@ import java.util.List;
 public class EJReportVisualAttributeContainer implements Serializable
 {
     private List<EJCoreReportVisualAttributeProperties> _visualAttributeList;
-    private EJReportVisualAttributeProperties       _lastAddedVisualAttribute;
+    private EJReportVisualAttributeProperties           _lastAddedVisualAttribute;
 
     public EJReportVisualAttributeContainer(Collection<EJCoreReportVisualAttributeProperties> properties)
     {
@@ -57,11 +57,11 @@ public class EJReportVisualAttributeContainer implements Serializable
      * the given name
      * <p>
      * A copy is returned as the
-     * <code>{@link EJCoreReportVisualAttributeProperties}</code> are reused across
-     * the entire application. If one user was to modify a VisualAttribute, then
-     * it will be so for the entire application. For this reason, a copy is
-     * made. The copy can be modified as required without effecting other forms
-     * or users
+     * <code>{@link EJCoreReportVisualAttributeProperties}</code> are reused
+     * across the entire application. If one user was to modify a
+     * VisualAttribute, then it will be so for the entire application. For this
+     * reason, a copy is made. The copy can be modified as required without
+     * effecting other forms or users
      * 
      * @param vaPropertiesName
      *            The name of the required visual attribute properties

@@ -8,7 +8,7 @@ public interface EJReportRunner
 {
 
     void init(EJReportFrameworkManager manager);
-    
+
     String runReport(EJReport report);
 
     String runReport(EJReport report, EJReportExportType type);

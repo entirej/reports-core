@@ -86,11 +86,10 @@ public class EJReportDataSource implements JRDataSource, Serializable, EJReportA
         return report.getActionController().canShowBlock(report, blockName);
     }
 
-    
     @Override
     public boolean canShowScreenItem(String blockName, String screenItem, String section)
     {
-        
-         return report.getActionController().canShowScreenItem(report, blockName, screenItem, EJReportScreenSection.valueOf(section));
+
+        return report.getActionController().canShowScreenItem(report, blockName, screenItem, EJReportScreenSection.valueOf(section));
     }
 }

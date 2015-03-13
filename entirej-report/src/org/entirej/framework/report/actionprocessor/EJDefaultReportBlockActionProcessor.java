@@ -36,25 +36,23 @@ public class EJDefaultReportBlockActionProcessor implements EJReportBlockActionP
     }
 
     @Override
-    public boolean canShowBlock(EJReport report,String blockName)
+    public boolean canShowBlock(EJReport report, String blockName)
     {
         return true;
     }
-    
+
     @Override
     public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, EJReportScreenSection section)
     {
         return true;
     }
-    
+
     @Override
     public boolean canShowScreenColumn(EJReport report, String blockName, String columnName)
     {
         return true;
     }
 
-    
-    
     @Override
     public boolean canShowBlockFooter(EJReport report, String blockName)
     {

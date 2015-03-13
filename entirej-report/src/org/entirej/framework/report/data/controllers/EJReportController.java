@@ -81,7 +81,7 @@ public class EJReportController implements Serializable
     {
         getActionController().beforeReport(new EJReport(_report));
     }
-    
+
     public void reportCompleted()
     {
         getActionController().afterReport(new EJReport(_report));
@@ -114,8 +114,8 @@ public class EJReportController implements Serializable
         {
             EJCoreReportBlockProperties blockProps = _dataReport.getProperties().getBlockProperties(block.getName());
             EJReportBlockController blockController = new EJReportBlockController(this, blockProps, block);
-            
-            if(blockProps.isControlBlock())
+
+            if (blockProps.isControlBlock())
             {
                 blockController.createRecord();
             }

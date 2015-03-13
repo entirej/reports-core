@@ -36,7 +36,7 @@ public class EJCoreReport
     {
         return _report;
     }
-    
+
     /**
      * Returns the action controller for this report
      * 
@@ -46,7 +46,7 @@ public class EJCoreReport
     {
         return _report.getActionController();
     }
-    
+
     /**
      * Returns the properties for of this report
      * 
@@ -62,7 +62,7 @@ public class EJCoreReport
         return _report.getFrameworkManager();
 
     }
-    
+
     /**
      * Returns the <code>VisualAttributeProperties</code> with the given name or
      * <code>null</code> if there is no visual attribute with the given name

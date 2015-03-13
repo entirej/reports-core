@@ -49,8 +49,6 @@ public interface EJReportBlockProperties extends Serializable
      */
     public EJReportItemProperties getItemProperties(String itemName);
 
-  
-
     /**
      * Indicates if this is a control block
      * <p>

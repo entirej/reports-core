@@ -1,6 +1,5 @@
 package org.entirej.framework.report;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +11,7 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 
 public class EJReportScreenColumnSection
 {
-    private EJReportBlock _block;
+    private EJReportBlock                             _block;
     private EJCoreReportScreenColumnSectionProperties _properties;
 
     public EJReportScreenColumnSection(EJReportBlock block, EJCoreReportScreenColumnSectionProperties properties)
@@ -70,12 +69,11 @@ public class EJReportScreenColumnSection
     {
         return _properties.getVisualAttributeProperties();
     }
-    
-    
+
     public Collection<EJReportScreenItem> getScreenItems()
     {
         ArrayList<EJReportScreenItem> items = new ArrayList<EJReportScreenItem>();
-        
+
         for (EJCoreReportScreenItemProperties item : _properties.getScreenItems())
         {
             items.add(new EJReportScreenItem(_block, item));

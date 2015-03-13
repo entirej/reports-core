@@ -66,7 +66,7 @@ public class EJReportMessageFactory implements Serializable
 
             case NULL_PROPERTY_NAMES_PASSED_TO_METHOD:
                 return new EJReportMessage("The property name passed to $1 is null", replacementStrings);
-           case NULL_FORM_NAME_PASSED_TO_METHOD:
+            case NULL_FORM_NAME_PASSED_TO_METHOD:
                 return new EJReportMessage("The form name passed to $1 is null", replacementStrings);
             case NULL_RECORD_PASSED_TO_METHOD:
                 return new EJReportMessage("The record passed to $1 is null", replacementStrings);
@@ -84,7 +84,7 @@ public class EJReportMessageFactory implements Serializable
                 return new EJReportMessage("The processor name passed to $1 is null", replacementStrings);
             case NULL_BLOCK_NAME_PASSED_TO_METHOD:
                 return new EJReportMessage("The block name passed to $1 is null", replacementStrings);
-           case NULL_APPLICATION_MANAGER_PASSED_TO_METHOD:
+            case NULL_APPLICATION_MANAGER_PASSED_TO_METHOD:
                 return new EJReportMessage("The application manager name passed to $1 is null", replacementStrings);
             case NULL_TRANSLATOR_NAME_PASSED_TO_METHOD:
                 return new EJReportMessage("The translator name passed to $1 is null", replacementStrings);
@@ -108,7 +108,7 @@ public class EJReportMessageFactory implements Serializable
                 return new EJReportMessage("Unable to execute method: $1", replacementStrings);
             case UNABLE_TO_FIND_METHOD:
                 return new EJReportMessage("Unable to find method: $1", replacementStrings);
-           case UNABLE_TO_CALL_METHOD:
+            case UNABLE_TO_CALL_METHOD:
                 return new EJReportMessage("Unable to call method: $1", replacementStrings);
             case UNABLE_TO_CREATE_ACTION_PROCESSOR:
                 return new EJReportMessage("Unable to create action processor $1", replacementStrings);
@@ -122,13 +122,13 @@ public class EJReportMessageFactory implements Serializable
                 return new EJReportMessage("Unable to create application manager $1", replacementStrings);
             case UNABLE_TO_LOAD_FORM_FILE:
                 return new EJReportMessage("Unable to load a file with the name $1 from any of the forms directories", replacementStrings);
-           case UNABLE_TO_LOAD_BLOCK_RENDERER:
+            case UNABLE_TO_LOAD_BLOCK_RENDERER:
                 return new EJReportMessage("Unable to load the block renderer $1 which is assigned to this application with the name: $2", replacementStrings);
-           case UNABLE_TO_FIND_BLOCK:
+            case UNABLE_TO_FIND_BLOCK:
                 return new EJReportMessage("Unable to find block $1 in method $2", replacementStrings);
             case UNABLE_TO_SELECT_CURRENT_RECORD:
                 return new EJReportMessage("Unable to select the current record for block $1", replacementStrings);
-           case INVALID_ACTION_PROCESSOR_FOR_REPORT:
+            case INVALID_ACTION_PROCESSOR_FOR_REPORT:
                 return new EJReportMessage("There is no action processor with the name $1 on form $2", replacementStrings);
             case INVALID_ACTION_PROCESSOR_FOR_BLOCK:
                 return new EJReportMessage("There is no action processor with the name $1 on block $2", replacementStrings);
@@ -159,25 +159,25 @@ public class EJReportMessageFactory implements Serializable
                 return new EJReportMessage("No action processor defined for form $1", replacementStrings);
             case NOT_ITEM_ON_MAIN_SCREEN:
                 return new EJReportMessage("There is no item called $1 on the main screen of block $2 on form $3", replacementStrings);
-           case NO_ITEM_ON_FORM:
+            case NO_ITEM_ON_FORM:
                 return new EJReportMessage("There is no item called $1 on block $2 on form $3", replacementStrings);
             case NO_ITEM_ON_BLOCK:
                 return new EJReportMessage("There is no item called $1 on block $2", replacementStrings);
             case NO_BLOCK_ON_FORM:
                 return new EJReportMessage("There is no block called $1 on form $2", replacementStrings);
-           case NO_REPORT_PARAMETER:
+            case NO_REPORT_PARAMETER:
                 return new EJReportMessage("No Form Parameter with the name $1 on form $2", replacementStrings);
             case NO_FORM_LEVEL_APP_PROPERTY:
                 return new EJReportMessage("No Form Level Application Property with the name $1 on form $2", replacementStrings);
             case NO_BLOCK_LEVEL_APP_PROPERTY:
                 return new EJReportMessage("No Block Level Application Property with the name $1 on block $2 on form $3", replacementStrings);
-          case NO_FORM_PROPERTIES_FOR_REUSABLE_BLOCK:
+            case NO_FORM_PROPERTIES_FOR_REUSABLE_BLOCK:
                 return new EJReportMessage("No FormProperties available for reusable block $1", replacementStrings);
             case NO_FORM_PROPERTIES_FOR_OBJECTGROUP:
                 return new EJReportMessage("No FormProperties available for reusable block $1", replacementStrings);
             case NO_FORM_PROPERTIES_FOR_REUSABLE_LOV:
                 return new EJReportMessage("No FormProperties available for ObjectGroup definition $1", replacementStrings);
-           case NO_OBJECTGROUP_LOCATION_DEFINED:
+            case NO_OBJECTGROUP_LOCATION_DEFINED:
                 return new EJReportMessage(
                         "A request has been made to retrieve a ObjectGroup but no ObjectGroup location has been defined within the EntireJ properties");
             case NO_FORM_RENDERER_DEFINED:

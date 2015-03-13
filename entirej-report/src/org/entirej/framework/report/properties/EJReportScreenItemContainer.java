@@ -36,8 +36,12 @@ public class EJReportScreenItemContainer implements EJCoreReportSreenItemContain
         _itemProperties = new ArrayList<EJCoreReportScreenItemProperties>();
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJCoreReportSreenItemContainer#getBlockProperties()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJCoreReportSreenItemContainer
+     * #getBlockProperties()
      */
     @Override
     public EJCoreReportBlockProperties getBlockProperties()
@@ -59,8 +63,13 @@ public class EJReportScreenItemContainer implements EJCoreReportSreenItemContain
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJCoreReportSreenItemContainer#addItemProperties(int, org.entirej.framework.report.properties.EJCoreReportScreenItemProperties)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJCoreReportSreenItemContainer
+     * #addItemProperties(int,
+     * org.entirej.framework.report.properties.EJCoreReportScreenItemProperties)
      */
     @Override
     public void addItemProperties(int index, EJCoreReportScreenItemProperties itemProperties)
@@ -72,8 +81,12 @@ public class EJReportScreenItemContainer implements EJCoreReportSreenItemContain
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJCoreReportSreenItemContainer#getAllItemProperties()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJCoreReportSreenItemContainer
+     * #getAllItemProperties()
      */
     @Override
     public List<EJCoreReportScreenItemProperties> getAllItemProperties()
@@ -98,8 +111,12 @@ public class EJReportScreenItemContainer implements EJCoreReportSreenItemContain
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJCoreReportSreenItemContainer#getItemProperties(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJCoreReportSreenItemContainer
+     * #getItemProperties(java.lang.String)
      */
     @Override
     public EJCoreReportScreenItemProperties getItemProperties(String name)
@@ -143,8 +160,14 @@ public class EJReportScreenItemContainer implements EJCoreReportSreenItemContain
         return _itemProperties.size();
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJCoreReportSreenItemContainer#removeItem(org.entirej.framework.report.properties.EJCoreReportScreenItemProperties)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJCoreReportSreenItemContainer
+     * #removeItem
+     * (org.entirej.framework.report.properties.EJCoreReportScreenItemProperties
+     * )
      */
     @Override
     public void removeItem(EJCoreReportScreenItemProperties item)
@@ -153,8 +176,14 @@ public class EJReportScreenItemContainer implements EJCoreReportSreenItemContain
         _itemProperties.remove(item);
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJCoreReportSreenItemContainer#createItem(org.entirej.framework.report.enumerations.EJReportScreenItemType, java.lang.String, int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJCoreReportSreenItemContainer
+     * #createItem
+     * (org.entirej.framework.report.enumerations.EJReportScreenItemType,
+     * java.lang.String, int)
      */
     @Override
     public EJCoreReportScreenItemProperties createItem(EJReportScreenItemType type, String name, int index)

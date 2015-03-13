@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.entirej.framework.report.data.EJReportDataItem;
 import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.data.EJReportDataScreenItem;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
@@ -74,7 +73,8 @@ public class EJReportRecord implements Serializable
     }
 
     /**
-     * Returns the {@link EJReportScreenItem} from this record with the name specified
+     * Returns the {@link EJReportScreenItem} from this record with the name
+     * specified
      * 
      * @param itemName
      *            The item to return

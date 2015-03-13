@@ -23,11 +23,11 @@ import java.util.List;
 
 public class EJReportBlockContainer
 {
-    private List<BlockGroup> _blockProperties;
-    private EJCoreReportProperties   _reportProperties;
+    private List<BlockGroup>       _blockProperties;
+    private EJCoreReportProperties _reportProperties;
 
-    private BlockGroup               headerSection = new BlockGroup("Header");
-    private BlockGroup               footerSection = new BlockGroup("Footer");
+    private BlockGroup             headerSection = new BlockGroup("Header");
+    private BlockGroup             footerSection = new BlockGroup("Footer");
 
     public EJReportBlockContainer(EJCoreReportProperties reportProperties)
     {
@@ -68,8 +68,8 @@ public class EJReportBlockContainer
 
     public boolean contains(String blockName)
     {
-        
-        return getBlockProperties(blockName)!=null;
+
+        return getBlockProperties(blockName) != null;
     }
 
     public void addPage(BlockGroup blockProperties)
@@ -88,8 +88,6 @@ public class EJReportBlockContainer
         }
     }
 
-
-
     public void addPage(int index, BlockGroup blockProperties)
     {
         if (blockProperties != null)
@@ -97,8 +95,6 @@ public class EJReportBlockContainer
             _blockProperties.add(index, blockProperties);
         }
     }
-
-
 
     /**
      * Used to retrieve a specific blocks properties.
@@ -118,29 +114,27 @@ public class EJReportBlockContainer
         {
 
             BlockGroup containerItem = iti.next();
-           
-                EJCoreReportBlockProperties blockProperties = ( containerItem).getBlockProperties(blockName);
-                if (blockProperties != null)
-                {
-                    return blockProperties;
-                }
-          
+
+            EJCoreReportBlockProperties blockProperties = (containerItem).getBlockProperties(blockName);
+            if (blockProperties != null)
+            {
+                return blockProperties;
+            }
+
         }
-        
+
         EJCoreReportBlockProperties blockProperties = headerSection.getBlockProperties(blockName);
-        if(blockProperties!=null)
+        if (blockProperties != null)
         {
             return blockProperties;
         }
-         blockProperties = footerSection.getBlockProperties(blockName);
-        if(blockProperties!=null)
+        blockProperties = footerSection.getBlockProperties(blockName);
+        if (blockProperties != null)
         {
             return blockProperties;
         }
         return null;
     }
-
- 
 
     public List<EJCoreReportBlockProperties> getAllBlockProperties()
     {
@@ -148,9 +142,9 @@ public class EJReportBlockContainer
 
         list.addAll(headerSection.getAllBlockProperties());
         list.addAll(getRootBlockProperties());
-        
+
         list.addAll(footerSection.getAllBlockProperties());
-        
+
         for (EJCoreReportBlockProperties ejCoreReportBlockProperties : new ArrayList<EJCoreReportBlockProperties>(list))
         {
             collectSubBlocks(ejCoreReportBlockProperties, list);
@@ -167,9 +161,9 @@ public class EJReportBlockContainer
         {
 
             BlockGroup containerItem = iti.next();
-            
-                list.addAll(( containerItem).getAllBlockProperties());
-          
+
+            list.addAll((containerItem).getAllBlockProperties());
+
         }
 
         return list;
@@ -326,17 +320,16 @@ public class EJReportBlockContainer
         }
     }
 
-    
     public BlockGroup getFirstPage()
     {
-       if(_blockProperties.size()>0)
-       {
-           return _blockProperties.get(0);
-       }
-       BlockGroup page = new BlockGroup("PAGE1");
-       _blockProperties.add(page);
-       return page;
-        
+        if (_blockProperties.size() > 0)
+        {
+            return _blockProperties.get(0);
+        }
+        BlockGroup page = new BlockGroup("PAGE1");
+        _blockProperties.add(page);
+        return page;
+
     }
-    
+
 }

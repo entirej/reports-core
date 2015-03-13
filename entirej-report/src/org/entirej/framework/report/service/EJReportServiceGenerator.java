@@ -112,8 +112,8 @@ public class EJReportServiceGenerator implements EJReportServiceContentGenerator
                 fileBuilder.append(IMPORT).append(clazz).append(SEMICOLON).append(NEW_LINE);
             }
 
-            fileBuilder.append(NEW_LINE).append(PUBLIC).append(CLASS).append(type.getServiceName()).append(EMPTY).append(IMPLEMENTS).append("EJReportBlockService<")
-                    .append(pojoName).append(">").append(NEW_LINE).append(OC_BRACKETS).append(NEW_LINE);
+            fileBuilder.append(NEW_LINE).append(PUBLIC).append(CLASS).append(type.getServiceName()).append(EMPTY).append(IMPLEMENTS)
+                    .append("EJReportBlockService<").append(pojoName).append(">").append(NEW_LINE).append(OC_BRACKETS).append(NEW_LINE);
 
             String baseTableName = type.getTableName();
 

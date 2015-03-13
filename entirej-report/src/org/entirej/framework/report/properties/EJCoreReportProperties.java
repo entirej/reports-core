@@ -37,42 +37,38 @@ import org.entirej.framework.report.properties.EJReportBlockContainer.BlockGroup
 public class EJCoreReportProperties implements EJReportProperties, Comparable<EJCoreReportProperties>
 {
 
-    private boolean                             _isReusableBlock          = false;
-    private boolean                             _isObjectGroup            = false;
+    private boolean                           _isReusableBlock          = false;
+    private boolean                           _isObjectGroup            = false;
 
-    private String                              _name                     = "";
-    private String                              _reportTitle              = "";
-    private String                              _reportDisplayName        = "";
+    private String                            _name                     = "";
+    private String                            _reportTitle              = "";
+    private String                            _reportDisplayName        = "";
 
-    private String                              _actionProcessorClassName = "";
-    
-    private boolean                             _ignorePagination;
+    private String                            _actionProcessorClassName = "";
 
-    
+    private boolean                           _ignorePagination;
 
-    private String                              _visualAttributeName;
+    private String                            _visualAttributeName;
     private List<EJApplicationLevelParameter> _reportParameters;
-    private HashMap<String, String>             _applicationProperties;
-    
-    
+    private HashMap<String, String>           _applicationProperties;
 
     // Display Properties
-    private int                                 _reportWidth;
-    private int                                 _reportHeight;
-    private int                                 _marginTop;
-    private int                                 _marginBottom;
-    private int                                 _marginLeft;
-    private int                                 _marginRight;
+    private int                               _reportWidth;
+    private int                               _reportHeight;
+    private int                               _marginTop;
+    private int                               _marginBottom;
+    private int                               _marginLeft;
+    private int                               _marginRight;
 
-    private int                                 _headerSectionHeight;
-    private int                                 _footerSectionHeight;
+    private int                               _headerSectionHeight;
+    private int                               _footerSectionHeight;
 
-    private EJReportProperties.ORIENTATION      _orientation              = ORIENTATION.PORTRAIT;
+    private EJReportProperties.ORIENTATION    _orientation              = ORIENTATION.PORTRAIT;
 
-    private EJReportBlockContainer              blockContainer;
-    private EJReportFrameworkManager            _frameworkManager;
+    private EJReportBlockContainer            blockContainer;
+    private EJReportFrameworkManager          _frameworkManager;
 
-    private EJReportExportType                  exportType                = EJReportExportType.PDF;
+    private EJReportExportType                exportType                = EJReportExportType.PDF;
 
     public EJCoreReportProperties(String reportName, EJReportFrameworkManager _frameworkManager)
     {
@@ -135,18 +131,17 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
         this._reportDisplayName = _reportDisplayName;
     }
 
-    
-    
     @Override
     public boolean isIgnorePagination()
     {
         return _ignorePagination;
     }
-    
+
     public void setIgnorePagination(boolean ignorePagination)
     {
         this._ignorePagination = ignorePagination;
     }
+
     /**
      * Sets the title of this report.
      * 
@@ -258,14 +253,14 @@ public class EJCoreReportProperties implements EJReportProperties, Comparable<EJ
     {
         this._marginRight = _marginRight;
     }
-    
+
     @Override
     public EJReportVisualAttributeProperties getVisualAttributeProperties()
     {
 
         return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(_visualAttributeName);
     }
-    
+
     public String getVisualAttributeName()
     {
         return _visualAttributeName;

@@ -31,7 +31,6 @@ import net.sf.jasperreports.engine.JRField;
 
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
-import org.entirej.framework.report.EJReportScreenItem;
 import org.entirej.framework.report.data.EJReportDataScreenItem;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;

@@ -27,7 +27,8 @@ import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 
-public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreReportVisualAttributeProperties>, Serializable, EJReportVisualAttributeProperties
+public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreReportVisualAttributeProperties>, Serializable,
+        EJReportVisualAttributeProperties
 {
     public static final String      UNSPECIFIED     = "Unspecified";
 
@@ -69,8 +70,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _name = name;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getName()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getName()
      */
     @Override
     public String getName()
@@ -93,8 +98,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _fontWeight = weight;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getFontWeight()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getFontWeight()
      */
     @Override
     public EJReportFontWeight getFontWeight()
@@ -117,8 +126,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _fontStyle = style;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getFontStyle()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getFontStyle()
      */
     @Override
     public EJReportFontStyle getFontStyle()
@@ -126,8 +139,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         return _fontStyle;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getFontName()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getFontName()
      */
     @Override
     public String getFontName()
@@ -146,8 +163,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _fontName = fontName;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#isFontSizeSet()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #isFontSizeSet()
      */
     @Override
     public boolean isFontSizeSet()
@@ -162,8 +183,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getFontSize()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getFontSize()
      */
     @Override
     public int getFontSize()
@@ -171,8 +196,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         return _fontSize;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#isUsedAsDynamicVA()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #isUsedAsDynamicVA()
      */
     @Override
     public boolean isUsedAsDynamicVA()
@@ -196,8 +225,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _fontSize = fontSize;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getForegroundColor()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getForegroundColor()
      */
     @Override
     public Color getForegroundColor()
@@ -239,8 +272,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _foregroundRgb = foregroundColor;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getForegroundRGB()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getForegroundRGB()
      */
     @Override
     public String getForegroundRGB()
@@ -248,8 +285,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         return _foregroundRgb;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getBackgroundColor()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getBackgroundColor()
      */
     @Override
     public Color getBackgroundColor()
@@ -292,8 +333,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         _backgroundRgb = backgroundColor;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getBackgroundRGB()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getBackgroundRGB()
      */
     @Override
     public String getBackgroundRGB()
@@ -301,8 +346,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         return _backgroundRgb;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getMarkupType()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getMarkupType()
      */
     @Override
     public EJReportMarkupType getMarkupType()
@@ -325,8 +374,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         this._vAlignment = _vAlignment;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getHAlignment()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getHAlignment()
      */
     @Override
     public EJReportScreenAlignment getHAlignment()
@@ -334,8 +387,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         return _hAlignment;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getVAlignment()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getVAlignment()
      */
     @Override
     public EJReportScreenAlignment getVAlignment()
@@ -343,8 +400,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         return _vAlignment;
     }
 
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getLocalePattern()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getLocalePattern()
      */
     @Override
     public EJReportVAPattern getLocalePattern()
@@ -356,17 +417,20 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
     {
         this._localePattern = localePattern;
     }
-    
-    
-    /* (non-Javadoc)
-     * @see org.entirej.framework.report.properties.EJReportVisualAttributeProperties#getManualPattern()
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.entirej.framework.report.properties.EJReportVisualAttributeProperties
+     * #getManualPattern()
      */
     @Override
     public String getManualPattern()
     {
         return _manualFormat;
     }
-    
+
     public void setManualPattern(String manualFormat)
     {
         this._manualFormat = manualFormat;

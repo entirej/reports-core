@@ -28,10 +28,9 @@ public enum EJReportMarkupType
 
             case NONE:
                 return "None";
-          
+
             case STYLE:
-                return "Style";//http://jasperreports.sourceforge.net/sample.reference/styledtext/index.html
-        
+                return "Style";// http://jasperreports.sourceforge.net/sample.reference/styledtext/index.html
 
             default:
                 return super.toString();

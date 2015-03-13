@@ -60,13 +60,12 @@ public class EJReportTableColumn implements Serializable
     {
         this._array = array;
     }
-    
-    
+
     public boolean isStruct()
     {
         return _struct;
     }
-    
+
     public void setStruct(boolean struct)
     {
         _struct = struct;

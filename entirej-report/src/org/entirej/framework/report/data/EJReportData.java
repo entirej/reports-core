@@ -26,10 +26,10 @@ import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportProperties;
 
 /**
- * The <code>DataReport</code> is the actual class that will hold the reports data.
- * The <code>DataReport</code> contains <code>DataBlock</code>s which contain the
- * data per block. The data blocks contain <code>DataRecord</code>s and these
- * records hold </code>DataItems</code>.
+ * The <code>DataReport</code> is the actual class that will hold the reports
+ * data. The <code>DataReport</code> contains <code>DataBlock</code>s which
+ * contain the data per block. The data blocks contain <code>DataRecord</code>s
+ * and these records hold </code>DataItems</code>.
  * <p>
  * If you would compare the data classes to a database then the report would be
  * the actual application the block would represent a database table, the data
@@ -42,11 +42,12 @@ public class EJReportData implements Serializable
     private HashMap<String, EJReportDataBlock> _dataBlocks;
 
     /**
-     * Creates an instance of a <code>DataReport</code> using the report properties
-     * given.
+     * Creates an instance of a <code>DataReport</code> using the report
+     * properties given.
      * 
      * @param reportProperties
-     *            The properties that will be used to initialize this data report
+     *            The properties that will be used to initialize this data
+     *            report
      */
     public EJReportData(EJCoreReportProperties reportProperties)
     {

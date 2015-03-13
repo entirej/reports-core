@@ -47,7 +47,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         return new EJReport(_block.getReport());
     }
-    
+
     public EJReportScreen getScreen()
     {
         return new EJReportScreen(this, _block.getProperties().getScreenProperties());
@@ -85,11 +85,12 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         return _block.getProperties().isControlBlock();
     }
-//
-//    public EJReportBlockProperties getProperties()
-//    {
-//        return _block.getProperties();
-//    }
+
+    //
+    // public EJReportBlockProperties getProperties()
+    // {
+    // return _block.getProperties();
+    // }
 
     /**
      * Indicates if the block has an item with the given name
@@ -135,35 +136,38 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         return _block.createQueryCriteria();
     }
-//
-//    /**
-//     * Used to create an empty record for this block
-//     * <p>
-//     * The whenCreateRecord within the blocks processor will be fired once the
-//     * record has been created
-//     * 
-//     * @return The newly created record
-//     */
-//    public EJReportRecord createRecord()
-//    {
-//        return new EJReportRecord(_block.createRecord());
-//    }
-//
-//    /**
-//     * Clears this blocks data
-//     * <p>
-//     * Only this controllers underlying data block will be cleared, if the block
-//     * is master in a master-detail relationship then its detail blocks will be
-//     * left untouched. To clear all detail blocks use the
-//     * {@link EJBlock#clearAllDetailRelations(boolean))}
-//     * 
-//     * @see EJReportBlockController#clearAllDetailRelations()
-//     */
-//    public void clear()
-//    {
-//        _block.clear();
-//    }
-//
+
+    //
+    // /**
+    // * Used to create an empty record for this block
+    // * <p>
+    // * The whenCreateRecord within the blocks processor will be fired once the
+    // * record has been created
+    // *
+    // * @return The newly created record
+    // */
+    // public EJReportRecord createRecord()
+    // {
+    // return new EJReportRecord(_block.createRecord());
+    // }
+    //
+    // /**
+    // * Clears this blocks data
+    // * <p>
+    // * Only this controllers underlying data block will be cleared, if the
+    // block
+    // * is master in a master-detail relationship then its detail blocks will
+    // be
+    // * left untouched. To clear all detail blocks use the
+    // * {@link EJBlock#clearAllDetailRelations(boolean))}
+    // *
+    // * @see EJReportBlockController#clearAllDetailRelations()
+    // */
+    // public void clear()
+    // {
+    // _block.clear();
+    // }
+    //
     /**
      * Instructs EntireJ to perform a query on the given block using no query
      * criteria
@@ -174,22 +178,23 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
     {
         _block.executeQuery(createQueryCriteria());
     }
-//
-//    /**
-//     * Instructs EntireJ to perform a query on the given block using the
-//     * specified criteria
-//     * 
-//     * @param queryCriteria
-//     *            The criteria for the query
-//     */
-//    public void executeQuery(EJReportQueryCriteria queryCriteria)
-//    {
-//        if (queryCriteria.getBlock() == null)
-//        {
-//            queryCriteria.setBlock(this);
-//        }
-//        _block.executeQuery(queryCriteria);
-//    }
+
+    //
+    // /**
+    // * Instructs EntireJ to perform a query on the given block using the
+    // * specified criteria
+    // *
+    // * @param queryCriteria
+    // * The criteria for the query
+    // */
+    // public void executeQuery(EJReportQueryCriteria queryCriteria)
+    // {
+    // if (queryCriteria.getBlock() == null)
+    // {
+    // queryCriteria.setBlock(this);
+    // }
+    // _block.executeQuery(queryCriteria);
+    // }
 
     /**
      * Retrieves the current record for the given block

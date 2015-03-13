@@ -31,7 +31,7 @@ public class EJCoreReportScreenColumnSectionProperties implements EJReportBorder
     {
         return _blockProperties;
     }
-    
+
     public EJReportScreenSection getSection()
     {
         return _section;

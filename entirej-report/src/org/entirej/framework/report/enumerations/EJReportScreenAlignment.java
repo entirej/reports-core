@@ -20,14 +20,13 @@ package org.entirej.framework.report.enumerations;
 public enum EJReportScreenAlignment
 {
 
-    NONE,LEFT, RIGHT, CENTER, JUSTIFIED, TOP, BOTTOM;
+    NONE, LEFT, RIGHT, CENTER, JUSTIFIED, TOP, BOTTOM;
 
     public String toString()
     {
         switch (this)
         {
 
-           
             case NONE:
                 return "None";
             case LEFT:

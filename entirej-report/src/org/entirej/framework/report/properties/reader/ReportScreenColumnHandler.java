@@ -59,24 +59,26 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
 
             _column = new EJCoreReportScreenColumnProperties(_blockProperties);
             _column.setName(itemname);
-            _column.setWidth(Integer.valueOf(attributes.getValue("width")));
+            if (attributes.getValue("width") != null)
+                _column.setWidth(Integer.valueOf(attributes.getValue("width")));
+
             _column.setShowHeader(Boolean.valueOf(attributes.getValue("showHeader")));
             _column.setShowFooter(Boolean.valueOf(attributes.getValue("showFooter")));
             _blockProperties.getScreenProperties().getColumnContainer().addColumnProperties(_column);
         }
         else if (name.equals(ELEMENT_HEADER))
         {
-            setDelegate(new ColumnHandler(name, _column.getHeaderSectionProperties()));
+            setDelegate(new ColumnHandler(name, _column, _column.getHeaderSectionProperties()));
             return;
         }
         else if (name.equals(ELEMENT_DETAIL))
         {
-            setDelegate(new ColumnHandler(name, _column.getDetailSectionProperties()));
+            setDelegate(new ColumnHandler(name, _column, _column.getDetailSectionProperties()));
             return;
         }
         else if (name.equals(ELEMENT_FOOTER))
         {
-            setDelegate(new ColumnHandler(name, _column.getFooterSectionProperties()));
+            setDelegate(new ColumnHandler(name, _column, _column.getFooterSectionProperties()));
             return;
         }
     }
@@ -101,11 +103,13 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
     {
         private final String                              _tag;
         private EJCoreReportScreenColumnSectionProperties _sectionProperties;
+        EJCoreReportScreenColumnProperties                _column;
 
-        public ColumnHandler(String tag, EJCoreReportScreenColumnSectionProperties sectionProperties)
+        public ColumnHandler(String tag, EJCoreReportScreenColumnProperties column, EJCoreReportScreenColumnSectionProperties sectionProperties)
         {
             _sectionProperties = sectionProperties;
             _tag = tag;
+            _column = column;
         }
 
         public void startLocalElement(String name, Attributes attributes) throws SAXException
@@ -133,6 +137,11 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
             else if (name.equals(ELEMENT_SCREEN_HEIGHT))
             {
                 _sectionProperties.setHeight(Integer.parseInt(value));
+            }
+
+            else if (name.equals("width"))
+            {
+                _column.setWidth(Integer.parseInt(value));// old format
             }
             else if (name.equals(ELEMENT_LINE_WIDTH))
             {

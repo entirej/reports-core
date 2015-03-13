@@ -20,5 +20,5 @@ package org.entirej.framework.report.enumerations;
 
 public enum EJReportFontStyle
 {
-    Unspecified, Plain, Italic, Underline,StrikeThrough
+    Unspecified, Plain, Italic, Underline, StrikeThrough
 }

@@ -24,7 +24,7 @@ import java.util.List;
 public class EJReportColumnContainer
 {
     private List<EJCoreReportScreenColumnProperties> _columnProperties;
-    private EJCoreReportBlockProperties        _blockProperties;
+    private EJCoreReportBlockProperties              _blockProperties;
 
     public EJReportColumnContainer(EJCoreReportBlockProperties blockProperties)
     {
