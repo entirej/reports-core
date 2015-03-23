@@ -48,15 +48,25 @@ import net.sf.jasperreports.engine.type.StretchTypeEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportAlignmentBaseScreenItem;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportBlockItem;
+import org.entirej.framework.report.EJReportDateScreenItem;
+import org.entirej.framework.report.EJReportImageScreenItem;
+import org.entirej.framework.report.EJReportLabelScreenItem;
+import org.entirej.framework.report.EJReportLineScreenItem;
+import org.entirej.framework.report.EJReportNumberScreenItem;
 import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportParameterList;
+import org.entirej.framework.report.EJReportRectangleScreenItem;
+import org.entirej.framework.report.EJReportRotatableScreenItem;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.EJReportScreen;
 import org.entirej.framework.report.EJReportScreenColumn;
 import org.entirej.framework.report.EJReportScreenColumnSection;
 import org.entirej.framework.report.EJReportScreenItem;
+import org.entirej.framework.report.EJReportTextScreenItem;
+import org.entirej.framework.report.EJReportValueBaseScreenItem;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
@@ -69,13 +79,9 @@ import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
-import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
-import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Label;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineDirection;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Number.NumberFormats;
-import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
-import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 import org.entirej.report.jasper.data.EJReportActionContext;
@@ -1364,9 +1370,9 @@ public class EJReportJasperReportBuilder
 
     private void crateValueRefField(EJReportScreenItem item) throws JRException
     {
-        if (item.getItemProps() instanceof ValueBaseItem)
+        if (item.typeOf(EJReportValueBaseScreenItem.class))
         {
-            ValueBaseItem vaItem = (ValueBaseItem) item.getItemProps();
+            EJReportValueBaseScreenItem vaItem = item.typeAs(EJReportValueBaseScreenItem.class);
 
             String defaultValue = vaItem.getValue();
             if (vaItem.getValue() != null && vaItem.getValue().length() > 0)
@@ -1389,12 +1395,12 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private void configMarkup(JRDesignStyle textField, EJCoreReportScreenItemProperties item)
+    private void configMarkup(JRDesignStyle textField, EJReportScreenItem item)
     {
         // http://jasperreports.sourceforge.net/sample.reference/markup/
-        if (item instanceof ValueBaseItem)
+        if (item.typeOf(EJReportValueBaseScreenItem.class))
         {
-            ValueBaseItem vaItem = (ValueBaseItem) item;
+            EJReportValueBaseScreenItem vaItem = item.typeAs(EJReportValueBaseScreenItem.class);
 
             switch (vaItem.getMarkup())
             {
@@ -1430,7 +1436,7 @@ public class EJReportJasperReportBuilder
         {
             case TEXT:
             {
-                EJCoreReportScreenItemProperties.Text textItem = (EJCoreReportScreenItemProperties.Text) item.getItemProps();
+                EJReportTextScreenItem textItem = item.typeAs(EJReportTextScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
@@ -1442,12 +1448,12 @@ public class EJReportJasperReportBuilder
                 setRotation(itemStyle, textItem);
                 text.setStretchWithOverflow(textItem.isExpandToFit());
                 text.setBlankWhenNull(true);
-                configMarkup(itemStyle, (EJCoreReportScreenItemProperties) item.getItemProps());
+                configMarkup(itemStyle, item);
             }
                 break;
             case NUMBER:
             {
-                EJCoreReportScreenItemProperties.Number textItem = (EJCoreReportScreenItemProperties.Number) item.getItemProps();
+                EJReportNumberScreenItem textItem = item.typeAs(EJReportNumberScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
@@ -1490,7 +1496,7 @@ public class EJReportJasperReportBuilder
                 break;
             case DATE:
             {
-                EJCoreReportScreenItemProperties.Date textItem = (EJCoreReportScreenItemProperties.Date) item.getItemProps();
+                EJReportDateScreenItem textItem = item.typeAs(EJReportDateScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setExpression(createValueExpression(block.getReport(), textItem.getValue()));
@@ -1559,7 +1565,7 @@ public class EJReportJasperReportBuilder
                 break;
             case LABEL:
             {
-                EJCoreReportScreenItemProperties.Label labelItem = (Label) item.getItemProps();
+                EJReportLabelScreenItem labelItem = item.typeAs(EJReportLabelScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.getParagraph().setRightIndent(5);
@@ -1572,7 +1578,7 @@ public class EJReportJasperReportBuilder
                 break;
             case LINE:
             {
-                EJCoreReportScreenItemProperties.Line lineItem = (EJCoreReportScreenItemProperties.Line) item.getItemProps();
+                EJReportLineScreenItem lineItem = item.typeAs(EJReportLineScreenItem.class);
                 JRDesignLine line = new JRDesignLine();
                 element = line;
 
@@ -1598,7 +1604,7 @@ public class EJReportJasperReportBuilder
                 break;
             case RECTANGLE:
             {
-                EJCoreReportScreenItemProperties.Rectangle lineItem = (EJCoreReportScreenItemProperties.Rectangle) item.getItemProps();
+                EJReportRectangleScreenItem lineItem = item.typeAs(EJReportRectangleScreenItem.class);
                 JRDesignRectangle line = new JRDesignRectangle();
                 element = line;
 
@@ -1624,7 +1630,7 @@ public class EJReportJasperReportBuilder
                 break;
             case IMAGE:
             {
-                EJCoreReportScreenItemProperties.Image imageItem = (EJCoreReportScreenItemProperties.Image) item.getItemProps();
+                EJReportImageScreenItem imageItem = item.typeAs(EJReportImageScreenItem.class);
                 JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
                 {
 
@@ -1652,7 +1658,7 @@ public class EJReportJasperReportBuilder
         return element;
     }
 
-    void setAlignments(JRDesignStyle elm, AlignmentBaseItem alignmentBaseItem)
+    void setAlignments(JRDesignStyle elm, EJReportAlignmentBaseScreenItem alignmentBaseItem)
     {
         switch (alignmentBaseItem.getVAlignment())
         {
@@ -1692,7 +1698,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    void setRotation(JRDesignStyle elm, RotatableItem rotatableItem)
+    void setRotation(JRDesignStyle elm, EJReportRotatableScreenItem rotatableItem)
     {
         switch (rotatableItem.getRotation())
         {

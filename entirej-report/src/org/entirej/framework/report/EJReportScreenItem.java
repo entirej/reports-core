@@ -22,6 +22,8 @@ import java.io.Serializable;
 
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
 /**
@@ -46,11 +48,6 @@ public class EJReportScreenItem implements Serializable
     public EJReportScreenItemType getType()
     {
         return _itemProps.getType();
-    }
-
-    public EJReportScreenItemProperties getItemProps()
-    {
-        return _itemProps;
     }
 
     public int getWidth()
@@ -140,4 +137,95 @@ public class EJReportScreenItem implements Serializable
     {
         return _itemProps.getName();
     }
+
+    public <T> T typeAs(Class<T> type)
+    {
+        if (_itemProps.getClass().isAssignableFrom(ValueBaseItem.class))
+        {
+            return type.cast(new EJReportValueBaseScreenItem((ValueBaseItem) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Text.class))
+        {
+            return type.cast(new EJReportTextScreenItem((EJCoreReportScreenItemProperties.Text) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.AlignmentBaseItem.class))
+        {
+            return type.cast(new EJReportAlignmentBaseScreenItem((EJCoreReportScreenItemProperties.AlignmentBaseItem) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Number.class))
+        {
+            return type.cast(new EJReportNumberScreenItem((EJCoreReportScreenItemProperties.Number) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Date.class))
+        {
+            return type.cast(new EJReportDateScreenItem((EJCoreReportScreenItemProperties.Date) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Label.class))
+        {
+            return type.cast(new EJReportLabelScreenItem((EJCoreReportScreenItemProperties.Label) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Image.class))
+        {
+            return type.cast(new EJReportImageScreenItem((EJCoreReportScreenItemProperties.Image) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Line.class))
+        {
+            return type.cast(new EJReportLineScreenItem((EJCoreReportScreenItemProperties.Line) _itemProps));
+        }
+        if (_itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Rectangle.class))
+        {
+            return type.cast(new EJReportRectangleScreenItem((EJCoreReportScreenItemProperties.Rectangle) _itemProps));
+        }
+
+        return null;
+
+    }
+
+    public boolean typeOf(Class<?> type)
+    {
+        if (type.isAssignableFrom(EJReportValueBaseScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(ValueBaseItem.class);
+        }
+        if (type.isAssignableFrom(EJReportNumberScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Number.class);
+        }
+        if (type.isAssignableFrom(EJReportTextScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Text.class);
+        }
+        if (type.isAssignableFrom(EJReportDateScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Date.class);
+        }
+        if (type.isAssignableFrom(EJReportAlignmentBaseScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.AlignmentBaseItem.class);
+        }
+        if (type.isAssignableFrom(EJReportRotatableScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.RotatableItem.class);
+        }
+        if (type.isAssignableFrom(EJReportLabelScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Label.class);
+        }
+        if (type.isAssignableFrom(EJReportImageScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Image.class);
+        }
+        if (type.isAssignableFrom(EJReportLineScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Line.class);
+        }
+        if (type.isAssignableFrom(EJReportRectangleScreenItem.class))
+        {
+            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Rectangle.class);
+        }
+
+        return false;
+
+    }
+
 }
