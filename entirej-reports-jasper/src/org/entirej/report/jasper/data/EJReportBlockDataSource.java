@@ -39,10 +39,16 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext
 {
 
-    private final EJReportBlock block;
-    private int                 index      = -1;
-    private Map<String, Object> fieldCache = new HashMap<String, Object>();
-    private Locale              defaultLocale;
+    private final EJReportBlock  block;
+    private int                  index      = -1;
+    private Map<String, Object>  fieldCache = new HashMap<String, Object>();
+    private Map<String, Object>  sitemCache = new HashMap<String, Object>();
+    private Map<String, Boolean> vCache     = new HashMap<String, Boolean>();
+    private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
+    private Map<String, Boolean> aCache     = new HashMap<String, Boolean>();
+    private Locale               defaultLocale;
+
+    public static final Object   EMPTY      = new Object();
 
     public EJReportBlockDataSource(EJReportBlock block)
     {
@@ -145,6 +151,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     public boolean next() throws JRException
     {
         fieldCache.clear();
+        sitemCache.clear();
+        vCache.clear();
+        aCache.clear();
+        svCache.clear();
         index++;
 
         boolean hasRecord = index < block.getRecordCount();
@@ -162,28 +172,53 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     @Override
     public boolean isActive(String item, String section, String vaName)
     {
-        EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
-        // System.err.println(item +" B="+block.getName());
-        if (reportItem == null)
+        if (!isVisible(item, section))
             return false;
-        EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-        // if(visualAttribute!=null)
-        // {
-        // System.err.println("FOUND="+item +" B="+block.getName());
-        // }
-        return visualAttribute != null && visualAttribute.getName().equals(vaName);
+
+        String key = section + item;
+
+        Boolean b = aCache.get(key);
+        if (b == null)
+        {
+            EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+
+            // System.err.println(item +" B="+block.getName());
+            if (reportItem == null)
+                return false;
+            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+            // if(visualAttribute!=null)
+            // {
+            // System.err.println("FOUND="+item +" B="+block.getName());
+            // }
+            b = visualAttribute != null && visualAttribute.getName().equals(vaName);
+            aCache.put(key, b);
+            return b;
+        }
+
+        return b;
     }
 
     @Override
     public boolean isVisible(String item, String section)
     {
-        EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+        String key = section + item;
+        Boolean b = vCache.get(key);
+        if (b == null)
+        {
+            EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
-        if (reportItem == null)
-            return true;
+            if (reportItem == null)
+            {
+                vCache.put(key, true);
+                return true;
+            }
 
-        return reportItem.isVisible();
+            b = reportItem.isVisible();
+            vCache.put(key, b);
+            return b;
+        }
+        return b;
     }
 
     @Override
@@ -191,6 +226,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     {
         if (value instanceof String)
         {
+            
+            
             EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
             if (reportItem == null)
@@ -226,16 +263,29 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     private EJReportDataScreenItem getReportScreenItem(String item, EJReportScreenSection section)
     {
 
-        EJReportDataScreenItem reportItem = null;
+        String key = section + item;
 
-        EJReportRecord record = block.getCurrentRecord();
-        if(record.hasScreenItemData(item, section))
+        Object object = sitemCache.get(section);
+        if (object == null)
         {
-            reportItem = record.getScreenItem(item, section);
-        }
-        
+            EJReportDataScreenItem reportItem = null;
 
-        return reportItem;
+            EJReportRecord record = block.getCurrentRecord();
+            if (record.hasScreenItemData(item, section))
+            {
+                reportItem = record.getScreenItem(item, section);
+                sitemCache.put(key, reportItem);
+            }
+            else
+            {
+                sitemCache.put(key, EMPTY);
+            }
+
+            return reportItem;
+        }
+
+        return object == EMPTY ? null : (EJReportDataScreenItem) object;
+
     }
 
     @Override
@@ -247,8 +297,14 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     @Override
     public boolean canShowScreenItem(String blockName, String screenItem, String section)
     {
-
-        return block.getReport().getActionController().canShowScreenItem(block.getReport(), blockName, screenItem, EJReportScreenSection.valueOf(section));
+        String key = section + screenItem;
+        Boolean b = svCache.get(key);
+        if(b==null)
+        {
+           b= block.getReport().getActionController().canShowScreenItem(block.getReport(), blockName, screenItem, EJReportScreenSection.valueOf(section));
+           svCache.put(key, b);
+        }
+        return b;
     }
 
 }
