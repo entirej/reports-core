@@ -88,6 +88,12 @@ public class EJReportRecord implements Serializable
     {
         return _dataRecord.getScreenItem(itemName, section);
     }
+    
+    
+     public boolean hasScreenItemData(String itemName, EJReportScreenSection section)
+    {
+        return _dataRecord.hasScreenItemData(itemName, section);
+    }
 
     /**
      * Sets the item with the given name to the value specified
