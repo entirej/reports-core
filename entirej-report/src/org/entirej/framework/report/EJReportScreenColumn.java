@@ -19,11 +19,6 @@ public class EJReportScreenColumn
         return _properties.getName();
     }
 
-    public EJReportBlockProperties getBlockProperties()
-    {
-        return _properties.getBlockProperties();
-    }
-
     public boolean showHeader()
     {
         return _properties.showHeader();
@@ -37,6 +32,11 @@ public class EJReportScreenColumn
     public int getWidth()
     {
         return _properties.getWidth();
+    }
+
+    public void setWidth(int width)
+    {
+        _properties.setWidth(width);
     }
 
     public EJReportScreenColumnSection getHeaderSection()

@@ -8,6 +8,7 @@ import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenColumnProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
@@ -124,6 +125,28 @@ public class EJReportScreen
         }
 
         return columns;
+    }
+    
+    public EJReportScreenColumn getScreenColumn(String name)
+    {
+        
+        EJCoreReportScreenColumnProperties col = _properties.getColumnContainer().getColumnProperties(name);
+        if(col!=null)
+        {
+            return new EJReportScreenColumn(_block, col);
+        }
+        return null;
+    }
+    
+    public EJReportScreenItem getScreenItem(String name)
+    {
+        
+        EJCoreReportScreenItemProperties itemProps = _properties.getScreenItemContainer().getItemProperties(name);
+        if(itemProps!=null)
+        {
+            return new EJReportScreenItem(_block, itemProps);
+        }
+        return null;
     }
 
     public EJReportBlock getSubBlock(String blockName)

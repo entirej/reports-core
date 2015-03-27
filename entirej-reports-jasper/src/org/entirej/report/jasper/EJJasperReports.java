@@ -34,6 +34,7 @@ import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -70,10 +71,16 @@ public class EJJasperReports
 
     static
     {
+        DefaultJasperReportsContext context = DefaultJasperReportsContext.getInstance();
+        context.setProperty("net.sf.jasperreports.print.keep.full.text", "true");
+        context.setProperty("net.sf.jasperreports.text.truncate.at.char", "true");
+        context.setProperty("net.sf.jasperreports.text.truncate.suffix", "...");
+        context.setProperty("net.sf.jasperreports.xpath.executer.factory",
+                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+      //  context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
 
-        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.print.keep.full.text", "true");
-        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.text.truncate.at.char", "true");
-        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.text.truncate.suffix", "...");
+//        JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
+//                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 
     }
 
@@ -305,6 +312,11 @@ public class EJJasperReports
 
     public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile)
     {
+        
+        LOGGER.info("START Export  Report :" + outputFile);
+        long start = System.currentTimeMillis();
+       
+        
         try
         {
             switch (type)
@@ -437,6 +449,10 @@ public class EJJasperReports
         {
             e.printStackTrace();
             throw new EJReportRuntimeException(e);
+        }
+        finally
+        {
+            LOGGER.info("END Export  Report :" + outputFile + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
         }
     }
 
