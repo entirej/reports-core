@@ -181,7 +181,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
         if (reportItem == null)
-            return false;
+            return true;
 
         return reportItem.isVisible();
     }
@@ -229,7 +229,11 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         EJReportDataScreenItem reportItem = null;
 
         EJReportRecord record = block.getCurrentRecord();
-        reportItem = record.getScreenItem(item, section);
+        if(record.hasScreenItemData(item, section))
+        {
+            reportItem = record.getScreenItem(item, section);
+        }
+        
 
         return reportItem;
     }

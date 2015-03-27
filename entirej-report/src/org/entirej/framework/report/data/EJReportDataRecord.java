@@ -342,6 +342,42 @@ public class EJReportDataRecord implements Serializable
         }
         return item;
     }
+    
+    
+    public boolean hasScreenItemData(String itemName, EJReportScreenSection section)
+    {
+        if (itemName == null || itemName.trim().length() == 0)
+        {
+            throw new IllegalArgumentException("The screen item name passd to getItem is either a zero lenght string or null");
+        }
+        
+        HashMap<String, EJReportDataScreenItem> map;
+        
+        switch (section)
+        {
+            case HEADER:
+                if (_itemListH == null)
+                    _itemListH = new HashMap<String, EJReportDataScreenItem>();
+                map = _itemListH;
+                break;
+            case DETAIL:
+                if (_itemListD == null)
+                    _itemListD = new HashMap<String, EJReportDataScreenItem>();
+                map = _itemListD;
+                break;
+            case FOOTER:
+                if (_itemListF == null)
+                    _itemListF = new HashMap<String, EJReportDataScreenItem>();
+                map = _itemListF;
+                break;
+                
+            default:
+                return false;
+        }
+        
+       
+        return map.containsKey(itemName);
+    }
 
     /**
      * Sets the item with the given name to the given value
