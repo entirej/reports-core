@@ -176,7 +176,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         if (!isVisible(item, section))
             return false;
 
-        String key = section + item;
+        String key = section + item+vaName;
 
         Boolean b = aCache.get(key);
         if (b == null)
