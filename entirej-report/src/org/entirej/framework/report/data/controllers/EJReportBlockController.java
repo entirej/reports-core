@@ -73,13 +73,13 @@ public class EJReportBlockController implements Serializable
     /**
      * Indicates that the user want to navigate to the next record
      */
-    public void navigateToNextRecord()
+    public boolean navigateToNextRecord()
     {
         EJReportDataRecord focusedRecord = getCurrentRecord();
         if (index == -1 && focusedRecord != null)
         {
             index += 1;
-            return;
+            return true;
         }
         boolean hasMore = (index + 1) < _dataBlock.getBlockRecordCount();
         if (hasMore && focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
@@ -98,6 +98,7 @@ public class EJReportBlockController implements Serializable
             focusedRecord.initialise();
             getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
         }
+        return hasMore;
 
     }
 
@@ -201,16 +202,14 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord getCurrentRecord()
     {
-        if (index == -1 && _dataBlock.getBlockRecordCount() > 0)
+        if (index == -1 )
         {
             return getRecord(0);
         }
 
-        if (_dataBlock.getBlockRecordCount() > 0 && index > -1 && index < _dataBlock.getBlockRecordCount())
-        {
+       
             return getRecord(index);
-        }
-        return null;
+        
     }
 
     public EJReportDataRecord getRecord(int recordNumber)

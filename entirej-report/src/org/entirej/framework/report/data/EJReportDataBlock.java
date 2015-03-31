@@ -148,14 +148,18 @@ public class EJReportDataBlock implements Serializable
         {
             throw new ArrayIndexOutOfBoundsException("Trying to obtain a record with a record number less than 0");
         }
-        else if (recordNumber >= _blockRecords.size())
+       
+
+        try
+        {
+            return (EJReportDataRecord) _blockRecords.get(recordNumber);
+        }
+        catch (IndexOutOfBoundsException e)
         {
             throw new ArrayIndexOutOfBoundsException(
                     "Trying to obtain a record using a record number greater than the amount of records stored within the block. RecordNumber: " + recordNumber
                             + ", BlockSize: " + _blockRecords.size());
         }
-
-        return (EJReportDataRecord) _blockRecords.get(recordNumber);
     }
 
 }

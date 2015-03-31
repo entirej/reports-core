@@ -222,9 +222,9 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
      * <p>
      * If this block has no records then no action will be performed
      */
-    public void navigateToNextRecord()
+    public boolean navigateToNextRecord()
     {
-        _block.navigateToNextRecord();
+        return _block.navigateToNextRecord();
     }
 
     public int getRecordCount()
