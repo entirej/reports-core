@@ -394,6 +394,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     String toStyleText(String text, EJReportVisualAttributeProperties va)
     {
         StringBuilder builder = new StringBuilder();
+        boolean useStyle =false;
         builder.append("<style ");
         // va base styles
 
@@ -402,31 +403,29 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         Color backgroundColor = va.getBackgroundColor();
         if (backgroundColor != null)
         {
+            useStyle=true;
             builder.append(" backcolor=\"").append(toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue())).append("\"");
 
         }
         Color foregroundColor = va.getForegroundColor();
         if (foregroundColor != null)
         {
+            useStyle=true;
             builder.append(" forecolor=\"").append(toHex(foregroundColor.getRed(), foregroundColor.getGreen(), foregroundColor.getBlue())).append("\"");
         }
 
         String fontName = va.getFontName();
         if (!EJCoreReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
         {
+            useStyle=true;
             builder.append(" fontName=\"").append(fontName).append("\"");
-            builder.append(" isPdfEmbedded=\"true\"");
-        }
-        else
-        {
-
-            builder.append(" fontName=\"Arial\"");
             builder.append(" isPdfEmbedded=\"true\"");
         }
 
         float fontSize = va.getFontSize();
         if (fontSize != -1)
         {
+            useStyle=true;
             builder.append(" size=\"").append(fontSize).append("\"");
         }
 
@@ -434,12 +433,15 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         switch (fontStyle)
         {
             case Italic:
+                useStyle=true;
                 builder.append(" isItalic=\"true\"");
                 break;
             case Underline:
+                useStyle=true;
                 builder.append(" isUnderline=\"true\"");
                 break;
             case StrikeThrough:
+                useStyle=true;
                 builder.append(" isStrikeThrough=\"true\"");
                 break;
 
@@ -452,6 +454,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         switch (fontWeight)
         {
             case Bold:
+                useStyle=true;
                 builder.append(" isBold=\"true\"");
                 builder.append(" pdfFontName=\"Helvetica-Bold\"");
                 break;
@@ -459,6 +462,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 break;
         }
 
+        if( !useStyle)return text;
+        
         builder.append(">").append(text).append("</style>");
 
         return builder.toString();
