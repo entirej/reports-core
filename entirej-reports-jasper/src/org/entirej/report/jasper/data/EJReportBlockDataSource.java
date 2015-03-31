@@ -464,7 +464,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
         if( !useStyle)return text;
         
-        builder.append(">").append(text).append("</style>");
+        builder.append(">").append(escape(text)).append("</style>");
 
         return builder.toString();
     }
@@ -473,6 +473,50 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     {
         return "#" + toBrowserHexValue(r) + toBrowserHexValue(g) + toBrowserHexValue(b);
     }
+    
+    
+    public String escape(String str) {
+        StringBuilder buf = new StringBuilder(str.length() * 2);
+        int i;
+        for (i = 0; i < str.length(); ++i) {
+            char ch = str.charAt(i);
+            
+            
+            String entityName = null;
+            switch(ch)
+            {
+                case 34:
+                    entityName = "amp";
+                    break;
+                case 60:
+                    entityName = "lt";
+                    break;
+                case 62:
+                    entityName = "gt";
+                    break;
+                case 39:
+                    entityName = "apos";
+                    break;
+            }
+            if (entityName == null) {
+                if (ch > 0x7F) {
+                    int intValue = ch;
+                    buf.append("&#");
+                    buf.append(intValue);
+                    buf.append(';');
+                } else {
+                    buf.append(ch);
+                }
+            } else {
+                buf.append('&');
+                buf.append(entityName);
+                buf.append(';');
+            }
+        }
+        return buf.toString();
+    }
+    
+   
 
     private static String toBrowserHexValue(int number)
     {
