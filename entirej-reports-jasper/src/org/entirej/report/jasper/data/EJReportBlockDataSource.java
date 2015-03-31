@@ -42,20 +42,21 @@ import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+import org.entirej.report.jasper.util.HtmlCharacterEntityReferences;
 
 public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext
 {
+    private static final HtmlCharacterEntityReferences characterEntityReferences = new HtmlCharacterEntityReferences();
+    private final EJReportBlock                        block;
+    private int                                        index                     = -1;
+    private Map<String, Object>                        fieldCache                = new HashMap<String, Object>();
+    private Map<String, Object>                        sitemCache                = new HashMap<String, Object>();
+    private Map<String, Boolean>                       vCache                    = new HashMap<String, Boolean>();
+    private Map<String, Boolean>                       svCache                   = new HashMap<String, Boolean>();
+    private Map<String, Boolean>                       aCache                    = new HashMap<String, Boolean>();
+    private Locale                                     defaultLocale;
 
-    private final EJReportBlock  block;
-    private int                  index      = -1;
-    private Map<String, Object>  fieldCache = new HashMap<String, Object>();
-    private Map<String, Object>  sitemCache = new HashMap<String, Object>();
-    private Map<String, Boolean> vCache     = new HashMap<String, Boolean>();
-    private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
-    private Map<String, Boolean> aCache     = new HashMap<String, Boolean>();
-    private Locale               defaultLocale;
-
-    public static final Object   EMPTY      = new Object();
+    public static final Object                         EMPTY                     = new Object();
 
     public EJReportBlockDataSource(EJReportBlock block)
     {
@@ -279,7 +280,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             {
                                 value = java.text.NumberFormat.getPercentInstance(defaultLocale).format((Number) value);
                             }
-                            
+
                             break;
                         case INTEGER:
                             value = toNumber(value);
@@ -381,7 +382,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             try
             {
 
-                value = new  BigDecimal((String) value);
+                value = new BigDecimal((String) value);
             }
             catch (NumberFormatException e)
             {
@@ -459,7 +460,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 break;
         }
 
-        builder.append(">").append(text).append("</style>");
+        builder.append(">").append(htmlEscape(text)).append("</style>");
 
         return builder.toString();
     }
@@ -524,6 +525,29 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             svCache.put(key, b);
         }
         return b;
+    }
+
+    public static String htmlEscape(String input)
+    {
+        if (input == null)
+        {
+            return null;
+        }
+        StringBuilder escaped = new StringBuilder(input.length() * 2);
+        for (int i = 0; i < input.length(); i++)
+        {
+            char character = input.charAt(i);
+            String reference = characterEntityReferences.convertToReference(character, "UTF-8");
+            if (reference != null)
+            {
+                escaped.append(reference);
+            }
+            else
+            {
+                escaped.append(character);
+            }
+        }
+        return escaped.toString();
     }
 
 }
