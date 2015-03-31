@@ -47,11 +47,11 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 {
 
     private final EJReportBlock  block;
-    private int                  index      = -1;
     private Map<String, Object>  fieldCache = new HashMap<String, Object>();
     private Map<String, Object>  sitemCache = new HashMap<String, Object>();
     private Map<String, Boolean> vCache     = new HashMap<String, Boolean>();
     private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
+    private EJReportRecord focusedRecord ;
     private Locale               defaultLocale;
 
     public static final Object   EMPTY      = new Object();
@@ -114,14 +114,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             String itemName = name.substring(name.indexOf('.') + 1);
             if (blockName.equals(block.getName()))
             {
-                EJReportRecord record = block.getCurrentRecord();
+                
 
-                if (record == null)
-                {
-                    System.out.println(block.getRecords().size());
-                }
-
-                Object value = record.getValue(itemName);
+                Object value = focusedRecord.getValue(itemName);
                 fieldCache.put(name, value);
                 return value;
             }
@@ -130,10 +125,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 EJReportBlock otherBlock = block.getReport().getBlock(blockName);
                 if (otherBlock != null)
                 {
-                    EJReportRecord focusedRecord = otherBlock.getCurrentRecord();
-                    if (focusedRecord != null)
+                    EJReportRecord record = otherBlock.getCurrentRecord();
+                    if (record != null)
                     {
-                        Object value = focusedRecord.getValue(itemName);
+                        Object value = record.getValue(itemName);
                         fieldCache.put(name, value);
                         return value;
                     }
@@ -144,8 +139,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         }
         else
         {
-            EJReportRecord record = block.getCurrentRecord();
-            Object value = record.getValue(name);
+           
+            Object value = focusedRecord.getValue(name);
             fieldCache.put(name, value);
             return value;
         }
@@ -160,26 +155,21 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         sitemCache.clear();
         vCache.clear();
         svCache.clear();
-        index++;
-
-        boolean hasRecord = index < block.getRecordCount();
-        if (hasRecord)
+       
+       focusedRecord = null;
+        boolean navigateToNextRecord = block.navigateToNextRecord();
+        if(navigateToNextRecord)
         {
-            block.navigateToNextRecord();
+            focusedRecord = block.getCurrentRecord();
         }
-        if (!hasRecord)
-        {
-            index = -1;
-        }
-        return hasRecord;
+        return navigateToNextRecord;
     }
 
     @Override
     public boolean isActive(String item, String section, String vaName)
     {
 
-        if (!isVisible(item, section))
-            return false;
+       
         EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
         // System.err.println(item +" B="+block.getName());
@@ -197,8 +187,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     public boolean isActive(String item, String section)
     {
 
-        if (!isVisible(item, section))
-            return false;
+        
 
         EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 

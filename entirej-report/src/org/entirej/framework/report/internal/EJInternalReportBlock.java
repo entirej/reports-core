@@ -239,11 +239,18 @@ public class EJInternalReportBlock implements Serializable
      * <p>
      * If the user is already on the last record, then nothing will happen
      */
-    public void navigateToNextRecord()
+    public boolean navigateToNextRecord()
     {
         logger.trace("START nextRecord");
-        _blockController.navigateToNextRecord();
-        logger.trace("END nextRecord");
+        try
+        {
+            return _blockController.navigateToNextRecord();
+        }
+        finally
+        {
+
+            logger.trace("END nextRecord");
+        }
     }
 
     /**
