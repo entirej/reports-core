@@ -73,12 +73,13 @@ import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
+import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
+import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
-import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineDirection;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Number.NumberFormats;
@@ -824,7 +825,7 @@ public class EJReportJasperReportBuilder
     private void processItemStyle(EJReportScreenItem item, JRDesignElement element, EJReportScreenSection section) throws JRException
     {
 
-        if (item.getType() == EJReportScreenItemType.TEXT)
+        if (element instanceof JRDesignTextField)
         {
 
             JRDesignTextField textField = (JRDesignTextField) element;
@@ -832,6 +833,7 @@ public class EJReportJasperReportBuilder
             if (!expression.getText().isEmpty())
                 textField.setExpression(createVABaseValueExpression(expression, item.getName(), section));
         }
+       
 
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
         EJReportVisualAttributeProperties va = item.getVisualAttributes();
@@ -858,16 +860,18 @@ public class EJReportJasperReportBuilder
 
     private JRDesignStyle createScreenItemBaseStyle(JRDesignStyle style, String item, EJReportScreenSection section) throws JRException
     {
+        style.setMarkup("styled");
+        //style.setMode(ModeEnum.OPAQUE);
 
         Collection<EJCoreReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
         for (EJReportVisualAttributeProperties properties : visualAttributes)
         {
-            if (properties.isUsedAsDynamicVA())
+            if (properties.isUsedAsDynamicVA() && hasDynamicVAToStyle(properties))
             {
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
                 conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
-                vaToStyle(properties, conditionalStyle);
+                vaToStyleAligment(properties, conditionalStyle);
 
                 style.addConditionalStyle(conditionalStyle);
             }
@@ -1232,41 +1236,7 @@ public class EJReportJasperReportBuilder
             style.setMarkup("styled");
         }
 
-        switch (va.getHAlignment())
-        {
-            case LEFT:
-                style.setHorizontalAlignment(HorizontalAlignEnum.LEFT);
-                break;
-            case RIGHT:
-                style.setHorizontalAlignment(HorizontalAlignEnum.RIGHT);
-                break;
-            case CENTER:
-                style.setHorizontalAlignment(HorizontalAlignEnum.CENTER);
-                break;
-            case JUSTIFIED:
-                style.setHorizontalAlignment(HorizontalAlignEnum.JUSTIFIED);
-                break;
-
-            default:
-                break;
-        }
-        switch (va.getVAlignment())
-        {
-            case TOP:
-                style.setVerticalAlignment(VerticalAlignEnum.TOP);
-                break;
-            case BOTTOM:
-                style.setVerticalAlignment(VerticalAlignEnum.BOTTOM);
-                break;
-            case CENTER:
-                style.setVerticalAlignment(VerticalAlignEnum.MIDDLE);
-            case JUSTIFIED:
-                style.setVerticalAlignment(VerticalAlignEnum.JUSTIFIED);
-                break;
-
-            default:
-                break;
-        }
+        vaToStyleAligment(va, style);
 
         EJReportFontStyle fontStyle = va.getFontStyle();
         switch (fontStyle)
@@ -1366,6 +1336,58 @@ public class EJReportJasperReportBuilder
                 style.setPattern(dateFormat.toPattern());
             }
         }
+    }
+
+    private void vaToStyleAligment(EJReportVisualAttributeProperties va, JRBaseStyle style)
+    {
+        switch (va.getHAlignment())
+        {
+            case LEFT:
+                style.setHorizontalAlignment(HorizontalAlignEnum.LEFT);
+                break;
+            case RIGHT:
+                style.setHorizontalAlignment(HorizontalAlignEnum.RIGHT);
+                break;
+            case CENTER:
+                style.setHorizontalAlignment(HorizontalAlignEnum.CENTER);
+                break;
+            case JUSTIFIED:
+                style.setHorizontalAlignment(HorizontalAlignEnum.JUSTIFIED);
+                break;
+
+            default:
+                break;
+        }
+        switch (va.getVAlignment())
+        {
+            case TOP:
+                style.setVerticalAlignment(VerticalAlignEnum.TOP);
+                break;
+            case BOTTOM:
+                style.setVerticalAlignment(VerticalAlignEnum.BOTTOM);
+                break;
+            case CENTER:
+                style.setVerticalAlignment(VerticalAlignEnum.MIDDLE);
+            case JUSTIFIED:
+                style.setVerticalAlignment(VerticalAlignEnum.JUSTIFIED);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private boolean hasDynamicVAToStyle(EJReportVisualAttributeProperties va)
+    {
+
+        if (va.getHAlignment() != EJReportScreenAlignment.NONE)
+            return true;
+        if (va.getVAlignment() != EJReportScreenAlignment.NONE)
+            return true;
+
+       
+
+        return false;
     }
 
     private void crateValueRefField(EJReportScreenItem item) throws JRException
