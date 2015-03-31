@@ -52,7 +52,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     private Map<String, Object>  sitemCache = new HashMap<String, Object>();
     private Map<String, Boolean> vCache     = new HashMap<String, Boolean>();
     private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
-    private Map<String, Boolean> aCache     = new HashMap<String, Boolean>();
     private Locale               defaultLocale;
 
     public static final Object   EMPTY      = new Object();
@@ -160,7 +159,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         fieldCache.clear();
         sitemCache.clear();
         vCache.clear();
-        aCache.clear();
         svCache.clear();
         index++;
 
@@ -182,28 +180,38 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
         if (!isVisible(item, section))
             return false;
+        EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
-        String key = section + item + vaName;
+        // System.err.println(item +" B="+block.getName());
+        if (reportItem == null)
+            return false;
+        EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+        // if(visualAttribute!=null)
+        // {
+        // System.err.println("FOUND="+item +" B="+block.getName());
+        // }
+        return visualAttribute != null && visualAttribute.getName().equals(vaName);
 
-        Boolean b = aCache.get(key);
-        if (b == null)
-        {
-            EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+    }
 
-            // System.err.println(item +" B="+block.getName());
-            if (reportItem == null)
-                return false;
-            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
-            // if(visualAttribute!=null)
-            // {
-            // System.err.println("FOUND="+item +" B="+block.getName());
-            // }
-            b = visualAttribute != null && visualAttribute.getName().equals(vaName);
-            aCache.put(key, b);
-            return b;
-        }
+    public boolean isActive(String item, String section)
+    {
 
-        return b;
+        if (!isVisible(item, section))
+            return false;
+
+        EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+
+        // System.err.println(item +" B="+block.getName());
+        if (reportItem == null)
+            return false;
+        EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+        // if(visualAttribute!=null)
+        // {
+        // System.err.println("FOUND="+item +" B="+block.getName());
+        // }
+        return visualAttribute != null;
+
     }
 
     @Override
@@ -237,10 +245,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
             if (reportItem == null)
-                return value instanceof String ? escape((String)value):value;
+                return value;
             EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
             if (visualAttribute == null)
-                return value instanceof String ? escape((String)value):value;
+                return value;
 
             // handle formats
 
@@ -279,7 +287,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             {
                                 value = java.text.NumberFormat.getPercentInstance(defaultLocale).format((Number) value);
                             }
-                            
+
                             break;
                         case INTEGER:
                             value = toNumber(value);
@@ -381,7 +389,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             try
             {
 
-                value = new  BigDecimal((String) value);
+                value = new BigDecimal((String) value);
             }
             catch (NumberFormatException e)
             {
@@ -394,7 +402,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     String toStyleText(String text, EJReportVisualAttributeProperties va)
     {
         StringBuilder builder = new StringBuilder();
-        boolean useStyle =false;
+        boolean useStyle = false;
         builder.append("<style ");
         // va base styles
 
@@ -403,21 +411,21 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         Color backgroundColor = va.getBackgroundColor();
         if (backgroundColor != null)
         {
-            useStyle=true;
+            useStyle = true;
             builder.append(" backcolor=\"").append(toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue())).append("\"");
 
         }
         Color foregroundColor = va.getForegroundColor();
         if (foregroundColor != null)
         {
-            useStyle=true;
+            useStyle = true;
             builder.append(" forecolor=\"").append(toHex(foregroundColor.getRed(), foregroundColor.getGreen(), foregroundColor.getBlue())).append("\"");
         }
 
         String fontName = va.getFontName();
         if (!EJCoreReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
         {
-            useStyle=true;
+            useStyle = true;
             builder.append(" fontName=\"").append(fontName).append("\"");
             builder.append(" isPdfEmbedded=\"true\"");
         }
@@ -425,7 +433,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         float fontSize = va.getFontSize();
         if (fontSize != -1)
         {
-            useStyle=true;
+            useStyle = true;
             builder.append(" size=\"").append(fontSize).append("\"");
         }
 
@@ -433,15 +441,15 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         switch (fontStyle)
         {
             case Italic:
-                useStyle=true;
+                useStyle = true;
                 builder.append(" isItalic=\"true\"");
                 break;
             case Underline:
-                useStyle=true;
+                useStyle = true;
                 builder.append(" isUnderline=\"true\"");
                 break;
             case StrikeThrough:
-                useStyle=true;
+                useStyle = true;
                 builder.append(" isStrikeThrough=\"true\"");
                 break;
 
@@ -454,7 +462,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         switch (fontWeight)
         {
             case Bold:
-                useStyle=true;
+                useStyle = true;
                 builder.append(" isBold=\"true\"");
                 builder.append(" pdfFontName=\"Helvetica-Bold\"");
                 break;
@@ -462,8 +470,9 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 break;
         }
 
-        if( !useStyle)return escape(text);
-        
+        if (!useStyle)
+            return escape(text);
+
         builder.append(">").append(escape(text)).append("</style>");
 
         return builder.toString();
@@ -473,17 +482,17 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     {
         return "#" + toBrowserHexValue(r) + toBrowserHexValue(g) + toBrowserHexValue(b);
     }
-    
-    
-    public String escape(String str) {
+
+    public String escape(String str)
+    {
         StringBuilder buf = new StringBuilder(str.length() * 2);
         int i;
-        for (i = 0; i < str.length(); ++i) {
+        for (i = 0; i < str.length(); ++i)
+        {
             char ch = str.charAt(i);
-            
-            
+
             String entityName = null;
-            switch(ch)
+            switch (ch)
             {
                 case 38:
                     entityName = "amp";
@@ -501,16 +510,22 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                     entityName = "apos";
                     break;
             }
-            if (entityName == null) {
-                if (ch > 0x7F) {
+            if (entityName == null)
+            {
+                if (ch > 0x7F)
+                {
                     int intValue = ch;
                     buf.append("&#");
                     buf.append(intValue);
                     buf.append(';');
-                } else {
+                }
+                else
+                {
                     buf.append(ch);
                 }
-            } else {
+            }
+            else
+            {
                 buf.append('&');
                 buf.append(entityName);
                 buf.append(';');
@@ -518,8 +533,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         }
         return buf.toString();
     }
-    
-   
 
     private static String toBrowserHexValue(int number)
     {

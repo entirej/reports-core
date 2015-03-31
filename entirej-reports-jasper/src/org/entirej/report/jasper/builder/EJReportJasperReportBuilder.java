@@ -833,7 +833,6 @@ public class EJReportJasperReportBuilder
             if (!expression.getText().isEmpty())
                 textField.setExpression(createVABaseValueExpression(expression, item.getName(), section));
         }
-       
 
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
         EJReportVisualAttributeProperties va = item.getVisualAttributes();
@@ -860,13 +859,18 @@ public class EJReportJasperReportBuilder
 
     private JRDesignStyle createScreenItemBaseStyle(JRDesignStyle style, String item, EJReportScreenSection section) throws JRException
     {
-        style.setMarkup("styled");
-        //style.setMode(ModeEnum.OPAQUE);
+        // style.setMarkup("styled");
+        // style.setMode(ModeEnum.OPAQUE);
 
         Collection<EJCoreReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
+        boolean addDynamicStyle = false;
         for (EJReportVisualAttributeProperties properties : visualAttributes)
         {
+            if (properties.isUsedAsDynamicVA())
+            {
+                addDynamicStyle = true;
+            }
             if (properties.isUsedAsDynamicVA() && hasDynamicVAToStyle(properties))
             {
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
@@ -875,6 +879,13 @@ public class EJReportJasperReportBuilder
 
                 style.addConditionalStyle(conditionalStyle);
             }
+        }
+        if (addDynamicStyle)
+        {
+            JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+            conditionalStyle.setConditionExpression(createItemVAExpression(item, null, section));
+            conditionalStyle.setMarkup("styled");
+            style.addConditionalStyle(conditionalStyle);
         }
 
         return style;
@@ -1385,8 +1396,6 @@ public class EJReportJasperReportBuilder
         if (va.getVAlignment() != EJReportScreenAlignment.NONE)
             return true;
 
-       
-
         return false;
     }
 
@@ -1786,7 +1795,10 @@ public class EJReportJasperReportBuilder
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item, section.name(), vaName));
+        if (vaName == null)
+            expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item, section.name()));
+        else
+            expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item, section.name(), vaName));
         return expression;
     }
 
