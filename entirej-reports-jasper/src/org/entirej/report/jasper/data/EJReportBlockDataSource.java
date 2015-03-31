@@ -237,10 +237,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
             if (reportItem == null)
-                return value;
+                return value instanceof String ? escape((String)value):value;
             EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
             if (visualAttribute == null)
-                return value;
+                return value instanceof String ? escape((String)value):value;
 
             // handle formats
 
@@ -462,7 +462,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 break;
         }
 
-        if( !useStyle)return text;
+        if( !useStyle)return escape(text);
         
         builder.append(">").append(escape(text)).append("</style>");
 
@@ -485,8 +485,11 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             String entityName = null;
             switch(ch)
             {
-                case 34:
+                case 38:
                     entityName = "amp";
+                    break;
+                case 34:
+                    entityName = "quot";
                     break;
                 case 60:
                     entityName = "lt";
