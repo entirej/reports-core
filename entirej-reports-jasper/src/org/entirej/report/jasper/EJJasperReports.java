@@ -77,6 +77,8 @@ public class EJJasperReports
         context.setProperty("net.sf.jasperreports.text.truncate.suffix", "...");
         context.setProperty("net.sf.jasperreports.xpath.executer.factory",
                 "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+        context.setProperty("org.xml.sax.driver",    
+                "org.apache.xerces.parsers.SAXParser");
         context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
 
 //        JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
@@ -137,6 +139,7 @@ public class EJJasperReports
             return reportToFile;
 
         }
+        
         catch (JRException e)
         {
             e.printStackTrace();
