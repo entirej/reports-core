@@ -10,6 +10,7 @@ public class EJCoreReportScreenColumnProperties
     private boolean                                   _showHeader;
     private boolean                                   _showFooter;
     private int                                       _width;
+    private boolean                                   _visible = true;
 
     private EJCoreReportScreenColumnSectionProperties _headerSectionProperties;
     private EJCoreReportScreenColumnSectionProperties _detailSectionProperties;
@@ -66,6 +67,16 @@ public class EJCoreReportScreenColumnProperties
     public int getWidth()
     {
         return _width;
+    }
+    
+    public boolean isVisible()
+    {
+        return _visible;
+    }
+    
+    public void setVisible(boolean visible)
+    {
+        this._visible = visible;
     }
 
     public EJCoreReportScreenColumnSectionProperties getHeaderSectionProperties()

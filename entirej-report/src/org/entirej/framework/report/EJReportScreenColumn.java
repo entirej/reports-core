@@ -38,6 +38,15 @@ public class EJReportScreenColumn
     {
         _properties.setWidth(width);
     }
+    
+    public void setVisible(boolean visible)
+    {
+        _properties.setVisible(visible);
+    }
+    public boolean isVisible()
+    {
+        return _properties.isVisible();
+    }
 
     public EJReportScreenColumnSection getHeaderSection()
     {

@@ -496,6 +496,9 @@ public class EJReportJasperReportBuilder
         for (EJReportScreenColumn col : allColumns)
         {
 
+            if(!col.isVisible())
+                continue;
+            
             if (canShowBlockHeader && col.showHeader())
             {
                 if (headerHeight < col.getHeaderSection().getHeight())
@@ -505,6 +508,8 @@ public class EJReportJasperReportBuilder
                 addHeaderBand = true;
                 for (EJReportScreenItem item : col.getHeaderSection().getScreenItems())
                 {
+                    if(!item.isVisible())
+                        continue;
                     int height = item.getHeight();
                     if (item.isHeightAsPercentage())
                     {
@@ -525,7 +530,8 @@ public class EJReportJasperReportBuilder
             }
             for (EJReportScreenItem item : col.getDetailSection().getScreenItems())
             {
-
+                if(!item.isVisible())
+                    continue;
                 int height = item.getHeight();
                 if (item.isHeightAsPercentage())
                 {
@@ -547,6 +553,8 @@ public class EJReportJasperReportBuilder
                 addFooterBand = true;
                 for (EJReportScreenItem item : col.getFooterSection().getScreenItems())
                 {
+                    if(!item.isVisible())
+                        continue;
                     int height = item.getHeight();
                     if (item.isHeightAsPercentage())
                     {
@@ -1116,7 +1124,7 @@ public class EJReportJasperReportBuilder
 
         for (EJReportScreenItem item : screenItems)
         {
-
+            
             if (!item.isVisible())
             {
                 continue;
