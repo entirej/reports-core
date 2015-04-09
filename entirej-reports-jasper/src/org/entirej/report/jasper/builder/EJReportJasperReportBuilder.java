@@ -474,7 +474,7 @@ public class EJReportJasperReportBuilder
 
         for (EJReportScreenColumn column : screen.getScreenColumns())
         {
-            if (controller.canShowScreenColumn(block.getReport(), block.getName(), column.getName()))
+            if (column.isVisible() && controller.canShowScreenColumn(block.getReport(), block.getName(), column.getName()))
             {
                 allColumns.add(column);
             }
@@ -598,6 +598,8 @@ public class EJReportJasperReportBuilder
         for (EJReportScreenColumn col : allColumns)
         {
 
+            if(!col.isVisible())
+                continue;
             final int width = col.getWidth();
             boolean screenColumnSectionH = canShowBlockHeader
                     && block.getReport().getActionController()
