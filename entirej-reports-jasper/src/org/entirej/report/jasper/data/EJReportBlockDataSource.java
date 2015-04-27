@@ -226,7 +226,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     }
 
     @Override
-    public Object getVABaseValue(Object value, String item, String section)
+    public Object getVABaseValue(Object value, String item, String section,String defaultPattren)
     {
         if (value != null)
         {
@@ -332,6 +332,18 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             break;
 
                         default:
+                            String pattern = (visualAttribute.getManualPattern());
+                            if (value instanceof Number)
+                            {
+                                DecimalFormat myFormatter = new DecimalFormat(defaultPattren);
+                                value = myFormatter.format((Number) value);
+                            }
+                            if (value instanceof Date)
+                            {
+                                SimpleDateFormat myFormatter = new SimpleDateFormat(defaultPattren);
+                                value = myFormatter.format((Date) value);
+                            }
+                            
                             break;
                     }
 

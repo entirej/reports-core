@@ -1,0 +1,522 @@
+diff --git a/entirej-reports-jasper/src/org/entirej/report/jasper/builder/EJReportJasperReportBuilder.java b/entirej-reports-jasper/src/org/entirej/report/jasper/builder/EJReportJasperReportBuilder.java
+index 680f1d1..6ebf69a 100644
+--- a/entirej-reports-jasper/src/org/entirej/report/jasper/builder/EJReportJasperReportBuilder.java
++++ b/entirej-reports-jasper/src/org/entirej/report/jasper/builder/EJReportJasperReportBuilder.java
+@@ -77,9 +77,9 @@ import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
+ import org.entirej.framework.report.enumerations.EJReportScreenItemType;
+ import org.entirej.framework.report.enumerations.EJReportScreenSection;
+ import org.entirej.framework.report.enumerations.EJReportScreenType;
+-import org.entirej.framework.report.enumerations.EJReportVAPattern;
+ import org.entirej.framework.report.interfaces.EJReportProperties;
+ import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
++import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
+ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
+ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineDirection;
+ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Number.NumberFormats;
+@@ -835,7 +835,7 @@ public class EJReportJasperReportBuilder
+     private void processItemStyle(EJReportScreenItem item, JRDesignElement element, EJReportScreenSection section) throws JRException
+     {
+ 
+-        if (element instanceof JRDesignTextField)
++        if (item.getType() == EJReportScreenItemType.TEXT)
+         {
+ 
+             JRDesignTextField textField = (JRDesignTextField) element;
+@@ -869,6 +869,7 @@ public class EJReportJasperReportBuilder
+ 
+     private JRDesignStyle createScreenItemBaseStyle(JRDesignStyle style, String item, EJReportScreenSection section) throws JRException
+     {
++
+         // style.setMarkup("styled");
+         // style.setMode(ModeEnum.OPAQUE);
+ 
+@@ -878,14 +879,16 @@ public class EJReportJasperReportBuilder
+         for (EJReportVisualAttributeProperties properties : visualAttributes)
+         {
+             if (properties.isUsedAsDynamicVA())
++
+             {
+                 addDynamicStyle = true;
+             }
+-            if (properties.isUsedAsDynamicVA() && hasDynamicVAToStyle(properties))
++            if (properties.isUsedAsDynamicVA())
++
+             {
+                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
+                 conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
+-                vaToStyleAligment(properties, conditionalStyle);
++                vaToStyle(properties, conditionalStyle);
+ 
+                 style.addConditionalStyle(conditionalStyle);
+             }
+@@ -1257,7 +1260,41 @@ public class EJReportJasperReportBuilder
+             style.setMarkup("styled");
+         }
+ 
+-        vaToStyleAligment(va, style);
++        switch (va.getHAlignment())
++        {
++            case LEFT:
++                style.setHorizontalAlignment(HorizontalAlignEnum.LEFT);
++                break;
++            case RIGHT:
++                style.setHorizontalAlignment(HorizontalAlignEnum.RIGHT);
++                break;
++            case CENTER:
++                style.setHorizontalAlignment(HorizontalAlignEnum.CENTER);
++                break;
++            case JUSTIFIED:
++                style.setHorizontalAlignment(HorizontalAlignEnum.JUSTIFIED);
++                break;
++
++            default:
++                break;
++        }
++        switch (va.getVAlignment())
++        {
++            case TOP:
++                style.setVerticalAlignment(VerticalAlignEnum.TOP);
++                break;
++            case BOTTOM:
++                style.setVerticalAlignment(VerticalAlignEnum.BOTTOM);
++                break;
++            case CENTER:
++                style.setVerticalAlignment(VerticalAlignEnum.MIDDLE);
++            case JUSTIFIED:
++                style.setVerticalAlignment(VerticalAlignEnum.JUSTIFIED);
++                break;
++
++            default:
++                break;
++        }
+ 
+         EJReportFontStyle fontStyle = va.getFontStyle();
+         switch (fontStyle)
+@@ -1359,6 +1396,7 @@ public class EJReportJasperReportBuilder
+         }
+     }
+ 
++
+     private void vaToStyleAligment(EJReportVisualAttributeProperties va, JRBaseStyle style)
+     {
+         switch (va.getHAlignment())
+@@ -1398,16 +1436,7 @@ public class EJReportJasperReportBuilder
+         }
+     }
+ 
+-    private boolean hasDynamicVAToStyle(EJReportVisualAttributeProperties va)
+-    {
+-
+-        if (va.getHAlignment() != EJReportScreenAlignment.NONE)
+-            return true;
+-        if (va.getVAlignment() != EJReportScreenAlignment.NONE)
+-            return true;
+-
+-        return false;
+-    }
++  
+ 
+     private void crateValueRefField(EJReportScreenItem item) throws JRException
+     {
+@@ -1516,16 +1545,16 @@ public class EJReportJasperReportBuilder
+                     switch (localeFormat)
+                     {
+                         case CURRENCY:
+-                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale)).toPattern());
++                            itemStyle.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale)).toPattern());
+                             break;
+                         case PERCENT:
+-                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale)).toPattern());
++                            itemStyle.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale)).toPattern());
+                             break;
+                         case INTEGER:
+-                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale)).toPattern());
++                            itemStyle.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale)).toPattern());
+                             break;
+                         case NUMBER:
+-                            text.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale)).toPattern());
++                            itemStyle.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale)).toPattern());
+                             break;
+ 
+                         default:
+@@ -1599,7 +1628,7 @@ public class EJReportJasperReportBuilder
+                     }
+                     if (dateFormat != null)
+                     {
+-                        text.setPattern(dateFormat.toPattern());
++                        itemStyle.setPattern(dateFormat.toPattern());
+                     }
+                 }
+             }
+diff --git a/entirej-reports-jasper/src/org/entirej/report/jasper/data/EJReportBlockDataSource.java b/entirej-reports-jasper/src/org/entirej/report/jasper/data/EJReportBlockDataSource.java
+index ad6cafe..a19da58 100644
+--- a/entirej-reports-jasper/src/org/entirej/report/jasper/data/EJReportBlockDataSource.java
++++ b/entirej-reports-jasper/src/org/entirej/report/jasper/data/EJReportBlockDataSource.java
+@@ -19,13 +19,8 @@
+ 
+ package org.entirej.report.jasper.data;
+ 
+-import java.awt.Color;
+ import java.io.Serializable;
+ import java.math.BigDecimal;
+-import java.text.DateFormat;
+-import java.text.DecimalFormat;
+-import java.text.SimpleDateFormat;
+-import java.util.Date;
+ import java.util.HashMap;
+ import java.util.Locale;
+ import java.util.Map;
+@@ -37,10 +32,8 @@ import net.sf.jasperreports.engine.JRField;
+ import org.entirej.framework.report.EJReportBlock;
+ import org.entirej.framework.report.EJReportRecord;
+ import org.entirej.framework.report.data.EJReportDataScreenItem;
+-import org.entirej.framework.report.enumerations.EJReportFontStyle;
+-import org.entirej.framework.report.enumerations.EJReportFontWeight;
+ import org.entirej.framework.report.enumerations.EJReportScreenSection;
+-import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
++import org.entirej.framework.report.enumerations.EJReportVAPattern;
+ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+ 
+ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext
+@@ -182,6 +175,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
+         // }
+         return visualAttribute != null && visualAttribute.getName().equals(vaName);
+ 
++
+     }
+ 
+     public boolean isActive(String item, String section)
+@@ -228,9 +222,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
+     @Override
+     public Object getVABaseValue(Object value, String item, String section)
+     {
+-        if (value != null)
++        if (value instanceof String)
+         {
+-
++            
++            
+             EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+ 
+             if (reportItem == null)
+@@ -238,139 +233,33 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
+             EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+             if (visualAttribute == null)
+                 return value;
+-
+-            // handle formats
+-
++            EJReportVAPattern localePattern = visualAttribute.getLocalePattern();
++            switch (localePattern)
+             {
+-
+-                if (visualAttribute.getManualPattern() != null && !visualAttribute.getManualPattern().isEmpty())
+-                {
+-                    String pattern = (visualAttribute.getManualPattern());
+-                    if (value instanceof Number)
++                case CURRENCY:
++                case NUMBER:
++                case INTEGER:
++                case PERCENT:
++                    try
+                     {
+-                        DecimalFormat myFormatter = new DecimalFormat(pattern);
+-                        value = myFormatter.format((Number) value);
+-                    }
+-                    if (value instanceof Date)
+-                    {
+-                        SimpleDateFormat myFormatter = new SimpleDateFormat(pattern);
+-                        value = myFormatter.format((Date) value);
+-                    }
+-                }
+-                else
+-                {
+-                    SimpleDateFormat dateFormat = null;
+-                    switch (visualAttribute.getLocalePattern())
+-                    {
+-                        case CURRENCY:
+-                            value = toNumber(value);
+-                            if (value instanceof Number)
+-                            {
+-                                value = java.text.NumberFormat.getCurrencyInstance(defaultLocale).format((Number) value);
+-                            }
+-
+-                            break;
+-                        case PERCENT:
+-                            value = toNumber(value);
+-                            if (value instanceof Number)
+-                            {
+-                                value = java.text.NumberFormat.getPercentInstance(defaultLocale).format((Number) value);
+-                            }
+-
+-                            break;
+-                        case INTEGER:
+-                            value = toNumber(value);
+-                            if (value instanceof Number)
+-                            {
+-                                value = java.text.NumberFormat.getIntegerInstance(defaultLocale).format((Number) value);
+-                            }
+-                            break;
+-                        case NUMBER:
+-                            value = toNumber(value);
+-                            if (value instanceof Number)
+-                            {
+-                                value = java.text.NumberFormat.getNumberInstance(defaultLocale).format((Number) value);
+-                            }
+-                            break;
+-
+-                        case DATE_FULL:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.FULL, defaultLocale));
+-                            break;
+-                        case DATE_LONG:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.LONG, defaultLocale));
+-                            break;
+-                        case DATE_MEDIUM:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale));
+-                            break;
+-                        case DATE_SHORT:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
+-                            break;
+-                        case DATE_TIME_FULL:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, defaultLocale));
+-                            break;
+-                        case DATE_TIME_LONG:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, defaultLocale));
+-                            break;
+-                        case DATE_TIME_MEDIUM:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, defaultLocale));
+-                            break;
+-                        case DATE_TIME_SHORT:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, defaultLocale));
+-                            break;
+-
+-                        case TIME_FULL:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.FULL, defaultLocale));
+-                            break;
+-                        case TIME_LONG:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale));
+-                            break;
+-                        case TIME_MEDIUM:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale));
+-                            break;
+-                        case TIME_SHORT:
+-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale));
+-                            break;
+-
+-                        default:
+-                            break;
+-                    }
+ 
+-                    if (dateFormat != null && value instanceof Date)
++
++                        return new BigDecimal((String) value);
++                    }
++                    catch (NumberFormatException e)
+                     {
+-                        value = dateFormat.format(value);
++                        // ignore
+                     }
+-                }
+ 
++                default:
++                    break;
+             }
+-
+-            return toStyleText(value.toString(), visualAttribute);
+-
+-            // EJReportVAPattern localePattern =
+-            // visualAttribute.getLocalePattern();
+-            // switch (localePattern)
+-            // {
+-            // case CURRENCY:
+-            // case NUMBER:
+-            // case INTEGER:
+-            // case PERCENT:
+-            // try
+-            // {
+-            //
+-            // return new BigDecimal((String) value);
+-            // }
+-            // catch (NumberFormatException e)
+-            // {
+-            // // ignore
+-            // }
+-            //
+-            // default:
+-            // break;
+-            // }
+         }
+ 
+         return value;
+     }
+ 
++
+     private Object toNumber(Object value)
+     {
+         if (value instanceof String)
+@@ -388,150 +277,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
+         return value;
+     }
+ 
+-    String toStyleText(String text, EJReportVisualAttributeProperties va)
+-    {
+-        StringBuilder builder = new StringBuilder();
+-        boolean useStyle = false;
+-        builder.append("<style ");
+-        // va base styles
+-
+-        // isBold="true"
+-
+-        Color backgroundColor = va.getBackgroundColor();
+-        if (backgroundColor != null)
+-        {
+-            useStyle = true;
+-            builder.append(" backcolor=\"").append(toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue())).append("\"");
++    
+ 
+-        }
+-        Color foregroundColor = va.getForegroundColor();
+-        if (foregroundColor != null)
+-        {
+-            useStyle = true;
+-            builder.append(" forecolor=\"").append(toHex(foregroundColor.getRed(), foregroundColor.getGreen(), foregroundColor.getBlue())).append("\"");
+-        }
+-
+-        String fontName = va.getFontName();
+-        if (!EJCoreReportVisualAttributeProperties.UNSPECIFIED.equals(fontName))
+-        {
+-            useStyle = true;
+-            builder.append(" fontName=\"").append(fontName).append("\"");
+-            builder.append(" isPdfEmbedded=\"true\"");
+-        }
+-
+-        float fontSize = va.getFontSize();
+-        if (fontSize != -1)
+-        {
+-            useStyle = true;
+-            builder.append(" size=\"").append(fontSize).append("\"");
+-        }
+-
+-        EJReportFontStyle fontStyle = va.getFontStyle();
+-        switch (fontStyle)
+-        {
+-            case Italic:
+-                useStyle = true;
+-                builder.append(" isItalic=\"true\"");
+-                break;
+-            case Underline:
+-                useStyle = true;
+-                builder.append(" isUnderline=\"true\"");
+-                break;
+-            case StrikeThrough:
+-                useStyle = true;
+-                builder.append(" isStrikeThrough=\"true\"");
+-                break;
+-
+-            default:
+-                break;
+-        }
+-
+-        EJReportFontWeight fontWeight = va.getFontWeight();
+-
+-        switch (fontWeight)
+-        {
+-            case Bold:
+-                useStyle = true;
+-                builder.append(" isBold=\"true\"");
+-                builder.append(" pdfFontName=\"Helvetica-Bold\"");
+-                break;
+-            default:
+-                break;
+-        }
+-
+-        if (!useStyle)
+-            return escape(text);
+-
+-        builder.append(">").append(escape(text)).append("</style>");
+-
+-        return builder.toString();
+-    }
+-
+-    public static String toHex(int r, int g, int b)
+-    {
+-        return "#" + toBrowserHexValue(r) + toBrowserHexValue(g) + toBrowserHexValue(b);
+-    }
+-
+-    public String escape(String str)
+-    {
+-        StringBuilder buf = new StringBuilder(str.length() * 2);
+-        int i;
+-        for (i = 0; i < str.length(); ++i)
+-        {
+-            char ch = str.charAt(i);
+-
+-            String entityName = null;
+-            switch (ch)
+-            {
+-                case 38:
+-                    entityName = "amp";
+-                    break;
+-                case 34:
+-                    entityName = "quot";
+-                    break;
+-                case 60:
+-                    entityName = "lt";
+-                    break;
+-                case 62:
+-                    entityName = "gt";
+-                    break;
+-                case 39:
+-                    entityName = "apos";
+-                    break;
+-            }
+-            if (entityName == null)
+-            {
+-                if (ch > 0x7F)
+-                {
+-                    int intValue = ch;
+-                    buf.append("&#");
+-                    buf.append(intValue);
+-                    buf.append(';');
+-                }
+-                else
+-                {
+-                    buf.append(ch);
+-                }
+-            }
+-            else
+-            {
+-                buf.append('&');
+-                buf.append(entityName);
+-                buf.append(';');
+-            }
+-        }
+-        return buf.toString();
+-    }
+-
+-    private static String toBrowserHexValue(int number)
+-    {
+-        StringBuilder builder = new StringBuilder(Integer.toHexString(number & 0xff));
+-        while (builder.length() < 2)
+-        {
+-            builder.append("0");
+-        }
+-        return builder.toString().toUpperCase();
+-    }
+ 
+     private EJReportDataScreenItem getReportScreenItem(String item, EJReportScreenSection section)
+     {
+@@ -572,10 +319,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
+     {
+         String key = section + screenItem;
+         Boolean b = svCache.get(key);
+-        if (b == null)
++        if(b==null)
+         {
+-            b = block.getReport().getActionController().canShowScreenItem(block.getReport(), blockName, screenItem, EJReportScreenSection.valueOf(section));
+-            svCache.put(key, b);
++           b= block.getReport().getActionController().canShowScreenItem(block.getReport(), blockName, screenItem, EJReportScreenSection.valueOf(section));
++           svCache.put(key, b);
+         }
+         return b;
+     }

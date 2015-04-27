@@ -841,7 +841,11 @@ public class EJReportJasperReportBuilder
             JRDesignTextField textField = (JRDesignTextField) element;
             JRDesignExpression expression = (JRDesignExpression) textField.getExpression();
             if (!expression.getText().isEmpty())
-                textField.setExpression(createVABaseValueExpression(expression, item.getName(), section));
+            {
+                String pattern = textField.getPattern();
+               
+                textField.setExpression(createVABaseValueExpression(expression, item.getName(), pattern==null?"":pattern, section));
+            }
         }
 
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
@@ -1812,11 +1816,11 @@ public class EJReportJasperReportBuilder
         return expression;
     }
 
-    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, EJReportScreenSection section)
+    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item,String defaultPattren, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\")", valueExpression.getText(), item, section.name()));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),defaultPattren));
         return expression;
     }
 
