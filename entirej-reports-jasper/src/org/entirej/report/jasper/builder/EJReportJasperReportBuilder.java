@@ -890,6 +890,12 @@ public class EJReportJasperReportBuilder
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
                 conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
                 vaToStyleAligment(properties, conditionalStyle);
+                Color backgroundColor = properties.getBackgroundColor();
+                if (backgroundColor != null)
+                {
+                    conditionalStyle.setBackcolor(backgroundColor);
+                    conditionalStyle.setMode(ModeEnum.OPAQUE);
+                }
 
                 style.addConditionalStyle(conditionalStyle);
             }
@@ -1408,6 +1414,8 @@ public class EJReportJasperReportBuilder
         if (va.getHAlignment() != EJReportScreenAlignment.NONE)
             return true;
         if (va.getVAlignment() != EJReportScreenAlignment.NONE)
+            return true;
+        if (va.getBackgroundColor()!= null)
             return true;
 
         return false;
