@@ -632,7 +632,7 @@ public class EJReportJasperReportBuilder
 
                     if (item.isWidthAsPercentage())
                     {
-                        itemWidth = (int) (((double) itemWidth / 100) * itemWidth);
+                        itemWidth = (int) (((double)  width / 100) * itemWidth);
                     }
                     if (item.isHeightAsPercentage())
                     {
