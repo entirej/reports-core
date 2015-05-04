@@ -162,7 +162,7 @@ public class EJReportJasperReportBuilder
 
             for (EJReportBlock block : report.getHeaderBlocks())
             {
-                JRDesignSubreport subreport = createSubReport(report, block);
+                JRDesignSubreport subreport = createSubReport(report, block,true);
                 if (subreport == null)
                     continue;
                 EJReportScreen screen = block.getScreen();
@@ -177,7 +177,7 @@ public class EJReportJasperReportBuilder
             }
             for (EJReportBlock block : report.getFooterBlocks())
             {
-                JRDesignSubreport subreport = createSubReport(report, block);
+                JRDesignSubreport subreport = createSubReport(report, block,true);
                 if (subreport == null)
                     continue;
                 EJReportScreen screen = block.getScreen();
@@ -238,7 +238,7 @@ public class EJReportJasperReportBuilder
                         text.setMode(ModeEnum.TRANSPARENT);
                         usePageBrake = false;
                     }
-                    JRDesignSubreport subreport = createSubReport(report, block);
+                    JRDesignSubreport subreport = createSubReport(report, block,false);
                     if (subreport == null)
                         continue;
                     EJReportScreen screen = block.getScreen();
@@ -283,7 +283,7 @@ public class EJReportJasperReportBuilder
         design.addStyle(_EJ_DEAFULT);
     }
 
-    private JRDesignSubreport createSubReport(EJReport report, EJReportBlock block) throws JRException
+    private JRDesignSubreport createSubReport(EJReport report, EJReportBlock block,boolean fixed) throws JRException
     {
         EJReportScreen screen = block.getScreen();
 
@@ -316,7 +316,8 @@ public class EJReportJasperReportBuilder
             subreport.setDataSourceExpression(expressionDS);
 
             JRDesignExpression expressionRPT = new JRDesignExpression();
-            expressionRPT.setText(String.format("$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")", block.getName()));
+            
+            expressionRPT.setText( String.format(!fixed?"$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")":"$P{EJRJ_BLOCK_RPT}.getBlockReportFixed(\"%s\")", block.getName()));
             subreport.setExpression(expressionRPT);
 
             for (EJApplicationLevelParameter parameter : report.getApplicationLevelParameters())
@@ -452,11 +453,78 @@ public class EJReportJasperReportBuilder
 
             if (block.getScreen().getType() == EJReportScreenType.FORM_LAYOUT)
             {
-                createFormLayout(block);
+                createFormLayout(block,false);
             }
             else if (block.getScreen().getType() == EJReportScreenType.TABLE_LAYOUT)
             {
                 createTableLayout(block);
+            }
+        }
+        catch (JRException e)
+        {
+            throw new EJReportRuntimeException(e);
+        }
+    }
+    public void buildDesignFixed(EJReportBlock block)
+    {
+        
+        try
+        {
+            defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
+            createParamaters(block.getReport());
+            design.setName(block.getName());
+            design.setTopMargin(0);
+            design.setBottomMargin(0);
+            design.setLeftMargin(0);
+            design.setRightMargin(0);
+            design.setSummaryNewPage(false);
+            design.setPageFooter(null);
+            design.setSummary(null);
+            design.setColumnHeader(null);
+            design.setColumnFooter(null);
+            design.setNoData(null);
+            design.setTitle(null);
+            
+            addDefaultFont(block.getReport());
+            
+            // EJCoreReportBlockProperties properties = block.getProperties();
+            Collection<EJReportBlockItem> blockItems = block.getItems();
+            
+            {
+                
+                JRDesignField field = new JRDesignField();
+                
+                field.setName("_EJ_VA_CONTEXT");
+                field.setValueClass(org.entirej.report.jasper.data.EJReportBlockItemVAContext.class);
+                design.addField(field);
+            }
+            {
+                
+                JRDesignField field = new JRDesignField();
+                
+                field.setName("_EJ_AP_CONTEXT");
+                field.setValueClass(EJReportActionContext.class);
+                design.addField(field);
+            }
+            
+            for (EJReportBlockItem item : blockItems)
+            {
+                
+                JRDesignField field = new JRDesignField();
+                
+                field.setName(String.format("%s.%s", block.getName(), item.getName()));
+                field.setDescription(item.getFieldName());
+                field.setValueClass(Object.class);
+                design.addField(field);
+            }
+            
+            if (block.getScreen().getType() == EJReportScreenType.FORM_LAYOUT)
+            {
+                createFormLayout(block,true);
+            }
+            else if (block.getScreen().getType() == EJReportScreenType.TABLE_LAYOUT)
+            {
+               throw new EJReportRuntimeException("Header and Footer Sections not support Table layout");
             }
         }
         catch (JRException e)
@@ -1112,7 +1180,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private void createFormLayout(EJReportBlock block) throws JRException
+    private void createFormLayout(EJReportBlock block,boolean fixed) throws JRException
     {
         EJReportScreen screen = block.getScreen();
         Collection<EJReportScreenItem> screenItems = screen.getScreenItems();
@@ -1160,7 +1228,8 @@ public class EJReportJasperReportBuilder
 
             if (height < (item.getYPos() + itemHeight))
             {
-                height = (item.getYPos() + itemHeight);
+                if(!fixed)
+                    height = (item.getYPos() + itemHeight);
             }
 
             JRDesignElement element = createScreenItem(block, item);
@@ -1172,6 +1241,10 @@ public class EJReportJasperReportBuilder
                 element.setY(item.getYPos());
                 element.setWidth(itemWidth);
                 element.setHeight(itemHeight);
+                if(fixed && height < (item.getYPos() + itemHeight))
+                {
+                    element.setHeight(itemHeight-((item.getYPos() + itemHeight) - height));
+                }
                 element.setPositionType(PositionTypeEnum.FLOAT);
                 detail.addElement(element);
 
@@ -1183,7 +1256,7 @@ public class EJReportJasperReportBuilder
         List<EJReportBlock> allSubBlocks = screen.getSubBlocks();
         for (EJReportBlock subBlock : allSubBlocks)
         {
-            JRDesignSubreport subreport = createSubReport(block.getReport(), subBlock);
+            JRDesignSubreport subreport = createSubReport(block.getReport(), subBlock,false);
             if (subreport == null)
                 continue;
 
@@ -1192,6 +1265,7 @@ public class EJReportJasperReportBuilder
             subreport.setY(sub.getYPos());
             subreport.setWidth(sub.getWidth());
             subreport.setHeight(sub.getHeight());
+            
             detail.addElement(subreport);
             if (subBlock.getScreen().getType() != EJReportScreenType.NONE)
             {
@@ -1202,7 +1276,12 @@ public class EJReportJasperReportBuilder
                 }
                 if (height < (layoutScreen.getYPos() + layoutScreen.getHeight()))
                 {
-                    height = (layoutScreen.getYPos() + layoutScreen.getHeight());
+                    if(!fixed)
+                        height = (layoutScreen.getYPos() + layoutScreen.getHeight());
+                    else 
+                    {
+                        subreport.setHeight(sub.getHeight()-((layoutScreen.getYPos() + layoutScreen.getHeight())-height));
+                    }
                 }
             }
         }
