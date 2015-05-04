@@ -143,7 +143,7 @@ public class EJReportJasperReportBuilder
             if (properties.getHeaderSectionHeight() > 0)
             {
                 header = new JRDesignBand();
-                header.setSplitType(SplitTypeEnum.STRETCH);
+               // header.setSplitType(SplitTypeEnum.STRETCH);
                 header.setHeight(properties.getHeaderSectionHeight());
                 design.setPageHeader(header);
                 height -= properties.getHeaderSectionHeight();
@@ -153,7 +153,7 @@ public class EJReportJasperReportBuilder
             if (properties.getFooterSectionHeight() > 0)
             {
                 footer = new JRDesignBand();
-                footer.setSplitType(SplitTypeEnum.STRETCH);
+               // footer.setSplitType(SplitTypeEnum.STRETCH);
                 footer.setHeight(properties.getFooterSectionHeight());
                 design.setPageFooter(footer);
 

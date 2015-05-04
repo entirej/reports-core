@@ -534,6 +534,7 @@ public class EJJasperReports
         if (pages.size() > 0)
         {
             JRPrintPage lastpage = pages.get(pages.size() - 1);
+
             if (lastpage.getElements().size() == 0)
                 pages.remove(lastpage);
         }

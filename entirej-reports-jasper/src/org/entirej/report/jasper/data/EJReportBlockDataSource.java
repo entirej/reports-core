@@ -163,7 +163,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         {
             focusedRecord = block.getCurrentRecord();
         }
-        if(block.isControlBlock())
+        if(!navigateToNextRecord && block.isControlBlock())
         {
             block.reset();  
         }
