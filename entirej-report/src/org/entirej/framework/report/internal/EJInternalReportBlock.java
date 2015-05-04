@@ -308,4 +308,10 @@ public class EJInternalReportBlock implements Serializable
         }
     }
 
+    public void reset()
+    {
+        _blockController.reset();
+        
+    }
+
 }

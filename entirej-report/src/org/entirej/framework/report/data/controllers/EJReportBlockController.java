@@ -417,4 +417,10 @@ public class EJReportBlockController implements Serializable
         return _dataBlock.getRecords();
     }
 
+    public void reset()
+    {
+       // index = -1;
+        
+    }
+
 }

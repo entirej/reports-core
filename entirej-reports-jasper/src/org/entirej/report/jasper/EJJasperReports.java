@@ -79,7 +79,7 @@ public class EJJasperReports
                 "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
         context.setProperty("org.xml.sax.driver",    
                 "org.apache.xerces.parsers.SAXParser");
-        context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
+       // context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
 
 //        JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
 //                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
@@ -204,6 +204,15 @@ public class EJJasperReports
                     EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
                     sbBuilder.buildDesign(block);
 
+                    return sbBuilder.toReport();
+                }
+                @Override
+                public JasperReport getBlockReportFixed(String blockName)
+                {
+                    EJReportBlock block = report.getBlock(blockName);
+                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+                    sbBuilder.buildDesignFixed(block);
+                    
                     return sbBuilder.toReport();
                 }
             };

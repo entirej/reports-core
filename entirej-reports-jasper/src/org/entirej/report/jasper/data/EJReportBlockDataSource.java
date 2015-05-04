@@ -33,6 +33,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
 
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportRecord;
@@ -43,7 +44,7 @@ import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
-public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext
+public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext,JRRewindableDataSource
 {
 
     private final EJReportBlock  block;
@@ -161,6 +162,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         if(navigateToNextRecord)
         {
             focusedRecord = block.getCurrentRecord();
+        }
+        if(block.isControlBlock())
+        {
+            block.reset();  
         }
         return navigateToNextRecord;
     }
@@ -590,6 +595,13 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             svCache.put(key, b);
         }
         return b;
+    }
+
+    @Override
+    public void moveFirst() throws JRException
+    {
+       block.reset();
+        
     }
 
 }
