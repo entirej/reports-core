@@ -419,7 +419,7 @@ public class EJReportBlockController implements Serializable
 
     public void reset()
     {
-       // index = -1;
+        index = -1;
         
     }
 
