@@ -211,7 +211,7 @@ public class EJJasperReports
                 {
                     EJReportBlock block = report.getBlock(blockName);
                     EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
-                    sbBuilder.buildDesignFixed(block);
+                    sbBuilder.buildDesign(block);
                     
                     return sbBuilder.toReport();
                 }
