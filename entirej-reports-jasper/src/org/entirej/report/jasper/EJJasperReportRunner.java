@@ -69,9 +69,11 @@ public class EJJasperReportRunner implements EJReportRunner
         }
         try
         {
+          
             JasperPrint jasperPrint = EJJasperReports.fillReport(manager, report);
 
             EJJasperReports.exportReport(type, jasperPrint, outputFile);
+   
         }
         catch (Throwable t)
         {

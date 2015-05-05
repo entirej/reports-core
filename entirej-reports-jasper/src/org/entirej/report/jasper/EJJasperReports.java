@@ -168,6 +168,7 @@ public class EJJasperReports
     {
         try
         {
+            report.getActionController().beforeReport(report);
             EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
 
             builder.buildDesign(report);
