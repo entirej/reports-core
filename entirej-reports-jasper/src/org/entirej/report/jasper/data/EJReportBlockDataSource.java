@@ -414,13 +414,13 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
         // isBold="true"
 
-//        Color backgroundColor = va.getBackgroundColor();
-//        if (backgroundColor != null)
-//        {
-//            useStyle = true;
-//            builder.append(" backcolor=\"").append(toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue())).append("\"");
-//
-//        }
+        Color backgroundColor = va.getBackgroundColor();
+        if (backgroundColor != null)
+        {
+            useStyle = true;
+            builder.append(" backcolor=\"").append(toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue())).append("\"");
+
+        }
         Color foregroundColor = va.getForegroundColor();
         if (foregroundColor != null)
         {
@@ -563,7 +563,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             EJReportRecord record = block.getCurrentRecord();
             if (record.hasScreenItemData(item, section))
             {
-                reportItem = record.getScreenItem(item, section);
+                reportItem = record.getScreenItemNoValidate(item, section);
                 sitemCache.put(key, reportItem);
             }
             else

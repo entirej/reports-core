@@ -89,6 +89,11 @@ public class EJReportRecord implements Serializable
         return _dataRecord.getScreenItem(itemName, section);
     }
     
+    public EJReportDataScreenItem getScreenItemNoValidate(String itemName, EJReportScreenSection section)
+    {
+        return _dataRecord.getScreenItemNoValidate(itemName, section);
+    }
+    
     
      public boolean hasScreenItemData(String itemName, EJReportScreenSection section)
     {

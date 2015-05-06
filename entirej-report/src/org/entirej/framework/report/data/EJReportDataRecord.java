@@ -22,12 +22,17 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
+import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenColumnProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenColumnSectionProperties;
+import org.entirej.framework.report.properties.EJCoreReportScreenProperties;
 
 public class EJReportDataRecord implements Serializable
 {
@@ -293,6 +298,65 @@ public class EJReportDataRecord implements Serializable
             throw new IllegalArgumentException("The screen item name passd to getItem is either a zero lenght string or null");
         }
 
+        EJCoreReportScreenProperties screenProperties = _block.getProperties().getScreenProperties();
+        if (screenProperties.getScreenType() == EJReportScreenType.FORM_LAYOUT)
+        {
+            if (section == EJReportScreenSection.DETAIL)
+            {
+                if (screenProperties.getScreenItemContainer().getItemProperties(itemName) == null)
+                {
+                    throw new IllegalArgumentException(String.format("%s: Invalid screen item name:%s ", _block.getProperties().getName(), itemName));
+                }
+            }
+            else
+            {
+                throw new IllegalArgumentException(String.format("%s is FORM_LAYOUT valid only DETAIL section", _block.getProperties().getName()));
+            }
+        }
+        else if (screenProperties.getScreenType() == EJReportScreenType.TABLE_LAYOUT)
+        {
+            List<EJCoreReportScreenColumnProperties> allColumnProperties = screenProperties.getColumnContainer().getAllColumnProperties();
+            boolean found = false;
+            for (EJCoreReportScreenColumnProperties columnProperties : allColumnProperties)
+            {
+                EJCoreReportScreenColumnSectionProperties prop = null;
+                switch (section)
+                {
+                    case DETAIL:
+                        prop = columnProperties.getDetailSectionProperties();
+                        break;
+                    case FOOTER:
+                        prop = columnProperties.getFooterSectionProperties();
+                        break;
+                    case HEADER:
+                        prop = columnProperties.getHeaderSectionProperties();
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (prop.getSectionItemContainer().getItemProperties(itemName) != null)
+                
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found)
+            {
+                throw new IllegalArgumentException(String.format("%s: Invalid screen item name:%s on section:%s", _block.getProperties().getName(),
+                        itemName, section.name()));
+            }
+        }
+
+        return getScreenItemNoValidate(itemName, section);
+    }
+    
+    public EJReportDataScreenItem getScreenItemNoValidate(String itemName, EJReportScreenSection section)
+    {
+        
+
         HashMap<String, EJReportDataScreenItem> map;
 
         switch (section)
@@ -342,17 +406,16 @@ public class EJReportDataRecord implements Serializable
         }
         return item;
     }
-    
-    
+
     public boolean hasScreenItemData(String itemName, EJReportScreenSection section)
     {
         if (itemName == null || itemName.trim().length() == 0)
         {
             throw new IllegalArgumentException("The screen item name passd to getItem is either a zero lenght string or null");
         }
-        
+
         HashMap<String, EJReportDataScreenItem> map;
-        
+
         switch (section)
         {
             case HEADER:
@@ -370,12 +433,11 @@ public class EJReportDataRecord implements Serializable
                     _itemListF = new HashMap<String, EJReportDataScreenItem>();
                 map = _itemListF;
                 break;
-                
+
             default:
                 return false;
         }
-        
-       
+
         return map.containsKey(itemName);
     }
 
