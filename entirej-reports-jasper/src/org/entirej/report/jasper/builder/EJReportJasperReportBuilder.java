@@ -645,20 +645,20 @@ public class EJReportJasperReportBuilder
         if (addHeaderBand)
         {
             header = new JRDesignBand();
-            header.setSplitType(SplitTypeEnum.STRETCH);
+           // header.setSplitType(SplitTypeEnum.PREVENT);
             header.setHeight(headerHeight);
             design.setColumnHeader(header);
         }
         if (addFooterBand)
         {
             footer = new JRDesignBand();
-            footer.setSplitType(SplitTypeEnum.STRETCH);
+           // footer.setSplitType(SplitTypeEnum.PREVENT);
             footer.setHeight(footerHeight);
             design.setLastPageFooter(footer);
         }
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         detail = new JRDesignBand();
-        detail.setSplitType(SplitTypeEnum.STRETCH);
+        detail.setSplitType(SplitTypeEnum.PREVENT);
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
 
