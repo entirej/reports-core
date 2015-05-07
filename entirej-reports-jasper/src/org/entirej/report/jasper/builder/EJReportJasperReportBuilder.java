@@ -1870,6 +1870,14 @@ public class EJReportJasperReportBuilder
         {
             expression.setText(String.format("$F{%s}", paramValue));
         }
+        else if ("VARIABLE".equals(paramTypeCode))
+        {
+            if(paramValue.equals("CURRENT_DATE"))
+            {
+                expression.setText("new java.util.Date()");
+            }else
+                expression.setText(String.format("$V{%s}", paramValue));
+        }
         else if ("CLASS_FIELD".equals(paramTypeCode))
         {
 
