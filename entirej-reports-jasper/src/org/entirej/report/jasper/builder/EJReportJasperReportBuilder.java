@@ -125,7 +125,7 @@ public class EJReportJasperReportBuilder
             design.setRightMargin(properties.getMarginRight());
 
             int width = properties.getReportWidth() - (properties.getMarginLeft() + properties.getMarginRight());
-            int height = properties.getReportHeight() - (properties.getMarginTop() + properties.getMarginBottom());
+            //int height = properties.getReportHeight() - (properties.getMarginTop() + properties.getMarginBottom());
             design.setPageWidth(properties.getReportWidth());
             design.setColumnWidth(width);
             design.setPageHeight(properties.getReportHeight());
@@ -146,7 +146,7 @@ public class EJReportJasperReportBuilder
                // header.setSplitType(SplitTypeEnum.STRETCH);
                 header.setHeight(properties.getHeaderSectionHeight());
                 design.setPageHeader(header);
-                height -= properties.getHeaderSectionHeight();
+               
 
             }
             JRDesignBand footer = null;
@@ -157,7 +157,6 @@ public class EJReportJasperReportBuilder
                 footer.setHeight(properties.getFooterSectionHeight());
                 design.setPageFooter(footer);
 
-                height -= properties.getFooterSectionHeight();
             }
 
             for (EJReportBlock block : report.getHeaderBlocks())
@@ -208,11 +207,12 @@ public class EJReportJasperReportBuilder
 
                 JRDesignBand detail = new JRDesignBand();
                 detail.setSplitType(SplitTypeEnum.IMMEDIATE);
-                detail.setHeight(height);
+                
 
                 groupHeaderSection.addBand(detail);
                 design.addGroup(group);
 
+                int bandHeight = 0;
                 Collection<EJReportBlock> rootbBlocks = page.getRootBlocks();
                 boolean usePageBrake = addPageBrake;
                 for (EJReportBlock block : rootbBlocks)
@@ -248,11 +248,15 @@ public class EJReportJasperReportBuilder
                     subreport.setWidth(screen.getWidth());
                     subreport.setHeight(screen.getHeight());
 
+                    if(bandHeight<(screen.getYPos()+screen.getHeight()))
+                    {
+                        bandHeight=(screen.getYPos()+screen.getHeight());
+                    }
                     detail.addElement(subreport);
 
                     subreport.getPropertiesMap().setProperty("net.sf.jasperreports.export.xls.break.before.row", "true");
                 }
-
+                detail.setHeight(bandHeight);
                 addPageBrake = true;
             }
             // JasperDesignViewer.viewReportDesign(design);
