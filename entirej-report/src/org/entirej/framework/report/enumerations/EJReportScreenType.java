@@ -19,7 +19,7 @@ package org.entirej.framework.report.enumerations;
 
 public enum EJReportScreenType
 {
-    NONE, FORM_LAYOUT, TABLE_LAYOUT;
+    NONE, FORM_LAYOUT, TABLE_LAYOUT, CHART_LAYOUT;
 
     public String toString()
     {
@@ -30,6 +30,8 @@ public enum EJReportScreenType
                 return "Form Layout";
             case TABLE_LAYOUT:
                 return "Table Layout";
+            case CHART_LAYOUT:
+                return "Chart Layout";
             default:
                 return super.toString();
         }
