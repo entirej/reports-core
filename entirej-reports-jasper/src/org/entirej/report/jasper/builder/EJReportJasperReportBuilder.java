@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import net.sf.jasperreports.charts.design.JRDesignBarPlot;
 import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
 import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
+import net.sf.jasperreports.charts.design.JRDesignPieDataset;
+import net.sf.jasperreports.charts.design.JRDesignPieSeries;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
@@ -1328,7 +1329,6 @@ public class EJReportJasperReportBuilder
 
         JRDesignChart chart = null;
 
-        ;
         switch (screenChart.getChartType())
         {
             case BAR_CHART:
@@ -1343,8 +1343,6 @@ public class EJReportJasperReportBuilder
                     }
                 }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_BAR3D : JRDesignChart.CHART_TYPE_BAR);
 
-                
-              
                 JRDesignCategoryDataset data = new JRDesignCategoryDataset(null);
 
                 JRDesignCategorySeries series = new JRDesignCategorySeries();
@@ -1370,7 +1368,7 @@ public class EJReportJasperReportBuilder
                     {
                         series.setLabelExpression(expression);
                     }
-                   
+
                 }
                 {
                     JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getValue1Item());
@@ -1387,6 +1385,54 @@ public class EJReportJasperReportBuilder
                 //
             }
 
+                break;
+
+            case PIE_CHART:
+            {
+                chart = new JRDesignChart(new JRDefaultStyleProvider()
+                {
+
+                    @Override
+                    public JRStyle getDefaultStyle()
+                    {
+                        return null;
+                    }
+                }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_PIE3D : JRDesignChart.CHART_TYPE_PIE);
+
+                JRDesignPieDataset data = new JRDesignPieDataset(null);
+
+                JRDesignPieSeries series = new JRDesignPieSeries();
+                
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getSeriesItem());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("\" \"");
+                    }
+                    series.setKeyExpression(expression);
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getLabelItem());
+                    if (expression.getText() != null && !expression.getText().isEmpty())
+                    {
+                        series.setLabelExpression(expression);
+                    }
+
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getValue1Item());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("0");
+                    }
+                    series.setValueExpression(expression);
+                }
+
+                data.addPieSeries(series);
+                chart.setDataset(data);
+
+                //
+            }
                 break;
 
             default:
