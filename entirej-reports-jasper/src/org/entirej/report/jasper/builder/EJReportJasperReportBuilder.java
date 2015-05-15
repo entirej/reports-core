@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import net.sf.jasperreports.charts.design.JRDesignBarPlot;
+import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
+import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
@@ -18,6 +21,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignChart;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
@@ -63,6 +67,7 @@ import org.entirej.framework.report.EJReportRectangleScreenItem;
 import org.entirej.framework.report.EJReportRotatableScreenItem;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.EJReportScreen;
+import org.entirej.framework.report.EJReportScreenChart;
 import org.entirej.framework.report.EJReportScreenColumn;
 import org.entirej.framework.report.EJReportScreenColumnSection;
 import org.entirej.framework.report.EJReportScreenItem;
@@ -75,10 +80,8 @@ import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
-import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
-import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
@@ -348,8 +351,6 @@ public class EJReportJasperReportBuilder
 
                 subreport.addParameter(subreportParameter);
             }
-            
-        
 
             String blockRPTParam = String.format("EJRJ_BLOCK_RPT");
             JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
@@ -372,7 +373,6 @@ public class EJReportJasperReportBuilder
 
         Collection<EJApplicationLevelParameter> runtimeLevelParameters = report.getApplicationLevelParameters();
 
-     
         for (EJApplicationLevelParameter parameter : runtimeLevelParameters)
         {
             JRDesignParameter designParameter = new JRDesignParameter();
@@ -466,6 +466,10 @@ public class EJReportJasperReportBuilder
             else if (block.getScreen().getType() == EJReportScreenType.TABLE_LAYOUT)
             {
                 createTableLayout(block);
+            }
+            else if (block.getScreen().getType() == EJReportScreenType.CHART_LAYOUT)
+            {
+                createChartLayout(block, false);
             }
         }
         catch (JRException e)
@@ -1300,6 +1304,107 @@ public class EJReportJasperReportBuilder
         design.setColumnWidth(width);
     }
 
+    private void createChartLayout(EJReportBlock block, boolean fixed) throws JRException
+    {
+        EJReportScreen screen = block.getScreen();
+
+        JRDesignBand detail = new JRDesignBand();
+        detail.setSplitType(SplitTypeEnum.PREVENT);
+
+        EJReportProperties reportProperties = block.getReport().getProperties();
+        design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
+
+        int width = screen.getWidth();
+        int height = screen.getHeight();
+
+        //
+        EJReportScreenChart screenChart = block.getScreen().getReportScreenChart();
+        createField(screenChart.getCategoryItem());
+        createField(screenChart.getLabelItem());
+        createField(screenChart.getSeriesItem());
+        createField(screenChart.getValue1Item());
+        createField(screenChart.getValue2Item());
+        createField(screenChart.getValue3Item());
+
+        JRDesignChart chart = null;
+
+        ;
+        switch (screenChart.getChartType())
+        {
+            case BAR_CHART:
+            {
+                chart = new JRDesignChart(new JRDefaultStyleProvider()
+                {
+
+                    @Override
+                    public JRStyle getDefaultStyle()
+                    {
+                        return null;
+                    }
+                }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_BAR3D : JRDesignChart.CHART_TYPE_BAR);
+
+                
+              
+                JRDesignCategoryDataset data = new JRDesignCategoryDataset(null);
+
+                JRDesignCategorySeries series = new JRDesignCategorySeries();
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getCategoryItem());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("\" \"");
+                    }
+                    series.setCategoryExpression(expression);
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getSeriesItem());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("\" \"");
+                    }
+                    series.setSeriesExpression(expression);
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getLabelItem());
+                    if (expression.getText() != null && !expression.getText().isEmpty())
+                    {
+                        series.setLabelExpression(expression);
+                    }
+                   
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getValue1Item());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("0");
+                    }
+                    series.setValueExpression(expression);
+                }
+
+                data.addCategorySeries(series);
+                chart.setDataset(data);
+
+                //
+            }
+
+                break;
+
+            default:
+                break;
+        }
+
+        chart.setX(0);
+        chart.setY(0);
+        chart.setWidth(width);
+        chart.setHeight(height);
+        chart.setEvaluationTime(EvaluationTimeEnum.REPORT);
+        detail.addElement(chart);
+        detail.setHeight(height);
+        design.setPageWidth(width);
+        design.setColumnWidth(width);
+        design.setTitle(detail);
+    }
+
     private JRDesignStyle toStyle(EJReportVisualAttributeProperties va) throws JRException
     {
 
@@ -1518,21 +1623,28 @@ public class EJReportJasperReportBuilder
             String defaultValue = vaItem.getValue();
             if (vaItem.getValue() != null && vaItem.getValue().length() > 0)
             {
-                String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
-                String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
-                if ("BLOCK_ITEM".equals(paramTypeCode))
-                {
-                    if (!design.getFieldsMap().containsKey(paramValue))
-                    {
-                        JRDesignField field = new JRDesignField();
-
-                        field.setName(paramValue);
-                        field.setValueClass(Object.class);
-                        design.addField(field);
-                    }
-
-                }
+                createField(defaultValue);
             }
+        }
+    }
+
+    private void createField(String defaultValue) throws JRException
+    {
+        if (defaultValue == null || defaultValue.length() == 0)
+            return;
+        String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
+        String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
+        if ("BLOCK_ITEM".equals(paramTypeCode))
+        {
+            if (!design.getFieldsMap().containsKey(paramValue))
+            {
+                JRDesignField field = new JRDesignField();
+
+                field.setName(paramValue);
+                field.setValueClass(Object.class);
+                design.addField(field);
+            }
+
         }
     }
 
@@ -1581,17 +1693,17 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
-                if(valueExpression.getText().equals("$V{MASTER_CURRENT_PAGE}"))
+                if (valueExpression.getText().equals("$V{MASTER_CURRENT_PAGE}"))
                 {
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
 
-                if(valueExpression.getText().equals("$V{MASTER_TOTAL_PAGES}"))
+                if (valueExpression.getText().equals("$V{MASTER_TOTAL_PAGES}"))
                 {
-                  
+
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
-                if(valueExpression.getText().equals("$V{PAGE_NUMBER_OF_TOTAL_PAGES}"))
+                if (valueExpression.getText().equals("$V{PAGE_NUMBER_OF_TOTAL_PAGES}"))
                 {
                     valueExpression.setText("\"Page \" + $V{MASTER_CURRENT_PAGE} + \" of \" + $V{MASTER_TOTAL_PAGES}");
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
@@ -1612,14 +1724,14 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
-                if(valueExpression.getText().equals("$V{MASTER_CURRENT_PAGE}"))
+                if (valueExpression.getText().equals("$V{MASTER_CURRENT_PAGE}"))
                 {
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
 
-                if(valueExpression.getText().equals("$V{MASTER_TOTAL_PAGES}"))
+                if (valueExpression.getText().equals("$V{MASTER_TOTAL_PAGES}"))
                 {
-                  
+
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
                 text.setExpression(valueExpression);
@@ -1666,8 +1778,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
-             
-                
+
                 text.setExpression(valueExpression);
                 text.getParagraph().setRightIndent(5);
                 text.getParagraph().setLeftIndent(5);
@@ -1889,6 +2000,7 @@ public class EJReportJasperReportBuilder
 
         if (defaultValue == null || defaultValue.trim().length() == 0)
         {
+
             return expression;
         }
 
@@ -1925,7 +2037,7 @@ public class EJReportJasperReportBuilder
             {
                 expression.setText("$V{PAGE_NUMBER_OF_TOTAL_PAGES}");
             }
-           
+
         }
         else if ("CLASS_FIELD".equals(paramTypeCode))
         {
