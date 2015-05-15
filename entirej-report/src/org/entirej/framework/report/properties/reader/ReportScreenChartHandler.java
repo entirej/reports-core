@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.entirej.framework.report.properties.reader;
 
+import org.entirej.framework.report.enumerations.EJReportChartType;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportChartProperties;
 import org.xml.sax.Attributes;
@@ -42,9 +43,18 @@ public class ReportScreenChartHandler extends EJCoreReportPropertiesTagHandler
         if (name.equals(ELEMENT_ITEM))
         {
             
-            String itemname = attributes.getValue("name");
             
-         
+            chartProperties.setChartType(EJReportChartType.valueOf(attributes.getValue("type")));
+            chartProperties.setUse3dView(Boolean.valueOf(attributes.getValue("use3dView")));
+            chartProperties.setCategoryItem((attributes.getValue("categoryItem")));
+            chartProperties.setLabelItem((attributes.getValue("labelItem")));
+            chartProperties.setValue1Item((attributes.getValue("value1Item")));
+            chartProperties.setValue2Item((attributes.getValue("value2Item")));
+            chartProperties.setValue3Item((attributes.getValue("value3Item")));
+            chartProperties.setTitle((attributes.getValue("title")));
+            chartProperties.setTitleVA((attributes.getValue("titleVA")));
+            chartProperties.setSubtitle((attributes.getValue("subtitle")));
+            chartProperties.setSubtitleVA((attributes.getValue("subtitleVA")));
         }
         
     }

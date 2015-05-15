@@ -1,6 +1,6 @@
 package org.entirej.framework.report.enumerations;
 
-public enum EJReportChartType
+public enum EJReportChartType 
 {
     BAR_CHART, PIE_CHART;
 
@@ -12,7 +12,7 @@ public enum EJReportChartType
             case BAR_CHART:
                 return "Bar Chart";
             case PIE_CHART:
-                return "Bar Chart";
+                return "Pie Chart";
 
             default:
                 return super.toString();

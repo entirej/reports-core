@@ -2,6 +2,7 @@ package org.entirej.framework.report.properties;
 
 import org.entirej.framework.report.enumerations.EJReportChartType;
 
+
 public class EJCoreReportChartProperties
 {
 
@@ -20,6 +21,8 @@ public class EJCoreReportChartProperties
     private String                             subtitleVA;
 
     private final EJCoreReportScreenProperties screenProperties;
+
+    private boolean use3dView;
 
     public EJCoreReportChartProperties(EJCoreReportScreenProperties screenProperties)
     {
@@ -139,6 +142,16 @@ public class EJCoreReportChartProperties
     public void setSubtitleVA(String subtitleVA)
     {
         this.subtitleVA = subtitleVA;
+    }
+    
+    public boolean isUse3dView()
+    {
+        return use3dView;
+    }
+    
+    public void setUse3dView(boolean use3dView)
+    {
+        this.use3dView = use3dView;
     }
 
 }
