@@ -77,6 +77,7 @@ import org.entirej.framework.report.EJReportValueBaseScreenItem;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
+import org.entirej.framework.report.enumerations.EJReportChartType;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
@@ -1332,7 +1333,11 @@ public class EJReportJasperReportBuilder
         switch (screenChart.getChartType())
         {
             case BAR_CHART:
+            case STACKED_BAR_CHART:
+            case STACKED_AREA_CHART:
+            case AREA_CHART:
             {
+                byte chartType = getChartType(screenChart);
                 chart = new JRDesignChart(new JRDefaultStyleProvider()
                 {
 
@@ -1341,7 +1346,7 @@ public class EJReportJasperReportBuilder
                     {
                         return null;
                     }
-                }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_BAR3D : JRDesignChart.CHART_TYPE_BAR);
+                }, chartType);
 
                 JRDesignCategoryDataset data = new JRDesignCategoryDataset(null);
 
@@ -1449,6 +1454,30 @@ public class EJReportJasperReportBuilder
         design.setPageWidth(width);
         design.setColumnWidth(width);
         design.setTitle(detail);
+    }
+
+    private byte getChartType(EJReportScreenChart screenChart)
+    {
+        
+        switch (screenChart.getChartType())
+        {
+            case BAR_CHART:
+                
+                return (screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_BAR3D : JRDesignChart.CHART_TYPE_BAR);
+            case STACKED_BAR_CHART:
+                
+                return (screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_STACKEDBAR3D : JRDesignChart.CHART_TYPE_STACKEDBAR);
+            case AREA_CHART:
+                
+                return JRDesignChart.CHART_TYPE_AREA ;
+            case STACKED_AREA_CHART:
+                
+                return JRDesignChart.CHART_TYPE_STACKEDAREA;
+
+          
+        }
+        
+        return JRDesignChart.CHART_TYPE_AREA;
     }
 
     private JRDesignStyle toStyle(EJReportVisualAttributeProperties va) throws JRException
