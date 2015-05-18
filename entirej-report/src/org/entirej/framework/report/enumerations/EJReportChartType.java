@@ -2,13 +2,15 @@ package org.entirej.framework.report.enumerations;
 
 public enum EJReportChartType 
 {
-    BAR_CHART, PIE_CHART,STACKED_BAR_CHART,AREA_CHART,STACKED_AREA_CHART;
+    BAR_CHART, PIE_CHART,STACKED_BAR_CHART,AREA_CHART,STACKED_AREA_CHART,LINE_CHART;
 
     public String toString()
     {
         switch (this)
         {
 
+            case LINE_CHART:
+                return "Line Chart";
             case BAR_CHART:
                 return "Bar Chart";
             case AREA_CHART:

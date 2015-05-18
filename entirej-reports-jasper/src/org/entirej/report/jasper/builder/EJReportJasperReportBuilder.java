@@ -1336,6 +1336,7 @@ public class EJReportJasperReportBuilder
             case STACKED_BAR_CHART:
             case STACKED_AREA_CHART:
             case AREA_CHART:
+            case LINE_CHART:
             {
                 byte chartType = getChartType(screenChart);
                 chart = new JRDesignChart(new JRDefaultStyleProvider()
@@ -1473,6 +1474,9 @@ public class EJReportJasperReportBuilder
             case STACKED_AREA_CHART:
                 
                 return JRDesignChart.CHART_TYPE_STACKEDAREA;
+            case LINE_CHART:
+                
+                return JRDesignChart.CHART_TYPE_LINE;
 
           
         }
