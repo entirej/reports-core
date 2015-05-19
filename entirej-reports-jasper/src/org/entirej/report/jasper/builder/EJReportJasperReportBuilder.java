@@ -13,6 +13,8 @@ import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
 import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
 import net.sf.jasperreports.charts.design.JRDesignPieDataset;
 import net.sf.jasperreports.charts.design.JRDesignPieSeries;
+import net.sf.jasperreports.charts.design.JRDesignXyDataset;
+import net.sf.jasperreports.charts.design.JRDesignXySeries;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
@@ -1393,6 +1395,69 @@ public class EJReportJasperReportBuilder
 
                 break;
 
+                
+                
+                
+             
+            case XY_AREA_CHART:
+            case XY_BAR_CHART:
+            case XY_LINE_CHART:
+            {
+                byte chartType = getChartType(screenChart);
+                chart = new JRDesignChart(new JRDefaultStyleProvider()
+                {
+
+                    @Override
+                    public JRStyle getDefaultStyle()
+                    {
+                        return null;
+                    }
+                }, chartType);
+
+                JRDesignXyDataset data = new JRDesignXyDataset(null);
+
+                JRDesignXySeries series = new JRDesignXySeries();
+                
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getSeriesItem());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("\" \"");
+                    }
+                    series.setSeriesExpression(expression);
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getLabelItem());
+                    if (expression.getText() != null && !expression.getText().isEmpty())
+                    {
+                        series.setLabelExpression(expression);
+                    }
+
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getValue1Item());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("0");
+                    }
+                    series.setXValueExpression(expression);
+                }
+                {
+                    JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getValue2Item());
+                    if (expression.getText() == null || expression.getText().isEmpty())
+                    {
+                        expression.setText("0");
+                    }
+                    series.setYValueExpression(expression);
+                }
+
+                data.addXySeries(series);
+                chart.setDataset(data);
+
+                //
+            }
+
+                break;
             case PIE_CHART:
             {
                 chart = new JRDesignChart(new JRDefaultStyleProvider()
@@ -1445,6 +1510,7 @@ public class EJReportJasperReportBuilder
                 break;
         }
 
+        //chart.setTheme("aegean");
         chart.setX(0);
         chart.setY(0);
         chart.setWidth(width);
@@ -1477,6 +1543,15 @@ public class EJReportJasperReportBuilder
             case LINE_CHART:
                 
                 return JRDesignChart.CHART_TYPE_LINE;
+            case XY_AREA_CHART:
+                
+                return JRDesignChart.CHART_TYPE_XYAREA;
+            case XY_BAR_CHART:
+                
+                return JRDesignChart.CHART_TYPE_XYBAR;
+            case XY_LINE_CHART:
+                
+                return JRDesignChart.CHART_TYPE_XYLINE;
 
           
         }

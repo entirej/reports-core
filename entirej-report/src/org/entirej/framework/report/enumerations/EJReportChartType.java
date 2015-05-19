@@ -1,8 +1,8 @@
 package org.entirej.framework.report.enumerations;
 
-public enum EJReportChartType 
+public enum EJReportChartType
 {
-    BAR_CHART, PIE_CHART,STACKED_BAR_CHART,AREA_CHART,STACKED_AREA_CHART,LINE_CHART;
+    BAR_CHART, PIE_CHART, STACKED_BAR_CHART, AREA_CHART, STACKED_AREA_CHART, LINE_CHART, XY_AREA_CHART, XY_BAR_CHART, XY_LINE_CHART;
 
     public String toString()
     {
@@ -21,6 +21,12 @@ public enum EJReportChartType
                 return "Stacked Bar Chart";
             case PIE_CHART:
                 return "Pie Chart";
+            case XY_AREA_CHART:
+                return "XY Area Chart";
+            case XY_BAR_CHART:
+                return "XY Bar Chart";
+            case XY_LINE_CHART:
+                return "XY Line Chart";
 
             default:
                 return super.toString();
