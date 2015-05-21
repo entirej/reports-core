@@ -19,7 +19,12 @@
 package org.entirej.report.jasper;
 
 import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -30,14 +35,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
@@ -364,6 +371,17 @@ public class EJJasperReports
                 }
 
                     break;
+                case PNG:
+                {
+                    
+                  
+         
+                    FileOutputStream output = new FileOutputStream(new File(outputFile));
+                    ImageIO.write(toBufferedImage(JasperPrintManager.printPageToImage(print, 0, 1)), "PNG", output);
+                    output.close();
+                }
+                
+                break;
                 case ODT:
                 {
                     File destFile = new File(outputFile);
@@ -468,6 +486,14 @@ public class EJJasperReports
             e.printStackTrace();
             throw new EJReportRuntimeException(e);
         }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         finally
         {
             LOGGER.info("END Export  Report :" + outputFile + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
@@ -545,5 +571,24 @@ public class EJJasperReports
                 pages.remove(lastpage);
         }
 
+    }
+    
+    public static BufferedImage toBufferedImage(Image img)
+    {
+        if (img instanceof BufferedImage)
+        {
+            return (BufferedImage) img;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        // Return the buffered image
+        return bimage;
     }
 }

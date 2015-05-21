@@ -122,7 +122,7 @@ public class EJReportJasperReportBuilder
             defaultLocale = report.getFrameworkManager().getCurrentLocale();
             createParamaters(report);
             design.setName(report.getName());
-            design.setIgnorePagination(report.getProperties().isIgnorePagination());
+            design.setIgnorePagination(report.getProperties().isIgnorePagination() );
             addDefaultFont(report);
 
             EJReportProperties properties = report.getProperties();
