@@ -1,9 +1,11 @@
 package org.entirej.report.jasper.builder;
 
 import java.awt.Color;
+import java.awt.Paint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -79,7 +81,6 @@ import org.entirej.framework.report.EJReportValueBaseScreenItem;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.enumerations.EJReportChartType;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
@@ -122,7 +123,7 @@ public class EJReportJasperReportBuilder
             defaultLocale = report.getFrameworkManager().getCurrentLocale();
             createParamaters(report);
             design.setName(report.getName());
-            design.setIgnorePagination(report.getProperties().isIgnorePagination() );
+            design.setIgnorePagination(report.getProperties().isIgnorePagination());
             addDefaultFont(report);
 
             EJReportProperties properties = report.getProperties();
@@ -1395,10 +1396,6 @@ public class EJReportJasperReportBuilder
 
                 break;
 
-                
-                
-                
-             
             case XY_AREA_CHART:
             case XY_BAR_CHART:
             case XY_LINE_CHART:
@@ -1413,11 +1410,12 @@ public class EJReportJasperReportBuilder
                         return null;
                     }
                 }, chartType);
+                
 
                 JRDesignXyDataset data = new JRDesignXyDataset(null);
 
                 JRDesignXySeries series = new JRDesignXySeries();
-                
+
                 {
                     JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getSeriesItem());
                     if (expression.getText() == null || expression.getText().isEmpty())
@@ -1473,7 +1471,7 @@ public class EJReportJasperReportBuilder
                 JRDesignPieDataset data = new JRDesignPieDataset(null);
 
                 JRDesignPieSeries series = new JRDesignPieSeries();
-                
+
                 {
                     JRDesignExpression expression = createValueExpression(block.getReport(), screenChart.getSeriesItem());
                     if (expression.getText() == null || expression.getText().isEmpty())
@@ -1510,7 +1508,7 @@ public class EJReportJasperReportBuilder
                 break;
         }
 
-        //chart.setTheme("aegean");
+        //chart.setTheme("ej");
         chart.setX(0);
         chart.setY(0);
         chart.setWidth(width);
@@ -1518,44 +1516,49 @@ public class EJReportJasperReportBuilder
         chart.setEvaluationTime(EvaluationTimeEnum.REPORT);
         detail.addElement(chart);
         detail.setHeight(height);
+        
+        chart.setCustomizerClass(EJReportChartCustomizer.class.getName());
+        
         design.setPageWidth(width);
         design.setColumnWidth(width);
         design.setTitle(detail);
     }
 
+      
+    
+    
     private byte getChartType(EJReportScreenChart screenChart)
     {
-        
+
         switch (screenChart.getChartType())
         {
             case BAR_CHART:
-                
+
                 return (screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_BAR3D : JRDesignChart.CHART_TYPE_BAR);
             case STACKED_BAR_CHART:
-                
+
                 return (screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_STACKEDBAR3D : JRDesignChart.CHART_TYPE_STACKEDBAR);
             case AREA_CHART:
-                
-                return JRDesignChart.CHART_TYPE_AREA ;
+
+                return JRDesignChart.CHART_TYPE_AREA;
             case STACKED_AREA_CHART:
-                
+
                 return JRDesignChart.CHART_TYPE_STACKEDAREA;
             case LINE_CHART:
-                
+
                 return JRDesignChart.CHART_TYPE_LINE;
             case XY_AREA_CHART:
-                
+
                 return JRDesignChart.CHART_TYPE_XYAREA;
             case XY_BAR_CHART:
-                
+
                 return JRDesignChart.CHART_TYPE_XYBAR;
             case XY_LINE_CHART:
-                
+
                 return JRDesignChart.CHART_TYPE_XYLINE;
 
-          
         }
-        
+
         return JRDesignChart.CHART_TYPE_AREA;
     }
 
@@ -2305,4 +2308,9 @@ public class EJReportJasperReportBuilder
         }
 
     }
+    
+    
+   
+
+   
 }

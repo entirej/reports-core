@@ -577,7 +577,9 @@ public class EJJasperReports
     {
         if (img instanceof BufferedImage)
         {
-            return (BufferedImage) img;
+            BufferedImage bimage = (BufferedImage) img;
+            bimage  = bimage.getSubimage(0, 0,img.getWidth(null)-1, img.getHeight(null)-1);
+            return bimage;
         }
 
         // Create a buffered image with transparency
@@ -588,6 +590,7 @@ public class EJJasperReports
         bGr.drawImage(img, 0, 0, null);
         bGr.dispose();
 
+        bimage  = bimage.getSubimage(0, 0,img.getWidth(null)-5, img.getHeight(null)-5);
         // Return the buffered image
         return bimage;
     }
