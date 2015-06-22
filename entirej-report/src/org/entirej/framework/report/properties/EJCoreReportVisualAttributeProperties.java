@@ -54,6 +54,8 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
 
     private EJReportVAPattern       _localePattern  = EJReportVAPattern.NONE;
     private String                  _manualFormat;
+    
+    private int                     _maximumDecimalDigits = -1;   
 
     public EJCoreReportVisualAttributeProperties()
     {
@@ -481,7 +483,19 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         props.setVAlignment(_vAlignment);
         props.setLocalePattern(_localePattern);
         props.setManualPattern(_manualFormat);
+        props.setMaximumDecimalDigits(_maximumDecimalDigits);
         return props;
+    }
+    
+    @Override
+    public int getMaximumDecimalDigits()
+    {
+        return _maximumDecimalDigits;
+    }
+    
+    public void setMaximumDecimalDigits(int _maximumDecimalDigits)
+    {
+        this._maximumDecimalDigits = _maximumDecimalDigits;
     }
 
     public int compareTo(EJCoreReportVisualAttributeProperties o)

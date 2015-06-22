@@ -129,5 +129,8 @@ public interface EJReportVisualAttributeProperties
     public abstract EJReportVAPattern getLocalePattern();
 
     public abstract String getManualPattern();
+    
+    
+    public abstract int getMaximumDecimalDigits();
 
 }

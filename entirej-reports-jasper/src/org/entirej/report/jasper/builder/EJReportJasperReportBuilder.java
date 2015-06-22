@@ -3,6 +3,7 @@ package org.entirej.report.jasper.builder;
 import java.awt.Color;
 import java.awt.Paint;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1658,16 +1659,36 @@ public class EJReportJasperReportBuilder
             switch (va.getLocalePattern())
             {
                 case CURRENCY:
-                    style.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale)).toPattern());
+                    DecimalFormat dc = (java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale);
+                    if(va.getMaximumDecimalDigits()>-1)
+                    {
+                        dc.setMaximumFractionDigits(va.getMaximumDecimalDigits());
+                    }
+                    style.setPattern(dc.toPattern());
                     break;
                 case PERCENT:
-                    style.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale)).toPattern());
+                    DecimalFormat dp = (java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale);
+                    if(va.getMaximumDecimalDigits()>-1)
+                    {
+                        dp.setMaximumFractionDigits(va.getMaximumDecimalDigits());
+                    }
+                    style.setPattern(dp.toPattern());
                     break;
                 case INTEGER:
-                    style.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale)).toPattern());
+                    DecimalFormat di = (java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale);
+                    if(va.getMaximumDecimalDigits()>-1)
+                    {
+                        di.setMaximumFractionDigits(va.getMaximumDecimalDigits());
+                    }
+                    style.setPattern(di.toPattern());
                     break;
                 case NUMBER:
-                    style.setPattern(((java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale)).toPattern());
+                    DecimalFormat dn = (java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale);
+                    if(va.getMaximumDecimalDigits()>-1)
+                    {
+                        dn.setMaximumFractionDigits(va.getMaximumDecimalDigits());
+                    }
+                    style.setPattern(dn.toPattern());
                     break;
 
                 case DATE_FULL:

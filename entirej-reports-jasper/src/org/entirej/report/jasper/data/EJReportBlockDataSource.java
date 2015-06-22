@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -271,7 +272,12 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             value = toNumber(value);
                             if (value instanceof Number)
                             {
-                                value = java.text.NumberFormat.getCurrencyInstance(defaultLocale).format((Number) value);
+                                NumberFormat dc = java.text.NumberFormat.getCurrencyInstance(defaultLocale);
+                                if(visualAttribute.getMaximumDecimalDigits()>-1)
+                                {
+                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
+                                }
+                                value = dc.format((Number) value);
                             }
 
                             break;
@@ -279,7 +285,12 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             value = toNumber(value);
                             if (value instanceof Number)
                             {
-                                value = java.text.NumberFormat.getPercentInstance(defaultLocale).format((Number) value);
+                                NumberFormat dc = java.text.NumberFormat.getPercentInstance(defaultLocale);
+                                if(visualAttribute.getMaximumDecimalDigits()>-1)
+                                {
+                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
+                                }
+                                value = dc.format((Number) value);
                             }
 
                             break;
@@ -287,14 +298,24 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             value = toNumber(value);
                             if (value instanceof Number)
                             {
-                                value = java.text.NumberFormat.getIntegerInstance(defaultLocale).format((Number) value);
+                                NumberFormat dc = java.text.NumberFormat.getIntegerInstance(defaultLocale);
+                                if(visualAttribute.getMaximumDecimalDigits()>-1)
+                                {
+                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
+                                }
+                                value = dc.format((Number) value);
                             }
                             break;
                         case NUMBER:
                             value = toNumber(value);
                             if (value instanceof Number)
                             {
-                                value = java.text.NumberFormat.getNumberInstance(defaultLocale).format((Number) value);
+                                NumberFormat dc = java.text.NumberFormat.getNumberInstance(defaultLocale);
+                                if(visualAttribute.getMaximumDecimalDigits()>-1)
+                                {
+                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
+                                }
+                                value = dc.format((Number) value);
                             }
                             break;
 
@@ -340,12 +361,13 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                             String pattern = (visualAttribute.getManualPattern());
                             if (value instanceof Number)
                             {
-                                DecimalFormat myFormatter = new DecimalFormat(defaultPattren);
+                                DecimalFormat myFormatter = new DecimalFormat(pattern==null|| pattern.isEmpty() ?defaultPattren : pattern);
+                                
                                 value = myFormatter.format((Number) value);
                             }
                             if (value instanceof Date)
                             {
-                                SimpleDateFormat myFormatter = new SimpleDateFormat(defaultPattren);
+                                SimpleDateFormat myFormatter = new SimpleDateFormat(pattern==null|| pattern.isEmpty() ?defaultPattren : pattern);
                                 value = myFormatter.format((Date) value);
                             }
                             
