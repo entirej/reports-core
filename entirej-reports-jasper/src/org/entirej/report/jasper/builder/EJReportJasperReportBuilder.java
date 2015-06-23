@@ -922,6 +922,13 @@ public class EJReportJasperReportBuilder
     private void processItemStyle(EJReportScreenItem item, JRDesignElement element, EJReportScreenSection section) throws JRException
     {
 
+        
+        JRDesignStyle style = (JRDesignStyle) element.getStyle();
+        EJReportVisualAttributeProperties va = item.getVisualAttributes();
+        if (va != null)
+        {
+            vaToStyle(va, style);
+        }
         if (element instanceof JRDesignTextField)
         {
 
@@ -929,18 +936,21 @@ public class EJReportJasperReportBuilder
             JRDesignExpression expression = (JRDesignExpression) textField.getExpression();
             if (!expression.getText().isEmpty())
             {
-                String pattern = textField.getPattern();
 
-                textField.setExpression(createVABaseValueExpression(expression, item.getName(), pattern == null ? "" : pattern, section));
+                textField.setExpression(createVABaseValueExpression(expression, item.getName(), section));
+                String pattern = textField.getPattern();
+                if(pattern==null|| pattern.isEmpty())
+                {
+                    pattern = style.getPattern(); 
+                }
+                textField.setPattern("");
+                textField.setPatternExpression(createVABaseValuePatternExpression(expression, item.getName(),pattern ,section));
+                
+                
             }
         }
 
-        JRDesignStyle style = (JRDesignStyle) element.getStyle();
-        EJReportVisualAttributeProperties va = item.getVisualAttributes();
-        if (va != null)
-        {
-            vaToStyle(va, style);
-        }
+        
         createScreenItemBaseStyle(style, item.getName(), section);
         element.setPrintWhenExpression(createItemVisibleExpression(item.getName(), section));
 
@@ -965,35 +975,21 @@ public class EJReportJasperReportBuilder
 
         Collection<EJCoreReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
-        boolean addDynamicStyle = false;
+       
         for (EJReportVisualAttributeProperties properties : visualAttributes)
         {
-            if (properties.isUsedAsDynamicVA())
-            {
-                addDynamicStyle = true;
-            }
-            if (properties.isUsedAsDynamicVA() && hasDynamicVAToStyle(properties))
+            
+            if (properties.isUsedAsDynamicVA() )
             {
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
                 conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
-                vaToStyleAligment(properties, conditionalStyle);
-                Color backgroundColor = properties.getBackgroundColor();
-                if (backgroundColor != null)
-                {
-                    conditionalStyle.setBackcolor(backgroundColor);
-                    conditionalStyle.setMode(ModeEnum.OPAQUE);
-                }
+                vaToStyle(properties, conditionalStyle);
+               
 
                 style.addConditionalStyle(conditionalStyle);
             }
         }
-        if (addDynamicStyle)
-        {
-            JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-            conditionalStyle.setConditionExpression(createItemVAExpression(item, null, section));
-            conditionalStyle.setMarkup("styled");
-            style.addConditionalStyle(conditionalStyle);
-        }
+       
 
         return style;
     }
@@ -1779,18 +1775,7 @@ public class EJReportJasperReportBuilder
         }
     }
 
-    private boolean hasDynamicVAToStyle(EJReportVisualAttributeProperties va)
-    {
-
-        if (va.getHAlignment() != EJReportScreenAlignment.NONE)
-            return true;
-        if (va.getVAlignment() != EJReportScreenAlignment.NONE)
-            return true;
-        if (va.getBackgroundColor() != null)
-            return true;
-
-        return false;
-    }
+   
 
     private void crateValueRefField(EJReportScreenItem item) throws JRException
     {
@@ -2019,6 +2004,7 @@ public class EJReportJasperReportBuilder
                         text.setPattern(dateFormat.toPattern());
                     }
                 }
+               
             }
                 break;
             case LABEL:
@@ -2113,6 +2099,7 @@ public class EJReportJasperReportBuilder
                 break;
         }
         element.setStyle(itemStyle);
+        
         return element;
     }
 
@@ -2250,12 +2237,19 @@ public class EJReportJasperReportBuilder
         return expression;
     }
 
-    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)
+    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
-                defaultPattren));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\")", valueExpression.getText(), item, section.name()));
+        return expression;
+    }
+    JRDesignExpression createVABaseValuePatternExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)
+    {
+        JRDesignExpression expression = new JRDesignExpression();
+        
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValuePattern(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
+                defaultPattren==null ? "": defaultPattren));
         return expression;
     }
 

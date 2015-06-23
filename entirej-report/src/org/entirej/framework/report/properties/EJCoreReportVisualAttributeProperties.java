@@ -20,6 +20,12 @@ package org.entirej.framework.report.properties;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
@@ -530,6 +536,129 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         else if (!_name.equals(other._name))
             return false;
         return true;
+    }
+    
+    
+    @Override
+    public Object toPattern(String defaultPattern,Locale   defaultLocale)
+    {
+        if(!cache.containsKey(defaultLocale))
+        {
+            String pattern = toPattern(defaultLocale);
+            cache.put(defaultLocale, (pattern==null || pattern.isEmpty())?defaultPattern:pattern);
+
+        }
+
+       
+    
+        return cache.get(defaultLocale);
+    }
+
+    Map<Locale,String> cache = new HashMap<Locale, String>(4);
+    private String toPattern(Locale defaultLocale)
+    {
+        if (getManualPattern() != null && !getManualPattern().isEmpty())
+        {
+            return getManualPattern();
+        }
+        else
+        {
+            SimpleDateFormat dateFormat = null;
+            switch (getLocalePattern())
+            {
+                case CURRENCY:
+                   
+                {
+                        DecimalFormat dc = (DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale);
+                        if(getMaximumDecimalDigits()>-1)
+                        {
+                            dc.setMaximumFractionDigits(getMaximumDecimalDigits());
+                        }
+                        return dc.toPattern();
+                }
+
+                    
+                case PERCENT:
+                    {
+                        DecimalFormat dc = (DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale);
+                        if(getMaximumDecimalDigits()>-1)
+                        {
+                            dc.setMaximumFractionDigits(getMaximumDecimalDigits());
+                        }
+                        return dc.toPattern();
+                    }
+
+                    
+                case INTEGER:
+                    
+                    {
+                        DecimalFormat dc = (DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale);
+                        if(getMaximumDecimalDigits()>-1)
+                        {
+                            dc.setMaximumFractionDigits(getMaximumDecimalDigits());
+                        }
+                       return dc.toPattern();
+                    }
+                  
+                case NUMBER:
+                    
+                    {
+                        DecimalFormat dc = (DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale);
+                        if(getMaximumDecimalDigits()>-1)
+                        {
+                            dc.setMaximumFractionDigits(getMaximumDecimalDigits());
+                        }
+                       return dc.toPattern();
+                    }
+                  
+
+                case DATE_FULL:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.FULL, defaultLocale));
+                    break;
+                case DATE_LONG:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.LONG, defaultLocale));
+                    break;
+                case DATE_MEDIUM:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale));
+                    break;
+                case DATE_SHORT:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
+                    break;
+                case DATE_TIME_FULL:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, defaultLocale));
+                    break;
+                case DATE_TIME_LONG:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, defaultLocale));
+                    break;
+                case DATE_TIME_MEDIUM:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, defaultLocale));
+                    break;
+                case DATE_TIME_SHORT:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, defaultLocale));
+                    break;
+
+                case TIME_FULL:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.FULL, defaultLocale));
+                    break;
+                case TIME_LONG:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale));
+                    break;
+                case TIME_MEDIUM:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale));
+                    break;
+                case TIME_SHORT:
+                    dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale));
+                    break;
+
+               
+            }
+
+            if (dateFormat != null )
+            {
+                return dateFormat.toPattern();
+            }
+        }
+        return null;
     }
 
 }

@@ -22,11 +22,6 @@ package org.entirej.report.jasper.data;
 import java.awt.Color;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -42,10 +37,11 @@ import org.entirej.framework.report.data.EJReportDataScreenItem;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
+import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
-public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext,JRRewindableDataSource
+public class EJReportBlockDataSource implements JRDataSource, Serializable, EJReportBlockItemVAContext, EJReportActionContext, JRRewindableDataSource
 {
 
     private final EJReportBlock  block;
@@ -53,7 +49,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     private Map<String, Object>  sitemCache = new HashMap<String, Object>();
     private Map<String, Boolean> vCache     = new HashMap<String, Boolean>();
     private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
-    private EJReportRecord focusedRecord ;
+    private EJReportRecord       focusedRecord;
     private Locale               defaultLocale;
 
     public static final Object   EMPTY      = new Object();
@@ -116,7 +112,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             String itemName = name.substring(name.indexOf('.') + 1);
             if (blockName.equals(block.getName()))
             {
-                
 
                 Object value = focusedRecord.getValue(itemName);
                 fieldCache.put(name, value);
@@ -141,7 +136,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         }
         else
         {
-           
+
             Object value = focusedRecord.getValue(name);
             fieldCache.put(name, value);
             return value;
@@ -157,16 +152,16 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         sitemCache.clear();
         vCache.clear();
         svCache.clear();
-       
-       focusedRecord = null;
+
+        focusedRecord = null;
         boolean navigateToNextRecord = block.navigateToNextRecord();
-        if(navigateToNextRecord)
+        if (navigateToNextRecord)
         {
             focusedRecord = block.getCurrentRecord();
         }
-        if(!navigateToNextRecord && block.isControlBlock())
+        if (!navigateToNextRecord && block.isControlBlock())
         {
-            block.reset();  
+            block.reset();
         }
         return navigateToNextRecord;
     }
@@ -175,7 +170,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     public boolean isActive(String item, String section, String vaName)
     {
 
-       
         EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
         // System.err.println(item +" B="+block.getName());
@@ -192,8 +186,6 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
     public boolean isActive(String item, String section)
     {
-
-        
 
         EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
 
@@ -232,9 +224,33 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     }
 
     @Override
-    public Object getVABaseValue(Object value, String item, String section,String defaultPattren)
+    public Object getVABaseValuePattern(Object value, String item, String section,String defaultPattern)
     {
         if (value != null)
+        {
+
+            EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
+
+            if (reportItem == null)
+                return defaultPattern;
+            EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
+            
+            if (visualAttribute == null)
+                return defaultPattern;
+
+            // handle formats
+
+            return visualAttribute.toPattern(defaultPattern,defaultLocale);
+        }
+            
+       return defaultPattern;
+
+    }
+
+    @Override
+    public Object getVABaseValue(Object value, String item, String section)
+    {
+        if (value instanceof String)
         {
 
             EJReportDataScreenItem reportItem = getReportScreenItem(item, EJReportScreenSection.valueOf(section));
@@ -245,189 +261,33 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
             if (visualAttribute == null)
                 return value;
 
-            // handle formats
-
+            EJReportVAPattern localePattern = visualAttribute.getLocalePattern();
+            switch (localePattern)
             {
-
-                if (visualAttribute.getManualPattern() != null && !visualAttribute.getManualPattern().isEmpty())
-                {
-                    String pattern = (visualAttribute.getManualPattern());
-                    if (value instanceof Number)
+                case CURRENCY:
+                case NUMBER:
+                case INTEGER:
+                case PERCENT:
+                    try
                     {
-                        DecimalFormat myFormatter = new DecimalFormat(pattern);
-                        value = myFormatter.format((Number) value);
+
+                        return new BigDecimal((String) value);
                     }
-                    if (value instanceof Date)
+                    catch (NumberFormatException e)
                     {
-                        SimpleDateFormat myFormatter = new SimpleDateFormat(pattern);
-                        value = myFormatter.format((Date) value);
-                    }
-                }
-                else
-                {
-                    SimpleDateFormat dateFormat = null;
-                    switch (visualAttribute.getLocalePattern())
-                    {
-                        case CURRENCY:
-                            value = toNumber(value);
-                            if (value instanceof Number)
-                            {
-                                NumberFormat dc = java.text.NumberFormat.getCurrencyInstance(defaultLocale);
-                                if(visualAttribute.getMaximumDecimalDigits()>-1)
-                                {
-                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
-                                }
-                                value = dc.format((Number) value);
-                            }
-
-                            break;
-                        case PERCENT:
-                            value = toNumber(value);
-                            if (value instanceof Number)
-                            {
-                                NumberFormat dc = java.text.NumberFormat.getPercentInstance(defaultLocale);
-                                if(visualAttribute.getMaximumDecimalDigits()>-1)
-                                {
-                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
-                                }
-                                value = dc.format((Number) value);
-                            }
-
-                            break;
-                        case INTEGER:
-                            value = toNumber(value);
-                            if (value instanceof Number)
-                            {
-                                NumberFormat dc = java.text.NumberFormat.getIntegerInstance(defaultLocale);
-                                if(visualAttribute.getMaximumDecimalDigits()>-1)
-                                {
-                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
-                                }
-                                value = dc.format((Number) value);
-                            }
-                            break;
-                        case NUMBER:
-                            value = toNumber(value);
-                            if (value instanceof Number)
-                            {
-                                NumberFormat dc = java.text.NumberFormat.getNumberInstance(defaultLocale);
-                                if(visualAttribute.getMaximumDecimalDigits()>-1)
-                                {
-                                    dc.setMaximumFractionDigits(visualAttribute.getMaximumDecimalDigits());
-                                }
-                                value = dc.format((Number) value);
-                            }
-                            break;
-
-                        case DATE_FULL:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.FULL, defaultLocale));
-                            break;
-                        case DATE_LONG:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.LONG, defaultLocale));
-                            break;
-                        case DATE_MEDIUM:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale));
-                            break;
-                        case DATE_SHORT:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
-                            break;
-                        case DATE_TIME_FULL:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, defaultLocale));
-                            break;
-                        case DATE_TIME_LONG:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, defaultLocale));
-                            break;
-                        case DATE_TIME_MEDIUM:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, defaultLocale));
-                            break;
-                        case DATE_TIME_SHORT:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, defaultLocale));
-                            break;
-
-                        case TIME_FULL:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.FULL, defaultLocale));
-                            break;
-                        case TIME_LONG:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale));
-                            break;
-                        case TIME_MEDIUM:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale));
-                            break;
-                        case TIME_SHORT:
-                            dateFormat = (SimpleDateFormat) (DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale));
-                            break;
-
-                        default:
-                            String pattern = (visualAttribute.getManualPattern());
-                            if (value instanceof Number)
-                            {
-                                DecimalFormat myFormatter = new DecimalFormat(pattern==null|| pattern.isEmpty() ?defaultPattren : pattern);
-                                
-                                value = myFormatter.format((Number) value);
-                            }
-                            if (value instanceof Date)
-                            {
-                                SimpleDateFormat myFormatter = new SimpleDateFormat(pattern==null|| pattern.isEmpty() ?defaultPattren : pattern);
-                                value = myFormatter.format((Date) value);
-                            }
-                            
-                            break;
+                        // ignore
                     }
 
-                    if (dateFormat != null && value instanceof Date)
-                    {
-                        value = dateFormat.format(value);
-                    }
-                }
-
+                default:
+                    break;
             }
-
-            return toStyleText(value.toString(), visualAttribute);
-
-            // EJReportVAPattern localePattern =
-            // visualAttribute.getLocalePattern();
-            // switch (localePattern)
-            // {
-            // case CURRENCY:
-            // case NUMBER:
-            // case INTEGER:
-            // case PERCENT:
-            // try
-            // {
-            //
-            // return new BigDecimal((String) value);
-            // }
-            // catch (NumberFormatException e)
-            // {
-            // // ignore
-            // }
-            //
-            // default:
-            // break;
-            // }
         }
 
         return value;
     }
 
-    private Object toNumber(Object value)
-    {
-        if (value instanceof String)
-        {
-            try
-            {
 
-                value = new BigDecimal((String) value);
-            }
-            catch (NumberFormatException e)
-            {
-                // ignore
-            }
-        }
-        return value;
-    }
-
-    String toStyleText(String text, EJReportVisualAttributeProperties va)
+    String _toStyleText(String text, EJReportVisualAttributeProperties va)
     {
         StringBuilder builder = new StringBuilder();
         boolean useStyle = false;
@@ -622,8 +482,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     @Override
     public void moveFirst() throws JRException
     {
-       block.reset();
-        
+        block.reset();
+
     }
 
 }
