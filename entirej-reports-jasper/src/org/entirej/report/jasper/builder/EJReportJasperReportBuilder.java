@@ -236,10 +236,7 @@ public class EJReportJasperReportBuilder
                         text.setWidth(block.getScreen().getWidth());
 
                         text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW, "true");
-                        JRDesignPropertyExpression expression = new JRDesignPropertyExpression();
-                        expression.setName("net.sf.jasperreports.export.xls.sheet.name");
-                        expression.setValueExpression(createTextExpression(page.getName()));
-                        text.addPropertyExpression(expression);
+                       
                         text.setX(0);
                         text.setY(0);
 
@@ -936,13 +933,13 @@ public class EJReportJasperReportBuilder
             JRDesignExpression expression = (JRDesignExpression) textField.getExpression();
             if (!expression.getText().isEmpty())
             {
-
-                textField.setExpression(createVABaseValueExpression(expression, item.getName(), section));
                 String pattern = textField.getPattern();
                 if(pattern==null|| pattern.isEmpty())
                 {
                     pattern = style.getPattern(); 
                 }
+                textField.setExpression(createVABaseValueExpression(expression, item.getName(),pattern, section));
+                
                 textField.setPattern("");
                 textField.setPatternExpression(createVABaseValuePatternExpression(expression, item.getName(),pattern ,section));
                 
@@ -2237,11 +2234,11 @@ public class EJReportJasperReportBuilder
         return expression;
     }
 
-    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, EJReportScreenSection section)
+    JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\")", valueExpression.getText(), item, section.name()));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),defaultPattren==null ? "": defaultPattren));
         return expression;
     }
     JRDesignExpression createVABaseValuePatternExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)

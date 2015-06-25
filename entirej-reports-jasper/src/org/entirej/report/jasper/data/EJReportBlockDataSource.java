@@ -22,6 +22,8 @@ package org.entirej.report.jasper.data;
 import java.awt.Color;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -51,6 +53,8 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
     private EJReportRecord       focusedRecord;
     private Locale               defaultLocale;
+    
+    private Map<String, SimpleDateFormat> dateMap = new HashMap<String, SimpleDateFormat>();
 
     public static final Object   EMPTY      = new Object();
 
@@ -248,7 +252,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     }
 
     @Override
-    public Object getVABaseValue(Object value, String item, String section)
+    public Object getVABaseValue(Object value, String item, String section,String defaultPattern) 
     {
         if (value instanceof String)
         {
@@ -277,13 +281,59 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                     {
                         // ignore
                     }
+                break;
 
-                default:
+                case DATE_FULL:
+                case DATE_LONG:
+                case DATE_MEDIUM:
+                case DATE_SHORT:
+                case DATE_TIME_FULL:
+                case DATE_TIME_LONG:
+                case DATE_TIME_MEDIUM:
+                case DATE_TIME_SHORT:
+                case TIME_FULL:
+                case TIME_LONG:
+                case TIME_MEDIUM:
+                case TIME_SHORT:
+                    
+                    String pattern = (String) visualAttribute.toPattern(defaultPattern, defaultLocale);
+                    if(pattern!=null && !pattern.isEmpty() )
+                    {
+                        try
+                        {
+                         SimpleDateFormat format = getDateFormat(pattern);
+                         return format.parse((String) value);
+                        }
+                        catch(IllegalArgumentException e)
+                        {
+                            //ignore
+                        }
+                        catch(ParseException e)
+                        {
+                            //ignore
+                        }
+                        
+                    }
+                    
                     break;
             }
         }
 
         return value;
+    }
+
+    private SimpleDateFormat getDateFormat(String pattern)
+    {
+        
+        if(dateMap.containsKey(pattern))
+        {
+            return dateMap.get(pattern);
+        }
+        
+        SimpleDateFormat format = new SimpleDateFormat(pattern,defaultLocale);
+        dateMap.put(pattern, format);
+        
+        return format;
     }
 
 

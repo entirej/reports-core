@@ -545,7 +545,11 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         if(!cache.containsKey(defaultLocale))
         {
             String pattern = toPattern(defaultLocale);
-            cache.put(defaultLocale, (pattern==null || pattern.isEmpty())?defaultPattern:pattern);
+            if(pattern==null || pattern.isEmpty())
+            {
+                return defaultPattern;
+            }
+            cache.put(defaultLocale, pattern);
 
         }
 

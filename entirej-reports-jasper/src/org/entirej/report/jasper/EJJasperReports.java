@@ -62,6 +62,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
@@ -299,7 +300,15 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
         LOGGER.info("START Export  Report :" + report.getName());
         long start = System.currentTimeMillis();
-        exportReport(report.getExportType(), jasperPrint, outputFile);
+        
+        Collection<EJReportPage> pages = report.getPages();
+        List<String> pageNames = new ArrayList<String>(pages.size());
+        for (EJReportPage page : pages)
+        {
+            pageNames.add(page.getName());
+        }
+        
+        exportReport(report.getExportType(), jasperPrint, outputFile,pageNames.toArray(new String[0]));
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
     }
@@ -311,7 +320,13 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
         LOGGER.info("START Export  Report :" + report.getName());
         long start = System.currentTimeMillis();
-        exportReport(type, jasperPrint, outputFile);
+        Collection<EJReportPage> pages = report.getPages();
+        List<String> pageNames = new ArrayList<String>(pages.size());
+        for (EJReportPage page : pages)
+        {
+            pageNames.add(page.getName());
+        }
+        exportReport(type, jasperPrint, outputFile,pageNames.toArray(new String[0]));
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
     }
 
@@ -335,7 +350,7 @@ public class EJJasperReports
         exportReport(type, jasperPrint, outputFile);
     }
 
-    public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile)
+    public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile,String ... pageNames)
     {
         
         LOGGER.info("START Export  Report :" + outputFile);
@@ -448,6 +463,7 @@ public class EJJasperReports
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
                     configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
+                    configuration.setSheetNames(pageNames);
                     configuration.setWrapText(true);
                     configuration.setIgnorePageMargins(true);
                     exporter.setConfiguration(configuration);
@@ -471,6 +487,7 @@ public class EJJasperReports
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
                     configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
+                    configuration.setSheetNames(pageNames);
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                 }
