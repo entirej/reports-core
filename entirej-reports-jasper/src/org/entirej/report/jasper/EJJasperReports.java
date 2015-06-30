@@ -92,6 +92,7 @@ public class EJJasperReports
 //        JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
 //                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 
+        
         context.setProperty("net.sf.jasperreports.extension.registry.factory.xml.chart.themes",    
                 "net.sf.jasperreports.chartthemes.simple.XmlChartThemeExtensionsRegistryFactory");
         context.setProperty("net.sf.jasperreports.xml.chart.theme.aegean",    

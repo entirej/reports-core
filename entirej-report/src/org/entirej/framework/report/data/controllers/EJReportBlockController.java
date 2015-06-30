@@ -81,6 +81,10 @@ public class EJReportBlockController implements Serializable
             index += 1;
             return true;
         }
+        if((index + 1) < _dataBlock.getBlockRecordCount()){
+            _dataBlock.removeTop();
+        }
+            
         boolean hasMore = (index + 1) < _dataBlock.getBlockRecordCount();
         if (hasMore && focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
         {
@@ -202,20 +206,13 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord getCurrentRecord()
     {
-        if (index == -1 )
-        {
-            return getRecord(0);
-        }
-
        
-            return getRecord(index);
+       
+       return  getDataBlock().getTopRecord();
         
     }
 
-    public EJReportDataRecord getRecord(int recordNumber)
-    {
-        return getDataBlock().getRecord(recordNumber);
-    }
+   
 
     /**
      * Creates a new record containing all items defined within the blocks item

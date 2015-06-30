@@ -10,6 +10,7 @@ import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
+import org.entirej.report.jasper.builder.EJReportExcelReportBuilder;
 
 public class EJExcelReportRunner implements EJReportRunner
 {
@@ -72,16 +73,9 @@ public class EJExcelReportRunner implements EJReportRunner
             throw new EJReportRuntimeException("EJExcelReportRunner  only support XLSX output type.");
         }
         
-        try
-        {
-            Workbook wb = new XSSFWorkbook();
-           //TODO
-   
-        }
-        catch (Throwable t)
-        {
-            throw new EJReportRuntimeException(t.getMessage(), t);
-        }
+        
+        EJReportExcelReportBuilder builder = new EJReportExcelReportBuilder();
+       builder.build(report, type, outputFile);
 
     }
 }
