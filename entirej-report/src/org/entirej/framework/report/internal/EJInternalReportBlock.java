@@ -253,26 +253,7 @@ public class EJInternalReportBlock implements Serializable
         }
     }
 
-    /**
-     * Returns a collection if IDataRecords for this block Retrieving all
-     * records will force <B>EntireJ</B> to refresh the blocks records. If only
-     * the current record needs to be modified, use <code>setItemValue</code>
-     * 
-     * @return A collection of records or an empty collection if the block
-     *         doesn't exist
-     */
-    public Collection<EJReportDataRecord> getRecords()
-    {
-        EJReportDataBlock block = _blockController.getDataBlock();
-        if (block != null)
-        {
-            return block.getRecords();
-        }
-        else
-        {
-            return new ArrayList<EJReportDataRecord>();
-        }
-    }
+  
 
     /**
      * Returns the amount of records this block currently holds
@@ -295,18 +276,7 @@ public class EJInternalReportBlock implements Serializable
         return _blockController.getProperties();
     }
 
-    public Collection<EJReportDataRecord> getBlockRecords()
-    {
-        EJReportDataBlock block = _blockController.getDataBlock();
-        if (block != null)
-        {
-            return Collections.unmodifiableCollection(block.getRecords());
-        }
-        else
-        {
-            return Collections.unmodifiableCollection(new ArrayList<EJReportDataRecord>());
-        }
-    }
+ 
 
     public void reset()
     {

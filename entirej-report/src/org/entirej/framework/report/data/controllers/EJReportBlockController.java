@@ -78,29 +78,26 @@ public class EJReportBlockController implements Serializable
         EJReportDataRecord focusedRecord = getCurrentRecord();
         if (index == -1 && focusedRecord != null)
         {
-            index += 1;
+            index++;
             return true;
         }
-        if((index + 1) < _dataBlock.getBlockRecordCount()){
+        if(_dataBlock.getBlockRecordCount()>1){
             _dataBlock.removeTop();
         }
             
-        boolean hasMore = (index + 1) < _dataBlock.getBlockRecordCount();
-        if (hasMore && focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
-        {
-            focusedRecord.dispose();
-        }
+        boolean hasMore = _dataBlock.getBlockRecordCount()>1;
+        
 
-        if (hasMore)
+        if(hasMore)
         {
-            index += 1;
-        }
+        
 
-        focusedRecord = getCurrentRecord();
-        if (focusedRecord != null && !focusedRecord.isInitialised())
-        {
-            focusedRecord.initialise();
-            getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
+            focusedRecord = getCurrentRecord();
+            if (focusedRecord != null && !focusedRecord.isInitialised())
+            {
+                focusedRecord.initialise();
+                getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
+            }
         }
         return hasMore;
 
@@ -208,7 +205,7 @@ public class EJReportBlockController implements Serializable
     {
        
        
-       return  getDataBlock().getTopRecord();
+       return  getDataBlock().getTopRecord(this);
         
     }
 
@@ -234,7 +231,7 @@ public class EJReportBlockController implements Serializable
     public EJReportDataRecord createRecord()
     {
         EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock());
-        _dataBlock.addQueriedRecord(record);
+        _dataBlock.addRecord(record);
         return record;
     }
 
@@ -303,26 +300,15 @@ public class EJReportBlockController implements Serializable
                 _queryCriteria.setQueryAllRows(true);
 
                 logger.trace("Calling execute query on service: {}", _blockProperties.getBlockService().getClass().getName());
-                List<?> entities = _blockProperties.getBlockService().executeQuery(getReportController().getEJReport(), _queryCriteria);
+                List<Object> entities = (List<Object>) _blockProperties.getBlockService().executeQuery(getReportController().getEJReport(), _queryCriteria);
                 logger.trace("Execute query on block service completed. {} records retrieved", (entities == null ? 0 : entities.size()));
 
                 if (entities != null)
                 {
 
-                    // Now loop through the retrieved records and add them to
-                    // the
-                    // block
+                    
 
-                    // Create a post query cache so that lookups on each record
-                    // are
-                    // optimized
-
-                    for (Object entity : entities)
-                    {
-                        EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock(), entity);
-
-                        addQueriedRecord(record);
-                    }
+                    _dataBlock.addRecords(entities);
                     logger.trace("Completed post queries, clearing post query cache");
 
                 }
@@ -352,11 +338,11 @@ public class EJReportBlockController implements Serializable
      * 
      * @param record
      */
-    protected void addQueriedRecord(EJReportDataRecord record)
+    protected void addRecord(EJReportDataRecord record)
     {
         if (record != null)
         {
-            _dataBlock.addQueriedRecord(record);
+            _dataBlock.addRecord(record);
 
         }
     }
@@ -404,16 +390,7 @@ public class EJReportBlockController implements Serializable
         logger.trace("END clearBlock");
     }
 
-    /**
-     * Returns a <code>Collection</code> of records within this block
-     * 
-     * @return A <code>Collection</code> containing the blocks records
-     */
-    public Collection<EJReportDataRecord> getRecords()
-    {
-        return _dataBlock.getRecords();
-    }
-
+ 
     public void reset()
     {
         index = -1;

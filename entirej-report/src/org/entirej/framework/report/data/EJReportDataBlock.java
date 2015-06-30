@@ -20,18 +20,19 @@ package org.entirej.framework.report.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
+import org.entirej.framework.report.data.controllers.EJReportBlockController;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 
 public class EJReportDataBlock implements Serializable
 {
-    private String                        _name;
-    private ArrayList<EJReportDataRecord> _blockRecords;
+    private String            _name;
+    private ArrayList<Object> _blockRecords;
 
     public EJReportDataBlock(EJCoreReportBlockProperties blockProperties)
     {
-        _blockRecords = new ArrayList<EJReportDataRecord>();
+        _blockRecords = new ArrayList<Object>();
         _name = blockProperties.getName();
     }
 
@@ -83,24 +84,18 @@ public class EJReportDataBlock implements Serializable
      * @param pRecords
      *            The records to add
      */
-    public void addQueriedRecord(EJReportDataRecord queriedRecord)
+    public void addRecord(EJReportDataRecord queriedRecord)
     {
-        queriedRecord.markAsQueried(true);
+        
         _blockRecords.add(queriedRecord);
     }
-
-    /**
-     * This method will return the records of this data block
-     * <p>
-     * 
-     * @return All records contained within this data block
-     */
-    public Collection<EJReportDataRecord> getRecords()
+    public void addRecords(List<Object> reObjects)
     {
-       
-
-        return new ArrayList<EJReportDataRecord>(_blockRecords);
+        
+        _blockRecords.addAll(reObjects);
     }
+
+ 
 
     /**
      * Returns the record number of the given record or <code>-1</code> if the
@@ -121,13 +116,12 @@ public class EJReportDataBlock implements Serializable
         return _blockRecords.indexOf(record);
     }
 
-    
     public void removeTop()
     {
-        if(_blockRecords.size()>0)
-            _blockRecords.remove(0); 
+        if (_blockRecords.size() > 0)
+            _blockRecords.remove(0);
     }
-    
+
     /**
      * Returns the <code>DataRecord</code> for the record number given
      * <p>
@@ -139,19 +133,24 @@ public class EJReportDataBlock implements Serializable
      * @return The record at the given position
      * @throws ArrayOutOfBoundsException
      */
-    public EJReportDataRecord getTopRecord()
+    public EJReportDataRecord getTopRecord(EJReportBlockController controller)
     {
         if (_blockRecords.size() <= 0)
         {
             return null;
         }
 
+        Object object = _blockRecords.get(0);
 
-       
-
-        
+        if (object instanceof EJReportDataRecord)
             return (EJReportDataRecord) _blockRecords.get(0);
-       
+        else
+        {
+            EJReportDataRecord ejReportDataRecord = new EJReportDataRecord(controller.getReportController(), controller.getBlock(), object);
+            _blockRecords.set(0, ejReportDataRecord);
+            return ejReportDataRecord;
+        }
+
     }
 
 }

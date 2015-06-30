@@ -232,27 +232,7 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return _block.getBlockRecordCount();
     }
 
-    /**
-     * Returns an immutable collection if IDataRecords for this block Retrieving
-     * all records will force <B>EntireJ</B> to refresh the blocks records. If
-     * only the current record needs to be modified, use
-     * <code>setItemValue</code>
-     * 
-     * @return A collection of records or an empty collection if the block
-     *         doesn't exist
-     * @throws EJReportRuntimeException
-     *             If there is no block with the given name
-     */
-    public Collection<EJReportRecord> getRecords()
-    {
-        ArrayList<EJReportRecord> records = new ArrayList<EJReportRecord>();
-        for (EJReportDataRecord record : _block.getBlockRecords())
-        {
-            records.add(new EJReportRecord(record));
-        }
-
-        return Collections.unmodifiableCollection(records);
-    }
+ 
 
     public EJReportDefaultServicePojoHelper getServicePojoHelper()
     {

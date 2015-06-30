@@ -45,7 +45,6 @@ public class EJReportDataRecord implements Serializable
     private HashMap<String, EJReportDataScreenItem> _itemListH;
     private HashMap<String, EJReportDataScreenItem> _itemListD;
     private HashMap<String, EJReportDataScreenItem> _itemListF;
-    private boolean                                 _queriedRecord = false;
 
     private AtomicBoolean                           init           = new AtomicBoolean();
 
@@ -562,27 +561,7 @@ public class EJReportDataRecord implements Serializable
         return getColumnNames().size();
     }
 
-    /**
-     * Marking the record as queried indicates that the record has been
-     * retrieved from a data source
-     * 
-     * @param queriedIndicator
-     */
-    public void markAsQueried(boolean queriedIndicator)
-    {
-        _queriedRecord = queriedIndicator;
-    }
 
-    /**
-     * Indicates if the record has been retrieved from a datasource
-     * 
-     * @return <code>true</code> if the record was returned from a datasource
-     *         otherwise <code>false</code>
-     */
-    public boolean isMarkedAsQueried()
-    {
-        return _queriedRecord;
-    }
 
     /**
      * Clears all values of the record

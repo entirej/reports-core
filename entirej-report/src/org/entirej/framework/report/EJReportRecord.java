@@ -168,16 +168,7 @@ public class EJReportRecord implements Serializable
         return _dataRecord.getColumnCount();
     }
 
-    /**
-     * Indicates if the record has been retrieved from a datasource
-     * 
-     * @return <code>true</code> if the record was returned from a datasource
-     *         otherwise <code>false</code>
-     */
-    public boolean isMarkedAsQueried()
-    {
-        return _dataRecord.isMarkedAsQueried();
-    }
+  
 
     public EJReportRecord copyValuesToRecord(EJReportRecord record)
     {
