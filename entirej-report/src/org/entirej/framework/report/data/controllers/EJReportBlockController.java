@@ -64,6 +64,7 @@ public class EJReportBlockController implements Serializable
     }
 
     private int index = -1;
+    private int count = 0;
 
     public EJInternalReportBlock getBlock()
     {
@@ -78,14 +79,16 @@ public class EJReportBlockController implements Serializable
         EJReportDataRecord focusedRecord = getCurrentRecord();
         if (index == -1 && focusedRecord != null)
         {
+            count =_dataBlock.getBlockRecordCount();
             index++;
             return true;
         }
+        
         if(_dataBlock.getBlockRecordCount()>1){
             _dataBlock.removeTop();
         }
-            
-        boolean hasMore = _dataBlock.getBlockRecordCount()>1;
+        index++;    
+        boolean hasMore = count>index;
         
 
         if(hasMore)
@@ -99,6 +102,7 @@ public class EJReportBlockController implements Serializable
                 getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
             }
         }
+      
         return hasMore;
 
     }
