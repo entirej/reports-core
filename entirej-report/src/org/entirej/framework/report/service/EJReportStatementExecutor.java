@@ -41,9 +41,9 @@ public class EJReportStatementExecutor implements Serializable
 {
     final Logger logger = LoggerFactory.getLogger(EJReportStatementExecutor.class);
 
-    public <T> List<T> executeQuery(Class<T> pojoType, EJReport form, String selectStatement, EJReportQueryCriteria queryCriteria)
+    public <T> List<T> executeQuery(Class<T> pojoType, EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria)
     {
-        return executeQuery(pojoType, form.getConnection(), selectStatement, queryCriteria);
+        return executeQuery(pojoType, report.getConnection(), selectStatement, queryCriteria);
     }
 
     public <T> List<T> executeQuery(Class<T> pojoType, EJReportFrameworkConnection fwkConnection, String selectStatement, EJReportQueryCriteria queryCriteria)
@@ -173,23 +173,23 @@ public class EJReportStatementExecutor implements Serializable
         }
     }
 
-    public List<EJReportSelectResult> executeQuery(EJReport form, String selectStatement, EJReportQueryCriteria queryCriteria,
+    public List<EJReportSelectResult> executeQuery(EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria,
             EJReportStatementParameter... parameters)
     {
-        if (form == null)
+        if (report == null)
         {
-            throw new NullPointerException("Form passed to executeQuery cannot be null");
+            throw new NullPointerException("report passed to executeQuery cannot be null");
         }
-        return executeQuery(form.getConnection(), selectStatement, queryCriteria, parameters);
+        return executeQuery(report.getConnection(), selectStatement, queryCriteria, parameters);
     }
 
-    public List<EJReportSelectResult> executeQuery(EJReport form, String selectStatement, EJReportStatementParameter... parameters)
+    public List<EJReportSelectResult> executeQuery(EJReport report, String selectStatement, EJReportStatementParameter... parameters)
     {
-        if (form == null)
+        if (report == null)
         {
-            throw new NullPointerException("Form passed to executeQuery cannot be null");
+            throw new NullPointerException("report passed to executeQuery cannot be null");
         }
-        return executeQuery(form.getConnection(), selectStatement, null, parameters);
+        return executeQuery(report.getConnection(), selectStatement, null, parameters);
     }
 
     public List<EJReportSelectResult> executeQuery(EJReportFrameworkConnection fwkConnection, String selectStatement, EJReportStatementParameter... parameters)
