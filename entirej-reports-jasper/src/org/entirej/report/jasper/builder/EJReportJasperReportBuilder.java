@@ -181,7 +181,11 @@ public class EJReportJasperReportBuilder
                 subreport.setWidth(screen.getWidth());
                 subreport.setHeight(screen.getHeight());
                 subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
-
+                if(header==null)
+                {
+                    throw new EJReportRuntimeException("Header section not defined in report");
+                }
+                
                 header.addElement(subreport);
             }
             for (EJReportBlock block : report.getFooterBlocks())
@@ -196,6 +200,11 @@ public class EJReportJasperReportBuilder
                 subreport.setWidth(screen.getWidth());
                 subreport.setHeight(screen.getHeight());
                 subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
+                
+                if(footer==null)
+                {
+                    throw new EJReportRuntimeException("Footer section not defined in report");
+                }
                 footer.addElement(subreport);
             }
 
