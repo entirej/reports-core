@@ -28,10 +28,6 @@ public class ${class_name}
     public void set${column.method_name}(${column.data_type} ${column.var_name})
     {
         _${column.var_name} = ${column.var_name};
-        if (!_initialValues.containsKey(FieldNames.${column.name}))
-        {
-            _initialValues.put(FieldNames.${column.name}, ${column.var_name});
-        }
     }
     
 </#list>
