@@ -52,6 +52,18 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
     {
         return getInternalReport().getProperties().getName();
     }
+    
+    public void setOutputName(String outputName)
+    {
+        getInternalReport().setOutputName(outputName);
+    }
+    
+    
+    public String getOutputName()
+    {
+        return  getInternalReport().getOutputName();
+    }
+    
 
     /**
      * This method should be called when to handle an exception in a

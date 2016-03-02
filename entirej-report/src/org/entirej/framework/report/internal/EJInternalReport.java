@@ -45,6 +45,7 @@ import org.entirej.framework.report.properties.EJReportVisualAttributeProperties
 public class EJInternalReport implements Serializable
 {
     private EJReportController _reportController;
+    private String outputName;
 
     public EJInternalReport(EJReportController reportController)
     {
@@ -415,5 +416,16 @@ public class EJInternalReport implements Serializable
     public EJReportDateHelper createDateHelper()
     {
         return _reportController.getFrameworkManager().getTranslationController().createDateHelper();
+    }
+
+    
+    public void setOutputName(String outputName)
+    {
+        this.outputName = outputName;
+    }
+    
+    public String getOutputName()
+    {
+        return outputName;
     }
 }

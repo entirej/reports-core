@@ -40,7 +40,12 @@ public class EJJasperReportRunner implements EJReportRunner
         try
         {
 
-            temp = File.createTempFile("EJR_" + report.getName(), "." + type.toString().toLowerCase());
+            String name = report.getName();
+            if(report.getOutputName()!=null &&!report.getOutputName().isEmpty())
+            {
+                name = report.getOutputName();
+            }
+            temp = File.createTempFile("EJR_" + name, "." + type.toString().toLowerCase());
             temp.deleteOnExit();
 
             runReport(report, type, temp.getAbsolutePath());

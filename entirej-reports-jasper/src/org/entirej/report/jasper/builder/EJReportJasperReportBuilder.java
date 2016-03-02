@@ -385,22 +385,34 @@ public class EJReportJasperReportBuilder
 
         Collection<EJApplicationLevelParameter> runtimeLevelParameters = report.getApplicationLevelParameters();
 
+        List<String> addedParams = new ArrayList<String>();
+        
         for (EJApplicationLevelParameter parameter : runtimeLevelParameters)
         {
+            if(addedParams.contains(parameter.getName()))
+            {
+                continue;
+            }
             JRDesignParameter designParameter = new JRDesignParameter();
             designParameter.setName(parameter.getName());
             designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
+            addedParams.add(parameter.getName());
         }
 
         EJReportParameterList parameterList = report.getParameterList();
         Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
         for (EJReportParameter parameter : allParameters)
         {
+            if(addedParams.contains(parameter.getName()))
+            {
+                continue;
+            }
             JRDesignParameter designParameter = new JRDesignParameter();
             designParameter.setName(parameter.getName());
             designParameter.setValueClass(parameter.getDataType());
             design.addParameter(designParameter);
+            addedParams.add(parameter.getName());
         }
 
         createBlockRPTParamater();
@@ -1619,6 +1631,10 @@ public class EJReportJasperReportBuilder
         {
             style.setMarkup("styled");
         }
+        else if (va.getMarkupType() == EJReportMarkupType.HTML)
+        {
+            style.setMarkup("html");
+        }
 
         vaToStyleAligment(va, style);
 
@@ -1829,6 +1845,9 @@ public class EJReportJasperReportBuilder
 
                 case STYLE:
                     textField.setMarkup("styled");
+                    break;
+                case HTML:
+                    textField.setMarkup("html");
                     break;
 
             }
