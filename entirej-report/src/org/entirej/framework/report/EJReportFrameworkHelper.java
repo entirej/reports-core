@@ -26,7 +26,7 @@ import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter
 
 public interface EJReportFrameworkHelper extends Serializable
 {
-    public EJManagedReportFrameworkConnection getConnection();
+    public EJReportManagedFrameworkConnection getConnection();
 
     /**
      * Retrieves a global value with the given name

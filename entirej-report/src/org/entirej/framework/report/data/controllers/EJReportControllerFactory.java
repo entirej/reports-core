@@ -93,11 +93,11 @@ public class EJReportControllerFactory implements Serializable
             throw new EJReportRuntimeException(message);
         }
 
-        EJReportData dataReport = new EJReportData(reportProperties);
+        EJReportData reportData = new EJReportData(reportProperties);
 
         // Create the controller and add the messenger to it
 
-        EJReportController reportController = new EJReportController(_frameworkManager, dataReport);
+        EJReportController reportController = new EJReportController(_frameworkManager, reportData);
 
         // Now copy parameter values from the parameter list given to the
         // reports parameter list
