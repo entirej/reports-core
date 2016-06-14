@@ -5,23 +5,22 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReportPojoHelper;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.data.EJReportDataRecord;
+import org.entirej.framework.report.interfaces.EJReportFrameworkConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EJReportResultSet<T>
 {
-    private static Logger                      logger      = LoggerFactory.getLogger(EJReportResultSet.class);
+    private static Logger               logger      = LoggerFactory.getLogger(EJReportResultSet.class);
 
-    private EJReportPojoHelper                 _pojoHelper = new EJReportPojoHelper();
-    private EJReportManagedFrameworkConnection _connection;
-    private ResultSet                          _resultSet;
-    private Class<T>                           _pojoType;
+    private EJReportPojoHelper          _pojoHelper = new EJReportPojoHelper();
+    private EJReportFrameworkConnection _connection;
+    private ResultSet                   _resultSet;
+    private Class<T>                    _pojoType;
 
-    public EJReportResultSet(EJReportManagedFrameworkConnection con, ResultSet resultSet, Class<T> pojoType)
+    public EJReportResultSet(EJReportFrameworkConnection con, ResultSet resultSet, Class<T> pojoType)
     {
         _connection = con;
         _resultSet = resultSet;
@@ -42,8 +41,7 @@ public class EJReportResultSet<T>
                 {
                     _pojoHelper.setFieldValue(metaData.getColumnLabel(i), result, _resultSet.getObject(i));
                 }
-                
- 
+
                 return result;
             }
             else

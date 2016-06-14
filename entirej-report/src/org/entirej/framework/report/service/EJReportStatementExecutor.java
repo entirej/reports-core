@@ -44,10 +44,12 @@ public class EJReportStatementExecutor implements Serializable
     final Logger logger = LoggerFactory.getLogger(EJReportStatementExecutor.class);
 
     
-    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, String selectStatement, EJReportQueryCriteria queryCriteria)
+    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, EJReportFrameworkConnection con, String selectStatement, EJReportQueryCriteria queryCriteria)
     {
-        EJReportManagedFrameworkConnection con = EJReportConnectionHelper.getConnection();
-        
+        if (con == null)
+        {
+            con = EJReportConnectionHelper.getConnection();
+        }
         PreparedStatement pstmt = null;
         try
         {
