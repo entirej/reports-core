@@ -46,6 +46,6 @@ public interface EJReportResultSetBlockService<E> extends Serializable
      * 
      * @return A {@link EJReportResultSet}
      */
-    public EJReportResultSet<E> executeQuery(EJReport form, EJReportQueryCriteria queryCriteria);
+    public EJReportResultSet<E> executeResultSetQuery(EJReport form, EJReportQueryCriteria queryCriteria);
 
 }
