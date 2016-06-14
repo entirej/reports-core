@@ -40,6 +40,7 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
     private EJReportBlockController _blockController;
     private EJReportQueryCriteria   _queryCriteria = null;
     private int                     _index         = -1;
+    private int                     _count         = 0;
 
     public EJReportBlockEntitiesHandler(EJReportController reportController, EJReportBlockController controller, EJReportDataBlock dataBlock)
     {
@@ -179,10 +180,10 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
     public EJReportDataRecord getNextRecord()
     {
         EJReportDataRecord focusedRecord = getCurrentRecord();
-        int count = 0;
+
         if (_index == -1 && focusedRecord != null)
         {
-            count = _dataBlock.getBlockRecordCount();
+            _count = _dataBlock.getBlockRecordCount();
             _index++;
             return focusedRecord;
         }
@@ -192,7 +193,7 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
             _dataBlock.removeTop();
         }
         _index++;
-        boolean hasMore = count > _index;
+        boolean hasMore = _count > _index;
 
         if (hasMore)
         {
@@ -214,7 +215,7 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
     public void reset()
     {
         _index = -1;
-
+        _count = 0;
     }
 
 }
