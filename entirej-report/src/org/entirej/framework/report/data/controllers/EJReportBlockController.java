@@ -250,7 +250,5 @@ public class EJReportBlockController implements Serializable
     public void reset()
     {
         _dataHandler.reset();
-        
     }
-
 }

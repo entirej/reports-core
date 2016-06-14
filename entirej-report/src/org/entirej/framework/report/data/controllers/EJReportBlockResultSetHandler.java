@@ -34,19 +34,19 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
     final Logger                    _logger        = LoggerFactory.getLogger(EJReportBlockResultSetHandler.class);
 
     private EJReportController      _reportController;
-    private EJReportDataBlock       _dataBlock;
     private EJReportDataRecord      _focusedRecord;
 
-    private EJReportResultSet       _resultSet;
+    private EJReportResultSet<?>    _resultSet;
     private EJReportBlockController _blockController;
     private EJReportQueryCriteria   _queryCriteria = null;
-    private int                     _index         = -1;
 
     public EJReportBlockResultSetHandler(EJReportController reportController, EJReportBlockController controller, EJReportDataBlock dataBlock)
     {
         _reportController = reportController;
         _blockController = controller;
-        _dataBlock = dataBlock;
+        
+        // The DataBlock is not used within this handler
+        //_dataBlock = dataBlock;
     }
 
     /**
@@ -99,19 +99,11 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
 
         try
         {
-
-            if (_blockController.getBlockService() == null)
-            {
-                return;
-            }
-
             _queryCriteria.setQueryAllRows(true);
 
             _logger.trace("Calling execute query on service: {}", _blockController.getClass().getName());
-
-            _blockController.getBlock();
-
-            _resultSet = ((EJReportResultSetBlockService) _blockController.getBlockService()).executeResultSetQuery(_reportController.getEJReport(), _queryCriteria);
+            _resultSet = ((EJReportResultSetBlockService<?>) _blockController.getBlockService()).executeResultSetQuery(_reportController.getEJReport(),
+                    _queryCriteria);
             _logger.trace("Execute query on block service completed.");
         }
         catch (Exception e)
@@ -151,15 +143,14 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
     public EJReportDataRecord getNextRecord()
     {
         Object next = _resultSet.getNext();
-        if(next==null)
+        if (next == null)
         {
             return null;
         }
         _focusedRecord = new EJReportDataRecord(_reportController, _blockController.getBlock(), next);
         return _focusedRecord;
-
     }
-    
+
     @Override
     public void reset()
     {
@@ -167,7 +158,5 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
         {
             _resultSet.close();
         }
-        
     }
-
 }
