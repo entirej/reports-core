@@ -44,7 +44,7 @@ public class EJReportStatementExecutor implements Serializable
     final Logger logger = LoggerFactory.getLogger(EJReportStatementExecutor.class);
 
     
-    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria)
+    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, String selectStatement, EJReportQueryCriteria queryCriteria)
     {
         EJReportManagedFrameworkConnection con = EJReportConnectionHelper.getConnection();
         
