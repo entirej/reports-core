@@ -21,6 +21,7 @@ import net.sf.jasperreports.charts.design.JRDesignXySeries;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPen;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -389,13 +390,15 @@ public class EJReportJasperReportBuilder
         
         for (EJApplicationLevelParameter parameter : runtimeLevelParameters)
         {
-            if(addedParams.contains(parameter.getName()))
+            if(addedParams.contains(parameter.getName()) || design.getParametersMap().containsKey(parameter.getName()))
             {
                 continue;
             }
+            
             JRDesignParameter designParameter = new JRDesignParameter();
             designParameter.setName(parameter.getName());
             designParameter.setValueClass(parameter.getDataType());
+            
             design.addParameter(designParameter);
             addedParams.add(parameter.getName());
         }
@@ -404,7 +407,7 @@ public class EJReportJasperReportBuilder
         Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
         for (EJReportParameter parameter : allParameters)
         {
-            if(addedParams.contains(parameter.getName()))
+            if(addedParams.contains(parameter.getName()) || design.getParametersMap().containsKey(parameter.getName()))
             {
                 continue;
             }
