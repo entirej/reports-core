@@ -207,7 +207,7 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
             }
         }
 
-        return getCurrentRecord();
+        return hasMore? focusedRecord :null;
 
     }
 
