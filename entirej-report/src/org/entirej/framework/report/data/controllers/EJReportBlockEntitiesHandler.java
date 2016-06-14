@@ -166,7 +166,6 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
      */
     public EJReportDataRecord getCurrentRecord()
     {
-      
 
         return _dataBlock.getTopRecord(_blockController);
 
@@ -180,29 +179,33 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
     public EJReportDataRecord getNextRecord()
     {
         EJReportDataRecord focusedRecord = getCurrentRecord();
+        int count = 0;
         if (_index == -1 && focusedRecord != null)
         {
-            _index += 1;
-            return getCurrentRecord();
+            count = _dataBlock.getBlockRecordCount();
+            _index++;
+            return focusedRecord;
         }
-        boolean hasMore = (_index + 1) < _dataBlock.getBlockRecordCount();
-        if (hasMore && focusedRecord != null && focusedRecord.isInitialised() && !focusedRecord.getBlock().getProperties().isControlBlock())
+
+        if (_dataBlock.getBlockRecordCount() > 1)
         {
-            focusedRecord.dispose();
+            _dataBlock.removeTop();
         }
+        _index++;
+        boolean hasMore = count > _index;
 
         if (hasMore)
         {
-            _index += 1;
+
+            focusedRecord = getCurrentRecord();
+            if (focusedRecord != null && !focusedRecord.isInitialised())
+            {
+                focusedRecord.initialise();
+                _blockController.getReportController().getActionController().postQuery(_blockController.getReportController().getEJReport(),
+                        new EJReportRecord(focusedRecord));
+            }
         }
 
-        focusedRecord = getCurrentRecord();
-        if (focusedRecord != null && !focusedRecord.isInitialised())
-        {
-            focusedRecord.initialise();
-            _reportController.getActionController().postQuery(_reportController.getEJReport(), new EJReportRecord(focusedRecord));
-        }
-        
         return getCurrentRecord();
 
     }
@@ -211,7 +214,7 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
     public void reset()
     {
         _index = -1;
-        
+
     }
 
 }
