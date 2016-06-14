@@ -48,7 +48,7 @@ public class EJReportStatementExecutor implements Serializable
     {
         if (con == null)
         {
-            con = EJReportConnectionHelper.getConnection();
+            con = EJReportConnectionHelper.newConnection();
         }
         PreparedStatement pstmt = null;
         try
@@ -64,7 +64,7 @@ public class EJReportStatementExecutor implements Serializable
             Connection connection = (Connection) conObj;
             pstmt = connection.prepareStatement(selectStatement);
             logger.info("Executing Query");
-            pstmt.setFetchSize(5000);
+            pstmt.setFetchSize(100);
             ResultSet rset = pstmt.executeQuery();
             
             return new EJReportResultSet(con, rset, pojoType);
@@ -76,7 +76,7 @@ public class EJReportStatementExecutor implements Serializable
             e.printStackTrace();
             try
             {
-                pstmt.close();
+               pstmt.close();
             }
             catch (SQLException e2)
             {
@@ -86,17 +86,17 @@ public class EJReportStatementExecutor implements Serializable
         }
         finally
         {
-            try
-            {
-                if (pstmt != null)
-                {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e)
-            {
-            }
-            con.close();
+//            try
+//            {
+//                if (pstmt != null)
+//                {
+//                    pstmt.close();
+//                }
+//            }
+//            catch (SQLException e)
+//            {
+//            }
+//           // con.close();
         }
     }
     
