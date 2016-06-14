@@ -19,7 +19,12 @@
 package org.entirej.report.jasper;
 
 import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -30,14 +35,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
@@ -55,6 +62,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
@@ -79,11 +87,17 @@ public class EJJasperReports
                 "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
         context.setProperty("org.xml.sax.driver",    
                 "org.apache.xerces.parsers.SAXParser");
-        context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
+       // context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
 
 //        JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
 //                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 
+        
+        context.setProperty("net.sf.jasperreports.extension.registry.factory.xml.chart.themes",    
+                "net.sf.jasperreports.chartthemes.simple.XmlChartThemeExtensionsRegistryFactory");
+        context.setProperty("net.sf.jasperreports.xml.chart.theme.aegean",    
+                "net/sf/jasperreports/chartthemes/aegean.jrctx");
+       
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
@@ -168,6 +182,7 @@ public class EJJasperReports
     {
         try
         {
+            report.getActionController().beforeReport(report);
             EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
 
             builder.buildDesign(report);
@@ -204,6 +219,15 @@ public class EJJasperReports
                     EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
                     sbBuilder.buildDesign(block);
 
+                    return sbBuilder.toReport();
+                }
+                @Override
+                public JasperReport getBlockReportFixed(String blockName)
+                {
+                    EJReportBlock block = report.getBlock(blockName);
+                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+                    sbBuilder.buildDesignFixed(block);
+                    
                     return sbBuilder.toReport();
                 }
             };
@@ -277,7 +301,15 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
         LOGGER.info("START Export  Report :" + report.getName());
         long start = System.currentTimeMillis();
-        exportReport(report.getExportType(), jasperPrint, outputFile);
+        
+        Collection<EJReportPage> pages = report.getPages();
+        List<String> pageNames = new ArrayList<String>(pages.size());
+        for (EJReportPage page : pages)
+        {
+            pageNames.add(page.getName());
+        }
+        
+        exportReport(report.getExportType(), jasperPrint, outputFile,pageNames.toArray(new String[0]));
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
     }
@@ -289,7 +321,13 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
         LOGGER.info("START Export  Report :" + report.getName());
         long start = System.currentTimeMillis();
-        exportReport(type, jasperPrint, outputFile);
+        Collection<EJReportPage> pages = report.getPages();
+        List<String> pageNames = new ArrayList<String>(pages.size());
+        for (EJReportPage page : pages)
+        {
+            pageNames.add(page.getName());
+        }
+        exportReport(type, jasperPrint, outputFile,pageNames.toArray(new String[0]));
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
     }
 
@@ -313,7 +351,7 @@ public class EJJasperReports
         exportReport(type, jasperPrint, outputFile);
     }
 
-    public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile)
+    public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile,String ... pageNames)
     {
         
         LOGGER.info("START Export  Report :" + outputFile);
@@ -349,6 +387,17 @@ public class EJJasperReports
                 }
 
                     break;
+                case PNG:
+                {
+                    
+                  
+         
+                    FileOutputStream output = new FileOutputStream(new File(outputFile));
+                    ImageIO.write(toBufferedImage(JasperPrintManager.printPageToImage(print, 0, 1)), "PNG", output);
+                    output.close();
+                }
+                
+                break;
                 case ODT:
                 {
                     File destFile = new File(outputFile);
@@ -415,6 +464,7 @@ public class EJJasperReports
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
                     configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
+                    configuration.setSheetNames(pageNames);
                     configuration.setWrapText(true);
                     configuration.setIgnorePageMargins(true);
                     exporter.setConfiguration(configuration);
@@ -438,6 +488,7 @@ public class EJJasperReports
                     configuration.setWhitePageBackground(Boolean.FALSE);
                     configuration.setRemoveEmptySpaceBetweenRows(Boolean.TRUE);
                     configuration.setRemoveEmptySpaceBetweenColumns(Boolean.TRUE);
+                    configuration.setSheetNames(pageNames);
                     exporter.setConfiguration(configuration);
                     exporter.exportReport();
                 }
@@ -452,6 +503,14 @@ public class EJJasperReports
         {
             e.printStackTrace();
             throw new EJReportRuntimeException(e);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
         finally
         {
@@ -525,9 +584,32 @@ public class EJJasperReports
         if (pages.size() > 0)
         {
             JRPrintPage lastpage = pages.get(pages.size() - 1);
+
             if (lastpage.getElements().size() == 0)
                 pages.remove(lastpage);
         }
 
+    }
+    
+    public static BufferedImage toBufferedImage(Image img)
+    {
+        if (img instanceof BufferedImage)
+        {
+            BufferedImage bimage = (BufferedImage) img;
+            bimage  = bimage.getSubimage(0, 0,img.getWidth(null)-1, img.getHeight(null)-1);
+            return bimage;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        bimage  = bimage.getSubimage(0, 0,img.getWidth(null)-5, img.getHeight(null)-5);
+        // Return the buffered image
+        return bimage;
     }
 }

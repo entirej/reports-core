@@ -20,6 +20,6 @@ package org.entirej.framework.report.service;
 
 public interface EJReportPojoContentGenerator
 {
-    public String generateContent(EJReportPojoGeneratorType type);
+    public String getTemplate();
 
 }

@@ -18,8 +18,10 @@
  ******************************************************************************/
 package org.entirej.framework.report.service;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 public class EJReportServiceGeneratorType
 {
@@ -30,7 +32,7 @@ public class EJReportServiceGeneratorType
     private String                    _queryStatement;
     private String                    _selectProcedureName;
     private List<EJReportTableColumn> _selectProcedureParameters;
-    private final Properties          _properties = new Properties();
+    private final Map<String, String> _properties = new HashMap<String, String>();
 
     public Class<?> getPojo()
     {
@@ -104,16 +106,25 @@ public class EJReportServiceGeneratorType
 
     public String getProperty(String key, String defaultVlaue)
     {
-        return _properties.getProperty(key, defaultVlaue);
+        if(!_properties.containsKey(key))
+        {
+            return defaultVlaue;
+        }
+        return _properties.get(key);
+    }
+
+    public Collection<String> getPropertyKeys()
+    {
+        return (Collection<String>) _properties.keySet();
     }
 
     public String getProperty(String key)
     {
-        return _properties.getProperty(key);
+        return _properties.get(key);
     }
 
     public Object setProperty(String key, String vlaue)
     {
-        return _properties.setProperty(key, vlaue);
+        return _properties.put(key, vlaue);
     }
 }

@@ -117,7 +117,6 @@ public class EJReportControllerFactory implements Serializable
                 }
             }
         }
-        reportController.reportInitialised();
         return reportController;
 
     }

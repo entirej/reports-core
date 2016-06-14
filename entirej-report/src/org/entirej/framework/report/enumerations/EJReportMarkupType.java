@@ -19,7 +19,7 @@ package org.entirej.framework.report.enumerations;
 
 public enum EJReportMarkupType
 {
-    NONE, STYLE;
+    NONE, STYLE,HTML;
 
     public String toString()
     {
@@ -28,6 +28,8 @@ public enum EJReportMarkupType
 
             case NONE:
                 return "None";
+            case HTML:
+                return "Html";
 
             case STYLE:
                 return "Style";// http://jasperreports.sourceforge.net/sample.reference/styledtext/index.html

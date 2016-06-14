@@ -77,15 +77,7 @@ public class EJReportController implements Serializable
         LOGGER.trace("END Constructor");
     }
 
-    public void reportInitialised()
-    {
-        getActionController().beforeReport(new EJReport(_report));
-    }
 
-    public void reportCompleted()
-    {
-        getActionController().afterReport(new EJReport(_report));
-    }
 
     private void createParameterList()
     {

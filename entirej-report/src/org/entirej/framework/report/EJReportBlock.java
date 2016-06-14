@@ -185,4 +185,10 @@ public class EJReportBlock implements EJReportQueryBlock, Serializable
         return _block.getServicePojoHelper();
     }
 
+    public void reset()
+    {
+        _block.reset();
+        
+    }
+
 }

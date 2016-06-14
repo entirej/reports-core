@@ -19,6 +19,7 @@
 package org.entirej.framework.report.data.controllers;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +168,11 @@ public class EJApplicationLevelParameter implements Serializable
         {
             return true;
         }
+        // BigDecimal
+        if (BigDecimal.class.equals(_dataTypeClass))
+        {
+            return true;
+        }
 
         return false;
     }
@@ -242,6 +248,18 @@ public class EJApplicationLevelParameter implements Serializable
             try
             {
                 return Double.parseDouble(value);
+            }
+            catch (NumberFormatException e)
+            {
+                return null;
+            }
+        }
+        // BigDecimal
+        if (BigDecimal.class.equals(_dataTypeClass))
+        {
+            try
+            {
+                return new BigDecimal(value);
             }
             catch (NumberFormatException e)
             {

@@ -78,6 +78,11 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
             setDelegate(new ReportScreenItemHandler(_blockProperties.getScreenProperties().getScreenItemContainer()));
             return;
         }
+        else if (name.equals("chartLayout"))
+        {
+            setDelegate(new ReportScreenChartHandler(_blockProperties));
+            return;
+        }
         else if (name.equals(ELEMENT_SCREEN_COLUMN))
         {
             setDelegate(new ReportScreenColumnHandler(_blockProperties));

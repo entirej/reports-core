@@ -7,5 +7,6 @@ public interface EJReportBlockItemVAContext
 
     boolean isVisible(String item, String section);
 
-    public Object getVABaseValue(Object value, String item, String section,String defaultPattrn);
+    public Object getVABaseValue(Object value, String item, String section,String defaultPattern);
+    public Object getVABaseValuePattern(Object value, String item, String section,String defaultPattern);
 }

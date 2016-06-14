@@ -20,5 +20,5 @@ package org.entirej.framework.report.service;
 
 public interface EJReportServiceContentGenerator
 {
-    public String generateContent(EJReportServiceGeneratorType generatorType);
+    public String getTemplate();
 }

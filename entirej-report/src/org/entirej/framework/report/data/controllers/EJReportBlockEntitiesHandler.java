@@ -117,7 +117,7 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
                 {
                     for (Object entity : entities)
                     {
-                        _dataBlock.addQueriedRecord(new EJReportDataRecord(_reportController, _blockController.getBlock(), entity));
+                        _dataBlock.addRecord(new EJReportDataRecord(_reportController, _blockController.getBlock(), entity));
                     }
                 }
             }
