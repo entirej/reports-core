@@ -166,12 +166,9 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
      */
     public EJReportDataRecord getCurrentRecord()
     {
-        if (_index == -1)
-        {
-            return _dataBlock.getRecord(0);
-        }
+      
 
-        return _dataBlock.getRecord(_index);
+        return _dataBlock.getTopRecord(_blockController);
 
     }
 
@@ -208,6 +205,13 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
         
         return getCurrentRecord();
 
+    }
+
+    @Override
+    public void reset()
+    {
+        _index = -1;
+        
     }
 
 }

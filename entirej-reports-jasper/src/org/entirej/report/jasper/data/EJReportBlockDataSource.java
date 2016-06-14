@@ -158,7 +158,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         svCache.clear();
        
        focusedRecord = block.getNextRecord();
-       if ((!focusedRecord == null) && block.isControlBlock())
+       if ((focusedRecord == null) && block.isControlBlock())
         {
             block.reset();
         }

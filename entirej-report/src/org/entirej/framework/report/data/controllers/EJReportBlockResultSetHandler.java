@@ -154,5 +154,15 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
         return _focusedRecord;
 
     }
+    
+    @Override
+    public void reset()
+    {
+        if (_resultSet != null)
+        {
+            _resultSet.close();
+        }
+        
+    }
 
 }

@@ -69,4 +69,7 @@ public interface EJReportBlockDataHandler
      */
     public EJReportDataRecord getNextRecord();
     
+    
+    public void reset();
+    
 }

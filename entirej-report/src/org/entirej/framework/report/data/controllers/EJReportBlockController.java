@@ -247,4 +247,10 @@ public class EJReportBlockController implements Serializable
         _dataHandler.clearBlock();
     }
 
+    public void reset()
+    {
+        _dataHandler.reset();
+        
+    }
+
 }
