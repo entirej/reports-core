@@ -150,7 +150,12 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
      */
     public EJReportDataRecord getNextRecord()
     {
-        _focusedRecord = new EJReportDataRecord(_reportController, _blockController.getBlock(), _resultSet.getNext());
+        Object next = _resultSet.getNext();
+        if(next==null)
+        {
+            return null;
+        }
+        _focusedRecord = new EJReportDataRecord(_reportController, _blockController.getBlock(), next);
         return _focusedRecord;
 
     }
