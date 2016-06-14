@@ -111,7 +111,7 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
 
             _blockController.getBlock();
 
-            _resultSet = ((EJReportResultSetBlockService) _blockController.getBlockService()).executeQuery(_reportController.getEJReport(), _queryCriteria);
+            _resultSet = ((EJReportResultSetBlockService) _blockController.getBlockService()).executeResultSetQuery(_reportController.getEJReport(), _queryCriteria);
             _logger.trace("Execute query on block service completed.");
         }
         catch (Exception e)
