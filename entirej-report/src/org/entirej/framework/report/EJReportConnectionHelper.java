@@ -22,5 +22,17 @@ public class EJReportConnectionHelper
 
         throw new EJReportRuntimeException("EJFrameworkManager not initialized ");
     }
+    
+    public static EJReportManagedFrameworkConnection newConnection()
+    {
+        if (ref != null && ref.get() != null)
+        {
+            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get());
+            return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
+        }
+           
+        
+        throw new EJReportRuntimeException("EJFrameworkManager not initialized ");
+    }
 
 }
