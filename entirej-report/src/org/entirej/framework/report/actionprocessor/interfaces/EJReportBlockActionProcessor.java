@@ -20,7 +20,7 @@ package org.entirej.framework.report.actionprocessor.interfaces;
 
 import java.io.Serializable;
 
-import org.entirej.framework.report.EJManagedReportFrameworkConnection;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportRecord;
@@ -40,7 +40,7 @@ public interface EJReportBlockActionProcessor extends Serializable
      * transaction. If an operation is required outside of the Framework
      * transaction, then a new connection must be obtained.
      * 
-     * @see EJManagedReportFrameworkConnection
+     * @see EJReportManagedFrameworkConnection
      * @param report
      *            The report from which this method is called
      * @param queryCriteria

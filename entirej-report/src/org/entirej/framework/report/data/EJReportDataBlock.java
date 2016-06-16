@@ -91,7 +91,6 @@ public class EJReportDataBlock implements Serializable
     }
     public void addRecords(List<Object> reObjects)
     {
-        
         _blockRecords.addAll(reObjects);
     }
 

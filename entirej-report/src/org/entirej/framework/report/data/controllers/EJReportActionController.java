@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.entirej.framework.report.EJManagedReportFrameworkConnection;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
@@ -81,7 +81,7 @@ public class EJReportActionController implements Serializable
     public void beforeReport(EJReport report)
     {
         logger.trace("START beforeReport. Report: {}", report.getName());
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
             _reportLevelActionProcessor.beforeReport(report);
@@ -104,7 +104,7 @@ public class EJReportActionController implements Serializable
     public void afterReport(EJReport report)
     {
         logger.trace("START afterReport. Report: {}", report.getName());
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
             _reportLevelActionProcessor.afterReport(report);
@@ -128,7 +128,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START postQuery. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = record == null ? "" : record.getBlockName();
@@ -166,7 +166,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START canShowBlock. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
 
@@ -206,7 +206,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START canShowScreenItem. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
 
@@ -246,7 +246,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START canShowScreenColumn. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
 
@@ -286,7 +286,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START canShowBlockFooter. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
 
@@ -326,7 +326,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START canShowBlockHeader. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
 
@@ -366,7 +366,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START canShowScreenColumnSection. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
 
@@ -406,7 +406,7 @@ public class EJReportActionController implements Serializable
     {
         logger.trace("START preQuery. Report: {}", report.getName());
 
-        EJManagedReportFrameworkConnection connection = report.getConnection();
+        EJReportManagedFrameworkConnection connection = report.getConnection();
         try
         {
             String blockName = queryCriteria == null ? "" : queryCriteria.getBlockName();

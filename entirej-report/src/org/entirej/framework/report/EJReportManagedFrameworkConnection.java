@@ -20,12 +20,12 @@ package org.entirej.framework.report;
 
 import org.entirej.framework.report.interfaces.EJReportFrameworkConnection;
 
-public class EJManagedReportFrameworkConnection implements EJReportFrameworkConnection
+public class EJReportManagedFrameworkConnection implements EJReportFrameworkConnection
 {
     private boolean                     _initialiser = false;
     private EJReportConnectionRetriever _connectionRetriever;
 
-    EJManagedReportFrameworkConnection(EJReportConnectionRetriever connectionRetriever, boolean initialiser)
+    EJReportManagedFrameworkConnection(EJReportConnectionRetriever connectionRetriever, boolean initialiser)
     {
         _connectionRetriever = connectionRetriever;
         _initialiser = initialiser;

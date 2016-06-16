@@ -32,7 +32,7 @@ public class EJReportTranslatorHelper implements Serializable
         _fwkManager = manager;
     }
 
-    public EJManagedReportFrameworkConnection getConnection()
+    public EJReportManagedFrameworkConnection getConnection()
     {
         return _fwkManager.getConnection();
     }

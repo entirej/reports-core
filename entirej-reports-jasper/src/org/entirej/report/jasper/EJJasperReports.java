@@ -37,28 +37,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRPrintPage;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRRtfExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
-import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
-
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
@@ -73,6 +51,32 @@ import org.entirej.report.jasper.data.EJReportDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRRtfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
+import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.fill.JRAbstractLRUVirtualizer;
+import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
+import net.sf.jasperreports.engine.util.JRSwapFile;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+
 public class EJJasperReports
 {
     final static Logger LOGGER = LoggerFactory.getLogger(EJJasperReports.class);
@@ -83,21 +87,18 @@ public class EJJasperReports
         context.setProperty("net.sf.jasperreports.print.keep.full.text", "true");
         context.setProperty("net.sf.jasperreports.text.truncate.at.char", "true");
         context.setProperty("net.sf.jasperreports.text.truncate.suffix", "...");
-        context.setProperty("net.sf.jasperreports.xpath.executer.factory",
-                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
-        context.setProperty("org.xml.sax.driver",    
-                "org.apache.xerces.parsers.SAXParser");
-       // context.setProperty("net.sf.jasperreports.subreport.runner.factory"      ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
+        context.setProperty("net.sf.jasperreports.xpath.executer.factory", "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+        context.setProperty("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
+        // context.setProperty("net.sf.jasperreports.subreport.runner.factory"
+        // ,"net.sf.jasperreports.engine.fill.JRContinuationSubreportRunnerFactory");
 
-//        JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
-//                "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+        // JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
+        // "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 
-        
-        context.setProperty("net.sf.jasperreports.extension.registry.factory.xml.chart.themes",    
+        context.setProperty("net.sf.jasperreports.extension.registry.factory.xml.chart.themes",
                 "net.sf.jasperreports.chartthemes.simple.XmlChartThemeExtensionsRegistryFactory");
-        context.setProperty("net.sf.jasperreports.xml.chart.theme.aegean",    
-                "net/sf/jasperreports/chartthemes/aegean.jrctx");
-       
+        context.setProperty("net.sf.jasperreports.xml.chart.theme.aegean", "net/sf/jasperreports/chartthemes/aegean.jrctx");
+
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
@@ -153,7 +154,7 @@ public class EJJasperReports
             return reportToFile;
 
         }
-        
+
         catch (JRException e)
         {
             e.printStackTrace();
@@ -180,6 +181,7 @@ public class EJJasperReports
 
     public static JasperPrint fillReport(EJReportFrameworkManager manager, final EJReport report, EJJasperReportParameter... parameters)
     {
+        File tempFile = null;
         try
         {
             report.getActionController().beforeReport(report);
@@ -193,6 +195,16 @@ public class EJJasperReports
             JasperReport jasperReport = builder.toReport();
 
             List<EJJasperReportParameter> reportParameters = new ArrayList<EJJasperReportParameter>();
+
+            tempFile = File.createTempFile(report.getName(), "swap");
+            tempFile.delete();
+            tempFile.mkdirs();
+            net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(1000,
+                    new JRSwapFile(tempFile.getAbsolutePath(), 2048, 1024), true);
+
+            EJJasperReportParameter virtualizerParam = new EJJasperReportParameter(JRParameter.REPORT_VIRTUALIZER, JRAbstractLRUVirtualizer.class);
+            virtualizerParam.setValue(virtualizer);
+            reportParameters.add(virtualizerParam);
 
             for (EJApplicationLevelParameter parameter : manager.getApplicationLevelParameters())
             {
@@ -221,13 +233,14 @@ public class EJJasperReports
 
                     return sbBuilder.toReport();
                 }
+
                 @Override
                 public JasperReport getBlockReportFixed(String blockName)
                 {
                     EJReportBlock block = report.getBlock(blockName);
                     EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
                     sbBuilder.buildDesignFixed(block);
-                    
+
                     return sbBuilder.toReport();
                 }
             };
@@ -253,6 +266,17 @@ public class EJJasperReports
         {
             e.printStackTrace();
             throw new EJReportRuntimeException(e);
+        }finally
+        {
+            if(tempFile!=null)
+            {
+                File[] listFiles = tempFile.listFiles();
+                for (File file : listFiles)
+                {
+                    file.delete();
+                }
+                tempFile.delete();
+            }
         }
     }
 
@@ -301,15 +325,15 @@ public class EJJasperReports
         JasperPrint jasperPrint = fillReport(manager, report, parameters);
         LOGGER.info("START Export  Report :" + report.getName());
         long start = System.currentTimeMillis();
-        
+
         Collection<EJReportPage> pages = report.getPages();
         List<String> pageNames = new ArrayList<String>(pages.size());
         for (EJReportPage page : pages)
         {
             pageNames.add(page.getName());
         }
-        
-        exportReport(report.getExportType(), jasperPrint, outputFile,pageNames.toArray(new String[0]));
+
+        exportReport(report.getExportType(), jasperPrint, outputFile, pageNames.toArray(new String[0]));
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
     }
@@ -327,7 +351,7 @@ public class EJJasperReports
         {
             pageNames.add(page.getName());
         }
-        exportReport(type, jasperPrint, outputFile,pageNames.toArray(new String[0]));
+        exportReport(type, jasperPrint, outputFile, pageNames.toArray(new String[0]));
         LOGGER.info("END Export Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
     }
 
@@ -351,13 +375,12 @@ public class EJJasperReports
         exportReport(type, jasperPrint, outputFile);
     }
 
-    public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile,String ... pageNames)
+    public static void exportReport(EJReportExportType type, JasperPrint print, String outputFile, String... pageNames)
     {
-        
+
         LOGGER.info("START Export  Report :" + outputFile);
         long start = System.currentTimeMillis();
-       
-        
+
         try
         {
             switch (type)
@@ -389,15 +412,13 @@ public class EJJasperReports
                     break;
                 case PNG:
                 {
-                    
-                  
-         
+
                     FileOutputStream output = new FileOutputStream(new File(outputFile));
                     ImageIO.write(toBufferedImage(JasperPrintManager.printPageToImage(print, 0, 1)), "PNG", output);
                     output.close();
                 }
-                
-                break;
+
+                    break;
                 case ODT:
                 {
                     File destFile = new File(outputFile);
@@ -590,13 +611,13 @@ public class EJJasperReports
         }
 
     }
-    
+
     public static BufferedImage toBufferedImage(Image img)
     {
         if (img instanceof BufferedImage)
         {
             BufferedImage bimage = (BufferedImage) img;
-            bimage  = bimage.getSubimage(0, 0,img.getWidth(null)-1, img.getHeight(null)-1);
+            bimage = bimage.getSubimage(0, 0, img.getWidth(null) - 1, img.getHeight(null) - 1);
             return bimage;
         }
 
@@ -608,7 +629,7 @@ public class EJJasperReports
         bGr.drawImage(img, 0, 0, null);
         bGr.dispose();
 
-        bimage  = bimage.getSubimage(0, 0,img.getWidth(null)-5, img.getHeight(null)-5);
+        bimage = bimage.getSubimage(0, 0, img.getWidth(null) - 5, img.getHeight(null) - 5);
         // Return the buffered image
         return bimage;
     }

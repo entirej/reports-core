@@ -156,18 +156,13 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         sitemCache.clear();
         vCache.clear();
         svCache.clear();
-
-        focusedRecord = null;
-        boolean navigateToNextRecord = block.navigateToNextRecord();
-        if (navigateToNextRecord)
-        {
-            focusedRecord = block.getCurrentRecord();
-        }
-        if (!navigateToNextRecord && block.isControlBlock())
+       
+       focusedRecord = block.getNextRecord();
+       if ((focusedRecord == null) && block.isControlBlock())
         {
             block.reset();
         }
-        return navigateToNextRecord;
+        return focusedRecord!=null;
     }
 
     @Override

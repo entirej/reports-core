@@ -19,24 +19,19 @@
 package org.entirej.framework.report.data.controllers;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 
-import org.entirej.framework.report.EJManagedReportFrameworkConnection;
 import org.entirej.framework.report.EJReportFrameworkManager;
-import org.entirej.framework.report.EJReportMessage;
-import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.EJReportDataBlock;
 import org.entirej.framework.report.data.EJReportDataRecord;
-import org.entirej.framework.report.enumerations.EJReportMessageLevel;
 import org.entirej.framework.report.internal.EJInternalReport;
 import org.entirej.framework.report.internal.EJInternalReportBlock;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 import org.entirej.framework.report.service.EJReportBlockService;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
+import org.entirej.framework.report.service.EJReportResultSetBlockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,68 +39,13 @@ public class EJReportBlockController implements Serializable
 {
     final Logger                                              logger          = LoggerFactory.getLogger(EJReportBlockController.class);
 
-    /**
-     * Used in conjunction with the deferred query property. This criteria will
-     * contain the query criteria for the query to be executed
-     */
-    private EJReportQueryCriteria                             _queryCriteria  = null;
-
     private EJReportFrameworkManager                          _frameworkManager;
     private EJReportController                                _reportController;
-    private EJReportDataBlock                                 _dataBlock;
+    private EJReportBlockDataHandler                          _dataHandler;
     private EJCoreReportBlockProperties                       _blockProperties;
 
     private LinkedHashMap<String, EJCoreReportItemProperties> _itemProperties = new LinkedHashMap<String, EJCoreReportItemProperties>();
     private final EJInternalReportBlock                       _internalBlock;
-
-    public EJInternalReport getReport()
-    {
-        return getBlock().getReport();
-    }
-
-    private int index = -1;
-    private int count = 0;
-
-    public EJInternalReportBlock getBlock()
-    {
-        return _internalBlock;
-    }
-
-    /**
-     * Indicates that the user want to navigate to the next record
-     */
-    public boolean navigateToNextRecord()
-    {
-        EJReportDataRecord focusedRecord = getCurrentRecord();
-        if (index == -1 && focusedRecord != null)
-        {
-            count =_dataBlock.getBlockRecordCount();
-            index++;
-            return true;
-        }
-        
-        if(_dataBlock.getBlockRecordCount()>1){
-            _dataBlock.removeTop();
-        }
-        index++;    
-        boolean hasMore = count>index;
-        
-
-        if(hasMore)
-        {
-        
-
-            focusedRecord = getCurrentRecord();
-            if (focusedRecord != null && !focusedRecord.isInitialised())
-            {
-                focusedRecord.initialise();
-                getReportController().getActionController().postQuery(getReportController().getEJReport(), new EJReportRecord(focusedRecord));
-            }
-        }
-      
-        return hasMore;
-
-    }
 
     /**
      * Creates a controller for the given data block
@@ -124,11 +64,19 @@ public class EJReportBlockController implements Serializable
         }
         _reportController = reportController;
         _frameworkManager = reportController.getFrameworkManager();
-        _dataBlock = dataBlock;
         _blockProperties = blockProperties;
 
         _internalBlock = new EJInternalReportBlock(this);
         initialiseItems();
+
+        if (blockProperties.getBlockService() instanceof EJReportResultSetBlockService)
+        {
+            _dataHandler = new EJReportBlockResultSetHandler(_reportController, this, dataBlock);
+        }
+        else
+        {
+            _dataHandler = new EJReportBlockEntitiesHandler(_reportController, this, dataBlock);
+        }
 
     }
 
@@ -145,6 +93,16 @@ public class EJReportBlockController implements Serializable
         logger.trace("END initialiseItems");
     }
 
+    public EJInternalReport getReport()
+    {
+        return getBlock().getReport();
+    }
+
+    public EJInternalReportBlock getBlock()
+    {
+        return _internalBlock;
+    }
+
     /**
      * Sets the query criteria to be used when querying this blocks data service
      * <p>
@@ -156,7 +114,7 @@ public class EJReportBlockController implements Serializable
      */
     public void setQueryCriteria(EJReportQueryCriteria queryCriteria)
     {
-        _queryCriteria = queryCriteria;
+        _dataHandler.setQueryCriteria(queryCriteria);
     }
 
     /**
@@ -166,7 +124,7 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportQueryCriteria getQueryCriteria()
     {
-        return _queryCriteria;
+        return _dataHandler.getQueryCriteria();
     }
 
     /**
@@ -189,31 +147,26 @@ public class EJReportBlockController implements Serializable
         return _blockProperties.getBlockService();
     }
 
-    public EJReportDataBlock getDataBlock()
-    {
-        return _dataBlock;
-    }
-
-    public void setDataBlock(EJReportDataBlock dataBlock)
-    {
-        _dataBlock = dataBlock;
-    }
-
     /**
      * Returns the blocks current record
      * <p>
      * 
-     * @return The record upon which the report has retreived for this block
+     * @return The record upon which the report has retrieved for this block
      */
     public EJReportDataRecord getCurrentRecord()
     {
-       
-       
-       return  getDataBlock().getTopRecord(this);
-        
+        return _dataHandler.getCurrentRecord();
     }
-
-   
+ 
+    /**
+     * Navigates to the next record and returns it
+     * 
+     * @return the next record or <code>null</code> if there are no more records
+     */
+    public EJReportDataRecord getNextRecord()
+    {
+        return _dataHandler.getNextRecord();
+    }
 
     /**
      * Creates a new record containing all items defined within the blocks item
@@ -234,9 +187,7 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord createRecord()
     {
-        EJReportDataRecord record = new EJReportDataRecord(_reportController, getBlock());
-        _dataBlock.addRecord(record);
-        return record;
+        return new EJReportDataRecord(_reportController, getBlock());
     }
 
     /**
@@ -267,100 +218,7 @@ public class EJReportBlockController implements Serializable
      */
     public void executeQuery(EJReportQueryCriteria queryCriteria)
     {
-        if (getBlockService() == null)
-        {
-            getReportController().getFrameworkManager().handleMessage(
-                    new EJReportMessage(EJReportMessageLevel.MESSAGE, "Cannot perform query operation when no data service has been defined. Block: "
-                            + getProperties().getName()));
-            return;
-        }
-
-        if (queryCriteria == null)
-        {
-            throw new EJReportRuntimeException(new EJReportMessage("The query criteria passed to performQueryOperation is null."));
-        }
-
-        // Sets the query criteria for use within paging etc
-        setQueryCriteria(queryCriteria);
-
-        EJManagedReportFrameworkConnection connection = getFrameworkManager().getConnection();
-        // Clear the block so that it is ready for the newly queried records
-        try
-        {
-            getReportController().getActionController().preBlockQuery(getReportController().getEJReport(), getQueryCriteria());
-
-            // Clear the block so that it is ready for the newly queried
-            // records
-            clearBlock();
-
-            try
-            {
-
-                if (_blockProperties.getBlockService() == null)
-                {
-                    return;
-                }
-
-                _queryCriteria.setQueryAllRows(true);
-
-                logger.trace("Calling execute query on service: {}", _blockProperties.getBlockService().getClass().getName());
-                List<Object> entities = (List<Object>) _blockProperties.getBlockService().executeQuery(getReportController().getEJReport(), _queryCriteria);
-                logger.trace("Execute query on block service completed. {} records retrieved", (entities == null ? 0 : entities.size()));
-
-                if (entities != null)
-                {
-
-                    
-
-                    _dataBlock.addRecords(entities);
-                    logger.trace("Completed post queries, clearing post query cache");
-
-                }
-            }
-            catch (Exception e)
-            {
-                throw new EJReportRuntimeException(e);
-            }
-            finally
-            {
-                connection.close();
-            }
-
-        }
-        finally
-        {
-            connection.close();
-        }
-    }
-
-    /**
-     * Adds a record to this controllers underlying list of records
-     * <p>
-     * This method should be called for each record the data access processor
-     * retrieves. The reports action processors post-query method will be called
-     * then the record will be added to the blocks underlying list of records
-     * 
-     * @param record
-     */
-    protected void addRecord(EJReportDataRecord record)
-    {
-        if (record != null)
-        {
-            _dataBlock.addRecord(record);
-
-        }
-    }
-
-    /**
-     * Returns the total number of records held within this controllers
-     * underlying data block
-     * 
-     * @return The total number of records within this controllers underlying
-     *         data block
-     */
-    public int getBlockRecordCount()
-    {
-        return _dataBlock.getBlockRecordCount();
+        _dataHandler.executeQuery(queryCriteria);
     }
 
     /**
@@ -386,19 +244,11 @@ public class EJReportBlockController implements Serializable
      */
     public void clearBlock()
     {
-        logger.trace("START clearBlock");
-
-        _dataBlock.clearBlock();
-        index = -1;
-
-        logger.trace("END clearBlock");
+        _dataHandler.clearBlock();
     }
 
- 
     public void reset()
     {
-        index = -1;
-        
+        _dataHandler.reset();
     }
-
 }

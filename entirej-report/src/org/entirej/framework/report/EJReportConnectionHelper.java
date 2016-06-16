@@ -15,12 +15,24 @@ public class EJReportConnectionHelper
 
     }
 
-    public static EJManagedReportFrameworkConnection getConnection()
+    public static EJReportManagedFrameworkConnection getConnection()
     {
         if (ref != null && ref.get() != null)
             return ref.get().getConnection();
 
-        throw new EJReportRuntimeException("EJReportFrameworkManager not initialized ");
+        throw new EJReportRuntimeException("EJFrameworkManager not initialized ");
+    }
+    
+    public static EJReportManagedFrameworkConnection newConnection()
+    {
+        if (ref != null && ref.get() != null)
+        {
+            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get());
+            return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
+        }
+           
+        
+        throw new EJReportRuntimeException("EJFrameworkManager not initialized ");
     }
 
 }

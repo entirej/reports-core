@@ -116,7 +116,7 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
      * 
      * @return The report connection
      */
-    public EJManagedReportFrameworkConnection getConnection()
+    public EJReportManagedFrameworkConnection getConnection()
     {
         return getInternalReport().getFrameworkManager().getConnection();
     }

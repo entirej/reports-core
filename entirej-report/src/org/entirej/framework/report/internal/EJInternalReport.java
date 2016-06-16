@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 
-import org.entirej.framework.report.EJManagedReportFrameworkConnection;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportMessage;
 import org.entirej.framework.report.EJReportMessageFactory;
@@ -62,7 +62,7 @@ public class EJInternalReport implements Serializable
      * 
      * @return The connection
      */
-    public EJManagedReportFrameworkConnection getFrameworkConnection()
+    public EJReportManagedFrameworkConnection getFrameworkConnection()
     {
         return getFrameworkManager().getConnection();
     }
@@ -286,7 +286,7 @@ public class EJInternalReport implements Serializable
      */
     public String translateText(String textKey)
     {
-        EJManagedReportFrameworkConnection localConnection = getFrameworkManager().getConnection();
+        EJReportManagedFrameworkConnection localConnection = getFrameworkManager().getConnection();
         try
         {
             return _reportController.getFrameworkManager().getTranslationController().translateText(textKey);
@@ -310,7 +310,7 @@ public class EJInternalReport implements Serializable
      */
     public String translateText(String textKey, Locale locale)
     {
-        EJManagedReportFrameworkConnection localConnection = null;
+        EJReportManagedFrameworkConnection localConnection = null;
         try
         {
             localConnection = getFrameworkManager().getConnection();
@@ -347,7 +347,7 @@ public class EJInternalReport implements Serializable
      */
     public String translateMessageText(String textKey)
     {
-        EJManagedReportFrameworkConnection localConnection = null;
+        EJReportManagedFrameworkConnection localConnection = null;
         try
         {
             localConnection = getFrameworkManager().getConnection();
@@ -375,7 +375,7 @@ public class EJInternalReport implements Serializable
      */
     public String translateMessageText(String textKey, Locale locale)
     {
-        EJManagedReportFrameworkConnection localConnection = null;
+        EJReportManagedFrameworkConnection localConnection = null;
         try
         {
             localConnection = getFrameworkManager().getConnection();
