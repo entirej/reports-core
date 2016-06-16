@@ -43,8 +43,8 @@ public class EJReportStatementExecutor implements Serializable
 {
     final Logger logger = LoggerFactory.getLogger(EJReportStatementExecutor.class);
 
-    
-    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, EJReportFrameworkConnection con, String selectStatement, EJReportQueryCriteria queryCriteria)
+    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, EJReportFrameworkConnection con, String selectStatement,
+            EJReportQueryCriteria queryCriteria)
     {
         if (con == null)
         {
@@ -65,7 +65,7 @@ public class EJReportStatementExecutor implements Serializable
             logger.info("Executing Query");
             pstmt.setFetchSize(100);
             ResultSet rset = pstmt.executeQuery();
-            
+
             return new EJReportResultSet<T>(con, rset, pojoType);
 
         }
@@ -75,30 +75,28 @@ public class EJReportStatementExecutor implements Serializable
             e.printStackTrace();
             try
             {
-               pstmt.close();
+                pstmt.close();
             }
             catch (SQLException e2)
             {
             }
-            con.rollback();
             throw new EJReportRuntimeException("Error executing block query", e);
         }
         finally
         {
-//            try
-//            {
-//                if (pstmt != null)
-//                {
-//                    pstmt.close();
-//                }
-//            }
-//            catch (SQLException e)
-//            {
-//            }
-//           // con.close();
+            try
+            {
+                if (pstmt != null)
+                {
+                    pstmt.close();
+                }
+            }
+            catch (SQLException e)
+            {
+            }
         }
     }
-    
+
     public <T> List<T> executeQuery(Class<T> pojoType, EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria)
     {
         return executeQuery(pojoType, report.getConnection(), selectStatement, queryCriteria);
@@ -150,8 +148,7 @@ public class EJReportStatementExecutor implements Serializable
 
             // I can only add paging to a select if it has been set within the
             // query criteria. If not query criteria has been set, then no
-            // paging
-            // is possible
+            // paging is possible
             if (queryCriteria != null)
             {
                 pstmt = ((Connection) conObj).prepareStatement((selectStatement));
@@ -210,7 +207,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e2)
             {
             }
-            fwkConnection.rollback();
             throw new EJReportRuntimeException("Error executing block query", e);
         }
         finally
@@ -225,7 +221,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e)
             {
             }
-            fwkConnection.close();
         }
     }
 
@@ -296,8 +291,7 @@ public class EJReportStatementExecutor implements Serializable
             }
             // I can only add paging to a select if it has been set within the
             // query criteria. If not query criteria has been set, then no
-            // paging
-            // is possible
+            // paging is possible
             if (queryCriteria != null)
             {
                 pstmt = ((Connection) conObj).prepareStatement((selectStatement));
@@ -347,7 +341,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e2)
             {
             }
-            fwkConnection.rollback();
             throw new EJReportRuntimeException("Error executing query", e);
         }
         finally
@@ -362,7 +355,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e)
             {
             }
-            fwkConnection.close();
         }
     }
 
