@@ -82,19 +82,6 @@ public class EJReportStatementExecutor implements Serializable
             }
             throw new EJReportRuntimeException("Error executing block query", e);
         }
-        finally
-        {
-            try
-            {
-                if (pstmt != null)
-                {
-                    pstmt.close();
-                }
-            }
-            catch (SQLException e)
-            {
-            }
-        }
     }
 
     public <T> List<T> executeQuery(Class<T> pojoType, EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria)
