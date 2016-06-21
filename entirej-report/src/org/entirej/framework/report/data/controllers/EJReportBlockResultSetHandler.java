@@ -159,4 +159,11 @@ public class EJReportBlockResultSetHandler implements EJReportBlockDataHandler
             _resultSet.close();
         }
     }
+
+    @Override
+    public void addRecord(EJReportDataRecord ejReportDataRecord)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

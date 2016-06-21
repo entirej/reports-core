@@ -218,4 +218,12 @@ public class EJReportBlockEntitiesHandler implements EJReportBlockDataHandler
         _count = 0;
     }
 
+    @Override
+    public void addRecord(EJReportDataRecord ejReportDataRecord)
+    {
+        _dataBlock.addRecord(ejReportDataRecord);
+        _count++;
+        
+    }
+
 }

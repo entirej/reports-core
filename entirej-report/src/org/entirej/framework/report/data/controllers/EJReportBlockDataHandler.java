@@ -71,5 +71,7 @@ public interface EJReportBlockDataHandler
     
     
     public void reset();
+
+    public void addRecord(EJReportDataRecord ejReportDataRecord);
     
 }

@@ -187,7 +187,9 @@ public class EJReportBlockController implements Serializable
      */
     public EJReportDataRecord createRecord()
     {
-        return new EJReportDataRecord(_reportController, getBlock());
+        EJReportDataRecord ejReportDataRecord = new EJReportDataRecord(_reportController, getBlock());
+        _dataHandler.addRecord(ejReportDataRecord); 
+        return ejReportDataRecord;
     }
 
     /**
