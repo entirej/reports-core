@@ -941,25 +941,35 @@ public class EJReportJasperReportBuilder
 
             currentX += width;
         }
-        
+       
+        JRDesignBand subdetail = new JRDesignBand();
+        subdetail.setSplitType(SplitTypeEnum.PREVENT);
+        int subheight = 0;
+        detailSection.addBand(subdetail);
         List<EJReportBlock> allSubBlocks = screen.getSubBlocks();
         for (EJReportBlock subBlock : allSubBlocks)
         {
             JRDesignSubreport subreport = createSubReport(block.getReport(), subBlock, false);
             if (subreport == null)
                 continue;
-            JRDesignBand subdetail = new JRDesignBand();
-            subdetail.setSplitType(SplitTypeEnum.PREVENT);
-            detailSection.addBand(subdetail);
             
             EJReportScreen sub = subBlock.getScreen();
-            subreport.setX(0);
-            subreport.setY(0);
+            subreport.setX(sub.getXPos());
+            subreport.setY(sub.getYPos());
             subreport.setWidth(sub.getWidth());
             subreport.setHeight(sub.getHeight());
-            subdetail.setHeight(subreport.getHeight());
             subdetail.addElement(subreport);
+            
+       
+            
+                
+                if (subheight < (sub.getYPos() + sub.getHeight()))
+                {
+                    subheight=(sub.getYPos() + sub.getHeight());
+                }
+            
         }
+        subdetail.setHeight(subheight);
 
     }
 
