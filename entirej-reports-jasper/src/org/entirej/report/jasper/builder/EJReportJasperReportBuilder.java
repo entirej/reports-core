@@ -696,6 +696,10 @@ public class EJReportJasperReportBuilder
             footer.setHeight(footerHeight);
             design.setLastPageFooter(footer);
         }
+        
+        
+        
+        
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         detail = new JRDesignBand();
         detail.setSplitType(SplitTypeEnum.PREVENT);
@@ -936,6 +940,25 @@ public class EJReportJasperReportBuilder
             }
 
             currentX += width;
+        }
+        
+        List<EJReportBlock> allSubBlocks = screen.getSubBlocks();
+        for (EJReportBlock subBlock : allSubBlocks)
+        {
+            JRDesignSubreport subreport = createSubReport(block.getReport(), subBlock, false);
+            if (subreport == null)
+                continue;
+            JRDesignBand subdetail = new JRDesignBand();
+            subdetail.setSplitType(SplitTypeEnum.PREVENT);
+            detailSection.addBand(subdetail);
+            
+            EJReportScreen sub = subBlock.getScreen();
+            subreport.setX(0);
+            subreport.setY(0);
+            subreport.setWidth(sub.getWidth());
+            subreport.setHeight(sub.getHeight());
+            subdetail.setHeight(subreport.getHeight());
+            subdetail.addElement(subreport);
         }
 
     }
