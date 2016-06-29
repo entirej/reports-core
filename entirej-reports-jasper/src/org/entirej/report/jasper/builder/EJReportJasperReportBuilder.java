@@ -182,11 +182,11 @@ public class EJReportJasperReportBuilder
                 subreport.setWidth(screen.getWidth());
                 subreport.setHeight(screen.getHeight());
                 subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
-                if(header==null)
+                if (header == null)
                 {
                     throw new EJReportRuntimeException("Header section not defined in report");
                 }
-                
+
                 header.addElement(subreport);
             }
             for (EJReportBlock block : report.getFooterBlocks())
@@ -201,8 +201,8 @@ public class EJReportJasperReportBuilder
                 subreport.setWidth(screen.getWidth());
                 subreport.setHeight(screen.getHeight());
                 subreport.setStretchType(StretchTypeEnum.NO_STRETCH);
-                
-                if(footer==null)
+
+                if (footer == null)
                 {
                     throw new EJReportRuntimeException("Footer section not defined in report");
                 }
@@ -227,6 +227,7 @@ public class EJReportJasperReportBuilder
 
                 JRDesignBand detail = new JRDesignBand();
                 detail.setSplitType(SplitTypeEnum.IMMEDIATE);
+
                 groupHeaderSection.addBand(detail);
                 design.addGroup(group);
 
@@ -245,7 +246,7 @@ public class EJReportJasperReportBuilder
                         text.setWidth(block.getScreen().getWidth());
 
                         text.getPropertiesMap().setProperty(JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW, "true");
-                       
+
                         text.setX(0);
                         text.setY(0);
 
@@ -336,8 +337,8 @@ public class EJReportJasperReportBuilder
 
             JRDesignExpression expressionRPT = new JRDesignExpression();
 
-            expressionRPT.setText(String.format(!fixed ? "$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")" : "$P{EJRJ_BLOCK_RPT}.getBlockReportFixed(\"%s\")",
-                    block.getName()));
+            expressionRPT.setText(
+                    String.format(!fixed ? "$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")" : "$P{EJRJ_BLOCK_RPT}.getBlockReportFixed(\"%s\")", block.getName()));
             subreport.setExpression(expressionRPT);
 
             for (EJApplicationLevelParameter parameter : report.getApplicationLevelParameters())
@@ -371,7 +372,6 @@ public class EJReportJasperReportBuilder
             expression.setText("$P{EJRJ_BLOCK_RPT}");
             subreportParameter.setExpression(expression);
             subreport.addParameter(subreportParameter);
-            subreport.setRemoveLineWhenBlank(true);
 
             subreport.setPrintWhenExpression(createBlockVisibleExpression(block.getName()));
             return subreport;
@@ -387,18 +387,18 @@ public class EJReportJasperReportBuilder
         Collection<EJApplicationLevelParameter> runtimeLevelParameters = report.getApplicationLevelParameters();
 
         List<String> addedParams = new ArrayList<String>();
-        
+
         for (EJApplicationLevelParameter parameter : runtimeLevelParameters)
         {
-            if(addedParams.contains(parameter.getName()) || design.getParametersMap().containsKey(parameter.getName()))
+            if (addedParams.contains(parameter.getName()) || design.getParametersMap().containsKey(parameter.getName()))
             {
                 continue;
             }
-            
+
             JRDesignParameter designParameter = new JRDesignParameter();
             designParameter.setName(parameter.getName());
             designParameter.setValueClass(parameter.getDataType());
-            
+
             design.addParameter(designParameter);
             addedParams.add(parameter.getName());
         }
@@ -407,7 +407,7 @@ public class EJReportJasperReportBuilder
         Collection<EJReportParameter> allParameters = parameterList.getAllParameters();
         for (EJReportParameter parameter : allParameters)
         {
-            if(addedParams.contains(parameter.getName()) || design.getParametersMap().containsKey(parameter.getName()))
+            if (addedParams.contains(parameter.getName()) || design.getParametersMap().containsKey(parameter.getName()))
             {
                 continue;
             }
@@ -696,13 +696,10 @@ public class EJReportJasperReportBuilder
             footer.setHeight(footerHeight);
             design.setLastPageFooter(footer);
         }
-        
-        
-        
-        
+
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         detail = new JRDesignBand();
-        detail.setSplitType(SplitTypeEnum.PREVENT);
+        // detail.setSplitType(SplitTypeEnum.PREVENT);
         detailSection.addBand(detail);
         detail.setHeight(detailHeight);
 
@@ -713,15 +710,13 @@ public class EJReportJasperReportBuilder
             if (!col.isVisible())
                 continue;
             final int width = col.getWidth();
-            boolean screenColumnSectionH = canShowBlockHeader
-                    && block.getReport().getActionController()
-                            .canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.HEADER);
+            boolean screenColumnSectionH = canShowBlockHeader && block.getReport().getActionController().canShowScreenColumnSection(block.getReport(),
+                    block.getName(), col.getName(), EJReportScreenSection.HEADER);
 
-            boolean screenColumnSectionD = block.getReport().getActionController()
-                    .canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.DETAIL);
-            boolean screenColumnSectionF = canShowBlockFooter
-                    && block.getReport().getActionController()
-                            .canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(), EJReportScreenSection.FOOTER);
+            boolean screenColumnSectionD = block.getReport().getActionController().canShowScreenColumnSection(block.getReport(), block.getName(), col.getName(),
+                    EJReportScreenSection.DETAIL);
+            boolean screenColumnSectionF = canShowBlockFooter && block.getReport().getActionController().canShowScreenColumnSection(block.getReport(),
+                    block.getName(), col.getName(), EJReportScreenSection.FOOTER);
 
             if (canShowBlockHeader && col.showHeader())
             {
@@ -941,9 +936,9 @@ public class EJReportJasperReportBuilder
 
             currentX += width;
         }
-       
+
         JRDesignBand subdetail = new JRDesignBand();
-        subdetail.setSplitType(SplitTypeEnum.PREVENT);
+        // subdetail.setSplitType(SplitTypeEnum.PREVENT);
         int subheight = 0;
         detailSection.addBand(subdetail);
         List<EJReportBlock> allSubBlocks = screen.getSubBlocks();
@@ -952,32 +947,27 @@ public class EJReportJasperReportBuilder
             JRDesignSubreport subreport = createSubReport(block.getReport(), subBlock, false);
             if (subreport == null)
                 continue;
-            
+
             EJReportScreen sub = subBlock.getScreen();
             subreport.setX(sub.getXPos());
             subreport.setY(sub.getYPos());
             subreport.setWidth(sub.getWidth());
             subreport.setHeight(sub.getHeight());
             subdetail.addElement(subreport);
-            
-       
-            
-                
-                if (subheight < (sub.getYPos() + sub.getHeight()))
-                {
-                    subheight=(sub.getYPos() + sub.getHeight());
-                }
-            
+
+            if (subheight < (sub.getYPos() + sub.getHeight()))
+            {
+                subheight = (sub.getYPos() + sub.getHeight());
+            }
+
         }
         subdetail.setHeight(subheight);
-        design.setPageHeight(headerHeight+detailHeight+subheight+footerHeight);
 
     }
 
     private void processItemStyle(EJReportScreenItem item, JRDesignElement element, EJReportScreenSection section) throws JRException
     {
 
-        
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
         EJReportVisualAttributeProperties va = item.getVisualAttributes();
         if (va != null)
@@ -992,20 +982,18 @@ public class EJReportJasperReportBuilder
             if (!expression.getText().isEmpty())
             {
                 String pattern = textField.getPattern();
-                if(pattern==null|| pattern.isEmpty())
+                if (pattern == null || pattern.isEmpty())
                 {
-                    pattern = style.getPattern(); 
+                    pattern = style.getPattern();
                 }
-                textField.setExpression(createVABaseValueExpression(expression, item.getName(),pattern, section));
-                
+                textField.setExpression(createVABaseValueExpression(expression, item.getName(), pattern, section));
+
                 textField.setPattern("");
-                textField.setPatternExpression(createVABaseValuePatternExpression(expression, item.getName(),pattern ,section));
-                
-                
+                textField.setPatternExpression(createVABaseValuePatternExpression(expression, item.getName(), pattern, section));
+
             }
         }
 
-        
         createScreenItemBaseStyle(style, item.getName(), section);
         element.setPrintWhenExpression(createItemVisibleExpression(item.getName(), section));
 
@@ -1030,21 +1018,19 @@ public class EJReportJasperReportBuilder
 
         Collection<EJCoreReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
-       
+
         for (EJReportVisualAttributeProperties properties : visualAttributes)
         {
-            
-            if (properties.isUsedAsDynamicVA() )
+
+            if (properties.isUsedAsDynamicVA())
             {
                 JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
                 conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
                 vaToStyle(properties, conditionalStyle);
-               
 
                 style.addConditionalStyle(conditionalStyle);
             }
         }
-       
 
         return style;
     }
@@ -1067,7 +1053,8 @@ public class EJReportJasperReportBuilder
         return null;
     }
 
-    private void buildOddEvenStyle(EJReportScreen screen, EJReportVisualAttributeProperties vaOdd, EJReportVisualAttributeProperties vaEven, JRDesignStyle style)
+    private void buildOddEvenStyle(EJReportScreen screen, EJReportVisualAttributeProperties vaOdd, EJReportVisualAttributeProperties vaEven,
+            JRDesignStyle style)
     {
         if (vaOdd != null)
         {
@@ -1262,7 +1249,7 @@ public class EJReportJasperReportBuilder
 
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
         JRDesignBand detail = new JRDesignBand();
-        detail.setSplitType(SplitTypeEnum.PREVENT);
+        // detail.setSplitType(SplitTypeEnum.PREVENT);
 
         EJReportProperties reportProperties = block.getReport().getProperties();
         design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
@@ -1358,7 +1345,6 @@ public class EJReportJasperReportBuilder
 
         detail.setHeight(height);
         design.setPageWidth(width);
-        design.setPageHeight(height);
         design.setColumnWidth(width);
     }
 
@@ -1367,7 +1353,10 @@ public class EJReportJasperReportBuilder
         EJReportScreen screen = block.getScreen();
 
         JRDesignBand detail = new JRDesignBand();
-        detail.setSplitType(SplitTypeEnum.PREVENT);
+        // detail.setSplitType(SplitTypeEnum.PREVENT);
+
+        EJReportProperties reportProperties = block.getReport().getProperties();
+        design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
 
         int width = screen.getWidth();
         int height = screen.getHeight();
@@ -1460,7 +1449,6 @@ public class EJReportJasperReportBuilder
                         return null;
                     }
                 }, chartType);
-                
 
                 JRDesignXyDataset data = new JRDesignXyDataset(null);
 
@@ -1558,7 +1546,7 @@ public class EJReportJasperReportBuilder
                 break;
         }
 
-        //chart.setTheme("ej");
+        // chart.setTheme("ej");
         chart.setX(0);
         chart.setY(0);
         chart.setWidth(width);
@@ -1566,18 +1554,14 @@ public class EJReportJasperReportBuilder
         chart.setEvaluationTime(EvaluationTimeEnum.REPORT);
         detail.addElement(chart);
         detail.setHeight(height);
-        
+
         chart.setCustomizerClass(EJReportChartCustomizer.class.getName());
-        
+
         design.setPageWidth(width);
         design.setColumnWidth(width);
         design.setTitle(detail);
-        design.setPageHeight(height);
     }
 
-      
-    
-    
     private byte getChartType(EJReportScreenChart screenChart)
     {
 
@@ -1714,7 +1698,7 @@ public class EJReportJasperReportBuilder
             {
                 case CURRENCY:
                     DecimalFormat dc = (java.text.DecimalFormat) java.text.NumberFormat.getCurrencyInstance(defaultLocale);
-                    if(va.getMaximumDecimalDigits()>-1)
+                    if (va.getMaximumDecimalDigits() > -1)
                     {
                         dc.setMaximumFractionDigits(va.getMaximumDecimalDigits());
                     }
@@ -1722,7 +1706,7 @@ public class EJReportJasperReportBuilder
                     break;
                 case PERCENT:
                     DecimalFormat dp = (java.text.DecimalFormat) java.text.NumberFormat.getPercentInstance(defaultLocale);
-                    if(va.getMaximumDecimalDigits()>-1)
+                    if (va.getMaximumDecimalDigits() > -1)
                     {
                         dp.setMaximumFractionDigits(va.getMaximumDecimalDigits());
                     }
@@ -1730,7 +1714,7 @@ public class EJReportJasperReportBuilder
                     break;
                 case INTEGER:
                     DecimalFormat di = (java.text.DecimalFormat) java.text.NumberFormat.getIntegerInstance(defaultLocale);
-                    if(va.getMaximumDecimalDigits()>-1)
+                    if (va.getMaximumDecimalDigits() > -1)
                     {
                         di.setMaximumFractionDigits(va.getMaximumDecimalDigits());
                     }
@@ -1738,7 +1722,7 @@ public class EJReportJasperReportBuilder
                     break;
                 case NUMBER:
                     DecimalFormat dn = (java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(defaultLocale);
-                    if(va.getMaximumDecimalDigits()>-1)
+                    if (va.getMaximumDecimalDigits() > -1)
                     {
                         dn.setMaximumFractionDigits(va.getMaximumDecimalDigits());
                     }
@@ -1832,8 +1816,6 @@ public class EJReportJasperReportBuilder
                 break;
         }
     }
-
-   
 
     private void crateValueRefField(EJReportScreenItem item) throws JRException
     {
@@ -2065,7 +2047,7 @@ public class EJReportJasperReportBuilder
                         text.setPattern(dateFormat.toPattern());
                     }
                 }
-               
+
             }
                 break;
             case LABEL:
@@ -2160,7 +2142,7 @@ public class EJReportJasperReportBuilder
                 break;
         }
         element.setStyle(itemStyle);
-        
+
         return element;
     }
 
@@ -2302,15 +2284,17 @@ public class EJReportJasperReportBuilder
     {
         JRDesignExpression expression = new JRDesignExpression();
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),defaultPattren==null ? "": defaultPattren));
+        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
+                defaultPattren == null ? "" : defaultPattren));
         return expression;
     }
+
     JRDesignExpression createVABaseValuePatternExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)
     {
         JRDesignExpression expression = new JRDesignExpression();
-        
+
         expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValuePattern(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
-                defaultPattren==null ? "": defaultPattren));
+                defaultPattren == null ? "" : defaultPattren));
         return expression;
     }
 
@@ -2356,9 +2340,9 @@ public class EJReportJasperReportBuilder
                 {
                     deafultImage = deafultImage.substring(1);
                 }
-                expression.setText(String.format(
-                        " %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(\"%s\")", text, text,
-                        deafultImage));
+                expression.setText(
+                        String.format(" %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(\"%s\")", text,
+                                text, deafultImage));
 
             }
             else
@@ -2384,9 +2368,5 @@ public class EJReportJasperReportBuilder
         }
 
     }
-    
-    
-   
 
-   
 }
