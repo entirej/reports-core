@@ -227,7 +227,6 @@ public class EJReportJasperReportBuilder
 
                 JRDesignBand detail = new JRDesignBand();
                 detail.setSplitType(SplitTypeEnum.IMMEDIATE);
-
                 groupHeaderSection.addBand(detail);
                 design.addGroup(group);
 
@@ -372,6 +371,7 @@ public class EJReportJasperReportBuilder
             expression.setText("$P{EJRJ_BLOCK_RPT}");
             subreportParameter.setExpression(expression);
             subreport.addParameter(subreportParameter);
+            subreport.setRemoveLineWhenBlank(true);
 
             subreport.setPrintWhenExpression(createBlockVisibleExpression(block.getName()));
             return subreport;
@@ -970,6 +970,7 @@ public class EJReportJasperReportBuilder
             
         }
         subdetail.setHeight(subheight);
+        design.setPageHeight(headerHeight+detailHeight+subheight+footerHeight);
 
     }
 
@@ -1357,6 +1358,7 @@ public class EJReportJasperReportBuilder
 
         detail.setHeight(height);
         design.setPageWidth(width);
+        design.setPageHeight(height);
         design.setColumnWidth(width);
     }
 
@@ -1366,9 +1368,6 @@ public class EJReportJasperReportBuilder
 
         JRDesignBand detail = new JRDesignBand();
         detail.setSplitType(SplitTypeEnum.PREVENT);
-
-        EJReportProperties reportProperties = block.getReport().getProperties();
-        design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
 
         int width = screen.getWidth();
         int height = screen.getHeight();
@@ -1573,6 +1572,7 @@ public class EJReportJasperReportBuilder
         design.setPageWidth(width);
         design.setColumnWidth(width);
         design.setTitle(detail);
+        design.setPageHeight(height);
     }
 
       
