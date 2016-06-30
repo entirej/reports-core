@@ -28,6 +28,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignBreak;
 import net.sf.jasperreports.engine.design.JRDesignChart;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
@@ -251,7 +252,15 @@ public class EJReportJasperReportBuilder
                         text.setY(0);
 
                         newPageBand.addElement(text);
+                      
                         text.setMode(ModeEnum.TRANSPARENT);
+                        
+                        JRDesignBreak designBreak = new JRDesignBreak();
+                        designBreak.setX(0);
+                        designBreak.setY(0);
+                        designBreak.setHeight(1);
+                        designBreak.setMode(ModeEnum.TRANSPARENT);
+                        newPageBand.addElement(designBreak);
                         usePageBrake = false;
                     }
                     JRDesignSubreport subreport = createSubReport(report, block, false);
