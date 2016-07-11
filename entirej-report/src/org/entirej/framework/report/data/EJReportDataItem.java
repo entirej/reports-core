@@ -82,7 +82,7 @@ public class EJReportDataItem implements Serializable
      */
     public Object getValue()
     {
-        if(_initValue)
+        if(!_initValue)
         {
             EJReportDefaultServicePojoHelper.copyValuesFromServicePojo(this, _pojo);
             _initValue = true; 
