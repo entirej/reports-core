@@ -38,10 +38,11 @@ public class EJReportDataItem implements Serializable
     private EJReportController         _reportController;
     private EJCoreReportItemProperties _itemProperties;
 
-    EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties,Object _pojo)
+    EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties,Object pojo)
     {
         _reportController = reportController;
         _itemProperties = itemProperties;
+        _pojo = pojo;
 
     }
 
