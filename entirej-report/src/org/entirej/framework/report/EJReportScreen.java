@@ -16,11 +16,14 @@ public class EJReportScreen
 {
     private EJReportBlock                _block;
     private EJCoreReportScreenProperties _properties;
+    
+    private EJReportScreenChart reportScreenChart;
 
     public EJReportScreen(EJReportBlock block, EJCoreReportScreenProperties properties)
     {
         _block = block;
         _properties = properties;
+        reportScreenChart = new EJReportScreenChart(properties.getChartProperties());
     }
 
     public String getBlockName()
@@ -28,6 +31,13 @@ public class EJReportScreen
         return _block.getName();
     }
 
+    
+    public EJReportScreenChart getReportScreenChart()
+    {
+        return reportScreenChart;
+    }
+    
+    
     /**
      * @return Returns the width of this screen
      */

@@ -32,6 +32,7 @@ import org.entirej.framework.report.data.EJReportDataItem;
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
+import org.entirej.framework.report.service.EJReportBlockService;
 
 public class EJReportDefaultServicePojoHelper implements Serializable
 {
@@ -42,6 +43,46 @@ public class EJReportDefaultServicePojoHelper implements Serializable
         _blockProperties = blockProperties;
     }
 
+    
+    
+    
+    public static Class<?> getPojoFromService(Class<?> service)
+    {
+
+        Type[] types = service.getGenericInterfaces();
+        
+        while (types.length==0 && !Object.class.equals(service.getSuperclass()))
+        {
+            service = service.getSuperclass();
+            types = service.getGenericInterfaces();
+            
+        }
+        if(types.length>0)
+        {
+            for (Type type : types)
+            {
+                if(type instanceof ParameterizedType && ((ParameterizedType)type).getRawType().equals(EJReportBlockService.class))
+                {
+                 
+                    
+                    Type[] sub =  ((ParameterizedType)type).getActualTypeArguments();
+
+                    if(sub.length>0)
+                    {
+                       return  (Class<?>) sub[0];
+                    }
+                   
+                }
+            }
+            
+        }
+            
+       
+        throw new EJReportRuntimeException("Pojo Is not correclty defind on impl of  Interface EJReportBlockService<>");
+
+    }
+    
+    
     /**
      * Creates a new service pojo object based on the generic interface of the
      * EJBlockService
@@ -59,12 +100,9 @@ public class EJReportDefaultServicePojoHelper implements Serializable
         Class<?> pojoClass = null;
         try
         {
-            Type[] types = _blockProperties.getBlockService().getClass().getGenericInterfaces();
-            ParameterizedType type = (ParameterizedType) types[0];
+           
 
-            Type typeArgument = type.getActualTypeArguments()[0];
-
-            pojoClass = (Class<?>) typeArgument;
+            pojoClass = getPojoFromService(_blockProperties.getBlockService().getClass());
 
             return pojoClass.newInstance();
         }
@@ -112,7 +150,7 @@ public class EJReportDefaultServicePojoHelper implements Serializable
      * @param sourcePojo
      *            The pojo containing the values
      */
-    public void copyValuesFromServicePojo(Collection<EJReportDataItem> items, Object servicePojo)
+    public static void copyValuesFromServicePojo(Collection<EJReportDataItem> items, Object servicePojo)
     {
         for (EJReportDataItem item : items)
         {
@@ -135,8 +173,31 @@ public class EJReportDefaultServicePojoHelper implements Serializable
             item.setValue(value);
         }
     }
+    
+    public static void copyValuesFromServicePojo(EJReportDataItem item, Object servicePojo)
+    {
+        
+            if (!item.getProperties().isBlockServiceItem())
+            {
+                return;
+            }
+            
+            // Now initialise the data items with the values from the entity if
+            // one exists
+            
+            // Capitalise the first letter
+            String firstLetter = item.getName().substring(0, 1);
+            firstLetter = firstLetter.toUpperCase();
+            StringBuilder builder = new StringBuilder();
+            String methodName = builder.append("get").append(firstLetter).append(item.getName().substring(1)).toString();
+            
+            // Get the items value from the method and set the data item
+            Object value = invokePojoMethod(servicePojo, methodName, null);
+            item.setValue(value);
+        
+    }
 
-    private Object invokePojoMethod(Object dataEntity, String methodName, Class<?> parameterType, Object... parameterValue)
+    private static Object invokePojoMethod(Object dataEntity, String methodName, Class<?> parameterType, Object... parameterValue)
     {
         if (dataEntity == null)
         {
@@ -177,10 +238,8 @@ public class EJReportDefaultServicePojoHelper implements Serializable
     {
         try
         {
-            Type[] types = baseEntityObject.getClass().getGenericInterfaces();
-            ParameterizedType type = (ParameterizedType) types[0];
-            Type typeArgument = type.getActualTypeArguments()[0];
-            Class<?> pojoClass = (Class<?>) typeArgument;
+            
+            Class<?> pojoClass  = getPojoFromService(baseEntityObject.getClass());
             return pojoClass.newInstance();
         }
         catch (InstantiationException e)
@@ -200,12 +259,9 @@ public class EJReportDefaultServicePojoHelper implements Serializable
             return;
         }
 
-        Type[] types = _blockProperties.getBlockService().getClass().getGenericInterfaces();
-        ParameterizedType type = (ParameterizedType) types[0];
+       
 
-        Type typeArgument = type.getActualTypeArguments()[0];
-
-        Class<?> pojoClass = (Class<?>) typeArgument;
+        Class<?> pojoClass  = getPojoFromService(_blockProperties.getBlockService().getClass());;
 
         for (EJCoreReportItemProperties item : _blockProperties.getAllItemProperties())
         {

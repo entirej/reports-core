@@ -20,17 +20,20 @@ public class EJCoreReportScreenProperties
 
     private final BlockGroup               subBlocks  = new BlockGroup("Sub Blocks");
 
-    private EJCoreReportSreenItemContainer _screenItemContainer;
-    private EJReportColumnContainer        _columnContainer;
+    private final EJCoreReportSreenItemContainer _screenItemContainer;
+    private final EJReportColumnContainer        _columnContainer;
 
     private String                         oddRowVAName;
     private String                         evenRowVAName;
+    
+    private final EJCoreReportChartProperties    chartProperties;
 
     public EJCoreReportScreenProperties(EJCoreReportBlockProperties blockProperties)
     {
         this.blockProperties = blockProperties;
         _screenItemContainer = new EJReportScreenItemContainer(blockProperties, this);
         _columnContainer = new EJReportColumnContainer(blockProperties);
+        chartProperties = new EJCoreReportChartProperties(this);
     }
 
     public EJCoreReportBlockProperties getBlockProperties()
@@ -177,5 +180,11 @@ public class EJCoreReportScreenProperties
     public EJReportVisualAttributeProperties getEvenVAProperties()
     {
         return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(evenRowVAName);
+    }
+    
+    
+    public EJCoreReportChartProperties getChartProperties()
+    {
+        return chartProperties;
     }
 }

@@ -50,18 +50,18 @@ public class EJReportController implements Serializable
     private EJReportData                             _dataReport;
     private HashMap<String, EJReportBlockController> _blockControllers = new HashMap<String, EJReportBlockController>();
 
-    EJReportController(EJReportFrameworkManager frameworkManager, EJReportData dataReport)
+    EJReportController(EJReportFrameworkManager frameworkManager, EJReportData reportData)
     {
         LOGGER.trace("START Constructor");
 
-        if (dataReport == null)
+        if (reportData == null)
         {
             throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(
                     EJReportFrameworkMessage.NULL_DATA_REPORT_PASSED_TO_REPORT_CONTROLLER));
         }
 
         _frameworkManager = frameworkManager;
-        _dataReport = dataReport;
+        _dataReport = reportData;
         createParameterList();
 
         // First create the actionProcessor instance as this is can be used
@@ -77,15 +77,7 @@ public class EJReportController implements Serializable
         LOGGER.trace("END Constructor");
     }
 
-    public void reportInitialised()
-    {
-        getActionController().beforeReport(new EJReport(_report));
-    }
 
-    public void reportCompleted()
-    {
-        getActionController().afterReport(new EJReport(_report));
-    }
 
     private void createParameterList()
     {

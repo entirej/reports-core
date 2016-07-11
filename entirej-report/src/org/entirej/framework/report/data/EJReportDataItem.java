@@ -24,6 +24,7 @@ import org.entirej.framework.report.EJReportMessageFactory;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.data.controllers.EJReportController;
 import org.entirej.framework.report.enumerations.EJReportFrameworkMessage;
+import org.entirej.framework.report.internal.EJReportDefaultServicePojoHelper;
 import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 
 /**
@@ -32,13 +33,16 @@ import org.entirej.framework.report.properties.EJCoreReportItemProperties;
 public class EJReportDataItem implements Serializable
 {
     private Object                     _value;
+    private boolean                    _initValue;
+    private Object                     _pojo;
     private EJReportController         _reportController;
     private EJCoreReportItemProperties _itemProperties;
 
-    EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties)
+    EJReportDataItem(EJReportController reportController, EJCoreReportItemProperties itemProperties,Object pojo)
     {
         _reportController = reportController;
         _itemProperties = itemProperties;
+        _pojo = pojo;
 
     }
 
@@ -79,6 +83,12 @@ public class EJReportDataItem implements Serializable
      */
     public Object getValue()
     {
+        if(!_initValue)
+        {
+            EJReportDefaultServicePojoHelper.copyValuesFromServicePojo(this, _pojo);
+            _initValue = true; 
+            
+        }
         return _value;
     }
 

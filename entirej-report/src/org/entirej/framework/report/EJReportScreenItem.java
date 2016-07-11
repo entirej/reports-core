@@ -185,43 +185,43 @@ public class EJReportScreenItem implements Serializable
     {
         if (type.isAssignableFrom(EJReportValueBaseScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(ValueBaseItem.class);
+            return _itemProps instanceof ValueBaseItem;
         }
         if (type.isAssignableFrom(EJReportNumberScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Number.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Number;
         }
         if (type.isAssignableFrom(EJReportTextScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Text.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Text;
         }
         if (type.isAssignableFrom(EJReportDateScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Date.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Date;
         }
         if (type.isAssignableFrom(EJReportAlignmentBaseScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.AlignmentBaseItem.class);
+            return _itemProps instanceof  EJCoreReportScreenItemProperties.AlignmentBaseItem;
         }
         if (type.isAssignableFrom(EJReportRotatableScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.RotatableItem.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.RotatableItem;
         }
         if (type.isAssignableFrom(EJReportLabelScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Label.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Label;
         }
         if (type.isAssignableFrom(EJReportImageScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Image.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Image;
         }
         if (type.isAssignableFrom(EJReportLineScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Line.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Line;
         }
         if (type.isAssignableFrom(EJReportRectangleScreenItem.class))
         {
-            return _itemProps.getClass().isAssignableFrom(EJCoreReportScreenItemProperties.Rectangle.class);
+            return _itemProps instanceof EJCoreReportScreenItemProperties.Rectangle;
         }
 
         return false;

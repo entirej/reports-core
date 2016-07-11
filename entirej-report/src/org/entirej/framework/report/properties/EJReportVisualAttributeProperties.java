@@ -1,6 +1,7 @@
 package org.entirej.framework.report.properties;
 
 import java.awt.Color;
+import java.util.Locale;
 
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
@@ -129,5 +130,10 @@ public interface EJReportVisualAttributeProperties
     public abstract EJReportVAPattern getLocalePattern();
 
     public abstract String getManualPattern();
+    
+    
+    public abstract int getMaximumDecimalDigits();
+
+    public abstract Object toPattern(String defaultPattern,Locale defaultLocale);
 
 }

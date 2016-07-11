@@ -52,6 +52,18 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
     {
         return getInternalReport().getProperties().getName();
     }
+    
+    public void setOutputName(String outputName)
+    {
+        getInternalReport().setOutputName(outputName);
+    }
+    
+    
+    public String getOutputName()
+    {
+        return  getInternalReport().getOutputName();
+    }
+    
 
     /**
      * This method should be called when to handle an exception in a
@@ -104,7 +116,7 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
      * 
      * @return The report connection
      */
-    public EJManagedReportFrameworkConnection getConnection()
+    public EJReportManagedFrameworkConnection getConnection()
     {
         return getInternalReport().getFrameworkManager().getConnection();
     }

@@ -21,7 +21,7 @@ package org.entirej.framework.report.data.controllers;
 import java.io.Serializable;
 import java.util.Locale;
 
-import org.entirej.framework.report.EJManagedReportFrameworkConnection;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportTranslatorHelper;
 import org.entirej.framework.report.interfaces.EJReportTranslator;
@@ -94,7 +94,7 @@ public class EJReportTranslationController implements Serializable
             return null;
         }
 
-        EJManagedReportFrameworkConnection connection = _frameworkManager.getConnection();
+        EJReportManagedFrameworkConnection connection = _frameworkManager.getConnection();
         try
         {
             if (_appTranslator != null)
@@ -161,7 +161,7 @@ public class EJReportTranslationController implements Serializable
             return null;
         }
 
-        EJManagedReportFrameworkConnection connection = _frameworkManager.getConnection();
+        EJReportManagedFrameworkConnection connection = _frameworkManager.getConnection();
         try
         {
             if (_appTranslator != null)
@@ -198,7 +198,7 @@ public class EJReportTranslationController implements Serializable
 
     public void translateReport(EJCoreReportProperties reportToTranslate, EJReportFrameworkManager fwManager)
     {
-        EJManagedReportFrameworkConnection connection = fwManager.getConnection();
+        EJReportManagedFrameworkConnection connection = fwManager.getConnection();
 
         try
         {

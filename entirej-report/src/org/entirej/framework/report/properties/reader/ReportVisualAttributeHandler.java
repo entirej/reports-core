@@ -30,20 +30,21 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
 {
     private EJCoreReportVisualAttributeProperties _vaProperties;
 
-    private static final String                   VISUAL_ATTRIBUTE  = "visualAttribute";
-    private static final String                   FONT_NAME         = "fontName";
-    private static final String                   FONT_SIZE         = "fontSize";
-    private static final String                   STYLE             = "style";
+    private static final String                   VISUAL_ATTRIBUTE      = "visualAttribute";
+    private static final String                   FONT_NAME             = "fontName";
+    private static final String                   FONT_SIZE             = "fontSize";
+    private static final String                   STYLE                 = "style";
 
-    private static final String                   USE_AS_DYNAMIC_VA = "useAsDynamicVA";
-    private static final String                   WEIGHT            = "weight";
-    private static final String                   FOREGROUND_COLOR  = "foregroundColor";
-    private static final String                   BACKGROUND_COLOR  = "backgroundColor";
-    private static final String                   MARKUP            = "markup";
-    private static final String                   HALIGNMENT        = "hAlignment";
-    private static final String                   VALIGNMENT        = "vAlignment";
-    private static final String                   MANUALFORMAT      = "manualFormat";
-    private static final String                   LOCALEFORMAT      = "localeFormat";
+    private static final String                   USE_AS_DYNAMIC_VA     = "useAsDynamicVA";
+    private static final String                   WEIGHT                = "weight";
+    private static final String                   FOREGROUND_COLOR      = "foregroundColor";
+    private static final String                   BACKGROUND_COLOR      = "backgroundColor";
+    private static final String                   MARKUP                = "markup";
+    private static final String                   HALIGNMENT            = "hAlignment";
+    private static final String                   VALIGNMENT            = "vAlignment";
+    private static final String                   MANUALFORMAT          = "manualFormat";
+    private static final String                   LOCALEFORMAT          = "localeFormat";
+    private static final String                   FORMAT_DECIMAL_DIGITS = "decimalDigits";
 
     @Override
     public void startLocalElement(String name, Attributes attributes) throws SAXException
@@ -120,6 +121,13 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
             if (value.length() > 0)
             {
                 _vaProperties.setLocalePattern(EJReportVAPattern.valueOf(value));
+            }
+        }
+        else if (name.equals(FORMAT_DECIMAL_DIGITS))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setMaximumDecimalDigits(Integer.valueOf(value));
             }
         }
         else if (name.equals(MANUALFORMAT))

@@ -31,19 +31,62 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportConnectionHelper;
 import org.entirej.framework.report.EJReportPojoHelper;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.interfaces.EJReportFrameworkConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("serial")
 public class EJReportStatementExecutor implements Serializable
 {
     final Logger logger = LoggerFactory.getLogger(EJReportStatementExecutor.class);
 
-    public <T> List<T> executeQuery(Class<T> pojoType, EJReport form, String selectStatement, EJReportQueryCriteria queryCriteria)
+    public <T> EJReportResultSet<T> executeResultSetQuery(Class<T> pojoType, EJReportFrameworkConnection con, String selectStatement,
+            EJReportQueryCriteria queryCriteria)
     {
-        return executeQuery(pojoType, form.getConnection(), selectStatement, queryCriteria);
+        if (con == null)
+        {
+            con = EJReportConnectionHelper.newConnection();
+        }
+        PreparedStatement pstmt = null;
+        try
+        {
+            Object conObj = con.getConnectionObject();
+            if (conObj == null || !(conObj instanceof Connection))
+            {
+                throw new EJReportRuntimeException(
+                        "The StatementExecutor requires the ConnectionFactory to return a JDBC Connection but another type was returned");
+            }
+
+            // Close is handled within the ResultSet
+            pstmt = ((Connection) conObj).prepareStatement(selectStatement);
+            logger.info("Executing Query");
+            pstmt.setFetchSize(100);
+            ResultSet rset = pstmt.executeQuery();
+
+            return new EJReportResultSet<T>(con, rset, pojoType);
+
+        }
+        catch (SQLException e)
+        {
+            logger.info("Error Executing Query", e);
+            e.printStackTrace();
+            try
+            {
+                pstmt.close();
+            }
+            catch (SQLException e2)
+            {
+            }
+            throw new EJReportRuntimeException("Error executing block query", e);
+        }
+    }
+
+    public <T> List<T> executeQuery(Class<T> pojoType, EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria)
+    {
+        return executeQuery(pojoType, report.getConnection(), selectStatement, queryCriteria);
     }
 
     public <T> List<T> executeQuery(Class<T> pojoType, EJReportFrameworkConnection fwkConnection, String selectStatement, EJReportQueryCriteria queryCriteria)
@@ -90,19 +133,16 @@ public class EJReportStatementExecutor implements Serializable
                         "The StatementExecutor requires the ConnectionFactory to return a JDBC Connection but another type was returned");
             }
 
-            Connection connection = (Connection) conObj;
-
             // I can only add paging to a select if it has been set within the
             // query criteria. If not query criteria has been set, then no
-            // paging
-            // is possible
+            // paging is possible
             if (queryCriteria != null)
             {
-                pstmt = connection.prepareStatement((selectStatement));
+                pstmt = ((Connection) conObj).prepareStatement((selectStatement));
             }
             else
             {
-                pstmt = connection.prepareStatement(selectStatement);
+                pstmt = ((Connection) conObj).prepareStatement(selectStatement);
             }
 
             int pos = 1;
@@ -154,7 +194,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e2)
             {
             }
-            fwkConnection.rollback();
             throw new EJReportRuntimeException("Error executing block query", e);
         }
         finally
@@ -169,27 +208,26 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e)
             {
             }
-            fwkConnection.close();
         }
     }
 
-    public List<EJReportSelectResult> executeQuery(EJReport form, String selectStatement, EJReportQueryCriteria queryCriteria,
+    public List<EJReportSelectResult> executeQuery(EJReport report, String selectStatement, EJReportQueryCriteria queryCriteria,
             EJReportStatementParameter... parameters)
     {
-        if (form == null)
+        if (report == null)
         {
-            throw new NullPointerException("Form passed to executeQuery cannot be null");
+            throw new NullPointerException("report passed to executeQuery cannot be null");
         }
-        return executeQuery(form.getConnection(), selectStatement, queryCriteria, parameters);
+        return executeQuery(report.getConnection(), selectStatement, queryCriteria, parameters);
     }
 
-    public List<EJReportSelectResult> executeQuery(EJReport form, String selectStatement, EJReportStatementParameter... parameters)
+    public List<EJReportSelectResult> executeQuery(EJReport report, String selectStatement, EJReportStatementParameter... parameters)
     {
-        if (form == null)
+        if (report == null)
         {
-            throw new NullPointerException("Form passed to executeQuery cannot be null");
+            throw new NullPointerException("report passed to executeQuery cannot be null");
         }
-        return executeQuery(form.getConnection(), selectStatement, null, parameters);
+        return executeQuery(report.getConnection(), selectStatement, null, parameters);
     }
 
     public List<EJReportSelectResult> executeQuery(EJReportFrameworkConnection fwkConnection, String selectStatement, EJReportStatementParameter... parameters)
@@ -217,7 +255,6 @@ public class EJReportStatementExecutor implements Serializable
                         "The StatementExecutor requires the ConnectionFactory to return a JDBC Connection but another type was returned");
             }
             ArrayList<EJReportStatementParameter> allParameters = new ArrayList<EJReportStatementParameter>(Arrays.asList(parameters));
-            Connection connection = (Connection) conObj;
             if (queryCriteria != null)
             {
                 StringBuffer stmt = new StringBuffer(selectStatement);
@@ -241,15 +278,14 @@ public class EJReportStatementExecutor implements Serializable
             }
             // I can only add paging to a select if it has been set within the
             // query criteria. If not query criteria has been set, then no
-            // paging
-            // is possible
+            // paging is possible
             if (queryCriteria != null)
             {
-                pstmt = connection.prepareStatement((selectStatement));
+                pstmt = ((Connection) conObj).prepareStatement((selectStatement));
             }
             else
             {
-                pstmt = connection.prepareStatement(selectStatement);
+                pstmt = ((Connection) conObj).prepareStatement(selectStatement);
             }
             int pos = 1;
 
@@ -292,7 +328,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e2)
             {
             }
-            fwkConnection.rollback();
             throw new EJReportRuntimeException("Error executing query", e);
         }
         finally
@@ -307,7 +342,6 @@ public class EJReportStatementExecutor implements Serializable
             catch (SQLException e)
             {
             }
-            fwkConnection.close();
         }
     }
 

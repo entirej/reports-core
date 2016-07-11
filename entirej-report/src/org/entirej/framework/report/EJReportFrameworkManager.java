@@ -61,16 +61,16 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
         initialiseCore(entireJPropertiesFileName);
     }
 
-    public synchronized EJManagedReportFrameworkConnection getConnection()
+    public synchronized EJReportManagedFrameworkConnection getConnection()
     {
         if (_connectionRetriever == null || _connectionRetriever.isClosed())
         {
             _connectionRetriever = new EJReportConnectionRetriever(this);
-            return new EJManagedReportFrameworkConnection(_connectionRetriever, true);
+            return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
         }
         else
         {
-            return new EJManagedReportFrameworkConnection(_connectionRetriever, false);
+            return new EJReportManagedFrameworkConnection(_connectionRetriever, false);
         }
 
     }

@@ -21,14 +21,12 @@ package org.entirej.framework.report.internal;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
-import org.entirej.framework.report.EJManagedReportFrameworkConnection;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.data.EJReportDataBlock;
 import org.entirej.framework.report.data.EJReportDataRecord;
 import org.entirej.framework.report.data.controllers.EJReportBlockController;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
@@ -158,7 +156,7 @@ public class EJInternalReportBlock implements Serializable
     {
         logger.trace("START executeQuery");
 
-        EJManagedReportFrameworkConnection connection = getFrameworkManager().getConnection();
+        EJReportManagedFrameworkConnection connection = getFrameworkManager().getConnection();
 
         try
         {
@@ -218,6 +216,22 @@ public class EJInternalReportBlock implements Serializable
     }
 
     /**
+     * Navigates to the next record and returns it
+     * 
+     * @return the next record or <code>null</code> if there are no more records
+     */
+    public EJReportDataRecord getNextRecord()
+    {
+        EJReportDataRecord nextRecord = _blockController.getNextRecord();
+        if (nextRecord != null && !nextRecord.isInitialised())
+        {
+            nextRecord.initialise();
+            _blockController.getReportController().getActionController()
+                    .postQuery(_blockController.getReportController().getEJReport(), new EJReportRecord(nextRecord));
+        }
+        return nextRecord;
+    }
+    /**
      * Returns a collection of item names contained within this block
      * 
      * @return The names of all the items contained within the given block
@@ -235,57 +249,6 @@ public class EJInternalReportBlock implements Serializable
     }
 
     /**
-     * Instructs the block to navigate to the next record
-     * <p>
-     * If the user is already on the last record, then nothing will happen
-     */
-    public boolean navigateToNextRecord()
-    {
-        logger.trace("START nextRecord");
-        try
-        {
-            return _blockController.navigateToNextRecord();
-        }
-        finally
-        {
-
-            logger.trace("END nextRecord");
-        }
-    }
-
-    /**
-     * Returns a collection if IDataRecords for this block Retrieving all
-     * records will force <B>EntireJ</B> to refresh the blocks records. If only
-     * the current record needs to be modified, use <code>setItemValue</code>
-     * 
-     * @return A collection of records or an empty collection if the block
-     *         doesn't exist
-     */
-    public Collection<EJReportDataRecord> getRecords()
-    {
-        EJReportDataBlock block = _blockController.getDataBlock();
-        if (block != null)
-        {
-            return block.getRecords();
-        }
-        else
-        {
-            return new ArrayList<EJReportDataRecord>();
-        }
-    }
-
-    /**
-     * Returns the amount of records this block currently holds
-     * 
-     * @return The amount of records within this block
-     */
-    public int getBlockRecordCount()
-    {
-        logger.trace("START getBlockRecordCount");
-        return _blockController.getDataBlock().getBlockRecordCount();
-    }
-
-    /**
      * Returns the properties of this block
      * 
      * @return This blocks properties
@@ -295,17 +258,10 @@ public class EJInternalReportBlock implements Serializable
         return _blockController.getProperties();
     }
 
-    public Collection<EJReportDataRecord> getBlockRecords()
+    public void reset()
     {
-        EJReportDataBlock block = _blockController.getDataBlock();
-        if (block != null)
-        {
-            return Collections.unmodifiableCollection(block.getRecords());
-        }
-        else
-        {
-            return Collections.unmodifiableCollection(new ArrayList<EJReportDataRecord>());
-        }
+        _blockController.reset();
+        
     }
 
 }
