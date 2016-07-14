@@ -1928,7 +1928,7 @@ public class EJReportJasperReportBuilder
                 text.getParagraph().setLeftIndent(5);
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
-                text.setStretchWithOverflow(textItem.isExpandToFit());
+                text.setStretchWithOverflow(textItem.isExpandToFit()||(properties!=null && properties.isExpandToFit()));
                 text.setBlankWhenNull(true);
                 configMarkup(itemStyle, item);
             }

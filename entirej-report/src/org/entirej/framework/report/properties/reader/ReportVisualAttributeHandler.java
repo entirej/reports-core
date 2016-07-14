@@ -45,6 +45,7 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
     private static final String                   MANUALFORMAT          = "manualFormat";
     private static final String                   LOCALEFORMAT          = "localeFormat";
     private static final String                   FORMAT_DECIMAL_DIGITS = "decimalDigits";
+    private static final String                   EXPAND_TO_FIT         = "expandToFit";
 
     @Override
     public void startLocalElement(String name, Attributes attributes) throws SAXException
@@ -128,6 +129,13 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
             if (value.length() > 0)
             {
                 _vaProperties.setMaximumDecimalDigits(Integer.valueOf(value));
+            }
+        }
+        else if (name.equals(EXPAND_TO_FIT))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setExpandToFit(Boolean.valueOf(value));
             }
         }
         else if (name.equals(MANUALFORMAT))
