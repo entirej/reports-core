@@ -155,36 +155,15 @@ public class EJReportDataRecord implements Serializable
     {
         for (EJCoreReportItemProperties itemProps : _block.getProperties().getItemContainer().getAllItemProperties())
         {
-            EJReportDataItem item = new EJReportDataItem(reportController, itemProps);
+            EJReportDataItem item = new EJReportDataItem(reportController, itemProps, sourceEntityObject);
             addItem(item);
         }
 
-        if (sourceEntityObject != null)
-        {
-            copyValuesFromEntityObject(sourceEntityObject);
-        }
+        
 
     }
 
-    public void copyValuesFromEntityObject(Object servicePojo)
-    {
-        // Check that both the data entity passed is compatible with the one
-        // assigned to this record. If either are null, then nothing can be
-        // done, so return
-        if (_servicePojo != null && servicePojo != null)
-        {
-            if (!_servicePojo.getClass().isAssignableFrom(servicePojo.getClass()))
-            {
-                return;
-            }
-        }
-        else
-        {
-            return;
-        }
-
-        _block.getServicePojoHelper().copyValuesFromServicePojo(_itemList.values(), servicePojo);
-    }
+  
 
     public EJInternalReportBlock getBlock()
     {

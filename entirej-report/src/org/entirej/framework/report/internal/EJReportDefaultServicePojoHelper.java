@@ -150,7 +150,7 @@ public class EJReportDefaultServicePojoHelper implements Serializable
      * @param sourcePojo
      *            The pojo containing the values
      */
-    public void copyValuesFromServicePojo(Collection<EJReportDataItem> items, Object servicePojo)
+    public static void copyValuesFromServicePojo(Collection<EJReportDataItem> items, Object servicePojo)
     {
         for (EJReportDataItem item : items)
         {
@@ -173,8 +173,31 @@ public class EJReportDefaultServicePojoHelper implements Serializable
             item.setValue(value);
         }
     }
+    
+    public static void copyValuesFromServicePojo(EJReportDataItem item, Object servicePojo)
+    {
+        
+            if (!item.getProperties().isBlockServiceItem())
+            {
+                return;
+            }
+            
+            // Now initialise the data items with the values from the entity if
+            // one exists
+            
+            // Capitalise the first letter
+            String firstLetter = item.getName().substring(0, 1);
+            firstLetter = firstLetter.toUpperCase();
+            StringBuilder builder = new StringBuilder();
+            String methodName = builder.append("get").append(firstLetter).append(item.getName().substring(1)).toString();
+            
+            // Get the items value from the method and set the data item
+            Object value = invokePojoMethod(servicePojo, methodName, null);
+            item.setValue(value);
+        
+    }
 
-    private Object invokePojoMethod(Object dataEntity, String methodName, Class<?> parameterType, Object... parameterValue)
+    private static Object invokePojoMethod(Object dataEntity, String methodName, Class<?> parameterType, Object... parameterValue)
     {
         if (dataEntity == null)
         {
