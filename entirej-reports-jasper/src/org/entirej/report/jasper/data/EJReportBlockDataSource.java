@@ -488,7 +488,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
         String key = section + item;
 
-        Object object = sitemCache.get(section);
+        Object object = sitemCache.get(key);
         if (object == null)
         {
             EJReportDataScreenItem reportItem = null;
