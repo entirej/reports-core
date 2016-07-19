@@ -46,10 +46,13 @@ public class EJJasperReportRunner implements EJReportRunner
                 name = report.getOutputName();
             }
             temp = File.createTempFile("EJR_" + name, "." + type.toString().toLowerCase());
+            temp.delete();
+            temp.mkdirs();
+            File export = new  File(temp,name+ "." + type.toString().toLowerCase());
+            export.deleteOnExit();
             temp.deleteOnExit();
-
-            runReport(report, type, temp.getAbsolutePath());
-            return temp.getAbsolutePath();
+            runReport(report, type, export.getAbsolutePath());
+            return export.getAbsolutePath();
 
         }
         catch (IOException e1)
