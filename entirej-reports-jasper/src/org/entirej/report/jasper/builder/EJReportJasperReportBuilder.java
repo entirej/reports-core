@@ -2361,6 +2361,24 @@ public class EJReportJasperReportBuilder
             }
 
         }
+        else
+        {
+            if (deafultImage != null && !deafultImage.isEmpty())
+            {
+
+                if (deafultImage.startsWith("/"))
+                {
+                    deafultImage = deafultImage.substring(1);
+                }
+                if (deafultImage.startsWith("\\s"))
+                {
+                    deafultImage = deafultImage.substring(1);
+                }
+                expression.setText(
+                        String.format("this.getClass().getClassLoader().getResourceAsStream(\"%s\")", deafultImage));
+            }
+        }
+        
         return expression;
     }
 
