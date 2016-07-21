@@ -21,5 +21,5 @@ package org.entirej.framework.report.enumerations;
 
 public enum EJReportExportType
 {
-    PDF, HTML, XML, DOCX, ODT, ODS, RTF, XLS, CSV, XLSX,PNG
+    PDF, HTML, XML, DOCX, ODT, ODS, RTF, XLS, CSV, XLSX,XLSX_LARGE,PNG
 }
