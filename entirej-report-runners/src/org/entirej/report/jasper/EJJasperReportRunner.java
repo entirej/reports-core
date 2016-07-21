@@ -12,6 +12,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
 
@@ -45,10 +46,32 @@ public class EJJasperReportRunner implements EJReportRunner
             {
                 name = report.getOutputName();
             }
-            temp = File.createTempFile("EJR_" + name, "." + type.toString().toLowerCase());
+            temp = File.createTempFile("EJR_TMP",name);
             temp.delete();
             temp.mkdirs();
-            File export = new  File(temp,name+ "." + type.toString().toLowerCase());
+            File export;
+            String ext = type.toString().toLowerCase();
+            if(type==EJReportExportType.XLSX_LARGE)
+            {
+                ext = EJReportExportType.XLSX.toString().toLowerCase();
+            }
+            
+            EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+            
+            if(type==EJReportExportType.XLSX_LARGE)
+            {
+                ext = EJReportExportType.XLSX.toString().toLowerCase();
+            }
+            if(reportParameter!=null &&reportParameter.getValue()!=null && !((String)reportParameter.getValue()).isEmpty())
+            {
+                export = new  File(temp,report.getProperties().getTitle()+ "." + ext);
+            }
+            else
+            {
+               
+                    
+                export = new  File(temp,name+ "." + ext); 
+            }
             export.deleteOnExit();
             temp.deleteOnExit();
             runReport(report, type, export.getAbsolutePath());

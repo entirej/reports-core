@@ -82,18 +82,25 @@ public class EJExcelPOIReportRunner implements EJReportRunner
             {
                 name = report.getOutputName();
             }
-            temp = File.createTempFile("EJR_" + name, "." + type.toString().toLowerCase());
+            temp = File.createTempFile("EJR_TMP" , name);
             temp.delete();
             temp.mkdirs();
             File export;
             EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+            String ext = type.toString().toLowerCase();
+            if(type==EJReportExportType.XLSX_LARGE)
+            {
+                ext = EJReportExportType.XLSX.toString().toLowerCase();
+            }
             if(reportParameter!=null &&reportParameter.getValue()!=null && !((String)reportParameter.getValue()).isEmpty())
             {
-                export = new  File(temp,report.getProperties().getTitle()+ "." + type.toString().toLowerCase());
+                export = new  File(temp,report.getProperties().getTitle()+ "." + ext);
             }
             else
             {
-                export = new  File(temp,name+ "." + type.toString().toLowerCase()); 
+               
+                    
+                export = new  File(temp,name+ "." + ext); 
             }
             export.deleteOnExit();
             temp.deleteOnExit();
