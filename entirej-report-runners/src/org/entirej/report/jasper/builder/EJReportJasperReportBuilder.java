@@ -252,9 +252,9 @@ public class EJReportJasperReportBuilder
                         text.setY(0);
 
                         newPageBand.addElement(text);
-                      
+
                         text.setMode(ModeEnum.TRANSPARENT);
-                        
+
                         JRDesignBreak designBreak = new JRDesignBreak();
                         designBreak.setX(0);
                         designBreak.setY(0);
@@ -316,15 +316,14 @@ public class EJReportJasperReportBuilder
     {
         EJReportScreen screen = block.getScreen();
 
+        String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
+        JRDesignField field = new JRDesignField();
+
+        field.setName(blockDataSourceField);
+        field.setValueClass(JRDataSource.class);
+        design.addField(field);
         if (screen.getType() != EJReportScreenType.NONE)
         {
-
-            String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
-            JRDesignField field = new JRDesignField();
-
-            field.setName(blockDataSourceField);
-            field.setValueClass(JRDataSource.class);
-            design.addField(field);
 
             JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
             {
@@ -1928,7 +1927,7 @@ public class EJReportJasperReportBuilder
                 text.getParagraph().setLeftIndent(5);
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
-                text.setStretchWithOverflow(textItem.isExpandToFit()||(properties!=null && properties.isExpandToFit()));
+                text.setStretchWithOverflow(textItem.isExpandToFit() || (properties != null && properties.isExpandToFit()));
                 text.setBlankWhenNull(true);
                 configMarkup(itemStyle, item);
             }
@@ -2374,11 +2373,10 @@ public class EJReportJasperReportBuilder
                 {
                     deafultImage = deafultImage.substring(1);
                 }
-                expression.setText(
-                        String.format("this.getClass().getClassLoader().getResourceAsStream(\"%s\")", deafultImage));
+                expression.setText(String.format("this.getClass().getClassLoader().getResourceAsStream(\"%s\")", deafultImage));
             }
         }
-        
+
         return expression;
     }
 
