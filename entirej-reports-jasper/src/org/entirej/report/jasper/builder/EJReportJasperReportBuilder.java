@@ -59,6 +59,7 @@ import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.SplitTypeEnum;
 import net.sf.jasperreports.engine.type.StretchTypeEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
+import net.sf.jasperreports.engine.util.StyleResolver;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportAlignmentBaseScreenItem;
@@ -331,6 +332,13 @@ public class EJReportJasperReportBuilder
                 @Override
                 public JRStyle getDefaultStyle()
                 {
+                    return null;
+                }
+
+                @Override
+                public StyleResolver getStyleResolver()
+                {
+                    // TODO Auto-generated method stub
                     return null;
                 }
             };
@@ -1397,6 +1405,13 @@ public class EJReportJasperReportBuilder
                     {
                         return null;
                     }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
                 }, chartType);
 
                 JRDesignCategoryDataset data = new JRDesignCategoryDataset(null);
@@ -1456,6 +1471,13 @@ public class EJReportJasperReportBuilder
                     {
                         return null;
                     }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
                 }, chartType);
 
                 JRDesignXyDataset data = new JRDesignXyDataset(null);
@@ -1510,6 +1532,13 @@ public class EJReportJasperReportBuilder
                     @Override
                     public JRStyle getDefaultStyle()
                     {
+                        return null;
+                    }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
                         return null;
                     }
                 }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_PIE3D : JRDesignChart.CHART_TYPE_PIE);
@@ -2132,6 +2161,13 @@ public class EJReportJasperReportBuilder
                     @Override
                     public JRStyle getDefaultStyle()
                     {
+                        return null;
+                    }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
                         return null;
                     }
                 };
