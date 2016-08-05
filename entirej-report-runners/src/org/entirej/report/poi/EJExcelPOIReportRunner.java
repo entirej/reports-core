@@ -1,8 +1,6 @@
 package org.entirej.report.poi;
 
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -39,7 +36,6 @@ import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.interfaces.EJReportProperties.ORIENTATION;
-import org.entirej.framework.report.interfaces.EJReportRunner;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 import org.entirej.report.poi.layout.EJReportPOIBlock;
 import org.entirej.report.poi.layout.EJReportPOIElement;
@@ -49,7 +45,7 @@ import org.entirej.report.poi.layout.EJReportPOIRaw.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EJExcelPOIReportRunner implements EJReportRunner
+public class EJExcelPOIReportRunner
 {
 
     final static Logger              LOGGER = LoggerFactory.getLogger(EJExcelPOIReportRunner.class);
@@ -57,77 +53,18 @@ public class EJExcelPOIReportRunner implements EJReportRunner
 
     public static final Object       EMPTY  = new Object();
 
-    @Override
     public void init(EJReportFrameworkManager manager)
     {
         this.manager = manager;
 
     }
 
-    @Override
-    public String runReport(EJReport report)
-    {
-        return runReport(report, report.getExportType());
-    }
-
-    @Override
-    public String runReport(EJReport report, EJReportExportType type)
-    {
-        File temp = null;
-        try
-        {
-
-            String name = report.getName();
-            if (report.getOutputName() != null && !report.getOutputName().isEmpty())
-            {
-                name = report.getOutputName();
-            }
-            temp = File.createTempFile("EJR_TMP" , name);
-            temp.delete();
-            temp.mkdirs();
-            File export;
-            EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
-            String ext = type.toString().toLowerCase();
-            if(type==EJReportExportType.XLSX_LARGE)
-            {
-                ext = EJReportExportType.XLSX.toString().toLowerCase();
-            }
-            if(reportParameter!=null &&reportParameter.getValue()!=null && !((String)reportParameter.getValue()).isEmpty())
-            {
-                export = new  File(temp,report.getProperties().getTitle()+ "." + ext);
-            }
-            else
-            {
-               
-                    
-                export = new  File(temp,name+ "." + ext); 
-            }
-            export.deleteOnExit();
-            temp.deleteOnExit();
-            runReport(report, type, export.getAbsolutePath());
-            return export.getAbsolutePath();
-
-         
-
-        }
-        catch (IOException e1)
-        {
-            e1.printStackTrace();
-
-        }
-
-        return null;
-
-    }
-
-    @Override
     public void runReport(EJReport report, String outputFile)
     {
         runReport(report, report.getExportType(), outputFile);
 
     }
 
-    @Override
     public void runReport(EJReport report, EJReportExportType type, String outputFile)
     {
         if (manager == null)
@@ -142,8 +79,7 @@ public class EJExcelPOIReportRunner implements EJReportRunner
             // XSSFWorkbook workbook = new XSSFWorkbook();
 
             SXSSFWorkbook wb = new SXSSFWorkbook(100); // keep 100
-            
-            
+
             // rows in
             EJPOIStyleHelper styleHelper = new EJPOIStyleHelper(wb, report);
             // memory, exceeding rows
@@ -153,10 +89,6 @@ public class EJExcelPOIReportRunner implements EJReportRunner
 
             EJReportDataSource reportDS = new EJReportDataSource(report);
 
-            // todo: build header
-
-            // todo: build layout spec for column size and merge
-
             Collection<EJReportPage> pages = report.getPages();
             for (EJReportPage page : pages)
             {
@@ -164,7 +96,7 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                 reportPOIPage.build(report, page);
 
                 SXSSFSheet sheet = wb.createSheet(page.getName());
-                if(report.getProperties().getOrientation()==ORIENTATION.LANDSCAPE)
+                if (report.getProperties().getOrientation() == ORIENTATION.LANDSCAPE)
                 {
                     sheet.getPrintSetup().setLandscape(true);
                 }
@@ -225,9 +157,9 @@ public class EJExcelPOIReportRunner implements EJReportRunner
 
     }
 
-    private int processBlock(EJPOIStyleHelper styleHelper, EJReport report, EJReportDataSource reportDS, EJReportPOIPage reportPOIPage, SXSSFSheet sheet, int rownum,EJReportPOIBlock poiBlock,  List<CellRangeAddress> rangeAddresses)
+    private int processBlock(EJPOIStyleHelper styleHelper, EJReport report, EJReportDataSource reportDS, EJReportPOIPage reportPOIPage, SXSSFSheet sheet,
+            int rownum, EJReportPOIBlock poiBlock, List<CellRangeAddress> rangeAddresses)
     {
-       
 
         if (poiBlock != null)
         {
@@ -236,11 +168,11 @@ public class EJExcelPOIReportRunner implements EJReportRunner
             long dsStart = System.currentTimeMillis();
             EJReportBlockDataSource blockDataSource = reportDS.getBlockDataSource(block.getName());
             LOGGER.info("END get datasource :" + block.getName() + " TIME(sec):" + (System.currentTimeMillis() - dsStart) / 1000);
-           
+
             Map<String, SimpleDateFormat> dateMap = new HashMap<String, SimpleDateFormat>();
             if (blockDataSource.next())
             {
-               
+
                 EJReportRecord currentRecord = block.getCurrentRecord();
                 // build header raws
                 List<EJReportPOIRaw> raws = poiBlock.getRaws();
@@ -254,7 +186,8 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                         for (EJReportPOIElement poiElement : elements)
                         {
 
-                            createCell(EJReportScreenSection.HEADER, sitemCache,dateMap, currentRecord, styleHelper, report, reportDS, sheet, rownum, block, blockDataSource, row, poiElement, rangeAddresses);
+                            createCell(EJReportScreenSection.HEADER, sitemCache, dateMap, currentRecord, styleHelper, report, reportDS, sheet, rownum, block,
+                                    blockDataSource, row, poiElement, rangeAddresses);
                         }
                         rownum++;
                     }
@@ -272,16 +205,17 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                         {
                             SXSSFRow row = createRaw(styleHelper, sheet, rownum, poiRaw);
                             List<EJReportPOIElement> elements = poiRaw.getElements();
-                            
+
                             for (EJReportPOIElement poiElement : elements)
                             {
 
-                                createCell(EJReportScreenSection.DETAIL, sitemCache,dateMap, currentRecord, styleHelper, report, reportDS, sheet, rownum, block, blockDataSource, row, poiElement, rangeAddresses);
+                                createCell(EJReportScreenSection.DETAIL, sitemCache, dateMap, currentRecord, styleHelper, report, reportDS, sheet, rownum,
+                                        block, blockDataSource, row, poiElement, rangeAddresses);
                             }
                             rownum++;
                         }
                     }
-                  //process SUB blocks
+                    // process SUB blocks
                     List<EJReportPOIBlock> subblocks = poiBlock.getBlocks();
                     for (EJReportPOIBlock subBlock : subblocks)
                     {
@@ -290,9 +224,7 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                 }
                 while (blockDataSource.next());
                 currentRecord = block.getCurrentRecord();
-                
-                
-                
+
                 // build footer raws
                 for (EJReportPOIRaw poiRaw : raws)
                 {
@@ -304,7 +236,8 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                         for (EJReportPOIElement poiElement : elements)
                         {
 
-                            createCell(EJReportScreenSection.FOOTER, sitemCache,dateMap, currentRecord, styleHelper, report, reportDS, sheet, rownum, block, blockDataSource, row, poiElement, rangeAddresses);
+                            createCell(EJReportScreenSection.FOOTER, sitemCache, dateMap, currentRecord, styleHelper, report, reportDS, sheet, rownum, block,
+                                    blockDataSource, row, poiElement, rangeAddresses);
                         }
                         rownum++;
                     }
@@ -323,8 +256,9 @@ public class EJExcelPOIReportRunner implements EJReportRunner
         return row;
     }
 
-    private void createCell(EJReportScreenSection section, Map<String, Object> sitemCache,Map<String, SimpleDateFormat> dateMap, EJReportRecord record, EJPOIStyleHelper styleHelper, EJReport report, EJReportDataSource reportDS, SXSSFSheet sheet, int rownum, EJReportBlock block, EJReportBlockDataSource blockDataSource, SXSSFRow row,
-            EJReportPOIElement poiElement, List<CellRangeAddress> rangeAddresses)
+    private void createCell(EJReportScreenSection section, Map<String, Object> sitemCache, Map<String, SimpleDateFormat> dateMap, EJReportRecord record,
+            EJPOIStyleHelper styleHelper, EJReport report, EJReportDataSource reportDS, SXSSFSheet sheet, int rownum, EJReportBlock block,
+            EJReportBlockDataSource blockDataSource, SXSSFRow row, EJReportPOIElement poiElement, List<CellRangeAddress> rangeAddresses)
     {
         EJReportScreenItem id = poiElement.getId();
         if (id != null)
@@ -332,21 +266,21 @@ public class EJExcelPOIReportRunner implements EJReportRunner
             Object value = extractValue(report, reportDS, block, blockDataSource, id);
             if (value != null)
             {
-               
+
                 EJReportVisualAttributeProperties va = poiElement.getVa();
                 EJReportDataScreenItem reportScreenItem = getReportScreenItem(poiElement.getId().getName(), section, sitemCache, record);
                 if (reportScreenItem != null && reportScreenItem.getVisualAttribute() != null)
                 {
                     va = reportScreenItem.getVisualAttribute();
-                   value =  getVABaseValue(value, poiElement.getDefaultPattren(), reportScreenItem, block.getReport().getCurrentLocale(), dateMap);
+                    value = getVABaseValue(value, poiElement.getDefaultPattren(), reportScreenItem, block.getReport().getCurrentLocale(), dateMap);
                 }
                 SXSSFCell cell = row.createCell(poiElement.getStartCell(), (value instanceof Number) ? Cell.CELL_TYPE_NUMERIC : Cell.CELL_TYPE_STRING);
 
-                cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va!=null && va.isExpandToFit()),va,poiElement.getDefaultPattren()));
-                if(poiElement.isWrap() || (va!=null && va.isExpandToFit()))
+                cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren()));
+                if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
                 {
                     row.setRowStyle(styleHelper.getDefaultWrapStyle());
-                    row.setHeight((short)-1);
+                    row.setHeight((short) -1);
                 }
                 setCellValue(cell, value);
             }
@@ -366,25 +300,21 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                     poiElement.getEndCell() // last
                                             // column
                                             // (0-based)
-                    ));
+            ));
         }
     }
-    
-    
-    public Object getVABaseValue(Object value,String defaultPattern, EJReportDataScreenItem reportItem,Locale defaultLocale,Map<String, SimpleDateFormat> dateMap) 
+
+    public Object getVABaseValue(Object value, String defaultPattern, EJReportDataScreenItem reportItem, Locale defaultLocale,
+            Map<String, SimpleDateFormat> dateMap)
     {
         if (value instanceof String)
         {
 
-           
             if (reportItem == null)
                 return value;
             EJReportVisualAttributeProperties visualAttribute = reportItem.getVisualAttribute();
             if (visualAttribute == null)
                 return value;
-            
-            
-            
 
             EJReportVAPattern localePattern = visualAttribute.getLocalePattern();
             switch (localePattern)
@@ -402,7 +332,7 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                     {
                         // ignore
                     }
-                break;
+                    break;
 
                 case DATE_FULL:
                 case DATE_LONG:
@@ -416,34 +346,32 @@ public class EJExcelPOIReportRunner implements EJReportRunner
                 case TIME_LONG:
                 case TIME_MEDIUM:
                 case TIME_SHORT:
-                    
-                    String pattern = (String) visualAttribute.toPattern(defaultPattern , defaultLocale);
-                    if(pattern!=null && !pattern.isEmpty() )
+
+                    String pattern = (String) visualAttribute.toPattern(defaultPattern, defaultLocale);
+                    if (pattern != null && !pattern.isEmpty())
                     {
                         try
                         {
-                         SimpleDateFormat format = getDateFormat(dateMap,pattern,defaultLocale);
-                         return format.parse((String) value);
+                            SimpleDateFormat format = getDateFormat(dateMap, pattern, defaultLocale);
+                            return format.parse((String) value);
                         }
-                        catch(IllegalArgumentException e)
+                        catch (IllegalArgumentException e)
                         {
-                            //ignore
+                            // ignore
                         }
-                        catch(ParseException e)
+                        catch (ParseException e)
                         {
-                            //ignore
+                            // ignore
                         }
-                        
+
                     }
-                    
+
                     break;
             }
         }
 
         return value;
     }
-    
-   
 
     private SimpleDateFormat getDateFormat(Map<String, SimpleDateFormat> dateMap, String pattern, Locale defaultLocale)
     {
@@ -455,7 +383,7 @@ public class EJExcelPOIReportRunner implements EJReportRunner
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.set(Calendar.YEAR, 2000);
-       
+
         SimpleDateFormat format = new SimpleDateFormat(pattern, defaultLocale);
         format.set2DigitYearStart(cal.getTime());
         dateMap.put(pattern, format);
@@ -522,7 +450,8 @@ public class EJExcelPOIReportRunner implements EJReportRunner
         }
     }
 
-    private Object extractValue(EJReport report, EJReportDataSource reportDS, EJReportBlock block, EJReportBlockDataSource blockDataSource, EJReportScreenItem item)
+    private Object extractValue(EJReport report, EJReportDataSource reportDS, EJReportBlock block, EJReportBlockDataSource blockDataSource,
+            EJReportScreenItem item)
     {
 
         if (!report.getActionController().canShowScreenColumn(report, block.getName(), item.getName()))
@@ -533,10 +462,10 @@ public class EJExcelPOIReportRunner implements EJReportRunner
         {
             case LABEL:
                 return item.typeAs(EJReportLabelScreenItem.class).getText();
-               
+
             case TEXT:
             case DATE:
-          
+
             case NUMBER:
             {
                 EJReportValueBaseScreenItem valueBaseScreenItem = item.typeAs(EJReportValueBaseScreenItem.class);

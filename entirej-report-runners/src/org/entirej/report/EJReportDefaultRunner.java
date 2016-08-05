@@ -1,7 +1,12 @@
 package org.entirej.report;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportRuntimeException;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
 import org.entirej.report.jasper.EJJasperReportRunner;
@@ -28,20 +33,58 @@ public class EJReportDefaultRunner implements EJReportRunner
     @Override
     public String runReport(EJReport report)
     {
+
         return runReport(report, report.getExportType());
     }
 
     @Override
     public String runReport(EJReport report, EJReportExportType exportType)
     {
+
+        File tempReportDir = getTempReportDir();
+        tempReportDir.mkdirs();
+        String ext = exportType.toString().toLowerCase();
         if (exportType == EJReportExportType.XLSX_LARGE)
         {
-            return excelPOIReportRunner.runReport(report, exportType);
+            ext = EJReportExportType.XLSX.toString().toLowerCase();
+        }
+
+        File export;
+        EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+
+        if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
+        {
+            try
+            {
+                export = File.createTempFile((String) reportParameter.getValue(), ext, tempReportDir);
+            }
+            catch (IOException e)
+            {
+                throw new EJReportRuntimeException(e.getMessage());
+            }
         }
         else
         {
-            return jasperReportRunner.runReport(report, exportType);
+
+            try
+            {
+                export = File.createTempFile(report.getName()+"_","."+ ext, tempReportDir);
+            }
+            catch (IOException e)
+            {
+                throw new EJReportRuntimeException(e.getMessage());
+            }
         }
+        String output = export.getAbsolutePath();
+        if (exportType == EJReportExportType.XLSX_LARGE)
+        {
+            excelPOIReportRunner.runReport(report, exportType, output);
+        }
+        else
+        {
+            jasperReportRunner.runReport(report, exportType, output);
+        }
+        return output;
     }
 
     @Override
@@ -49,6 +92,18 @@ public class EJReportDefaultRunner implements EJReportRunner
     {
         runReport(report, report.getExportType(), output);
 
+    }
+
+    static File getTempReportDir()
+    {
+        if (System.getProperty("ej.report.tmpdir") != null && System.getProperty("ej.report.tmpdir").isEmpty())
+        {
+            return new File(System.getProperty("ej.report.tmpdir"));
+        }
+        else
+        {
+            return new File(System.getProperty("java.io.tmpdir") + "/EJ/Reports");
+        }
     }
 
     @Override
