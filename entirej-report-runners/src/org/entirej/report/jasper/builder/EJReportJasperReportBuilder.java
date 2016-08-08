@@ -58,6 +58,7 @@ import net.sf.jasperreports.charts.design.JRDesignXySeries;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParagraphContainer;
 import net.sf.jasperreports.engine.JRPen;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -1947,8 +1948,7 @@ public class EJReportJasperReportBuilder
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
                 text.setExpression(valueExpression);
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+               
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setStretchWithOverflow(textItem.isExpandToFit() || (properties != null && properties.isExpandToFit()));
@@ -1973,8 +1973,7 @@ public class EJReportJasperReportBuilder
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
                 text.setExpression(valueExpression);
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+              
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
@@ -2018,8 +2017,7 @@ public class EJReportJasperReportBuilder
                 JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
 
                 text.setExpression(valueExpression);
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+              
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
@@ -2087,8 +2085,7 @@ public class EJReportJasperReportBuilder
                 EJReportLabelScreenItem labelItem = item.typeAs(EJReportLabelScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+               
                 text.setStretchWithOverflow(true);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(itemStyle, labelItem);
@@ -2181,6 +2178,28 @@ public class EJReportJasperReportBuilder
                 break;
         }
         element.setStyle(itemStyle);
+        
+        if(element instanceof JRParagraphContainer)
+        {
+            JRParagraphContainer paragraphContainer = (JRParagraphContainer) element;
+            if(item.getLeftPadding()>-1)
+            {
+                paragraphContainer.getParagraph().setLeftIndent(item.getLeftPadding());
+            }
+            else
+            {
+                paragraphContainer.getParagraph().setLeftIndent(1);
+            }
+            if(item.getRightPadding()>-1)
+            {
+                paragraphContainer.getParagraph().setRightIndent(item.getRightPadding());
+            }
+            else
+            {
+                paragraphContainer.getParagraph().setRightIndent(1);
+            }
+        }
+        
 
         return element;
     }

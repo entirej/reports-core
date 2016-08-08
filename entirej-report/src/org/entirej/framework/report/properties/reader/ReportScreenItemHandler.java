@@ -41,6 +41,8 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
     private static final String              ELEMENT_ITEM                        = "screenitem";
     private static final String              ELEMENT_SCREEN_X                    = "x";
     private static final String              ELEMENT_SCREEN_Y                    = "y";
+    private static final String              ELEMENT_SCREEN_PADDING_LEFT         = "leftPadding";
+    private static final String              ELEMENT_SCREEN_PADDING_RIGHT        = "rightPadding";
     private static final String              ELEMENT_SCREEN_WIDTH                = "width";
     private static final String              ELEMENT_SCREEN_HEIGHT               = "height";
     private static final String              ELEMENT_SCREEN_WIDTH_AS_PERCENTAGE  = "widthAsPercentage";
@@ -111,6 +113,15 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
         else if (name.equals(ELEMENT_SCREEN_HEIGHT))
         {
             _itemProperties.setHeight(Integer.parseInt(value));
+        }
+        
+        else if (name.equals(ELEMENT_SCREEN_PADDING_LEFT))
+        {
+            _itemProperties.setLeftPadding(Integer.parseInt(value));
+        }
+        else if (name.equals(ELEMENT_SCREEN_PADDING_RIGHT))
+        {
+            _itemProperties.setRightPadding(Integer.parseInt(value));
         }
         else if (name.equals(ELEMENT_SCREEN_WIDTH_AS_PERCENTAGE))
         {

@@ -10,10 +10,12 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 public abstract class EJCoreReportScreenItemProperties implements EJReportScreenItemProperties
 {
 
-    private boolean                     _visible = true;
+    private boolean                     _visible       = true;
     private String                      _name;
     private String                      _visualAttributeName;
     private int                         _xPos, _yPos, _width, _height;
+    private int                         _rightPadding  = -1;
+    private int                         _leftPadding   = -1;
     private boolean                     _widthAsPercentage, _heightAsPercentage;
     private EJCoreReportBlockProperties _blockProperties;
 
@@ -21,6 +23,46 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
     {
         this._blockProperties = blockProperties;
     }
+    
+    
+    
+
+    public int getRightPadding()
+    {
+        return _rightPadding;
+    }
+
+
+
+
+    public void setRightPadding(int rightPadding)
+    {
+        this._rightPadding = rightPadding;
+    }
+
+
+
+
+    public int getLeftPadding()
+    {
+        return _leftPadding;
+    }
+
+
+
+
+    public void setLeftPadding(int leftPadding)
+    {
+        this._leftPadding = leftPadding;
+    }
+
+
+
+
+  
+
+
+
 
     @Override
     public EJReportVisualAttributeProperties getVisualAttributeProperties()

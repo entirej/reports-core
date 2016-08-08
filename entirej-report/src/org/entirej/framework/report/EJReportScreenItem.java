@@ -79,6 +79,8 @@ public class EJReportScreenItem implements Serializable
     {
         return _itemProps.getY();
     }
+    
+    
 
     /**
      * Return the name of this item
@@ -118,6 +120,19 @@ public class EJReportScreenItem implements Serializable
         return _itemProps.isVisible();
     }
 
+    
+    
+    public int getRightPadding()
+    {
+        return _itemProps.getRightPadding();
+    }
+
+    public int getLeftPadding()
+    {
+        return _itemProps.getLeftPadding();
+    }
+
+   
     /**
      * Sets this item visible
      * <p>

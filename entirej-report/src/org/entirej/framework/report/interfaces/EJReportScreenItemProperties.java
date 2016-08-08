@@ -79,4 +79,9 @@ public interface EJReportScreenItemProperties extends Serializable
 
     public String getName();
 
+    public int getRightPadding();
+
+    public int getLeftPadding();
+
+
 }
