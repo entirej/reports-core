@@ -96,7 +96,7 @@ public class EJReportDefaultRunner implements EJReportRunner
 
     static File getTempReportDir()
     {
-        if (System.getProperty("ej.report.tmpdir") != null && System.getProperty("ej.report.tmpdir").isEmpty())
+        if (System.getProperty("ej.report.tmpdir") != null && !System.getProperty("ej.report.tmpdir").isEmpty())
         {
             return new File(System.getProperty("ej.report.tmpdir"));
         }
