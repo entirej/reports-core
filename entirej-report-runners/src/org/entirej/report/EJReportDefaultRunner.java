@@ -56,7 +56,7 @@ public class EJReportDefaultRunner implements EJReportRunner
         {
             try
             {
-                export = File.createTempFile((String) reportParameter.getValue(), ext, tempReportDir);
+                export = File.createTempFile((String) reportParameter.getValue()+"_","."+ ext, tempReportDir);
             }
             catch (IOException e)
             {
