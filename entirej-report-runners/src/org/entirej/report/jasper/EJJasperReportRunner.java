@@ -12,37 +12,67 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportRuntimeException;
-import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
 
-public class EJJasperReportRunner 
+public class EJJasperReportRunner implements EJReportRunner
 {
 
     private EJReportFrameworkManager manager;
 
-   
+    @Override
     public void init(EJReportFrameworkManager manager)
     {
         this.manager = manager;
 
     }
 
-    
-    
+    @Override
+    public String runReport(EJReport report)
+    {
+        return runReport(report, report.getExportType());
+    }
 
-    
-   
-    
-    
-    
+    @Override
+    public String runReport(EJReport report, EJReportExportType type)
+    {
+        File temp = null;
+        try
+        {
 
+            String name = report.getName();
+            if(report.getOutputName()!=null &&!report.getOutputName().isEmpty())
+            {
+                name = report.getOutputName();
+            }
+            temp = File.createTempFile("EJR_" + name, "." + type.toString().toLowerCase());
+            temp.delete();
+            temp.mkdirs();
+            File export = new  File(temp,name+ "." + type.toString().toLowerCase());
+            export.deleteOnExit();
+            temp.deleteOnExit();
+            runReport(report, type, export.getAbsolutePath());
+            return export.getAbsolutePath();
+
+        }
+        catch (IOException e1)
+        {
+            e1.printStackTrace();
+
+        }
+
+        return null;
+
+    }
+
+    @Override
     public void runReport(EJReport report, String outputFile)
     {
         runReport(report, report.getExportType(), outputFile);
 
     }
 
+    @Override
     public void runReport(EJReport report, EJReportExportType type, String outputFile)
     {
         if (manager == null)
