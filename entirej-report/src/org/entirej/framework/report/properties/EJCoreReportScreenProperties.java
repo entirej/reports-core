@@ -16,6 +16,9 @@ public class EJCoreReportScreenProperties
     private int                            headerColumnHeight;
     private int                            detailColumnHeight;
     private int                            footerColumnHeight;
+    private boolean                        newPage;
+    
+    
     private EJReportScreenType             screenType = EJReportScreenType.NONE;
 
     private final BlockGroup               subBlocks  = new BlockGroup("Sub Blocks");
@@ -64,6 +67,17 @@ public class EJCoreReportScreenProperties
     public int getX()
     {
         return x;
+    }
+    
+    
+    public boolean isNewPage()
+    {
+        return newPage;
+    }
+    
+    public void setNewPage(boolean newPage)
+    {
+        this.newPage = newPage;
     }
 
     public void setX(int x)

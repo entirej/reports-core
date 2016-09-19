@@ -2323,7 +2323,7 @@ public class EJReportJasperReportBuilder
             return expression;
         }
 
-        expression.setText("\"" + defaultValue.replaceAll("\"", "\\\\\"") + "\"");
+        expression.setText("\"" + defaultValue.replaceAll("\"", "\\\\\"").replaceAll("\n", "\"\n+\"") + "\"");
         return expression;
     }
 
