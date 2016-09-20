@@ -84,6 +84,7 @@ import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
+import net.sf.jasperreports.engine.type.BreakTypeEnum;
 import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
@@ -497,6 +498,8 @@ public class EJReportJasperReportBuilder
                 field.setValueClass(Object.class);
                 design.addField(field);
             }
+            
+           
 
             if (block.getScreen().getType() == EJReportScreenType.FORM_LAYOUT)
             {
@@ -612,7 +615,7 @@ public class EJReportJasperReportBuilder
 
         boolean canShowBlockHeader = block.getReport().getActionController().canShowBlockHeader(block.getReport(), block.getName());
         boolean canShowBlockFooter = block.getReport().getActionController().canShowBlockFooter(block.getReport(), block.getName());
-
+        
         for (EJReportScreenColumn col : allColumns)
         {
 
@@ -710,10 +713,40 @@ public class EJReportJasperReportBuilder
         }
 
         JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
-        detail = new JRDesignBand();
+        if(block.getScreen().isNewPage())
+        {
+            
+            
+            JRDesignGroup group = new JRDesignGroup();
+            group.setName(block.getName());
+            JRDesignSection groupHeaderSection = (JRDesignSection) group.getGroupHeaderSection();
+
+            
+            
+
+             detail = new JRDesignBand();
+
+            groupHeaderSection.addBand(detail);
+            design.addGroup(group);
+            
+            
+                group.setReprintHeaderOnEachPage(true);
+
+              
+                
+            
+        }else
+        {
+            detail = new JRDesignBand();
+            detailSection.addBand(detail);
+        }
+        
+       
         // detail.setSplitType(SplitTypeEnum.PREVENT);
-        detailSection.addBand(detail);
+      
         detail.setHeight(detailHeight);
+
+        
 
         int currentX = 0;
         for (EJReportScreenColumn col : allColumns)
@@ -974,6 +1007,20 @@ public class EJReportJasperReportBuilder
 
         }
         subdetail.setHeight(subheight);
+        if(block.getScreen().isNewPage())
+        {
+            JRDesignBand newPageBand = null;
+            
+            newPageBand = new JRDesignBand();
+            newPageBand.setHeight(1);
+            detailSection.addBand(newPageBand);
+            JRDesignBreak designBreak = new JRDesignBreak();
+            designBreak.setX(0);
+            designBreak.setY(0);
+            designBreak.setHeight(1);
+            designBreak.setMode(ModeEnum.TRANSPARENT);
+            newPageBand.addElement(designBreak);
+        }
 
     }
 
@@ -1259,14 +1306,39 @@ public class EJReportJasperReportBuilder
             crateValueRefField(item);
         }
 
-        JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
-        JRDesignBand detail = new JRDesignBand();
+        
+        JRDesignBand detail;
+        
+        
+        
+                    
+        if(block.getScreen().isNewPage())
+        {
+            JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
+            detail= new JRDesignBand();
+            detail.setHeight(1);
+            detailSection.addBand(detail);
+            JRDesignBreak designBreak = new JRDesignBreak();
+            designBreak.setX(0);
+            designBreak.setY(0);
+            designBreak.setHeight(1);
+            designBreak.setMode(ModeEnum.TRANSPARENT);
+            detail.addElement(designBreak);
+        }
+        
+        {
+            JRDesignSection detailSection = (JRDesignSection) design.getDetailSection();
+            detail= new JRDesignBand();
+            detailSection.addBand(detail);
+        }
+        
         // detail.setSplitType(SplitTypeEnum.PREVENT);
 
         EJReportProperties reportProperties = block.getReport().getProperties();
         design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
 
-        detailSection.addBand(detail);
+        
+       
 
         int width = screen.getWidth();
         int height = screen.getHeight();
