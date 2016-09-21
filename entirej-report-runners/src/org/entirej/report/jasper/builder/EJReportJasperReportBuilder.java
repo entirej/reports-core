@@ -2157,7 +2157,7 @@ public class EJReportJasperReportBuilder
                 EJReportLabelScreenItem labelItem = item.typeAs(EJReportLabelScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
-               
+                text.setBlankWhenNull(true);
                 text.setStretchWithOverflow(true);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(itemStyle, labelItem);
