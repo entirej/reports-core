@@ -53,6 +53,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
     private Map<String, Boolean> vCache     = new HashMap<String, Boolean>();
     private Map<String, Boolean> svCache    = new HashMap<String, Boolean>();
     private EJReportRecord       focusedRecord;
+    private int         index = -1;
     private Locale               defaultLocale;
     
     private Map<String, SimpleDateFormat> dateMap = new HashMap<String, SimpleDateFormat>();
@@ -150,18 +151,26 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
         return null;
     }
 
+    
+    @Override
+    public int getRecordIndex()
+    {
+        return index;
+    }
     @Override
     public boolean next() throws JRException
     {
+        
         fieldCache.clear();
         sitemCache.clear();
         vCache.clear();
         svCache.clear();
-       
+        index++;
        focusedRecord = block.getNextRecord();
        if ((focusedRecord == null) && block.isControlBlock())
         {
             block.reset();
+            index = -1;
         }
         return focusedRecord!=null;
     }

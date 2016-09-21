@@ -981,7 +981,23 @@ public class EJReportJasperReportBuilder
 
             currentX += width;
         }
-
+        if(block.getScreen().isNewPage())
+        {
+            JRDesignBand newPageBand = null;
+            
+            newPageBand = new JRDesignBand();
+            newPageBand.setHeight(1);
+            detailSection.addBand(newPageBand);
+            JRDesignBreak designBreak = new JRDesignBreak();
+            designBreak.setX(0);
+            designBreak.setY(0);
+            designBreak.setHeight(1);
+            designBreak.setMode(ModeEnum.TRANSPARENT);
+            newPageBand.addElement(designBreak);
+            JRDesignExpression expression = new JRDesignExpression();
+            expression.setText("($F{_EJ_VA_CONTEXT}).getRecordIndex()!=0");
+            designBreak.setPrintWhenExpression(expression);
+        }
         JRDesignBand subdetail = new JRDesignBand();
         // subdetail.setSplitType(SplitTypeEnum.PREVENT);
         int subheight = 0;
@@ -1007,20 +1023,7 @@ public class EJReportJasperReportBuilder
 
         }
         subdetail.setHeight(subheight);
-        if(block.getScreen().isNewPage())
-        {
-            JRDesignBand newPageBand = null;
-            
-            newPageBand = new JRDesignBand();
-            newPageBand.setHeight(1);
-            detailSection.addBand(newPageBand);
-            JRDesignBreak designBreak = new JRDesignBreak();
-            designBreak.setX(0);
-            designBreak.setY(0);
-            designBreak.setHeight(1);
-            designBreak.setMode(ModeEnum.TRANSPARENT);
-            newPageBand.addElement(designBreak);
-        }
+       
 
     }
 
