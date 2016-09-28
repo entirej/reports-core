@@ -17,7 +17,7 @@ public class EJCoreReportScreenProperties
     private int                            detailColumnHeight;
     private int                            footerColumnHeight;
     private boolean                        newPage;
-    private boolean                        fitToPage;
+    private boolean                        fitToPage = true;
     
     
     private EJReportScreenType             screenType = EJReportScreenType.NONE;
