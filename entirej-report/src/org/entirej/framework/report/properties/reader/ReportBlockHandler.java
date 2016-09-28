@@ -44,6 +44,7 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
     private static final String         ELEMENT_SCREEN_WIDTH        = "width";
     private static final String         ELEMENT_SCREEN_HEIGHT       = "height";
     private static final String         ELEMENT_NEW_PAGE            = "newPage";
+    private static final String         ELEMENT_FIT_TO_PAGE         = "fitToPage";
 
     private static final String         ELEMENT_BLOCK_GROUP         = "blockGroup";
     private static final String         ELEMENT_ITEM                = "item";
@@ -201,6 +202,10 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         else if (name.equals(ELEMENT_NEW_PAGE))
         {
             _blockProperties.getScreenProperties().setNewPage(Boolean.parseBoolean(value));
+        }
+        else if (name.equals(ELEMENT_FIT_TO_PAGE))
+        {
+            _blockProperties.getScreenProperties().setFitToPage(Boolean.parseBoolean(value));
         }
     }
 
