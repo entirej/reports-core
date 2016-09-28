@@ -1335,7 +1335,8 @@ public class EJReportJasperReportBuilder
             detailSection.addBand(detail);
         }
         
-        // detail.setSplitType(SplitTypeEnum.PREVENT);
+        if(screen.isFitToPage())
+            detail.setSplitType(SplitTypeEnum.PREVENT);
 
         EJReportProperties reportProperties = block.getReport().getProperties();
         design.setPageHeight((reportProperties.getReportHeight() - (reportProperties.getMarginTop() + reportProperties.getMarginBottom())));
