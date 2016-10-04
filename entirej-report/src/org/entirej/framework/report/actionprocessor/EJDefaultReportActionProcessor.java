@@ -22,6 +22,7 @@ import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
+import org.entirej.framework.report.enumerations.EJReportColumnLayout;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
 
@@ -82,5 +83,11 @@ public class EJDefaultReportActionProcessor implements EJReportActionProcessor
     public boolean canShowScreenColumnSection(EJReport report, String blockName, String columnName, EJReportScreenSection section)
     {
         return true;
+    }
+    
+    @Override
+    public EJReportColumnLayout getHiddenColumnLayout(EJReport report, String blockName, String columnName)
+    {
+        return EJReportColumnLayout.MOVE;
     }
 }
