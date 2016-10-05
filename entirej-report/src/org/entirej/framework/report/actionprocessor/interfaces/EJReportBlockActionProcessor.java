@@ -24,7 +24,7 @@ import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportRecord;
-import org.entirej.framework.report.enumerations.EJReportColumnLayout;
+import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
 
@@ -73,7 +73,7 @@ public interface EJReportBlockActionProcessor extends Serializable
 
     public boolean canShowScreenColumn(EJReport report, String blockName, String columnName);
     
-    public EJReportColumnLayout getHiddenColumnLayout(EJReport report, String blockName, String columnName);
+    public EJReportTableColumn getHiddenColumnLayout(EJReport report, String blockName, String columnName);
 
     public boolean canShowBlockHeader(EJReport report, String blockName);
 

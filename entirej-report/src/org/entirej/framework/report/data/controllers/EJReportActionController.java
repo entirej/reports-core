@@ -29,7 +29,7 @@ import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.actionprocessor.EJDefaultReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
-import org.entirej.framework.report.enumerations.EJReportColumnLayout;
+import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.processorfactories.EJReportActionProcessorFactory;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
@@ -283,7 +283,7 @@ public class EJReportActionController implements Serializable
 
     }
     
-    public EJReportColumnLayout getHiddenColumnLayout(EJReport report, String blockName, String columnName)
+    public EJReportTableColumn getHiddenColumnLayout(EJReport report, String blockName, String columnName)
     {
         logger.trace("START getHiddenColumnLayout. Report: {}", report.getName());
         
@@ -294,14 +294,14 @@ public class EJReportActionController implements Serializable
             if (_blockLevelActionProcessors.containsKey(blockName))
             {
                 logger.trace("Calling block level getHiddenColumnLayout. Block: {}", blockName, columnName);
-                EJReportColumnLayout layout = _blockLevelActionProcessors.get(blockName).getHiddenColumnLayout(report, blockName, columnName);
+                EJReportTableColumn layout = _blockLevelActionProcessors.get(blockName).getHiddenColumnLayout(report, blockName, columnName);
                 logger.trace("Called block level getHiddenColumnLayout");
                 return layout;
             }
             else
             {
                 logger.trace("Calling report level getHiddenColumnLayout");
-                EJReportColumnLayout layout = _reportLevelActionProcessor.getHiddenColumnLayout(report, blockName, columnName);
+                EJReportTableColumn layout = _reportLevelActionProcessor.getHiddenColumnLayout(report, blockName, columnName);
                 logger.trace("Called report level getHiddenColumnLayout");
                 return layout;
             }

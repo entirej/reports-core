@@ -1,6 +1,6 @@
 package org.entirej.framework.report.enumerations;
 
-public enum EJReportColumnLayout
+public enum EJReportTableColumn
 {
     EXPAND_LEFT, EXPAND_RIGHT, MOVE
 }

@@ -36,7 +36,7 @@ import org.entirej.framework.report.EJReportValueBaseScreenItem;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.enumerations.EJReportColumnLayout;
+import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
@@ -618,8 +618,8 @@ public class EJReportJasperReportBuilder
             }
             else
             {
-                EJReportColumnLayout hiddenColumnLayout = controller.getHiddenColumnLayout(block.getReport(), block.getName(), column.getName());
-                if(hiddenColumnLayout == EJReportColumnLayout.EXPAND_LEFT && allColumns.size()>0)
+                EJReportTableColumn hiddenColumnLayout =column.isVisible() ? controller.getHiddenColumnLayout(block.getReport(), block.getName(), column.getName()):column.getHiddenColumnLayout();
+                if(hiddenColumnLayout!=null && hiddenColumnLayout == EJReportTableColumn.EXPAND_LEFT && allColumns.size()>0)
                 {
                     EJReportScreenColumn prev = allColumns.get(allColumns.size()-1);
                   
@@ -633,7 +633,7 @@ public class EJReportJasperReportBuilder
                     
                     list.add( column);
                 }
-                else if(hiddenColumnLayout == EJReportColumnLayout.EXPAND_RIGHT )
+                else if(hiddenColumnLayout == EJReportTableColumn.EXPAND_RIGHT )
                 {
                     hiddenCol = column;
                 }
