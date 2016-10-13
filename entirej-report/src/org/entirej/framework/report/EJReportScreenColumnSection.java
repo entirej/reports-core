@@ -80,5 +80,19 @@ public class EJReportScreenColumnSection
         }
         return items;
     }
+    
+
+    public EJReportScreenItem getScreenItem(String name)
+    {
+        
+        for (EJCoreReportScreenItemProperties item : _properties.getScreenItems())
+        {
+            if(item.getName().equals(name))
+            {
+               return  new EJReportScreenItem(_block, item);
+            }
+        }
+        return null;
+    }
 
 }
