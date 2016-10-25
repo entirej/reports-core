@@ -330,11 +330,11 @@ public class EJReportPOIPage implements IBlockParent
 
             if (item.isWidthAsPercentage())
             {
-                itemWidth = (int) (((double) screen.getWidth() / 100) * itemWidth);
+                itemWidth = (int) Math.round(((double) screen.getWidth() / 100) * itemWidth);
             }
             if (item.isHeightAsPercentage())
             {
-                itemHeight = (int) (((double) screen.getHeight() / 100) * itemHeight);
+                itemHeight = (int) Math.round(((double) screen.getHeight() / 100) * itemHeight);
             }
 
             if (width < (item.getXPos() + itemWidth))
