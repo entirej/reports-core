@@ -265,6 +265,12 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
     {
         return getInternalReport().getReportParameter(name);
     }
+    
+    public boolean hasReportParameter(String name)
+    {
+        return getInternalReport().hasReportParameter(name);
+    }
+    
 
     /**
      * Translates a given text to the current application <code>{@link Locale}

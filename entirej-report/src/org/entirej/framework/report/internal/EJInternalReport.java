@@ -252,6 +252,14 @@ public class EJInternalReport implements Serializable
             throw new EJReportRuntimeException(message);
         }
     }
+    public boolean hasReportParameter(String name)
+    {
+        if (_reportController.getParameterList().contains(name))
+        {
+            return true;
+        }
+       return false;
+    }
 
     /**
      * Return the properties of this report

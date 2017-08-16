@@ -124,23 +124,16 @@ public class EJReportPojoHelper implements Serializable
             Set<String> items = new TreeSet<String>();
             for (Method method : pojo.getMethods())
             {
-                Annotation[] annotations = method.getDeclaredAnnotations();
-                if (annotations == null || annotations.length == 0)
+                EJReportFieldName annotation = method.getAnnotation(EJReportFieldName.class);
+                if(annotation!=null )
                 {
-                    continue;
-                }
-
-                for (Annotation annotation : annotations)
-                {
-                    if (EJReportFieldName.class.isAssignableFrom(annotation.annotationType()))
+                    String fieldName = annotation.value();
+                    if (fieldName != null && !fieldNames.contains(fieldName))
                     {
-                        String fieldName = (String) EJReportFieldName.class.getMethod(EJReportFieldName.VALUE).invoke(annotation);
-                        if (fieldName != null && !fieldNames.contains(fieldName))
-                        {
-                            items.add(fieldName);
-                        }
+                        items.add(fieldName);
                     }
                 }
+               
             }
             fieldNames.addAll(items);
 
@@ -173,21 +166,9 @@ public class EJReportPojoHelper implements Serializable
         try
         {
             Method method = pojo.getMethod(methodName);
-            Annotation[] annotations = method.getDeclaredAnnotations();
-            if (annotations == null || annotations.length == 0)
-            {
-                return null;
-            }
+            
 
-            for (Annotation annotation : annotations)
-            {
-                if (EJReportFieldName.class.isAssignableFrom(annotation.annotationType()))
-                {
-                    return (String) EJReportFieldName.class.getMethod(EJReportFieldName.VALUE).invoke(annotation);
-                }
-            }
-
-            return null;
+            return getFieldName(pojo, method);
         }
         catch (Exception e)
         {
@@ -215,19 +196,14 @@ public class EJReportPojoHelper implements Serializable
 
         try
         {
-            Annotation[] annotations = method.getDeclaredAnnotations();
-            if (annotations == null || annotations.length == 0)
+            
+            EJReportFieldName annotation = method.getAnnotation(EJReportFieldName.class);
+            if(annotation!=null )
             {
-                return null;
+                return annotation.value();
             }
-
-            for (Annotation annotation : annotations)
-            {
-                if (EJReportFieldName.class.isAssignableFrom(annotation.annotationType()))
-                {
-                    return (String) EJReportFieldName.class.getMethod(EJReportFieldName.VALUE).invoke(annotation);
-                }
-            }
+            
+           
 
             return null;
         }
@@ -259,34 +235,29 @@ public class EJReportPojoHelper implements Serializable
         {
             for (Method method : pojo.getMethods())
             {
-                Annotation[] annotations = method.getDeclaredAnnotations();
-                if (annotations != null && annotations.length > 0)
+                EJReportFieldName annotation = method.getAnnotation(EJReportFieldName.class);
+                if(annotation!=null )
                 {
-                    for (Annotation annotation : annotations)
+                    if (method.getReturnType().equals(void.class))
                     {
-                        if (EJReportFieldName.class.isAssignableFrom(annotation.annotationType()))
+                        if (method.getParameterTypes().length == 1)
                         {
-                            if (method.getReturnType().equals(void.class))
+                            if (!datatypes.contains(method.getParameterTypes()[0]))
                             {
-                                if (method.getParameterTypes().length == 1)
-                                {
-                                    if (!datatypes.contains(method.getParameterTypes()[0]))
-                                    {
-                                        datatypes.add(method.getParameterTypes()[0]);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (!datatypes.contains(method.getReturnType()))
-                                {
-                                    datatypes.add(method.getReturnType());
-                                }
+                                datatypes.add(method.getParameterTypes()[0]);
                             }
                         }
                     }
-
+                    else
+                    {
+                        if (!datatypes.contains(method.getReturnType()))
+                        {
+                            datatypes.add(method.getReturnType());
+                        }
+                    }
                 }
+                
+                
             }
 
             return datatypes;
@@ -320,31 +291,22 @@ public class EJReportPojoHelper implements Serializable
         {
             for (Method method : pojo.getMethods())
             {
-                Annotation[] annotations = method.getDeclaredAnnotations();
-                if (annotations != null && annotations.length > 0)
+                EJReportFieldName annotation = method.getAnnotation(EJReportFieldName.class);
+                if(annotation!=null && fieldName.equals(annotation.value()))
                 {
-                    for (Annotation annotation : annotations)
+                    if (method.getReturnType().equals(void.class))
                     {
-                        if (EJReportFieldName.class.isAssignableFrom(annotation.annotationType()))
+                        if (method.getParameterTypes().length == 1)
                         {
-                            if (fieldName.equals((String) EJReportFieldName.class.getMethod(EJReportFieldName.VALUE).invoke(annotation)))
-                            {
-                                if (method.getReturnType().equals(void.class))
-                                {
-                                    if (method.getParameterTypes().length == 1)
-                                    {
-                                        return method.getParameterTypes()[0];
-                                    }
-                                }
-                                else
-                                {
-                                    return method.getReturnType();
-                                }
-                            }
+                            return method.getParameterTypes()[0];
                         }
                     }
-
+                    else
+                    {
+                        return method.getReturnType();
+                    }
                 }
+               
             }
 
             return null;
