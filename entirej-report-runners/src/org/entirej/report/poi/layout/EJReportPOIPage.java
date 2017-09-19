@@ -12,12 +12,14 @@ import java.util.Map.Entry;
 
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportAlignmentBaseScreenItem;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportDateScreenItem;
 import org.entirej.framework.report.EJReportNumberScreenItem;
 import org.entirej.framework.report.EJReportPage;
 import org.entirej.framework.report.EJReportScreen;
 import org.entirej.framework.report.EJReportScreenColumn;
+import org.entirej.framework.report.EJReportScreenColumnSection;
 import org.entirej.framework.report.EJReportScreenItem;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
@@ -447,6 +449,8 @@ public class EJReportPOIPage implements IBlockParent
             element.setX(ix);
             element.setVa(item.getVisualAttributes());
             element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));
+            
+            element.setAlignment(getAlignment(item));
 
             int currentY = 0;
             int elmRaw = 0;
@@ -523,6 +527,34 @@ public class EJReportPOIPage implements IBlockParent
 
         }
 
+    }
+
+    private EJReportPOIAlignment getAlignment(EJReportScreenItem item)
+    {
+        switch (item.getType())
+        {
+            case DATE:
+            case LABEL:
+            case TEXT:
+            case NUMBER:
+            case IMAGE:
+                EJReportAlignmentBaseScreenItem typeAs = item.typeAs(EJReportAlignmentBaseScreenItem.class);
+                if(typeAs != null)
+                {
+                    EJReportPOIAlignment alignment = new EJReportPOIAlignment();
+                    alignment.setHAlignment(typeAs.getHAlignment());
+                    alignment.setVAlignment(typeAs.getVAlignment());
+                    return alignment;
+                }
+                break;
+
+            default:
+                break;
+        }
+        
+       
+        
+        return null;
     }
 
     private void buildTableLayout(EJReport report, EJReportBlock block, EJReportPOIBlock poiBlock, EJReportScreen screen)
@@ -613,7 +645,8 @@ public class EJReportPOIPage implements IBlockParent
                 if (canShowBlockHeader && col.showHeader())
                 {
 
-                    Collection<EJReportScreenItem> screenItems = col.getHeaderSection().getScreenItems();
+                    EJReportScreenColumnSection section = col.getHeaderSection();
+                    Collection<EJReportScreenItem> screenItems = section.getScreenItems();
 
                     boolean added = false;
                     for (EJReportScreenItem item : screenItems)
@@ -628,12 +661,24 @@ public class EJReportPOIPage implements IBlockParent
                             }
                             
                             EJReportPOIElement element = new EJReportPOIElement(item);
+                            element.setAlignment(getAlignment(item));
+                            
                             element.setWidth(width);
 
                             element.setVa(item.getVisualAttributes());
                             element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));
 
                             element.setX(nextX);
+                            
+                            
+                            
+                            if(section.showLeftLine()|| section.showRightLine()||section.showTopLine()|| section.showBottomLine())
+                            {
+                                
+                                EJReportPOIBorder border = createPOIBorder(section);
+                                element.setBorder(border);
+                                
+                            }
                             header.addElement(element);
 
                             added = true;
@@ -645,7 +690,8 @@ public class EJReportPOIPage implements IBlockParent
             // detail section
 
             {
-                Collection<EJReportScreenItem> screenItems = col.getDetailSection().getScreenItems();
+                EJReportScreenColumnSection section = col.getDetailSection();
+                Collection<EJReportScreenItem> screenItems = section.getScreenItems();
 
                 boolean added =false;
                 for (EJReportScreenItem item : screenItems)
@@ -658,13 +704,22 @@ public class EJReportPOIPage implements IBlockParent
                             break;
                         }
                         EJReportPOIElement element = new EJReportPOIElement(item);
+                        element.setAlignment(getAlignment(item));
                         element.setWidth(width);
 
                         element.setVa(item.getVisualAttributes());
                         element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));
 
                         element.setX(nextX);
+                        if(section.showLeftLine()|| section.showRightLine()||section.showTopLine()|| section.showBottomLine())
+                        {
+                            
+                            EJReportPOIBorder border = createPOIBorder(section);
+                            element.setBorder(border);
+                            
+                        }
                         detail.addElement(element);
+                        
 
                        added = true;
                     }
@@ -675,7 +730,8 @@ public class EJReportPOIPage implements IBlockParent
                 if (canShowBlockFooter && col.showFooter())
                 {
 
-                    Collection<EJReportScreenItem> screenItems = col.getFooterSection().getScreenItems();
+                    EJReportScreenColumnSection section = col.getFooterSection();
+                    Collection<EJReportScreenItem> screenItems = section.getScreenItems();
                     boolean added = false;
                     for (EJReportScreenItem item : screenItems)
                     {
@@ -687,12 +743,20 @@ public class EJReportPOIPage implements IBlockParent
                                 break;
                             }
                             EJReportPOIElement element = new EJReportPOIElement(item);
+                            element.setAlignment(getAlignment(item));
                             element.setWidth(width);
 
                             element.setVa(item.getVisualAttributes());
                             element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));
 
                             element.setX(nextX);
+                            if(section.showLeftLine()|| section.showRightLine()||section.showTopLine()|| section.showBottomLine())
+                            {
+                                
+                                EJReportPOIBorder border = createPOIBorder(section);
+                                element.setBorder(border);
+                                
+                            }
                             footer.addElement(element);
 
                             added=true;
@@ -703,6 +767,19 @@ public class EJReportPOIPage implements IBlockParent
             }
 
         }
+    }
+
+    private EJReportPOIBorder createPOIBorder(EJReportScreenColumnSection section)
+    {
+        EJReportPOIBorder border = new EJReportPOIBorder();
+        border.setShowBottomLine(section.showBottomLine());
+        border.setShowTopLine(section.showTopLine());
+        border.setShowLeftLine(section.showLeftLine());
+        border.setShowRightLine(section.showRightLine());
+        border.setVisualAttribute(section.getVisualAttributes());
+        border.setLineStyle(section.getLineStyle());
+        border.setLineWidth(section.getLineWidth());
+        return border;
     }
 
 }

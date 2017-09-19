@@ -20,6 +20,7 @@ import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
@@ -276,13 +277,34 @@ public class EJExcelPOIReportRunner
                 }
                 SXSSFCell cell = row.createCell(poiElement.getStartCell(), (value instanceof Number) ? Cell.CELL_TYPE_NUMERIC : Cell.CELL_TYPE_STRING);
 
-                cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren()));
+                cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment()));
                 if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
                 {
                     row.setRowStyle(styleHelper.getDefaultWrapStyle());
                     row.setHeight((short) -1);
                 }
                 setCellValue(cell, value);
+            }
+            else
+            {
+                EJReportVisualAttributeProperties va = poiElement.getVa();
+                EJReportDataScreenItem reportScreenItem = getReportScreenItem(poiElement.getId().getName(), section, sitemCache, record);
+                if (reportScreenItem != null && reportScreenItem.getVisualAttribute() != null)
+                {
+                    va = reportScreenItem.getVisualAttribute();
+                 }
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(),  Cell.CELL_TYPE_STRING);
+
+                XSSFCellStyle cellStyle = styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment());
+                
+                //cellStyle.setb
+                cell.setCellStyle(cellStyle);
+               
+                if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
+                {
+                    row.setRowStyle(styleHelper.getDefaultWrapStyle());
+                    row.setHeight((short) -1);
+                }
             }
         }
 

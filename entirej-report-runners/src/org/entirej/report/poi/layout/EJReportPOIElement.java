@@ -18,6 +18,9 @@ public class EJReportPOIElement
     private boolean                           wrap         = false;
     private EJReportVisualAttributeProperties va;
     private String                            defaultPattren;
+    private EJReportPOIBorder                 border;
+    private EJReportPOIAlignment              alignment;
+    
 
     public EJReportPOIElement(EJReportScreenItem item)
     {
@@ -28,6 +31,27 @@ public class EJReportPOIElement
             wrap = textScreenItem.isExpandToFit();
         }
         
+    }
+    
+    
+    public EJReportPOIBorder getBorder()
+    {
+        return border;
+    }
+    
+    public void setBorder(EJReportPOIBorder border)
+    {
+        this.border = border;
+    }
+    
+    public EJReportPOIAlignment getAlignment()
+    {
+        return alignment;
+    }
+    
+    public void setAlignment(EJReportPOIAlignment alignment)
+    {
+        this.alignment = alignment;
     }
 
     public EJReportScreenItem getId()

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -18,8 +19,11 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
+import org.entirej.report.poi.layout.EJReportPOIAlignment;
+import org.entirej.report.poi.layout.EJReportPOIBorder;
 
 public class EJPOIStyleHelper
 {
@@ -68,8 +72,8 @@ public class EJPOIStyleHelper
                 font.setFontHeight((short) (va.getFontSize() * 20));
             }
             currentLocale = report.getCurrentLocale();
-            defaultStyle = getStyle(false, va, null);
-            defaultStyleWarp = getStyle(true, va, null);
+            defaultStyle = getStyle(false, va, null,null,null);
+            defaultStyleWarp = getStyle(true, va, null,null,null);
         }
         else
         {
@@ -89,7 +93,7 @@ public class EJPOIStyleHelper
     
     
 
-    public XSSFCellStyle getStyle(boolean wrap,EJReportVisualAttributeProperties va, String defaultPattren)
+    public XSSFCellStyle getStyle(boolean wrap,EJReportVisualAttributeProperties va, String defaultPattren,EJReportPOIBorder border,EJReportPOIAlignment alignment)
     {
 
          Map<String, XSSFCellStyle> cache = wrap?wrapcache:nonecache;
@@ -98,7 +102,7 @@ public class EJPOIStyleHelper
             return  wrap?defaultStyleWarp:defaultStyle;;
         XSSFCellStyle cellStyle;
 
-        String key = va.getName();
+        String key = va.getName()+(border!=null?border.hashCode():"")+(alignment!=null?alignment.hashCode():"");
         if(defaultPattren!=null)
         {
             key+=defaultPattren; 
@@ -155,7 +159,7 @@ public class EJPOIStyleHelper
                 cellStyle.setFont(font);
             }
 
-            switch (va.getHAlignment())
+            switch ((alignment!=null && alignment.getHAlignment()!=EJReportScreenAlignment.NONE)?alignment.getHAlignment():va.getHAlignment())
             {
                 case LEFT:
                     cellStyle.setAlignment(HorizontalAlignment.LEFT);
@@ -173,7 +177,7 @@ public class EJPOIStyleHelper
                 default:
                     break;
             }
-            switch (va.getVAlignment())
+            switch ((alignment!=null && alignment.getVAlignment()!=EJReportScreenAlignment.NONE)?alignment.getVAlignment():va.getVAlignment())
             {
                 case TOP:
                     cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
@@ -362,6 +366,62 @@ public class EJPOIStyleHelper
             cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor)); 
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
            
+        }
+        
+        if(border!=null)
+        {
+            BorderStyle style = BorderStyle.THIN;
+            switch (border.getLineStyle())
+            {
+                case DASHED:
+                    style = BorderStyle.DASHED;
+                    break;
+                case DOTTED:
+                    style = BorderStyle.DOTTED;
+                    break;
+                case DOUBLE:
+                    style = BorderStyle.DOUBLE;
+                    break;
+                case SOLID:
+                    style = BorderStyle.THIN;
+                    break;
+
+            }
+            XSSFColor bcolor = null;
+            if(border.getVisualAttributeName()!=null && border.getVisualAttributeName().getBackgroundColor()!=null)
+            {
+                
+                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor())); 
+               
+            }
+            
+            if(border.isShowLeftLine())
+            {
+                cellStyle.setBorderLeft(style); 
+                if(bcolor!=null)
+                    cellStyle.setLeftBorderColor(bcolor);
+            }
+            
+            if(border.isShowRightLine())
+            {
+                cellStyle.setBorderRight(style); 
+                if(bcolor!=null)
+                    cellStyle.setRightBorderColor(bcolor);
+            }
+            if(border.isShowBottomLine())
+            {
+                cellStyle.setBorderBottom(style); 
+                if(bcolor!=null)
+                    cellStyle.setBottomBorderColor(bcolor);
+            }
+            if(border.isShowTopLine())
+            {
+                cellStyle.setBorderTop(style); 
+                if(bcolor!=null)
+                    cellStyle.setTopBorderColor(bcolor);
+            }
+            
+            
         }
         
         

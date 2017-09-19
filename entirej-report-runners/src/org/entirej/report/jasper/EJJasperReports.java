@@ -508,6 +508,7 @@ public class EJJasperReports
                     exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
                     SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
                     configuration.setWrapText(true);
+                    configuration.setIgnoreCellBorder(false);
                     configuration.setOnePagePerSheet(false);
                     configuration.setIgnorePageMargins(true);
                     configuration.setDetectCellType(Boolean.TRUE);
