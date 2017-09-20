@@ -4,65 +4,47 @@ import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportScreenRotation;
+import org.entirej.framework.report.interfaces.EJReportBorderProperties;
 import org.entirej.framework.report.interfaces.EJReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineStyle;
 
 public abstract class EJCoreReportScreenItemProperties implements EJReportScreenItemProperties
 {
 
-    private boolean                     _visible       = true;
+    private boolean                     _visible      = true;
     private String                      _name;
     private String                      _visualAttributeName;
     private int                         _xPos, _yPos, _width, _height;
-    private int                         _rightPadding  = -1;
-    private int                         _leftPadding   = -1;
+    private int                         _rightPadding = -1;
+    private int                         _leftPadding  = -1;
     private boolean                     _widthAsPercentage, _heightAsPercentage;
     private EJCoreReportBlockProperties _blockProperties;
+
 
     public EJCoreReportScreenItemProperties(EJCoreReportBlockProperties blockProperties)
     {
         this._blockProperties = blockProperties;
     }
-    
-    
-    
 
     public int getRightPadding()
     {
         return _rightPadding;
     }
 
-
-
-
     public void setRightPadding(int rightPadding)
     {
         this._rightPadding = rightPadding;
     }
-
-
-
 
     public int getLeftPadding()
     {
         return _leftPadding;
     }
 
-
-
-
     public void setLeftPadding(int leftPadding)
     {
         this._leftPadding = leftPadding;
     }
-
-
-
-
-  
-
-
-
 
     @Override
     public EJReportVisualAttributeProperties getVisualAttributeProperties()
@@ -79,8 +61,7 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
             return;
         }
 
-        EJReportVisualAttributeProperties vaProperties = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
-                .getVisualAttributeProperties(visualAttributeName);
+        EJReportVisualAttributeProperties vaProperties = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(visualAttributeName);
         if (vaProperties == null)
         {
             throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this report.");
@@ -379,11 +360,19 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
         public void setRotation(EJReportScreenRotation rotation);
     }
 
-    public static abstract class AlignmentBaseItem extends EJCoreReportScreenItemProperties
+    public static abstract class AlignmentBaseItem extends EJCoreReportScreenItemProperties implements EJReportBorderProperties
     {
 
         private EJReportScreenAlignment hAlignment = EJReportScreenAlignment.LEFT;
         private EJReportScreenAlignment vAlignment = EJReportScreenAlignment.CENTER;
+        
+        private LineStyle                   lineStyle     = LineStyle.SOLID;
+        private double                      lineWidth     = 1;
+        private boolean                     showTopLine;
+        private boolean                     showBottomLine;
+        private boolean                     showLeftLine;
+        private boolean                     showRightLine;
+        private String                      lineVisualAttributeName;
 
         public AlignmentBaseItem(EJCoreReportBlockProperties blockProperties)
         {
@@ -409,6 +398,87 @@ public abstract class EJCoreReportScreenItemProperties implements EJReportScreen
         {
             this.vAlignment = vAlignment;
         }
+        
+        
+
+        public LineStyle getLineStyle()
+        {
+            return lineStyle;
+        }
+
+        public void setLineStyle(LineStyle lineStyle)
+        {
+            this.lineStyle = lineStyle;
+        }
+
+        public double getLineWidth()
+        {
+            return lineWidth;
+        }
+
+        public void setLineWidth(double lineWidth)
+        {
+            this.lineWidth = lineWidth;
+        }
+
+        public boolean showTopLine()
+        {
+            return showTopLine;
+        }
+
+        public void setShowTopLine(boolean showTopLine)
+        {
+            this.showTopLine = showTopLine;
+        }
+
+        public boolean showBottomLine()
+        {
+            return showBottomLine;
+        }
+
+        public void setShowBottomLine(boolean showBottomLine)
+        {
+            this.showBottomLine = showBottomLine;
+        }
+
+        public boolean showLeftLine()
+        {
+            return showLeftLine;
+        }
+
+        public void setShowLeftLine(boolean showLeftLine)
+        {
+            this.showLeftLine = showLeftLine;
+        }
+
+        public boolean showRightLine()
+        {
+            return showRightLine;
+        }
+
+        public void setShowRightLine(boolean showRightLine)
+        {
+            this.showRightLine = showRightLine;
+        }
+
+        public String getVisualAttributeName()
+        {
+            return lineVisualAttributeName;
+        }
+
+        public void setLineVisualAttributeName(String visualAttributeName)
+        {
+            this.lineVisualAttributeName = visualAttributeName;
+        }
+
+        
+        public EJReportVisualAttributeProperties getLineVisualAttributeProperties()
+        {
+
+            return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(lineVisualAttributeName);
+        }
+
+        
 
     }
 

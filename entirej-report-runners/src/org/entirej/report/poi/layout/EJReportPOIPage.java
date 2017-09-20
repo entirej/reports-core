@@ -452,6 +452,11 @@ public class EJReportPOIPage implements IBlockParent
             
             element.setAlignment(getAlignment(item));
 
+            EJReportPOIBorder border = getBorder(item);
+            if(border!=null)
+                element.setBorder(border);
+            
+            
             int currentY = 0;
             int elmRaw = 0;
             for (int raw = 0; raw < rawheights.size(); raw++)
@@ -553,6 +558,43 @@ public class EJReportPOIPage implements IBlockParent
         }
         
        
+        
+        return null;
+    }
+    private EJReportPOIBorder getBorder(EJReportScreenItem item)
+    {
+        switch (item.getType())
+        {
+            case DATE:
+            case LABEL:
+            case TEXT:
+            case NUMBER:
+            case IMAGE:
+                EJReportAlignmentBaseScreenItem typeAs = item.typeAs(EJReportAlignmentBaseScreenItem.class);
+                if(typeAs != null)
+                {
+                   
+                    if(typeAs.showLeftLine()|| typeAs.showRightLine()||typeAs.showTopLine()|| typeAs.showBottomLine())
+                        
+                    {
+                        EJReportPOIBorder border = new EJReportPOIBorder();
+                        border.setShowBottomLine(typeAs.showBottomLine());
+                        border.setShowTopLine(typeAs.showTopLine());
+                        border.setShowLeftLine(typeAs.showLeftLine());
+                        border.setShowRightLine(typeAs.showRightLine());
+                        border.setVisualAttribute(typeAs.getLineVisualAttributes());
+                        border.setLineStyle(typeAs.getLineStyle());
+                        border.setLineWidth(typeAs.getLineWidth());
+                        return border;
+                    }
+                }
+                break;
+                
+            default:
+                break;
+        }
+        
+        
         
         return null;
     }
@@ -671,7 +713,7 @@ public class EJReportPOIPage implements IBlockParent
                             element.setX(nextX);
                             
                             
-                            
+                            //column base border
                             if(section.showLeftLine()|| section.showRightLine()||section.showTopLine()|| section.showBottomLine())
                             {
                                 
@@ -679,6 +721,13 @@ public class EJReportPOIPage implements IBlockParent
                                 element.setBorder(border);
                                 
                             }
+                            EJReportPOIBorder border = getBorder(item);
+                            if(border!=null)
+                                element.setBorder(border);
+                           
+                            
+                            
+                            
                             header.addElement(element);
 
                             added = true;
@@ -718,6 +767,9 @@ public class EJReportPOIPage implements IBlockParent
                             element.setBorder(border);
                             
                         }
+                        EJReportPOIBorder border = getBorder(item);
+                        if(border!=null)
+                            element.setBorder(border);
                         detail.addElement(element);
                         
 
@@ -757,6 +809,9 @@ public class EJReportPOIPage implements IBlockParent
                                 element.setBorder(border);
                                 
                             }
+                            EJReportPOIBorder border = getBorder(item);
+                            if(border!=null)
+                                element.setBorder(border);
                             footer.addElement(element);
 
                             added=true;
@@ -776,7 +831,7 @@ public class EJReportPOIPage implements IBlockParent
         border.setShowTopLine(section.showTopLine());
         border.setShowLeftLine(section.showLeftLine());
         border.setShowRightLine(section.showRightLine());
-        border.setVisualAttribute(section.getVisualAttributes());
+        border.setVisualAttribute(section.getLineVisualAttributes());
         border.setLineStyle(section.getLineStyle());
         border.setLineWidth(section.getLineWidth());
         return border;

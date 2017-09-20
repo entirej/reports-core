@@ -2,6 +2,7 @@ package org.entirej.framework.report;
 
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
+import org.entirej.framework.report.interfaces.EJReportBorderProperties.LineStyle;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 
@@ -80,6 +81,54 @@ public class EJReportAlignmentBaseScreenItem
         return item.getVAlignment();
     }
 
+    public int getRightPadding()
+    {
+        return item.getRightPadding();
+    }
+
+    public int getLeftPadding()
+    {
+        return item.getLeftPadding();
+    }
+
+    public LineStyle getLineStyle()
+    {
+        return item.getLineStyle();
+    }
+
+    public double getLineWidth()
+    {
+        return item.getLineWidth();
+    }
+
+    public boolean showTopLine()
+    {
+        return item.showTopLine();
+    }
+
+    public boolean showBottomLine()
+    {
+        return item.showBottomLine();
+    }
+
+    public boolean showLeftLine()
+    {
+        return item.showLeftLine();
+    }
+
+    public boolean showRightLine()
+    {
+        return item.showRightLine();
+    }
+
+    public EJReportVisualAttributeProperties getLineVisualAttributes()
+    {
+        return item.getLineVisualAttributeProperties();
+    }
+
+    
+    
+    
      
     
     

@@ -21,6 +21,7 @@ import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportScreenRotation;
+import org.entirej.framework.report.interfaces.EJReportBorderProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.AlignmentBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
@@ -63,6 +64,13 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
     private static final String              ELEMENT_SCREEN_LINE_DIRECTION       = "lineDirection";
     private static final String              ELEMENT_SCREEN_RECT_RADIUS          = "rectRadius";
     private static final String              ELEMENT_SCREEN_DEFAULT_IMAGE        = "defaultImage";
+    private static final String              ELEMENT_SHOW_TOPLINE                = "showTopLine";
+    private static final String              ELEMENT_SHOW_BOTTOMLINE             = "showBottomLine";
+    private static final String              ELEMENT_SHOW_LEFTLINE               = "showLeftLine";
+    private static final String              ELEMENT_SHOW_RIGHTLINE              = "showRightLine";
+    private static final String              ELEMENT_LINE_WIDTH                  = "lineWidth";
+    private static final String              ELEMENT_LINE_STYLE                  = "lineStyle";
+    private static final String              ELEMENT_LINE_VA                     = "lineVA";
 
     public ReportScreenItemHandler(EJCoreReportSreenItemContainer itemContainer)
     {
@@ -114,7 +122,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
         {
             _itemProperties.setHeight(Integer.parseInt(value));
         }
-        
+
         else if (name.equals(ELEMENT_SCREEN_PADDING_LEFT))
         {
             _itemProperties.setLeftPadding(Integer.parseInt(value));
@@ -184,6 +192,63 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
 
             }
         }
+        else if (name.equals(ELEMENT_LINE_WIDTH))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setLineWidth(Double.parseDouble(value));
+            }
+        }
+        else if (name.equals(ELEMENT_LINE_STYLE))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setLineStyle(EJReportBorderProperties.LineStyle.valueOf(value));
+            }
+        }
+        else if (name.equals(ELEMENT_LINE_VA))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setLineVisualAttributeName(value);
+            }
+        }
+        else if (name.equals(ELEMENT_SHOW_TOPLINE))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setShowTopLine(Boolean.valueOf(value));
+            }
+        }
+        else if (name.equals(ELEMENT_SHOW_BOTTOMLINE))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setShowBottomLine(Boolean.valueOf(value));
+            }
+        }
+        else if (name.equals(ELEMENT_SHOW_LEFTLINE))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setShowLeftLine(Boolean.valueOf(value));
+            }
+        }
+        else if (name.equals(ELEMENT_SHOW_RIGHTLINE))
+        {
+            if (_itemProperties instanceof EJCoreReportScreenItemProperties.AlignmentBaseItem)
+            {
+                final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
+                item.setShowRightLine(Boolean.valueOf(value));
+            }
+        }
+
         else if (name.equals(ELEMENT_SCREEN_ROTATION))
         {
             if (_itemProperties instanceof EJCoreReportScreenItemProperties.RotatableItem)

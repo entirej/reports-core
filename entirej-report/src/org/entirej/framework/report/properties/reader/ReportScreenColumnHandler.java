@@ -153,7 +153,7 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
             }
             else if (name.equals(ELEMENT_LINE_VA))
             {
-                _sectionProperties.setVisualAttributeName(value);
+                _sectionProperties.setLineVisualAttributeName(value);
             }
             else if (name.equals(ELEMENT_SHOW_TOPLINE))
             {

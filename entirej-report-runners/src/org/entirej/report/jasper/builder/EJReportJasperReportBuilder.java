@@ -855,6 +855,7 @@ public class EJReportJasperReportBuilder
 
                             processItemStyle(item, element, EJReportScreenSection.HEADER);
                             processItemLineStyle(element, col.getHeaderSection());
+                            processItemLineStyle(element, item);
 
                             element.setPositionType(PositionTypeEnum.FLOAT);
                             element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
@@ -911,6 +912,7 @@ public class EJReportJasperReportBuilder
                             detail.addElement(element);
                             processItemStyle(item, element, EJReportScreenSection.DETAIL);
                             processItemLineStyle(element, col.getDetailSection());
+                            processItemLineStyle(element, item);
 
                             /*
                              * if(element.getStyle() instanceof JRDesignStyle) { JRDesignStyle style =
@@ -985,6 +987,7 @@ public class EJReportJasperReportBuilder
                             footer.addElement(element);
                             processItemStyle(item, element, EJReportScreenSection.FOOTER);
                             processItemLineStyle(element, col.getFooterSection());
+                            processItemLineStyle(element, item);
                             element.setPositionType(PositionTypeEnum.FLOAT);
                             element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
                         }
@@ -1097,6 +1100,53 @@ public class EJReportJasperReportBuilder
         }
 
     }
+    private void processItemLineStyle(JRDesignElement element, EJReportScreenItem item)
+    {
+       
+        
+        EJReportAlignmentBaseScreenItem alignmentBaseScreenItem = null;
+        
+        switch (item.getType())
+        {
+            case DATE:
+            case LABEL:
+            case TEXT:
+            case NUMBER:
+            case IMAGE:
+                EJReportAlignmentBaseScreenItem typeAs = item.typeAs(EJReportAlignmentBaseScreenItem.class);
+                if(typeAs != null)
+                {
+                    alignmentBaseScreenItem = typeAs;
+                }
+        }
+        
+        if(alignmentBaseScreenItem==null)
+            return;
+        
+        JRDesignStyle style = (JRDesignStyle) element.getStyle();
+        JRLineBox lineBox = style.getLineBox();
+        if (alignmentBaseScreenItem.showLeftLine())
+        {
+            JRBoxPen pen = lineBox.getLeftPen();
+            linepenStyle(alignmentBaseScreenItem, pen);
+        }
+        if (alignmentBaseScreenItem.showRightLine())
+        {
+            JRBoxPen pen = lineBox.getRightPen();
+            linepenStyle(alignmentBaseScreenItem, pen);
+        }
+        if (alignmentBaseScreenItem.showTopLine())
+        {
+            JRBoxPen pen = lineBox.getTopPen();
+            linepenStyle(alignmentBaseScreenItem, pen);
+        }
+        if (alignmentBaseScreenItem.showBottomLine())
+        {
+            JRBoxPen pen = lineBox.getBottomPen();
+            linepenStyle(alignmentBaseScreenItem, pen);
+        }
+        
+    }
 
     private void linepenStyle(EJReportScreenColumnSection section, JRBoxPen pen)
     {
@@ -1118,9 +1168,34 @@ public class EJReportJasperReportBuilder
 
         }
 
-        if (section.getVisualAttributes() != null && section.getVisualAttributes().getBackgroundColor() != null)
+        if (section.getLineVisualAttributes() != null && section.getLineVisualAttributes().getBackgroundColor() != null)
         {
-            pen.setLineColor(section.getVisualAttributes().getBackgroundColor());
+            pen.setLineColor(section.getLineVisualAttributes().getBackgroundColor());
+        }
+    }
+    private void linepenStyle(EJReportAlignmentBaseScreenItem section, JRBoxPen pen)
+    {
+        pen.setLineWidth((float) section.getLineWidth());
+        switch (section.getLineStyle())
+        {
+            case DASHED:
+                pen.setLineStyle(LineStyleEnum.DASHED);
+                break;
+            case DOTTED:
+                pen.setLineStyle(LineStyleEnum.DOTTED);
+                break;
+            case DOUBLE:
+                pen.setLineStyle(LineStyleEnum.DOUBLE);
+                break;
+            case SOLID:
+                pen.setLineStyle(LineStyleEnum.SOLID);
+                break;
+                
+        }
+        
+        if (section.getLineVisualAttributes() != null && section.getLineVisualAttributes().getBackgroundColor() != null)
+        {
+            pen.setLineColor(section.getLineVisualAttributes().getBackgroundColor());
         }
     }
 
@@ -1246,7 +1321,7 @@ public class EJReportJasperReportBuilder
     private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int width, EJReportScreenColumnSection section) throws JRException
     {
 
-        EJReportVisualAttributeProperties va = section.getVisualAttributes();
+        EJReportVisualAttributeProperties va = section.getLineVisualAttributes();
         JRDesignStyle style = null;
         if (va != null)
         {
@@ -1490,6 +1565,7 @@ public class EJReportJasperReportBuilder
                 detail.addElement(element);
 
                 processItemStyle(item, element, EJReportScreenSection.DETAIL);
+                processItemLineStyle(element, item);
             }
 
         }
