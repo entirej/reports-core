@@ -62,6 +62,18 @@ public class EJReportScreen
         return _properties.getX();
     }
 
+    public boolean isNewPage()
+    {
+        return _properties.isNewPage();
+    }
+
+    
+    
+    public boolean isFitToPage()
+    {
+        return _properties.isFitToPage();
+    }
+
     /**
      * @return Returns the Y position of this screen
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report.interfaces;
 
@@ -78,5 +78,10 @@ public interface EJReportScreenItemProperties extends Serializable
     public int getY();
 
     public String getName();
+
+    public int getRightPadding();
+
+    public int getLeftPadding();
+
 
 }

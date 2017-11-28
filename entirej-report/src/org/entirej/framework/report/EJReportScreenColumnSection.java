@@ -60,14 +60,14 @@ public class EJReportScreenColumnSection
         return _properties.showRightLine();
     }
 
-    public String getVisualAttributeName()
+    public String getLineVisualAttributeName()
     {
-        return _properties.getVisualAttributeName();
+        return _properties.getLineVisualAttributeName();
     }
 
-    public EJReportVisualAttributeProperties getVisualAttributes()
+    public EJReportVisualAttributeProperties getLineVisualAttributes()
     {
-        return _properties.getVisualAttributeProperties();
+        return _properties.getLineVisualAttributeProperties();
     }
 
     public Collection<EJReportScreenItem> getScreenItems()
@@ -79,6 +79,20 @@ public class EJReportScreenColumnSection
             items.add(new EJReportScreenItem(_block, item));
         }
         return items;
+    }
+    
+
+    public EJReportScreenItem getScreenItem(String name)
+    {
+        
+        for (EJCoreReportScreenItemProperties item : _properties.getScreenItems())
+        {
+            if(item.getName().equals(name))
+            {
+               return  new EJReportScreenItem(_block, item);
+            }
+        }
+        return null;
     }
 
 }

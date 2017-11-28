@@ -15,7 +15,7 @@ public interface EJReportBorderProperties
 
     double getLineWidth();
 
-    EJReportVisualAttributeProperties getVisualAttributeProperties();
+    EJReportVisualAttributeProperties getLineVisualAttributeProperties();
 
     boolean showTopLine();
 

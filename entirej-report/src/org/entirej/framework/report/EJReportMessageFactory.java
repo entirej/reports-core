@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report;
 
@@ -166,13 +166,13 @@ public class EJReportMessageFactory implements Serializable
             case NO_BLOCK_ON_FORM:
                 return new EJReportMessage("There is no block called $1 on form $2", replacementStrings);
             case NO_REPORT_PARAMETER:
-                return new EJReportMessage("No Form Parameter with the name $1 on form $2", replacementStrings);
+                return new EJReportMessage("No Report Parameter with the name $1 on form $2", replacementStrings);
             case NO_FORM_LEVEL_APP_PROPERTY:
-                return new EJReportMessage("No Form Level Application Property with the name $1 on form $2", replacementStrings);
+                return new EJReportMessage("No Report Level Application Property with the name $1 on report $2", replacementStrings);
             case NO_BLOCK_LEVEL_APP_PROPERTY:
                 return new EJReportMessage("No Block Level Application Property with the name $1 on block $2 on form $3", replacementStrings);
             case NO_FORM_PROPERTIES_FOR_REUSABLE_BLOCK:
-                return new EJReportMessage("No FormProperties available for reusable block $1", replacementStrings);
+                return new EJReportMessage("No ReportProperties available for reusable block $1", replacementStrings);
             case NO_FORM_PROPERTIES_FOR_OBJECTGROUP:
                 return new EJReportMessage("No FormProperties available for reusable block $1", replacementStrings);
             case NO_FORM_PROPERTIES_FOR_REUSABLE_LOV:

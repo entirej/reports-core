@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report;
 
@@ -79,6 +79,8 @@ public class EJReportScreenItem implements Serializable
     {
         return _itemProps.getY();
     }
+    
+    
 
     /**
      * Return the name of this item
@@ -118,6 +120,19 @@ public class EJReportScreenItem implements Serializable
         return _itemProps.isVisible();
     }
 
+    
+    
+    public int getRightPadding()
+    {
+        return _itemProps.getRightPadding();
+    }
+
+    public int getLeftPadding()
+    {
+        return _itemProps.getLeftPadding();
+    }
+
+   
     /**
      * Sets this item visible
      * <p>

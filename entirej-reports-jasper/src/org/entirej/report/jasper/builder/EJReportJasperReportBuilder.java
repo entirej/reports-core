@@ -1,64 +1,14 @@
 package org.entirej.report.jasper.builder;
 
 import java.awt.Color;
-import java.awt.Paint;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-
-import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
-import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
-import net.sf.jasperreports.charts.design.JRDesignPieDataset;
-import net.sf.jasperreports.charts.design.JRDesignPieSeries;
-import net.sf.jasperreports.charts.design.JRDesignXyDataset;
-import net.sf.jasperreports.charts.design.JRDesignXySeries;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRDefaultStyleProvider;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JRPen;
-import net.sf.jasperreports.engine.JRStyle;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.base.JRBaseStyle;
-import net.sf.jasperreports.engine.design.JRDesignBand;
-import net.sf.jasperreports.engine.design.JRDesignBreak;
-import net.sf.jasperreports.engine.design.JRDesignChart;
-import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JRDesignField;
-import net.sf.jasperreports.engine.design.JRDesignGroup;
-import net.sf.jasperreports.engine.design.JRDesignImage;
-import net.sf.jasperreports.engine.design.JRDesignLine;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
-import net.sf.jasperreports.engine.design.JRDesignPropertyExpression;
-import net.sf.jasperreports.engine.design.JRDesignRectangle;
-import net.sf.jasperreports.engine.design.JRDesignSection;
-import net.sf.jasperreports.engine.design.JRDesignStaticText;
-import net.sf.jasperreports.engine.design.JRDesignStyle;
-import net.sf.jasperreports.engine.design.JRDesignSubreport;
-import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
-import net.sf.jasperreports.engine.design.JRDesignTextField;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
-import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
-import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
-import net.sf.jasperreports.engine.type.LineDirectionEnum;
-import net.sf.jasperreports.engine.type.LineStyleEnum;
-import net.sf.jasperreports.engine.type.ModeEnum;
-import net.sf.jasperreports.engine.type.PositionTypeEnum;
-import net.sf.jasperreports.engine.type.RotationEnum;
-import net.sf.jasperreports.engine.type.ScaleImageEnum;
-import net.sf.jasperreports.engine.type.SplitTypeEnum;
-import net.sf.jasperreports.engine.type.StretchTypeEnum;
-import net.sf.jasperreports.engine.type.VerticalAlignEnum;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportAlignmentBaseScreenItem;
@@ -87,7 +37,6 @@ import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
-import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
 import org.entirej.framework.report.interfaces.EJReportProperties;
@@ -99,6 +48,54 @@ import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProper
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 import org.entirej.report.jasper.data.EJReportActionContext;
 import org.entirej.report.jasper.data.EJReportBlockContext;
+
+import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
+import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
+import net.sf.jasperreports.charts.design.JRDesignPieDataset;
+import net.sf.jasperreports.charts.design.JRDesignPieSeries;
+import net.sf.jasperreports.charts.design.JRDesignXyDataset;
+import net.sf.jasperreports.charts.design.JRDesignXySeries;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRDefaultStyleProvider;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParagraphContainer;
+import net.sf.jasperreports.engine.JRPen;
+import net.sf.jasperreports.engine.JRStyle;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.base.JRBaseStyle;
+import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignBreak;
+import net.sf.jasperreports.engine.design.JRDesignChart;
+import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignGroup;
+import net.sf.jasperreports.engine.design.JRDesignImage;
+import net.sf.jasperreports.engine.design.JRDesignLine;
+import net.sf.jasperreports.engine.design.JRDesignParameter;
+import net.sf.jasperreports.engine.design.JRDesignRectangle;
+import net.sf.jasperreports.engine.design.JRDesignSection;
+import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.design.JRDesignStyle;
+import net.sf.jasperreports.engine.design.JRDesignSubreport;
+import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
+import net.sf.jasperreports.engine.design.JRDesignTextField;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
+import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
+import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
+import net.sf.jasperreports.engine.type.LineDirectionEnum;
+import net.sf.jasperreports.engine.type.LineStyleEnum;
+import net.sf.jasperreports.engine.type.ModeEnum;
+import net.sf.jasperreports.engine.type.PositionTypeEnum;
+import net.sf.jasperreports.engine.type.RotationEnum;
+import net.sf.jasperreports.engine.type.ScaleImageEnum;
+import net.sf.jasperreports.engine.type.SplitTypeEnum;
+import net.sf.jasperreports.engine.type.StretchTypeEnum;
+import net.sf.jasperreports.engine.type.VerticalAlignEnum;
+import net.sf.jasperreports.engine.util.StyleResolver;
 
 public class EJReportJasperReportBuilder
 {
@@ -252,9 +249,9 @@ public class EJReportJasperReportBuilder
                         text.setY(0);
 
                         newPageBand.addElement(text);
-                      
+
                         text.setMode(ModeEnum.TRANSPARENT);
-                        
+
                         JRDesignBreak designBreak = new JRDesignBreak();
                         designBreak.setX(0);
                         designBreak.setY(0);
@@ -316,15 +313,14 @@ public class EJReportJasperReportBuilder
     {
         EJReportScreen screen = block.getScreen();
 
+        String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
+        JRDesignField field = new JRDesignField();
+
+        field.setName(blockDataSourceField);
+        field.setValueClass(JRDataSource.class);
+        design.addField(field);
         if (screen.getType() != EJReportScreenType.NONE)
         {
-
-            String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
-            JRDesignField field = new JRDesignField();
-
-            field.setName(blockDataSourceField);
-            field.setValueClass(JRDataSource.class);
-            design.addField(field);
 
             JRDefaultStyleProvider styleProvider = new JRDefaultStyleProvider()
             {
@@ -332,6 +328,13 @@ public class EJReportJasperReportBuilder
                 @Override
                 public JRStyle getDefaultStyle()
                 {
+                    return null;
+                }
+
+                @Override
+                public StyleResolver getStyleResolver()
+                {
+                    // TODO Auto-generated method stub
                     return null;
                 }
             };
@@ -1398,6 +1401,13 @@ public class EJReportJasperReportBuilder
                     {
                         return null;
                     }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
                 }, chartType);
 
                 JRDesignCategoryDataset data = new JRDesignCategoryDataset(null);
@@ -1457,6 +1467,13 @@ public class EJReportJasperReportBuilder
                     {
                         return null;
                     }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
                 }, chartType);
 
                 JRDesignXyDataset data = new JRDesignXyDataset(null);
@@ -1511,6 +1528,13 @@ public class EJReportJasperReportBuilder
                     @Override
                     public JRStyle getDefaultStyle()
                     {
+                        return null;
+                    }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
                         return null;
                     }
                 }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_PIE3D : JRDesignChart.CHART_TYPE_PIE);
@@ -1924,11 +1948,10 @@ public class EJReportJasperReportBuilder
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
                 text.setExpression(valueExpression);
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+               
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
-                text.setStretchWithOverflow(textItem.isExpandToFit());
+                text.setStretchWithOverflow(textItem.isExpandToFit() || (properties != null && properties.isExpandToFit()));
                 text.setBlankWhenNull(true);
                 configMarkup(itemStyle, item);
             }
@@ -1950,8 +1973,7 @@ public class EJReportJasperReportBuilder
                     text.setEvaluationTime(EvaluationTimeEnum.MASTER);
                 }
                 text.setExpression(valueExpression);
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+              
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
@@ -1995,8 +2017,7 @@ public class EJReportJasperReportBuilder
                 JRDesignExpression valueExpression = createValueExpression(block.getReport(), textItem.getValue());
 
                 text.setExpression(valueExpression);
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+              
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
@@ -2064,8 +2085,7 @@ public class EJReportJasperReportBuilder
                 EJReportLabelScreenItem labelItem = item.typeAs(EJReportLabelScreenItem.class);
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
-                text.getParagraph().setRightIndent(5);
-                text.getParagraph().setLeftIndent(5);
+               
                 text.setStretchWithOverflow(true);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(itemStyle, labelItem);
@@ -2135,6 +2155,13 @@ public class EJReportJasperReportBuilder
                     {
                         return null;
                     }
+
+                    @Override
+                    public StyleResolver getStyleResolver()
+                    {
+                        // TODO Auto-generated method stub
+                        return null;
+                    }
                 };
                 JRDesignImage image = new JRDesignImage(styleProvider);
 
@@ -2151,6 +2178,28 @@ public class EJReportJasperReportBuilder
                 break;
         }
         element.setStyle(itemStyle);
+        
+        if(element instanceof JRParagraphContainer)
+        {
+            JRParagraphContainer paragraphContainer = (JRParagraphContainer) element;
+            if(item.getLeftPadding()>-1)
+            {
+                paragraphContainer.getParagraph().setLeftIndent(item.getLeftPadding());
+            }
+            else
+            {
+                paragraphContainer.getParagraph().setLeftIndent(1);
+            }
+            if(item.getRightPadding()>-1)
+            {
+                paragraphContainer.getParagraph().setRightIndent(item.getRightPadding());
+            }
+            else
+            {
+                paragraphContainer.getParagraph().setRightIndent(1);
+            }
+        }
+        
 
         return element;
     }
@@ -2361,6 +2410,23 @@ public class EJReportJasperReportBuilder
             }
 
         }
+        else
+        {
+            if (deafultImage != null && !deafultImage.isEmpty())
+            {
+
+                if (deafultImage.startsWith("/"))
+                {
+                    deafultImage = deafultImage.substring(1);
+                }
+                if (deafultImage.startsWith("\\s"))
+                {
+                    deafultImage = deafultImage.substring(1);
+                }
+                expression.setText(String.format("this.getClass().getClassLoader().getResourceAsStream(\"%s\")", deafultImage));
+            }
+        }
+
         return expression;
     }
 

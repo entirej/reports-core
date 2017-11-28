@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  * 
- * Contributors: Mojave Innovations GmbH - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report.properties.reader;
 
@@ -45,6 +45,7 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
     private static final String                   MANUALFORMAT          = "manualFormat";
     private static final String                   LOCALEFORMAT          = "localeFormat";
     private static final String                   FORMAT_DECIMAL_DIGITS = "decimalDigits";
+    private static final String                   EXPAND_TO_FIT         = "expandToFit";
 
     @Override
     public void startLocalElement(String name, Attributes attributes) throws SAXException
@@ -128,6 +129,13 @@ public class ReportVisualAttributeHandler extends EJCoreReportPropertiesTagHandl
             if (value.length() > 0)
             {
                 _vaProperties.setMaximumDecimalDigits(Integer.valueOf(value));
+            }
+        }
+        else if (name.equals(EXPAND_TO_FIT))
+        {
+            if (value.length() > 0)
+            {
+                _vaProperties.setExpandToFit(Boolean.valueOf(value));
             }
         }
         else if (name.equals(MANUALFORMAT))

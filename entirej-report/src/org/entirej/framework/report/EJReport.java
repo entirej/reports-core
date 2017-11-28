@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report;
 
@@ -265,6 +265,12 @@ public class EJReport extends EJCoreReport implements EJReportFrameworkHelper
     {
         return getInternalReport().getReportParameter(name);
     }
+    
+    public boolean hasReportParameter(String name)
+    {
+        return getInternalReport().hasReportParameter(name);
+    }
+    
 
     /**
      * Translates a given text to the current application <code>{@link Locale}

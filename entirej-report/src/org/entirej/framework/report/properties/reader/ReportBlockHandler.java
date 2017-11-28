@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  * 
- * Contributors: Mojave Innovations GmbH - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report.properties.reader;
 
@@ -43,6 +43,8 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
     private static final String         ELEMENT_SCREEN_Y            = "y";
     private static final String         ELEMENT_SCREEN_WIDTH        = "width";
     private static final String         ELEMENT_SCREEN_HEIGHT       = "height";
+    private static final String         ELEMENT_NEW_PAGE            = "newPage";
+    private static final String         ELEMENT_FIT_TO_PAGE         = "fitToPage";
 
     private static final String         ELEMENT_BLOCK_GROUP         = "blockGroup";
     private static final String         ELEMENT_ITEM                = "item";
@@ -196,6 +198,14 @@ public class ReportBlockHandler extends EJCoreReportPropertiesTagHandler
         else if (name.equals(ELEMENT_SCREEN_HEIGHT))
         {
             _blockProperties.getScreenProperties().setHeight(Integer.parseInt(value));
+        }
+        else if (name.equals(ELEMENT_NEW_PAGE))
+        {
+            _blockProperties.getScreenProperties().setNewPage(Boolean.parseBoolean(value));
+        }
+        else if (name.equals(ELEMENT_FIT_TO_PAGE))
+        {
+            _blockProperties.getScreenProperties().setFitToPage(Boolean.parseBoolean(value));
         }
     }
 

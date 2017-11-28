@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report.actionprocessor.interfaces;
 
@@ -24,6 +24,7 @@ import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportActionProcessorException;
 import org.entirej.framework.report.EJReportRecord;
+import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.service.EJReportQueryCriteria;
 
@@ -71,6 +72,8 @@ public interface EJReportBlockActionProcessor extends Serializable
     public boolean canShowScreenItem(EJReport report, String blockName, String screenItem, EJReportScreenSection section);
 
     public boolean canShowScreenColumn(EJReport report, String blockName, String columnName);
+    
+    public EJReportTableColumn getHiddenColumnLayout(EJReport report, String blockName, String columnName);
 
     public boolean canShowBlockHeader(EJReport report, String blockName);
 

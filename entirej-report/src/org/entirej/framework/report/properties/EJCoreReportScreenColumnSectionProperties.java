@@ -107,18 +107,18 @@ public class EJCoreReportScreenColumnSectionProperties implements EJReportBorder
         this.showRightLine = showRightLine;
     }
 
-    public String getVisualAttributeName()
+    public String getLineVisualAttributeName()
     {
         return visualAttributeName;
     }
 
-    public void setVisualAttributeName(String visualAttributeName)
+    public void setLineVisualAttributeName(String visualAttributeName)
     {
         this.visualAttributeName = visualAttributeName;
     }
 
     @Override
-    public EJReportVisualAttributeProperties getVisualAttributeProperties()
+    public EJReportVisualAttributeProperties getLineVisualAttributeProperties()
     {
 
         return EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(visualAttributeName);

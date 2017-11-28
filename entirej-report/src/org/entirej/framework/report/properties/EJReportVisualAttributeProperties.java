@@ -135,5 +135,7 @@ public interface EJReportVisualAttributeProperties
     public abstract int getMaximumDecimalDigits();
 
     public abstract Object toPattern(String defaultPattern,Locale defaultLocale);
+    
+    public boolean isExpandToFit();
 
 }

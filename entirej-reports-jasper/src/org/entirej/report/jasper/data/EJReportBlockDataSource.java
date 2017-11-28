@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Mojave Innovations GmbH
+ * Copyright 2014 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 
 package org.entirej.report.jasper.data;
@@ -488,7 +488,7 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
 
         String key = section + item;
 
-        Object object = sitemCache.get(section);
+        Object object = sitemCache.get(key);
         if (object == null)
         {
             EJReportDataScreenItem reportItem = null;

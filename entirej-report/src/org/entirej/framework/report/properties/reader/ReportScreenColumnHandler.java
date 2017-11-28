@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  * 
- * Contributors: Mojave Innovations GmbH - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report.properties.reader;
 
@@ -153,7 +153,7 @@ public class ReportScreenColumnHandler extends EJCoreReportPropertiesTagHandler
             }
             else if (name.equals(ELEMENT_LINE_VA))
             {
-                _sectionProperties.setVisualAttributeName(value);
+                _sectionProperties.setLineVisualAttributeName(value);
             }
             else if (name.equals(ELEMENT_SHOW_TOPLINE))
             {

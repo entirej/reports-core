@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.framework.report.data.controllers;
 
@@ -22,13 +22,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReportRecord;
 import org.entirej.framework.report.EJReportRuntimeException;
 import org.entirej.framework.report.actionprocessor.EJDefaultReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportActionProcessor;
 import org.entirej.framework.report.actionprocessor.interfaces.EJReportBlockActionProcessor;
+import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.processorfactories.EJReportActionProcessorFactory;
 import org.entirej.framework.report.properties.EJCoreReportBlockProperties;
@@ -280,6 +281,46 @@ public class EJReportActionController implements Serializable
             logger.trace("END canShowScreenColumn");
         }
 
+    }
+    
+    public EJReportTableColumn getHiddenColumnLayout(EJReport report, String blockName, String columnName)
+    {
+        logger.trace("START getHiddenColumnLayout. Report: {}", report.getName());
+        
+        EJReportManagedFrameworkConnection connection = report.getConnection();
+        try
+        {
+            
+            if (_blockLevelActionProcessors.containsKey(blockName))
+            {
+                logger.trace("Calling block level getHiddenColumnLayout. Block: {}", blockName, columnName);
+                EJReportTableColumn layout = _blockLevelActionProcessors.get(blockName).getHiddenColumnLayout(report, blockName, columnName);
+                logger.trace("Called block level getHiddenColumnLayout");
+                return layout;
+            }
+            else
+            {
+                logger.trace("Calling report level getHiddenColumnLayout");
+                EJReportTableColumn layout = _reportLevelActionProcessor.getHiddenColumnLayout(report, blockName, columnName);
+                logger.trace("Called report level getHiddenColumnLayout");
+                return layout;
+            }
+            
+        }
+        catch (Exception e)
+        {
+            if (connection != null)
+            {
+                connection.rollback();
+            }
+            throw new EJReportRuntimeException(e);
+        }
+        finally
+        {
+            connection.close();
+            logger.trace("END canShowScreenColumn");
+        }
+        
     }
 
     public boolean canShowBlockFooter(EJReport report, String blockName)

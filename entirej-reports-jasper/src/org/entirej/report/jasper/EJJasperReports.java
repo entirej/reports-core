@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Mojave Innovations GmbH
+ * Copyright 2014 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.report.jasper;
 
@@ -98,7 +98,12 @@ public class EJJasperReports
         context.setProperty("net.sf.jasperreports.extension.registry.factory.xml.chart.themes",
                 "net.sf.jasperreports.chartthemes.simple.XmlChartThemeExtensionsRegistryFactory");
         context.setProperty("net.sf.jasperreports.xml.chart.theme.aegean", "net/sf/jasperreports/chartthemes/aegean.jrctx");
-
+//
+//
+//        
+//        context.setProperty("net.sf.jasperreports.extension.registry.factory.simple.font.families","net.sf.jasperreports.engine.fonts.SimpleFontExtensionsRegistryFactory");
+//        context.setProperty("net.sf.jasperreports.extension.simple.font.families.dejavu","net/sf/jasperreports/fonts/fonts.xml");
+//        context.setProperty("net.sf.jasperreports.extension.simple.font.families.courier_new","org/entirej/report/jasper/fonts/ej-fonts.xml");
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Mojave Innovations GmbH
+ * Copyright 2014 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 
 package org.entirej.framework.report.enumerations;
 
 public enum EJReportExportType
 {
-    PDF, HTML, XML, DOCX, ODT, ODS, RTF, XLS, CSV, XLSX,PNG
+    PDF, HTML, XML, DOCX, ODT, ODS, RTF, XLS, CSV, XLSX,XLSX_LARGE,PNG
 }
