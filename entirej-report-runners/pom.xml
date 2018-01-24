@@ -4,9 +4,9 @@
 	<groupId>org.entirej</groupId>
 	<artifactId>entirej-report-runners</artifactId>
 	<version>${VERSION}</version>
-	<name>Entirej Reports Jasper Impl</name>
+	<name>Entirej Reports runners Impl</name>
 	<build>
-		<finalName>entirej-report-jasper-${VERSION}</finalName>
+		<finalName>entirej-report-runners-${VERSION}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>tests</testSourceDirectory>
 		<resources>
