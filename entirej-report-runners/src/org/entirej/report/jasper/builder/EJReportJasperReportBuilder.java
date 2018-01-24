@@ -36,12 +36,12 @@ import org.entirej.framework.report.EJReportValueBaseScreenItem;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportActionController;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
-import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
 import org.entirej.framework.report.enumerations.EJReportMarkupType;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportScreenType;
+import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.interfaces.EJReportProperties;
 import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Date.DateFormats;
@@ -89,7 +89,6 @@ import net.sf.jasperreports.engine.design.JRDesignSubreportParameter;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
-import net.sf.jasperreports.engine.type.BreakTypeEnum;
 import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
@@ -807,8 +806,7 @@ public class EJReportJasperReportBuilder
             if (canShowBlockHeader && col.showHeader())
             {
 
-                @SuppressWarnings("unchecked")
-                Collection<EJReportScreenItem> screenItems = (Collection<EJReportScreenItem>) col.getHeaderSection().getScreenItems();
+                Collection<EJReportScreenItem> screenItems = col.getHeaderSection().getScreenItems();
 
                 int sectionHeight = col.getHeaderSection().getHeight();
                 if (sectionHeight == 0)
@@ -858,7 +856,7 @@ public class EJReportJasperReportBuilder
                             processItemLineStyle(element, item);
 
                             element.setPositionType(PositionTypeEnum.FLOAT);
-                            element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                            element.setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT);
                         }
                     }
 
@@ -868,7 +866,6 @@ public class EJReportJasperReportBuilder
 
             {
 
-                @SuppressWarnings("unchecked")
                 Collection<EJReportScreenItem> screenItems = (Collection<EJReportScreenItem>) col.getDetailSection().getScreenItems();
 
                 int sectionHeight = col.getDetailSection().getHeight();
@@ -932,7 +929,7 @@ public class EJReportJasperReportBuilder
                              */
 
                             element.setPositionType(PositionTypeEnum.FLOAT);
-                            element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                            element.setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT);
                         }
                     }
 
@@ -943,8 +940,7 @@ public class EJReportJasperReportBuilder
             if (canShowBlockFooter && col.showFooter())
             {
 
-                @SuppressWarnings("unchecked")
-                Collection<EJReportScreenItem> screenItems = (Collection<EJReportScreenItem>) col.getFooterSection().getScreenItems();
+                Collection<EJReportScreenItem> screenItems =  col.getFooterSection().getScreenItems();
 
                 int sectionHeight = col.getFooterSection().getHeight();
                 if (sectionHeight == 0)
@@ -989,7 +985,7 @@ public class EJReportJasperReportBuilder
                             processItemLineStyle(element, col.getFooterSection());
                             processItemLineStyle(element, item);
                             element.setPositionType(PositionTypeEnum.FLOAT);
-                            element.setStretchType(StretchTypeEnum.RELATIVE_TO_TALLEST_OBJECT);
+                            element.setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT);
                         }
                     }
 
@@ -1013,7 +1009,7 @@ public class EJReportJasperReportBuilder
             if (oddEvenRowStyle != null)
             {
                 JRDesignStaticText box = new JRDesignStaticText();
-                box.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
+                box.setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT);
                 box.setStyle(oddEvenRowStyle);
                 box.setX(currentX);
                 box.setY(0);
@@ -1118,6 +1114,8 @@ public class EJReportJasperReportBuilder
                 {
                     alignmentBaseScreenItem = typeAs;
                 }
+            default:
+                break;
         }
         
         if(alignmentBaseScreenItem==null)
@@ -1366,7 +1364,7 @@ public class EJReportJasperReportBuilder
                 line.setStyle(style);
             }
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
-            line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
+            line.setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT);
             band.addElement(0, line);
         }
         if (section.showRightLine())
@@ -1404,7 +1402,7 @@ public class EJReportJasperReportBuilder
             }
             band.addElement(0, line);
             line.setPositionType(PositionTypeEnum.FIX_RELATIVE_TO_TOP);
-            line.setStretchType(StretchTypeEnum.RELATIVE_TO_BAND_HEIGHT);
+            line.setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT);
         }
         if (section.showBottomLine())
         {
@@ -1872,6 +1870,11 @@ public class EJReportJasperReportBuilder
             case XY_LINE_CHART:
 
                 return JRDesignChart.CHART_TYPE_XYLINE;
+            case PIE_CHART:
+                return JRDesignChart.CHART_TYPE_PIE;
+                
+            default:
+                break;
 
         }
 
@@ -2147,6 +2150,10 @@ public class EJReportJasperReportBuilder
                     break;
                 case HTML:
                     textField.setMarkup("html");
+                    break;
+                case NONE:
+                    break;
+                default:
                     break;
 
             }
@@ -2503,6 +2510,10 @@ public class EJReportJasperReportBuilder
                 break;
             case UPSIDEDOWN:
                 elm.setRotation(RotationEnum.UPSIDE_DOWN);
+                break;
+            case NONE:
+                break;
+            default:
                 break;
         }
     }

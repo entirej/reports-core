@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -68,6 +68,7 @@ public class EJExcelPOIReportRunner
 
     public void runReport(EJReport report, EJReportExportType type, String outputFile)
     {
+        System.err.println("RUN SOURCE");
         if (manager == null)
         {
             throw new EJReportRuntimeException("EJReportFrameworkManager not initialised");
@@ -275,7 +276,7 @@ public class EJExcelPOIReportRunner
                     va = reportScreenItem.getVisualAttribute();
                     value = getVABaseValue(value, poiElement.getDefaultPattren(), reportScreenItem, block.getReport().getCurrentLocale(), dateMap);
                 }
-                SXSSFCell cell = row.createCell(poiElement.getStartCell(), (value instanceof Number) ? Cell.CELL_TYPE_NUMERIC : Cell.CELL_TYPE_STRING);
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(), (value instanceof Number) ? CellType.NUMERIC : CellType.STRING);
 
                 cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment()));
                 if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
@@ -293,7 +294,7 @@ public class EJExcelPOIReportRunner
                 {
                     va = reportScreenItem.getVisualAttribute();
                  }
-                SXSSFCell cell = row.createCell(poiElement.getStartCell(),  Cell.CELL_TYPE_STRING);
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(),  CellType.STRING);
 
                 XSSFCellStyle cellStyle = styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment());
                 
@@ -389,6 +390,10 @@ public class EJExcelPOIReportRunner
                     }
 
                     break;
+                case NONE:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -418,7 +423,7 @@ public class EJExcelPOIReportRunner
 
         String key = section + item;
 
-        Object object = sitemCache.get(section);
+        Object object = sitemCache.get(key);
         if (object == null)
         {
             EJReportDataScreenItem reportItem = null;
@@ -550,6 +555,14 @@ public class EJExcelPOIReportRunner
                 }
 
             }
+                break;
+            case IMAGE:
+                break;
+            case LINE:
+                break;
+            case RECTANGLE:
+                break;
+            default:
                 break;
         }
 
