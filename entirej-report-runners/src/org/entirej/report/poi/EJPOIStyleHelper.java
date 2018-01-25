@@ -159,7 +159,7 @@ public class EJPOIStyleHelper
                 cellStyle.setFont(font);
             }
 
-            switch ((alignment!=null && va.getHAlignment()!=EJReportScreenAlignment.NONE)?va.getHAlignment():alignment.getHAlignment())
+            switch ((alignment==null || va.getHAlignment()!=EJReportScreenAlignment.NONE)?va.getHAlignment():alignment.getHAlignment())
             {
                 case LEFT:
                     cellStyle.setAlignment(HorizontalAlignment.LEFT);
@@ -177,7 +177,7 @@ public class EJPOIStyleHelper
                 default:
                     break;
             }
-            switch ((alignment!=null && va.getVAlignment()!=EJReportScreenAlignment.NONE)?va.getVAlignment():alignment.getVAlignment())
+            switch ((alignment==null || va.getVAlignment()!=EJReportScreenAlignment.NONE)?va.getVAlignment():alignment.getVAlignment())
             {
                 case TOP:
                     cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
