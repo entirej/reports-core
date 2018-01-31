@@ -528,6 +528,15 @@ public class EJReportPOIPage implements IBlockParent
                 {
                     break;
                 }
+                else {
+                    EJReportPOIElement element = new EJReportPOIElement(null);
+                    element.setSupportMerge(true);
+                    element.setWidth(poiRaw.getWidth() - currentX);
+                    element.setX(currentX);
+                    poiRaw.addElement(element);
+                    currentX = poiRaw.getWidth();
+                }
+              
             }
 
         }
@@ -706,6 +715,7 @@ public class EJReportPOIPage implements IBlockParent
                             element.setAlignment(getAlignment(item));
                             
                             element.setWidth(width);
+                            element.setColumnType(col.getColumnType());
 
                             element.setVa(item.getVisualAttributes());
                             element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));
@@ -755,6 +765,7 @@ public class EJReportPOIPage implements IBlockParent
                         EJReportPOIElement element = new EJReportPOIElement(item);
                         element.setAlignment(getAlignment(item));
                         element.setWidth(width);
+                        element.setColumnType(col.getColumnType());
 
                         element.setVa(item.getVisualAttributes());
                         element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));
@@ -797,6 +808,7 @@ public class EJReportPOIPage implements IBlockParent
                             EJReportPOIElement element = new EJReportPOIElement(item);
                             element.setAlignment(getAlignment(item));
                             element.setWidth(width);
+                            element.setColumnType(col.getColumnType());
 
                             element.setVa(item.getVisualAttributes());
                             element.setDefaultPattren(extractDefaultPattern(item, block.getReport().getCurrentLocale()));

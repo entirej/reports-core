@@ -34,6 +34,7 @@ import org.entirej.framework.report.data.EJReportDataScreenItem;
 import org.entirej.framework.report.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
+import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportScreenSection;
 import org.entirej.framework.report.enumerations.EJReportVAPattern;
 import org.entirej.framework.report.interfaces.EJReportProperties.ORIENTATION;
@@ -276,7 +277,7 @@ public class EJExcelPOIReportRunner
                     va = reportScreenItem.getVisualAttribute();
                     value = getVABaseValue(value, poiElement.getDefaultPattren(), reportScreenItem, block.getReport().getCurrentLocale(), dateMap);
                 }
-                SXSSFCell cell = row.createCell(poiElement.getStartCell(), (value instanceof Number) ? CellType.NUMERIC : CellType.STRING);
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(), (poiElement.getColumnType()==EJReportScreenItemType.NUMBER)||(value instanceof Number) ? CellType.NUMERIC : CellType.STRING);
 
                 cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment()));
                 if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
@@ -294,7 +295,7 @@ public class EJExcelPOIReportRunner
                 {
                     va = reportScreenItem.getVisualAttribute();
                  }
-                SXSSFCell cell = row.createCell(poiElement.getStartCell(),  CellType.STRING);
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(),  CellType.BLANK);
 
                 XSSFCellStyle cellStyle = styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment());
                 

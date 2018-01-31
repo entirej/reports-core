@@ -20,6 +20,8 @@ public class EJReportPOIElement
     private String                            defaultPattren;
     private EJReportPOIBorder                 border;
     private EJReportPOIAlignment              alignment;
+
+    private EJReportScreenItemType   columnType;
     
 
     public EJReportPOIElement(EJReportScreenItem item)
@@ -147,6 +149,15 @@ public class EJReportPOIElement
     public boolean isWrap()
     {
         return wrap;
+    }
+    
+    public void setColumnType(EJReportScreenItemType columnType)
+    {
+        this.columnType = columnType;
+    }
+    public EJReportScreenItemType getColumnType()
+    {
+        return columnType;
     }
 
 }

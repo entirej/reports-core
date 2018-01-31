@@ -1,5 +1,6 @@
 package org.entirej.framework.report;
 
+import org.entirej.framework.report.enumerations.EJReportScreenItemType;
 import org.entirej.framework.report.enumerations.EJReportTableColumn;
 import org.entirej.framework.report.interfaces.EJReportBlockProperties;
 import org.entirej.framework.report.properties.EJCoreReportScreenColumnProperties;
@@ -8,7 +9,8 @@ public class EJReportScreenColumn
 {
     private EJReportBlock                      _block;
     private EJCoreReportScreenColumnProperties _properties;
-    private EJReportTableColumn reportTableColumn = EJReportTableColumn.MOVE; 
+    private EJReportTableColumn                reportTableColumn = EJReportTableColumn.MOVE;
+    private EJReportScreenItemType             columnType;
 
     public EJReportScreenColumn(EJReportBlock block, EJCoreReportScreenColumnProperties properties)
     {
@@ -30,7 +32,7 @@ public class EJReportScreenColumn
     {
         return _properties.showFooter();
     }
-    
+
     public EJReportTableColumn getHiddenColumnLayout()
     {
         return reportTableColumn;
@@ -46,11 +48,22 @@ public class EJReportScreenColumn
         _properties.setWidth(width);
     }
     
-    public void setVisible(boolean visible,EJReportTableColumn reportTableColumn)
+    public void setColumnType(EJReportScreenItemType columnType)
+    {
+        this.columnType = columnType;
+    }
+    
+    public EJReportScreenItemType getColumnType()
+    {
+        return columnType;
+    }
+
+    public void setVisible(boolean visible, EJReportTableColumn reportTableColumn)
     {
         _properties.setVisible(visible);
         this.reportTableColumn = reportTableColumn;
     }
+
     public boolean isVisible()
     {
         return _properties.isVisible();
