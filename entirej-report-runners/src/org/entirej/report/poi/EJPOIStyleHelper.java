@@ -11,13 +11,16 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
@@ -33,10 +36,12 @@ public class EJPOIStyleHelper
     private XSSFCellStyle              defaultStyle;
     private XSSFCellStyle              defaultStyleWarp;
     private Locale                     currentLocale;
+    private XSSFWorkbook               xworkbook;
 
-    public EJPOIStyleHelper(SXSSFWorkbook workbook, EJReport report)
+    public EJPOIStyleHelper(XSSFWorkbook xworkbook, SXSSFWorkbook workbook, EJReport report)
     {
         this.workbook = workbook;
+        this.xworkbook = xworkbook;
 
         EJReportVisualAttributeProperties va = report.getProperties().getVisualAttributeProperties();
         if (va != null)
@@ -72,8 +77,8 @@ public class EJPOIStyleHelper
                 font.setFontHeight((short) (va.getFontSize() * 20));
             }
             currentLocale = report.getCurrentLocale();
-            defaultStyle = getStyle(false, va, null,null,null);
-            defaultStyleWarp = getStyle(true, va, null,null,null);
+            defaultStyle = getStyle(false, va, null, null, null);
+            defaultStyleWarp = getStyle(true, va, null, null, null);
         }
         else
         {
@@ -86,26 +91,27 @@ public class EJPOIStyleHelper
     {
         return defaultStyle;
     }
+
     public XSSFCellStyle getDefaultWrapStyle()
     {
         return defaultStyleWarp;
     }
-    
-    
 
-    public XSSFCellStyle getStyle(boolean wrap,EJReportVisualAttributeProperties va, String defaultPattren,EJReportPOIBorder border,EJReportPOIAlignment alignment)
+    public XSSFCellStyle getStyle(boolean wrap, EJReportVisualAttributeProperties va, String defaultPattren, EJReportPOIBorder border,
+            EJReportPOIAlignment alignment)
     {
 
-         Map<String, XSSFCellStyle> cache = wrap?wrapcache:nonecache;
-        
+        Map<String, XSSFCellStyle> cache = wrap ? wrapcache : nonecache;
+
         if (va == null)
-            return  wrap?defaultStyleWarp:defaultStyle;;
+            return wrap ? defaultStyleWarp : defaultStyle;
+        ;
         XSSFCellStyle cellStyle;
 
-        String key = va.getName()+(border!=null?border.hashCode():"")+(alignment!=null?alignment.hashCode():"");
-        if(defaultPattren!=null)
+        String key = va.getName() + (border != null ? border.hashCode() : "") + (alignment != null ? alignment.hashCode() : "");
+        if (defaultPattren != null)
         {
-            key+=defaultPattren; 
+            key += defaultPattren;
         }
         if (cache.containsKey(key))
         {
@@ -119,8 +125,8 @@ public class EJPOIStyleHelper
             XSSFFont font = (XSSFFont) workbook.createFont();
 
             Color foregroundColor = va.getForegroundColor();
-            
-            if(foregroundColor!=null)
+
+            if (foregroundColor != null)
             {
                 font.setColor(new XSSFColor(foregroundColor));
                 cellStyle.setFont(font);
@@ -159,7 +165,7 @@ public class EJPOIStyleHelper
                 cellStyle.setFont(font);
             }
 
-            switch ((alignment==null || va.getHAlignment()!=EJReportScreenAlignment.NONE)?va.getHAlignment():alignment.getHAlignment())
+            switch ((alignment == null || va.getHAlignment() != EJReportScreenAlignment.NONE) ? va.getHAlignment() : alignment.getHAlignment())
             {
                 case LEFT:
                     cellStyle.setAlignment(HorizontalAlignment.LEFT);
@@ -177,7 +183,7 @@ public class EJPOIStyleHelper
                 default:
                     break;
             }
-            switch ((alignment==null || va.getVAlignment()!=EJReportScreenAlignment.NONE)?va.getVAlignment():alignment.getVAlignment())
+            switch ((alignment == null || va.getVAlignment() != EJReportScreenAlignment.NONE) ? va.getVAlignment() : alignment.getVAlignment())
             {
                 case TOP:
                     cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
@@ -198,7 +204,6 @@ public class EJPOIStyleHelper
 
         }
 
-        
         String manualPattern = va.getManualPattern();
         if (manualPattern != null && !manualPattern.isEmpty())
         {
@@ -216,40 +221,24 @@ public class EJPOIStyleHelper
                 case DATE_SHORT:
                 case DATE_TIME_FULL:
                 case DATE_TIME_MEDIUM:
-                    //switch to excel mode
+                    // switch to excel mode
                     cellStyle.setDataFormat(workbook.createDataFormat().getFormat(DateFormatConverter.convert(currentLocale, manualPattern)));
                     break;
                 default:
-                        cellStyle.setDataFormat(workbook.createDataFormat().getFormat( manualPattern)); 
+                    cellStyle.setDataFormat(workbook.createDataFormat().getFormat(manualPattern));
             }
         }
         else
         {
-         // DateFormatConverter
-            /* as of org.apache.poi.ss.usermodel.BuiltinFormats
-                0, "General"
-                1, "0"
-                2, "0.00"
-                3, "#,##0"
-                4, "#,##0.00"
-                5, "$#,##0_);($#,##0)"
-                6, "$#,##0_);[Red]($#,##0)"
-                7, "$#,##0.00);($#,##0.00)"
-                8, "$#,##0.00_);[Red]($#,##0.00)"
-                9, "0%"
-                0xa, "0.00%"
-                0xb, "0.00E+00"
-                0xc, "# ?/?"
-                0xd, "# ??/??"
-                0xe, "m/d/yy"
-                0xf, "d-mmm-yy"
-                0x10, "d-mmm"
-                0x11, "mmm-yy"
-                0x12, "h:mm AM/PM"
-                0x13, "h:mm:ss AM/PM"
-                0x14, "h:mm"
-                0x15, "h:mm:ss"
-                0x16, "m/d/yy h:mm"
+            // DateFormatConverter
+            /*
+             * as of org.apache.poi.ss.usermodel.BuiltinFormats 0, "General" 1, "0" 2,
+             * "0.00" 3, "#,##0" 4, "#,##0.00" 5, "$#,##0_);($#,##0)" 6,
+             * "$#,##0_);[Red]($#,##0)" 7, "$#,##0.00);($#,##0.00)" 8,
+             * "$#,##0.00_);[Red]($#,##0.00)" 9, "0%" 0xa, "0.00%" 0xb, "0.00E+00" 0xc,
+             * "# ?/?" 0xd, "# ??/??" 0xe, "m/d/yy" 0xf, "d-mmm-yy" 0x10, "d-mmm" 0x11,
+             * "mmm-yy" 0x12, "h:mm AM/PM" 0x13, "h:mm:ss AM/PM" 0x14, "h:mm" 0x15,
+             * "h:mm:ss" 0x16, "m/d/yy h:mm"
              */
             switch (va.getLocalePattern())
             {
@@ -348,27 +337,25 @@ public class EJPOIStyleHelper
                         String pattern = (String) opattern;
                         if (pattern != null && !pattern.isEmpty())
                         {
-                        
+
                             cellStyle.setDataFormat(workbook.createDataFormat().getFormat(pattern));
                         }
                     }
-                    
+
                     break;
             }
         }
-        
-        
-        
+
         Color backgroundColor = va.getBackgroundColor();
-        if(backgroundColor!=null)
+        if (backgroundColor != null)
         {
-            
-            cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor)); 
+
+            cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor));
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-           
+
         }
-        
-        if(border!=null)
+
+        if (border != null)
         {
             BorderStyle style = BorderStyle.THIN;
             switch (border.getLineStyle())
@@ -388,43 +375,46 @@ public class EJPOIStyleHelper
 
             }
             XSSFColor bcolor = null;
-            if(border.getVisualAttributeName()!=null && border.getVisualAttributeName().getBackgroundColor()!=null)
+            if (border.getVisualAttributeName() != null && border.getVisualAttributeName().getBackgroundColor() != null)
             {
-                
-                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor())); 
-               
+
+                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor()));
+
             }
-            
-            if(border.isShowLeftLine())
+
+            if (border.isShowLeftLine())
             {
-                cellStyle.setBorderLeft(style); 
-                if(bcolor!=null)
+                cellStyle.setBorderLeft(style);
+                if (bcolor != null)
                     cellStyle.setLeftBorderColor(bcolor);
             }
-            
-            if(border.isShowRightLine())
+
+            if (border.isShowRightLine())
             {
-                cellStyle.setBorderRight(style); 
-                if(bcolor!=null)
+                cellStyle.setBorderRight(style);
+                if (bcolor != null)
                     cellStyle.setRightBorderColor(bcolor);
             }
-            if(border.isShowBottomLine())
+            if (border.isShowBottomLine())
             {
-                cellStyle.setBorderBottom(style); 
-                if(bcolor!=null)
+                cellStyle.setBorderBottom(style);
+                if (bcolor != null)
                     cellStyle.setBottomBorderColor(bcolor);
             }
-            if(border.isShowTopLine())
+            if (border.isShowTopLine())
             {
-                cellStyle.setBorderTop(style); 
-                if(bcolor!=null)
+                cellStyle.setBorderTop(style);
+                if (bcolor != null)
                     cellStyle.setTopBorderColor(bcolor);
             }
-            
-            
+
         }
-        
-        
+
         return cellStyle;
+    }
+
+    public void addIgnore(String sheet, int row, int col, IgnoredErrorType... ignoredErrorTypes)
+    {
+        xworkbook.getSheet(sheet).addIgnoredErrors(new CellReference(row, col), ignoredErrorTypes);
     }
 }

@@ -21,36 +21,35 @@ public class EJReportPOIElement
     private EJReportPOIBorder                 border;
     private EJReportPOIAlignment              alignment;
 
-    private EJReportScreenItemType   columnType;
-    
+    private EJReportScreenItemType            columnType;
+    private boolean                           ignoreWarnings;
 
     public EJReportPOIElement(EJReportScreenItem item)
     {
         this.item = item;
-        if(item!=null && item.getType()==EJReportScreenItemType.TEXT)
+        if (item != null && item.getType() == EJReportScreenItemType.TEXT)
         {
             EJReportTextScreenItem textScreenItem = item.typeAs(EJReportTextScreenItem.class);
             wrap = textScreenItem.isExpandToFit();
         }
-        
+
     }
-    
-    
+
     public EJReportPOIBorder getBorder()
     {
         return border;
     }
-    
+
     public void setBorder(EJReportPOIBorder border)
     {
         this.border = border;
     }
-    
+
     public EJReportPOIAlignment getAlignment()
     {
         return alignment;
     }
-    
+
     public void setAlignment(EJReportPOIAlignment alignment)
     {
         this.alignment = alignment;
@@ -150,14 +149,25 @@ public class EJReportPOIElement
     {
         return wrap;
     }
-    
+
     public void setColumnType(EJReportScreenItemType columnType)
     {
         this.columnType = columnType;
     }
+
     public EJReportScreenItemType getColumnType()
     {
         return columnType;
+    }
+    
+    public void setIgnoreWarnings(boolean ignoreWarnings)
+    {
+        this.ignoreWarnings = ignoreWarnings;
+    }
+    
+    public boolean isIgnoreWarnings()
+    {
+        return ignoreWarnings;
     }
 
 }

@@ -15,12 +15,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportBlock;
 import org.entirej.framework.report.EJReportFrameworkManager;
@@ -79,12 +81,12 @@ public class EJExcelPOIReportRunner
         report.getActionController().beforeReport(report);
         try
         {
-            // XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFWorkbook workbook = new XSSFWorkbook();
 
-            SXSSFWorkbook wb = new SXSSFWorkbook(100); // keep 100
+            SXSSFWorkbook wb = new SXSSFWorkbook(workbook, 100); // keep 100
 
             // rows in
-            EJPOIStyleHelper styleHelper = new EJPOIStyleHelper(wb, report);
+            EJPOIStyleHelper styleHelper = new EJPOIStyleHelper(workbook, wb, report);
             // memory, exceeding rows
             // will be flushed to
             // disk
@@ -99,6 +101,7 @@ public class EJExcelPOIReportRunner
                 reportPOIPage.build(report, page);
 
                 SXSSFSheet sheet = wb.createSheet(page.getName());
+
                 if (report.getProperties().getOrientation() == ORIENTATION.LANDSCAPE)
                 {
                     sheet.getPrintSetup().setLandscape(true);
@@ -263,6 +266,8 @@ public class EJExcelPOIReportRunner
             EJPOIStyleHelper styleHelper, EJReport report, EJReportDataSource reportDS, SXSSFSheet sheet, int rownum, EJReportBlock block,
             EJReportBlockDataSource blockDataSource, SXSSFRow row, EJReportPOIElement poiElement, List<CellRangeAddress> rangeAddresses)
     {
+        if (poiElement.getStartCell() == -1)
+            throw new EJReportRuntimeException("eliment issue on " + section.name() + "-> " + poiElement.getId());
         EJReportScreenItem id = poiElement.getId();
         if (id != null)
         {
@@ -277,15 +282,21 @@ public class EJExcelPOIReportRunner
                     va = reportScreenItem.getVisualAttribute();
                     value = getVABaseValue(value, poiElement.getDefaultPattren(), reportScreenItem, block.getReport().getCurrentLocale(), dateMap);
                 }
-                SXSSFCell cell = row.createCell(poiElement.getStartCell(), (poiElement.getColumnType()==EJReportScreenItemType.NUMBER)||(value instanceof Number) ? CellType.NUMERIC : CellType.STRING);
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(),
+                        (poiElement.getColumnType() == EJReportScreenItemType.NUMBER) || (value instanceof Number) ? CellType.NUMERIC : CellType.STRING);
 
-                cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment()));
+                cell.setCellStyle(styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),
+                        poiElement.getBorder(), poiElement.getAlignment()));
                 if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
                 {
                     row.setRowStyle(styleHelper.getDefaultWrapStyle());
                     row.setHeight((short) -1);
                 }
                 setCellValue(cell, value);
+                if (value instanceof String && poiElement.isIgnoreWarnings())
+                {
+                    styleHelper.addIgnore(sheet.getSheetName(), rownum, poiElement.getStartCell(), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+                }
             }
             else
             {
@@ -294,14 +305,15 @@ public class EJExcelPOIReportRunner
                 if (reportScreenItem != null && reportScreenItem.getVisualAttribute() != null)
                 {
                     va = reportScreenItem.getVisualAttribute();
-                 }
-                SXSSFCell cell = row.createCell(poiElement.getStartCell(),  CellType.BLANK);
+                }
+                SXSSFCell cell = row.createCell(poiElement.getStartCell(), CellType.BLANK);
 
-                XSSFCellStyle cellStyle = styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),poiElement.getBorder(),poiElement.getAlignment());
-                
-                //cellStyle.setb
+                XSSFCellStyle cellStyle = styleHelper.getStyle(poiElement.isWrap() || (va != null && va.isExpandToFit()), va, poiElement.getDefaultPattren(),
+                        poiElement.getBorder(), poiElement.getAlignment());
+
+                // cellStyle.setb
                 cell.setCellStyle(cellStyle);
-               
+
                 if (poiElement.isWrap() || (va != null && va.isExpandToFit()))
                 {
                     row.setRowStyle(styleHelper.getDefaultWrapStyle());
@@ -451,6 +463,7 @@ public class EJExcelPOIReportRunner
         if (value instanceof String)
         {
             cell.setCellValue((String) value);
+
         }
         else if (value instanceof Integer)
         {
