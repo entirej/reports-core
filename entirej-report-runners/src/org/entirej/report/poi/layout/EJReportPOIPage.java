@@ -319,9 +319,13 @@ public class EJReportPOIPage implements IBlockParent
 
         int width = screen.getWidth();
         int height = screen.getHeight();
+        boolean ignoreWarnings =false;
 
-        EJReportParameter ignoreWarningsParam = report.getReportParameter("EXCEL_IGNORE_WARNINGS");
-        boolean ignoreWarnings = ignoreWarningsParam!=null && (Boolean)ignoreWarningsParam.getValue();
+        if(report.hasReportParameter("EXCEL_IGNORE_WARNINGS"))
+        {
+            EJReportParameter ignoreWarningsParam = report.getReportParameter("EXCEL_IGNORE_WARNINGS");
+           ignoreWarnings = ignoreWarningsParam!=null && ignoreWarningsParam.getValue() !=null && (Boolean)ignoreWarningsParam.getValue();
+        }
 
         // raw height and width calculation
         for (EJReportScreenItem item : screen.getScreenItems())
@@ -633,8 +637,13 @@ public class EJReportPOIPage implements IBlockParent
         int footerHeight = screen.getDefaultFooterHeight();
         int rawWidth = 0;
         
-        EJReportParameter ignoreWarningsParam = report.getReportParameter("EXCEL_IGNORE_WARNINGS");
-        boolean ignoreWarnings = ignoreWarningsParam!=null && (Boolean)ignoreWarningsParam.getValue();
+        boolean ignoreWarnings =false;
+
+        if(report.hasReportParameter("EXCEL_IGNORE_WARNINGS"))
+        {
+            EJReportParameter ignoreWarningsParam = report.getReportParameter("EXCEL_IGNORE_WARNINGS");
+           ignoreWarnings = ignoreWarningsParam!=null && ignoreWarningsParam.getValue() !=null && (Boolean)ignoreWarningsParam.getValue();
+        }
 
         boolean canShowBlockHeader = block.getReport().getActionController().canShowBlockHeader(block.getReport(), block.getName());
         boolean canShowBlockFooter = block.getReport().getActionController().canShowBlockFooter(block.getReport(), block.getName());
@@ -772,6 +781,8 @@ public class EJReportPOIPage implements IBlockParent
                             break;
                         }
                         EJReportPOIElement element = new EJReportPOIElement(item);
+
+                        element.setIgnoreWarnings(ignoreWarnings);
                         element.setAlignment(getAlignment(item));
                         element.setWidth(width);
                         element.setColumnType(col.getColumnType());
@@ -815,6 +826,8 @@ public class EJReportPOIPage implements IBlockParent
                                 break;
                             }
                             EJReportPOIElement element = new EJReportPOIElement(item);
+
+                            element.setIgnoreWarnings(ignoreWarnings);
                             element.setAlignment(getAlignment(item));
                             element.setWidth(width);
                             element.setColumnType(col.getColumnType());
