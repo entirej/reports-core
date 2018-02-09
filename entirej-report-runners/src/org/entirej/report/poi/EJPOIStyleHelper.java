@@ -46,18 +46,27 @@ public class EJPOIStyleHelper
         this.xworkbook = xworkbook;
 
         
-        boolean defaultCellNumber =false;
+        String defaultCellType =null;
 
-        if(report.hasReportParameter("EXCEL_EMPTY_CELL_NUMBER_TYPE"))
+        if(report.hasReportParameter("EXCEL_EMPTY_CELL_TYPE"))
         {
-            EJReportParameter defaultCellNumberParam = report.getReportParameter("EXCEL_EMPTY_CELL_NUMBER_TYPE");
-            defaultCellNumber = defaultCellNumberParam!=null && defaultCellNumberParam.getValue() !=null && (Boolean)defaultCellNumberParam.getValue();
+            EJReportParameter defaultCellNumberParam = report.getReportParameter("EXCEL_EMPTY_CELL_TYPE");
+            defaultCellType = (String) (defaultCellNumberParam!=null ? defaultCellNumberParam.getValue():null) ;
         }
 
-        if(defaultCellNumber)
+        if(defaultCellType!=null)
         {
             defaultEmptyStyle = (XSSFCellStyle) workbook.createCellStyle();
-            defaultEmptyStyle.setDataFormat(1);
+            switch(defaultCellType)
+            {
+                case "NUMBER":
+                    defaultEmptyStyle.setDataFormat(1);
+                    break;
+                case "DATE":
+                    defaultEmptyStyle.setDataFormat(0xe);
+                    break;
+            }
+            
         }
         EJReportVisualAttributeProperties va = report.getProperties().getVisualAttributeProperties();
         if (va != null)
