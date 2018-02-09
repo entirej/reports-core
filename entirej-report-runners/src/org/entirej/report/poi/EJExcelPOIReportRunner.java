@@ -256,7 +256,7 @@ public class EJExcelPOIReportRunner
     private SXSSFRow createRaw(EJPOIStyleHelper styleHelper, SXSSFSheet sheet, int rownum, EJReportPOIRaw poiRaw)
     {
         SXSSFRow row = sheet.createRow(rownum);
-        row.setRowStyle(styleHelper.getDefaultStyle());
+        row.setRowStyle(styleHelper.getDefaultEmptyStyle());
         if (poiRaw.getHeight() != -1)
             row.setHeight(EJReportPixelUtil.pixel2HeighthUnits(poiRaw.getHeight(), sheet.getDefaultRowHeight()));
         return row;

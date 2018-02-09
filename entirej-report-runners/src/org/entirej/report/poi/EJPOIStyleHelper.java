@@ -22,6 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportScreenAlignment;
 import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProperties;
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
@@ -34,6 +35,7 @@ public class EJPOIStyleHelper
     private Map<String, XSSFCellStyle> nonecache = new HashMap<String, XSSFCellStyle>();
     private Map<String, XSSFCellStyle> wrapcache = new HashMap<String, XSSFCellStyle>();
     private XSSFCellStyle              defaultStyle;
+    private XSSFCellStyle              defaultEmptyStyle;
     private XSSFCellStyle              defaultStyleWarp;
     private Locale                     currentLocale;
     private XSSFWorkbook               xworkbook;
@@ -43,6 +45,20 @@ public class EJPOIStyleHelper
         this.workbook = workbook;
         this.xworkbook = xworkbook;
 
+        
+        boolean defaultCellNumber =false;
+
+        if(report.hasReportParameter("EXCEL_EMPTY_CELL_NUMBER_TYPE"))
+        {
+            EJReportParameter defaultCellNumberParam = report.getReportParameter("EXCEL_EMPTY_CELL_NUMBER_TYPE");
+            defaultCellNumber = defaultCellNumberParam!=null && defaultCellNumberParam.getValue() !=null && (Boolean)defaultCellNumberParam.getValue();
+        }
+
+        if(defaultCellNumber)
+        {
+            defaultEmptyStyle = (XSSFCellStyle) workbook.createCellStyle();
+            defaultEmptyStyle.setDataFormat(1);
+        }
         EJReportVisualAttributeProperties va = report.getProperties().getVisualAttributeProperties();
         if (va != null)
         {
@@ -78,11 +94,13 @@ public class EJPOIStyleHelper
             }
             currentLocale = report.getCurrentLocale();
             defaultStyle = getStyle(false, va, null, null, null);
+            
             defaultStyleWarp = getStyle(true, va, null, null, null);
         }
         else
         {
             defaultStyleWarp = (XSSFCellStyle) workbook.createCellStyle();
+            
             defaultStyleWarp.setWrapText(true);
         }
     }
@@ -91,6 +109,13 @@ public class EJPOIStyleHelper
     {
         return defaultStyle;
     }
+    
+    public XSSFCellStyle getDefaultEmptyStyle()
+    {
+        return defaultEmptyStyle;
+    }
+    
+    
 
     public XSSFCellStyle getDefaultWrapStyle()
     {
