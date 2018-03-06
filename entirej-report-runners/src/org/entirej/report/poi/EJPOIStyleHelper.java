@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -447,8 +448,8 @@ public class EJPOIStyleHelper
         return cellStyle;
     }
 
-    public void addIgnore(String sheet, int row, int col, IgnoredErrorType... ignoredErrorTypes)
+    public void addIgnore(String sheet,CellRangeAddress address, IgnoredErrorType... ignoredErrorTypes)
     {
-        xworkbook.getSheet(sheet).addIgnoredErrors(new CellReference(row, col), ignoredErrorTypes);
+        xworkbook.getSheet(sheet).addIgnoredErrors(address, ignoredErrorTypes);
     }
 }

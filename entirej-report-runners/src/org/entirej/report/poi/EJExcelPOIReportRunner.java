@@ -9,10 +9,12 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
@@ -176,6 +178,8 @@ public class EJExcelPOIReportRunner
             LOGGER.info("END get datasource :" + block.getName() + " TIME(sec):" + (System.currentTimeMillis() - dsStart) / 1000);
 
             Map<String, SimpleDateFormat> dateMap = new HashMap<String, SimpleDateFormat>();
+            
+            int initRow = rownum;
             if (blockDataSource.next())
             {
 
@@ -249,6 +253,28 @@ public class EJExcelPOIReportRunner
                     }
                 }
             }
+           
+            if(initRow<(rownum-1))
+            {
+                List<EJReportPOIRaw> raws = poiBlock.getRaws();
+                Set<Integer> ignoreCols = new HashSet<>();
+                for (EJReportPOIRaw poiRaw : raws)
+                {
+                    
+                        for (EJReportPOIElement poiElement : poiRaw.getElements())
+                        {
+    
+                           if(poiElement.isIgnoreWarnings() && poiElement.getStartCell()>-1 && !ignoreCols.contains(poiElement.getStartCell()))
+                           {
+                               ignoreCols.add(poiElement.getStartCell());
+                               styleHelper.addIgnore(sheet.getSheetName(), new CellRangeAddress(initRow, rownum-1, poiElement.getStartCell(), poiElement.getStartCell()), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+                           
+                           }
+                            
+                        }
+                    
+                }
+            }
         }
         return rownum;
     }
@@ -293,10 +319,7 @@ public class EJExcelPOIReportRunner
                     row.setHeight((short) -1);
                 }
                 setCellValue(cell, value);
-                if (value instanceof String && poiElement.isIgnoreWarnings())
-                {
-                    styleHelper.addIgnore(sheet.getSheetName(), rownum, poiElement.getStartCell(), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
-                }
+               
             }
             else
             {
@@ -588,5 +611,7 @@ public class EJExcelPOIReportRunner
         int cellIndex;
         int numOfCells;
     }
+    
+
 
 }
