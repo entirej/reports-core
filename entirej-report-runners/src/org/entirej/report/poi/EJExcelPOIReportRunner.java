@@ -257,23 +257,31 @@ public class EJExcelPOIReportRunner
             if(initRow<(rownum-1))
             {
                 List<EJReportPOIRaw> raws = poiBlock.getRaws();
-                Set<Integer> ignoreCols = new HashSet<>();
+                int starCell=0;
+                int endCell=0;
+                boolean setIgnoew = true;
                 for (EJReportPOIRaw poiRaw : raws)
                 {
-                    
+                 
+                          
                         for (EJReportPOIElement poiElement : poiRaw.getElements())
                         {
     
-                           if(poiElement.isIgnoreWarnings() && poiElement.getStartCell()>-1 && !ignoreCols.contains(poiElement.getStartCell()))
+                           if(   poiElement.isIgnoreWarnings() && poiElement.getStartCell()>-1 )
                            {
-                               ignoreCols.add(poiElement.getStartCell());
-                               styleHelper.addIgnore(sheet.getSheetName(), new CellRangeAddress(initRow, rownum-1, poiElement.getStartCell(), poiElement.getStartCell()), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
-                           
+                               setIgnoew = true;
+                               starCell = Math.min(starCell, poiElement.getStartCell());
+                               endCell = Math.min(endCell, poiElement.getStartCell());
+                              
+                             
                            }
                             
                         }
                     
                 }
+                if(setIgnoew)
+                    styleHelper.addIgnore(sheet.getSheetName(), new CellRangeAddress(initRow, rownum-1, starCell, endCell), IgnoredErrorType.values());
+                
             }
         }
         return rownum;
@@ -430,6 +438,24 @@ public class EJExcelPOIReportRunner
                     break;
                 default:
                     break;
+            }
+            //handle manual format
+            String manualPattern = visualAttribute.getManualPattern();
+            if(manualPattern!=null && !manualPattern.isEmpty())
+            {
+                try
+                {
+                    SimpleDateFormat format = getDateFormat(dateMap, manualPattern, defaultLocale);
+                    return format.parse((String) value);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    // ignore
+                }
+                catch (ParseException e)
+                {
+                    // ignore
+                }
             }
         }
 
