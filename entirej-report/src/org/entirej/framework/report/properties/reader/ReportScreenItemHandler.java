@@ -28,6 +28,7 @@ import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineDirection;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Line.LineStyle;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Number.NumberFormats;
+import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.Rectangle;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.RotatableItem;
 import org.entirej.framework.report.properties.EJCoreReportScreenItemProperties.ValueBaseItem;
 import org.entirej.framework.report.properties.EJCoreReportSreenItemContainer;
@@ -59,8 +60,6 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
     private static final String              ELEMENT_SCREEN_TEXT                 = "text";
     private static final String              ELEMENT_SCREEN_MANUAL_FORMAT        = "manualFormat";
     private static final String              ELEMENT_SCREEN_LOCALE_FORMAT        = "localeFormat";
-    private static final String              ELEMENT_SCREEN_LINE_STYLE           = "lineStyle";
-    private static final String              ELEMENT_SCREEN_LINE_WIDTH           = "lineWidth";
     private static final String              ELEMENT_SCREEN_LINE_DIRECTION       = "lineDirection";
     private static final String              ELEMENT_SCREEN_RECT_RADIUS          = "rectRadius";
     private static final String              ELEMENT_SCREEN_DEFAULT_IMAGE        = "defaultImage";
@@ -199,6 +198,16 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
                 final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
                 item.setLineWidth(Double.parseDouble(value));
             }
+            else if (_itemProperties instanceof EJCoreReportScreenItemProperties.Rectangle)
+            {
+                final EJCoreReportScreenItemProperties.Rectangle item = (Rectangle) _itemProperties;
+                item.setLineWidth(Double.parseDouble(value));
+            }
+            else if (_itemProperties instanceof EJCoreReportScreenItemProperties.Line)
+            {
+                final EJCoreReportScreenItemProperties.Line item = (EJCoreReportScreenItemProperties.Line) _itemProperties;
+                item.setLineWidth(Double.parseDouble(value));
+            }
         }
         else if (name.equals(ELEMENT_LINE_STYLE))
         {
@@ -206,6 +215,16 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
             {
                 final EJCoreReportScreenItemProperties.AlignmentBaseItem item = (AlignmentBaseItem) _itemProperties;
                 item.setLineStyle(EJReportBorderProperties.LineStyle.valueOf(value));
+            }
+            else if (_itemProperties instanceof EJCoreReportScreenItemProperties.Rectangle)
+            {
+                final EJCoreReportScreenItemProperties.Rectangle item = (Rectangle) _itemProperties;
+                item.setLineStyle(EJCoreReportScreenItemProperties.Line.LineStyle.valueOf(value));
+            }
+            else if (_itemProperties instanceof EJCoreReportScreenItemProperties.Line)
+            {
+                final EJCoreReportScreenItemProperties.Line item = (EJCoreReportScreenItemProperties.Line) _itemProperties;
+                item.setLineStyle(EJCoreReportScreenItemProperties.Line.LineStyle.valueOf(value));
             }
         }
         else if (name.equals(ELEMENT_LINE_VA))
@@ -267,21 +286,7 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
 
             }
         }
-        else if (name.equals(ELEMENT_SCREEN_LINE_WIDTH))
-        {
-            if (_itemProperties instanceof EJCoreReportScreenItemProperties.Line)
-            {
-                final EJCoreReportScreenItemProperties.Line item = (EJCoreReportScreenItemProperties.Line) _itemProperties;
-                item.setLineWidth(Double.parseDouble(value));
 
-            }
-            if (_itemProperties instanceof EJCoreReportScreenItemProperties.Rectangle)
-            {
-                final EJCoreReportScreenItemProperties.Rectangle item = (EJCoreReportScreenItemProperties.Rectangle) _itemProperties;
-                item.setLineWidth(Double.parseDouble(value));
-
-            }
-        }
         else if (name.equals(ELEMENT_SCREEN_RECT_RADIUS))
         {
 
@@ -289,21 +294,6 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
             {
                 final EJCoreReportScreenItemProperties.Rectangle item = (EJCoreReportScreenItemProperties.Rectangle) _itemProperties;
                 item.setRadius(Integer.parseInt(value));
-
-            }
-        }
-        else if (name.equals(ELEMENT_SCREEN_LINE_STYLE))
-        {
-            if (_itemProperties instanceof EJCoreReportScreenItemProperties.Line)
-            {
-                final EJCoreReportScreenItemProperties.Line item = (EJCoreReportScreenItemProperties.Line) _itemProperties;
-                item.setLineStyle(LineStyle.valueOf(value));
-
-            }
-            if (_itemProperties instanceof EJCoreReportScreenItemProperties.Rectangle)
-            {
-                final EJCoreReportScreenItemProperties.Rectangle item = (EJCoreReportScreenItemProperties.Rectangle) _itemProperties;
-                item.setLineStyle(LineStyle.valueOf(value));
 
             }
         }
@@ -340,16 +330,6 @@ public class ReportScreenItemHandler extends EJCoreReportPropertiesTagHandler
 
             }
 
-        }
-
-        else if (name.equals(ELEMENT_SCREEN_LINE_STYLE))
-        {
-            if (_itemProperties instanceof EJCoreReportScreenItemProperties.Line)
-            {
-                final EJCoreReportScreenItemProperties.Line item = (EJCoreReportScreenItemProperties.Line) _itemProperties;
-                item.setLineStyle(LineStyle.valueOf(value));
-
-            }
         }
         else if (name.equals(ELEMENT_SCREEN_LINE_DIRECTION))
         {
