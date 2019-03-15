@@ -25,7 +25,7 @@ public class EJReportFrameworkInitialiser
         try
         {
             EJReportFrameworkManager frameworkManager = new EJReportFrameworkManager(entireJPropertiesFileName);
-            EJReportConnectionHelper.setEJFrameworkManager(frameworkManager);
+            EJReportConnectionHelper.setEJFrameworkManager(frameworkManager, entireJPropertiesFileName);
             return frameworkManager;
         }
         catch (Exception e)
