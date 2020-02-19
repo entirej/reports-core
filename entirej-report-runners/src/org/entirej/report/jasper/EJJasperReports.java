@@ -48,6 +48,7 @@ import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.report.jasper.builder.EJReportJasperReportBuilder;
 import org.entirej.report.jasper.data.EJReportBlockContext;
 import org.entirej.report.jasper.data.EJReportDataSource;
+import org.entirej.report.jasper.html.EJHtmlFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,7 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.fill.JRAbstractLRUVirtualizer;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRSwapFile;
+import net.sf.jasperreports.engine.util.MarkupProcessorFactory;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
@@ -104,6 +106,8 @@ public class EJJasperReports
 //        context.setProperty("net.sf.jasperreports.extension.registry.factory.simple.font.families","net.sf.jasperreports.engine.fonts.SimpleFontExtensionsRegistryFactory");
 //        context.setProperty("net.sf.jasperreports.extension.simple.font.families.dejavu","net/sf/jasperreports/fonts/fonts.xml");
 //        context.setProperty("net.sf.jasperreports.extension.simple.font.families.courier_new","org/entirej/report/jasper/fonts/ej-fonts.xml");
+        
+        context.setProperty(MarkupProcessorFactory.PROPERTY_MARKUP_PROCESSOR_FACTORY_PREFIX +"html", EJHtmlFactory.class.getName());
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)
