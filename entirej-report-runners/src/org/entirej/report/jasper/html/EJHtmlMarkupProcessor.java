@@ -266,7 +266,7 @@ public class EJHtmlMarkupProcessor extends JEditorPaneMarkupProcessor
 		
 		styledText.setGlobalAttributes(new HashMap<Attribute,Object>());
 		
-		return JRStyledTextParser.getInstance().write(styledText);
+		return JRStyledTextParser.getInstance().write(styledText).replaceAll("isBold=\"true\"", "isBold=\"true\" pdfFontName=\"Helvetica-Bold\"");
 	}
 	
 	/**
