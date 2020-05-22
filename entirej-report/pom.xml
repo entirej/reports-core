@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.entirej</groupId>
 	<artifactId>entirej-report</artifactId>
-	<version>${VERSION}</version>
+	<version>${VERSION}-SNAPSHOT</version>
 	<name>Entirej Report Core</name>
 	<build>
 		<finalName>entirej-report-${VERSION}</finalName>
