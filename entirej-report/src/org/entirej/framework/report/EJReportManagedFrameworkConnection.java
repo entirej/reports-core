@@ -29,6 +29,8 @@ public class EJReportManagedFrameworkConnection implements EJReportFrameworkConn
     {
         _connectionRetriever = connectionRetriever;
         _initialiser = initialiser;
+        if(initialiser)
+            _connectionRetriever.setClosed(false);
     }
 
     public void commit()

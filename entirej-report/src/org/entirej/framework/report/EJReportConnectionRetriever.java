@@ -26,7 +26,7 @@ import org.entirej.framework.report.properties.EJCoreReportRuntimeProperties;
 
 public class EJReportConnectionRetriever implements Serializable
 {
-    private boolean                     _closed            = false;
+    private boolean                     _closed            = true;
     private EJReportFrameworkConnection _frameworkConnection;
     private EJReportFrameworkManager    _frameworkManager;
     private EJReportConnectionFactory   _connectionFactory = EJCoreReportRuntimeProperties.getInstance().getConnectionFactory();
@@ -49,6 +49,11 @@ public class EJReportConnectionRetriever implements Serializable
     boolean isClosed()
     {
         return _closed;
+    }
+    
+     void setClosed(boolean closed)
+    {
+        this._closed = closed;
     }
 
     public EJReportFrameworkManager getFrameworkManager()
