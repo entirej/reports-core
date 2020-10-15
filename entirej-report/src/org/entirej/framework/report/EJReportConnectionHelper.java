@@ -1,23 +1,22 @@
 package org.entirej.framework.report;
 
-import java.lang.ref.WeakReference;
-
 public class EJReportConnectionHelper
 {
-    private static volatile WeakReference<EJFrameworkManagerProvider> ref;
+    private static volatile EJFrameworkManagerProvider ref;
+    private static EJReportFrameworkManager SYS_BASE = EJReportFrameworkInitialiser.newFramework("report.ejprop");
 
     public static synchronized void setProvider(EJFrameworkManagerProvider manager)
     {
-        if (ref == null || ref.get() == null)
+        if (ref == null  )
         {
-            ref = new WeakReference<EJFrameworkManagerProvider>(manager);
+            ref = manager;
         }
     }
 
     public static EJReportManagedFrameworkConnection getConnection()
     {
         if (ref != null && ref.get() != null)
-            return ref.get().get().getConnection();
+            return ref.get().getConnection();
         else
         {
             throw new EJReportRuntimeException("EJReportManagedFrameworkConnection not initialized ");
@@ -29,12 +28,13 @@ public class EJReportConnectionHelper
     {
         if (ref != null && ref.get() != null)
         {
-            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get().get());
+            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get());
             return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
         }
            
         
-        throw new EJReportRuntimeException("EJReportManagedFrameworkConnection not initialized ");
+        EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(SYS_BASE);
+        return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
     }
     
     public static interface EJFrameworkManagerProvider
