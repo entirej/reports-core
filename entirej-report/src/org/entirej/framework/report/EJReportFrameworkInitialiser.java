@@ -18,14 +18,38 @@
  ******************************************************************************/
 package org.entirej.framework.report;
 
+import org.entirej.framework.report.EJReportConnectionHelper.EJFrameworkManagerProvider;
+
 public class EJReportFrameworkInitialiser
 {
     public static EJReportFrameworkManager initialiseFramework(String entireJPropertiesFileName)
     {
         try
         {
-            EJReportFrameworkManager frameworkManager = new EJReportFrameworkManager(entireJPropertiesFileName);
-            EJReportConnectionHelper.setEJFrameworkManager(frameworkManager, entireJPropertiesFileName);
+            final EJReportFrameworkManager frameworkManager = new EJReportFrameworkManager(entireJPropertiesFileName);
+            EJReportConnectionHelper.setEJFrameworkManager(new EJFrameworkManagerProvider()
+            {
+                
+                @Override
+                public EJReportFrameworkManager get()
+                {
+                    return frameworkManager;
+                }
+            });
+            return frameworkManager;
+        }
+        catch (Exception e)
+        {
+            throw new EJReportRuntimeException(e);
+        }
+    }
+    
+    public static EJReportFrameworkManager newFramework(String entireJPropertiesFileName)
+    {
+        try
+        {
+            final EJReportFrameworkManager frameworkManager = new EJReportFrameworkManager(entireJPropertiesFileName);
+           
             return frameworkManager;
         }
         catch (Exception e)

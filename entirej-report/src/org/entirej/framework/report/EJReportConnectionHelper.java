@@ -4,49 +4,42 @@ import java.lang.ref.WeakReference;
 
 public class EJReportConnectionHelper
 {
-    private static volatile WeakReference<EJReportFrameworkManager> ref;
-    private static String entireJPropertiesFileName;
+    private static volatile WeakReference<EJFrameworkManagerProvider> ref;
 
-    static synchronized void setEJFrameworkManager(EJReportFrameworkManager manager, String entireJFileName)
+    static synchronized void setEJFrameworkManager(EJFrameworkManagerProvider manager)
     {
         if (ref == null || ref.get() == null)
         {
-            ref = new WeakReference<EJReportFrameworkManager>(manager);
+            ref = new WeakReference<EJFrameworkManagerProvider>(manager);
         }
-        entireJPropertiesFileName = entireJFileName;
     }
 
     public static EJReportManagedFrameworkConnection getConnection()
     {
         if (ref != null && ref.get() != null)
-            return ref.get().getConnection();
+            return ref.get().get().getConnection();
         else
         {
-            try
-            {
-                EJReportFrameworkManager manager = new EJReportFrameworkManager(entireJPropertiesFileName);
-                ref = new WeakReference<EJReportFrameworkManager>(manager);
-                return manager.getConnection();
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
+            throw new EJReportRuntimeException("EJReportManagedFrameworkConnection not initialized ");
         }
         
-        throw new EJReportRuntimeException("EJFrameworkManager not initialized ");
     }
     
     public static EJReportManagedFrameworkConnection newConnection()
     {
         if (ref != null && ref.get() != null)
         {
-            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get());
+            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get().get());
             return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
         }
            
         
-        throw new EJReportRuntimeException("EJFrameworkManager not initialized ");
+        throw new EJReportRuntimeException("EJReportManagedFrameworkConnection not initialized ");
+    }
+    
+    public static interface EJFrameworkManagerProvider
+    {
+        EJReportFrameworkManager get();
     }
 
 }
