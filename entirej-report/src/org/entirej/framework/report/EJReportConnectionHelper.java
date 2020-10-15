@@ -6,7 +6,7 @@ public class EJReportConnectionHelper
 {
     private static volatile WeakReference<EJFrameworkManagerProvider> ref;
 
-    public static synchronized void setEJFrameworkManager(EJFrameworkManagerProvider manager)
+    public static synchronized void setProvider(EJFrameworkManagerProvider manager)
     {
         if (ref == null || ref.get() == null)
         {

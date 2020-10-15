@@ -27,7 +27,7 @@ public class EJReportFrameworkInitialiser
         try
         {
             final EJReportFrameworkManager frameworkManager = new EJReportFrameworkManager(entireJPropertiesFileName);
-            EJReportConnectionHelper.setEJFrameworkManager(new EJFrameworkManagerProvider()
+            EJReportConnectionHelper.setProvider(new EJFrameworkManagerProvider()
             {
                 
                 @Override
