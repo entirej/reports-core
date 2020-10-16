@@ -41,7 +41,7 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
 {
     private final Logger                                 LOGGER         = LoggerFactory.getLogger(this.getClass());
 
-    private EJReportConnectionRetriever                  _connectionRetriever;
+    private EJReportConnectionRetriever                  _connectionRetriever = new EJReportConnectionRetriever(this);
     private Locale                                       _currentLocale = Locale.ENGLISH;
     private EJReportPropertiesFactory                    _reportPropertiesFactory;
     private EJReportControllerFactory                    _reportControllerFactory;
@@ -63,17 +63,18 @@ public class EJReportFrameworkManager implements EJReportFrameworkHelper
 
     public synchronized EJReportManagedFrameworkConnection getConnection()
     {
-        if (_connectionRetriever == null || _connectionRetriever.isClosed())
-        {
-            _connectionRetriever = new EJReportConnectionRetriever(this);
-            return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
-        }
-        else
-        {
-            return new EJReportManagedFrameworkConnection(_connectionRetriever, false);
-        }
-
+    
+            return new EJReportManagedFrameworkConnection(_connectionRetriever, _connectionRetriever.initialse());
+        
     }
+    
+    public synchronized EJReportManagedFrameworkConnection newConnection()
+    {
+        EJReportConnectionRetriever                  connectionRetriever = new EJReportConnectionRetriever(this);
+        return new EJReportManagedFrameworkConnection(connectionRetriever, connectionRetriever.initialse());
+        
+    }
+    
 
     public Collection<EJApplicationLevelParameter> getApplicationLevelParameters()
     {

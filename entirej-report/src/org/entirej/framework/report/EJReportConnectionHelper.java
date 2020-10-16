@@ -28,13 +28,11 @@ public class EJReportConnectionHelper
     {
         if (ref != null && ref.get() != null)
         {
-            EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(ref.get());
-            return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
+            return ref.get().newConnection();
         }
            
         
-        EJReportConnectionRetriever _connectionRetriever = new EJReportConnectionRetriever(SYS_BASE);
-        return new EJReportManagedFrameworkConnection(_connectionRetriever, true);
+        return SYS_BASE.newConnection();
     }
     
     public static interface EJFrameworkManagerProvider
