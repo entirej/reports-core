@@ -3,11 +3,23 @@ package org.entirej.framework.report;
 public class EJReportConnectionHelper
 {
     private static volatile EJFrameworkManagerProvider ref;
-    private static EJReportFrameworkManager SYS_BASE = EJReportFrameworkInitialiser.newFramework("report.ejprop");
+    private static EJReportFrameworkManager            SYS_BASE;
+
+    static
+    {
+        try
+        {
+            SYS_BASE = EJReportFrameworkInitialiser.newFramework("report.ejprop");
+        }
+        catch (EJReportRuntimeException e)
+        {
+           //skip
+        }
+    }
 
     public static synchronized void setProvider(EJFrameworkManagerProvider manager)
     {
-        if (ref == null  )
+        if (ref == null)
         {
             ref = manager;
         }
@@ -21,20 +33,19 @@ public class EJReportConnectionHelper
         {
             throw new EJReportRuntimeException("EJReportManagedFrameworkConnection not initialized ");
         }
-        
+
     }
-    
+
     public static EJReportManagedFrameworkConnection newConnection()
     {
         if (ref != null && ref.get() != null)
         {
             return ref.get().newConnection();
         }
-           
-        
-        return SYS_BASE.newConnection();
+
+        return SYS_BASE!=null ? SYS_BASE.newConnection():null;
     }
-    
+
     public static interface EJFrameworkManagerProvider
     {
         EJReportFrameworkManager get();
