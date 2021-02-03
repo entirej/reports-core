@@ -19,10 +19,9 @@ public class EJReportConnectionHelper
 
     public static synchronized void setProvider(EJFrameworkManagerProvider manager)
     {
-        if (ref == null)
-        {
+        
             ref = manager;
-        }
+        
     }
 
     public static EJReportManagedFrameworkConnection getConnection()
