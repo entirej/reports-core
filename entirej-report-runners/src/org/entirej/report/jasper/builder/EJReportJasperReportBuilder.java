@@ -1251,7 +1251,7 @@ public class EJReportJasperReportBuilder
         Collection<EJCoreReportVisualAttributeProperties> visualAttributes = EJCoreReportRuntimeProperties.getInstance().getVisualAttributesContainer()
                 .getVisualAttributes();
 
-        for (EJReportVisualAttributeProperties properties : visualAttributes)
+        for (EJReportVisualAttributeProperties properties : new ArrayList<>(visualAttributes))
         {
 
             if (properties.isUsedAsDynamicVA())
