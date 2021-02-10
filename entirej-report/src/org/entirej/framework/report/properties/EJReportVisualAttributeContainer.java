@@ -69,7 +69,7 @@ public class EJReportVisualAttributeContainer implements Serializable
      *         name or <code>null</code> if there is no visual attribute with
      *         the given name
      */
-    public EJReportVisualAttributeProperties getVisualAttributeProperties(String vaPropertiesName)
+    public EJReportVisualAttributeProperties getVisualAttributeProperties(final String vaPropertiesName)
     {
         if (vaPropertiesName == null || vaPropertiesName.trim().length() == 0)
         {
@@ -77,18 +77,8 @@ public class EJReportVisualAttributeContainer implements Serializable
         }
         else
         {
-            Iterator<EJCoreReportVisualAttributeProperties> iti = _visualAttributeList.iterator();
-
-            while (iti.hasNext())
-            {
-                EJCoreReportVisualAttributeProperties props = iti.next();
-
-                if (props.getName().equalsIgnoreCase(vaPropertiesName))
-                {
-                    return props.makeCopy();
-                }
-            }
-            return null;
+            
+            return _visualAttributeList.stream().filter(props -> props.getName().equalsIgnoreCase(vaPropertiesName)).findFirst().orElse(null);
         }
     }
 
