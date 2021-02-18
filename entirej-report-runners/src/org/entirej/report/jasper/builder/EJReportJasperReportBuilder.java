@@ -105,8 +105,9 @@ import net.sf.jasperreports.engine.util.StyleResolver;
 public class EJReportJasperReportBuilder
 {
 
-    private final JasperDesign design;
-    private Locale             defaultLocale;
+    private final JasperDesign                           design;
+    private Locale                                       defaultLocale;
+    private static Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
 
     public EJReportJasperReportBuilder()
     {
@@ -912,17 +913,20 @@ public class EJReportJasperReportBuilder
                             processItemLineStyle(element, item);
 
                             /*
-                             * if(element.getStyle() instanceof JRDesignStyle) { JRDesignStyle style =
-                             * (JRDesignStyle) element.getStyle();
+                             * if(element.getStyle() instanceof JRDesignStyle) {
+                             * JRDesignStyle style = (JRDesignStyle)
+                             * element.getStyle();
                              * 
                              * EJReportVisualAttributeProperties vaOdd =
-                             * screenProperties.getOddVAProperties(); EJReportVisualAttributeProperties
-                             * vaEven = screenProperties.getEvenVAProperties(); if (vaOdd != null || vaEven
-                             * != null) {
+                             * screenProperties.getOddVAProperties();
+                             * EJReportVisualAttributeProperties vaEven =
+                             * screenProperties.getEvenVAProperties(); if (vaOdd
+                             * != null || vaEven != null) {
                              * 
                              * 
                              * 
-                             * buildOddEvenStyle(screenProperties, vaOdd, vaEven, style);
+                             * buildOddEvenStyle(screenProperties, vaOdd,
+                             * vaEven, style);
                              * 
                              * 
                              * } }
@@ -940,7 +944,7 @@ public class EJReportJasperReportBuilder
             if (canShowBlockFooter && col.showFooter())
             {
 
-                Collection<EJReportScreenItem> screenItems =  col.getFooterSection().getScreenItems();
+                Collection<EJReportScreenItem> screenItems = col.getFooterSection().getScreenItems();
 
                 int sectionHeight = col.getFooterSection().getHeight();
                 if (sectionHeight == 0)
@@ -1067,11 +1071,11 @@ public class EJReportJasperReportBuilder
 
     private void processItemLineStyle(JRDesignElement element, EJReportScreenColumnSection section)
     {
-        if(section.getScreenItems().size()>1)
+        if (section.getScreenItems().size() > 1)
         {
             return;
         }
-        
+
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
         JRLineBox lineBox = style.getLineBox();
         if (section.showLeftLine())
@@ -1096,12 +1100,12 @@ public class EJReportJasperReportBuilder
         }
 
     }
+
     private void processItemLineStyle(JRDesignElement element, EJReportScreenItem item)
     {
-       
-        
+
         EJReportAlignmentBaseScreenItem alignmentBaseScreenItem = null;
-        
+
         switch (item.getType())
         {
             case DATE:
@@ -1110,17 +1114,17 @@ public class EJReportJasperReportBuilder
             case NUMBER:
             case IMAGE:
                 EJReportAlignmentBaseScreenItem typeAs = item.typeAs(EJReportAlignmentBaseScreenItem.class);
-                if(typeAs != null)
+                if (typeAs != null)
                 {
                     alignmentBaseScreenItem = typeAs;
                 }
             default:
                 break;
         }
-        
-        if(alignmentBaseScreenItem==null)
+
+        if (alignmentBaseScreenItem == null)
             return;
-        
+
         JRDesignStyle style = (JRDesignStyle) element.getStyle();
         JRLineBox lineBox = style.getLineBox();
         if (alignmentBaseScreenItem.showLeftLine())
@@ -1143,7 +1147,7 @@ public class EJReportJasperReportBuilder
             JRBoxPen pen = lineBox.getBottomPen();
             linepenStyle(alignmentBaseScreenItem, pen);
         }
-        
+
     }
 
     private void linepenStyle(EJReportScreenColumnSection section, JRBoxPen pen)
@@ -1171,6 +1175,7 @@ public class EJReportJasperReportBuilder
             pen.setLineColor(section.getLineVisualAttributes().getBackgroundColor());
         }
     }
+
     private void linepenStyle(EJReportAlignmentBaseScreenItem section, JRBoxPen pen)
     {
         pen.setLineWidth((float) section.getLineWidth());
@@ -1188,9 +1193,9 @@ public class EJReportJasperReportBuilder
             case SOLID:
                 pen.setLineStyle(LineStyleEnum.SOLID);
                 break;
-                
+
         }
-        
+
         if (section.getLineVisualAttributes() != null && section.getLineVisualAttributes().getBackgroundColor() != null)
         {
             pen.setLineColor(section.getLineVisualAttributes().getBackgroundColor());
@@ -1256,9 +1261,17 @@ public class EJReportJasperReportBuilder
 
             if (properties.isUsedAsDynamicVA())
             {
-                JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-                conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
-                vaToStyle(properties, conditionalStyle);
+                String key = item +"___"+section.name() +"__"+properties.getName();
+                JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+
+                if (conditionalStyle == null)
+                {
+
+                    conditionalStyle = new JRDesignConditionalStyle();
+                    conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
+                    vaToStyle(properties, conditionalStyle);
+                    vaCStyleCache.put(key, conditionalStyle);
+                }
 
                 style.addConditionalStyle(conditionalStyle);
             }
@@ -1292,12 +1305,7 @@ public class EJReportJasperReportBuilder
         {
             style.setName(String.format("%s.odd", screen.getBlockName()));
 
-            JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-            vaToStyle(vaOdd, conditionalStyle);
-
-            JRDesignExpression expression = new JRDesignExpression();
-            expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
-            conditionalStyle.setConditionExpression(expression);
+            JRDesignConditionalStyle conditionalStyle = oddStyle(vaOdd);
 
             style.addConditionalStyle(conditionalStyle);
         }
@@ -1305,15 +1313,46 @@ public class EJReportJasperReportBuilder
         {
             style.setName(String.format("%s.even", screen.getBlockName()));
 
-            JRDesignConditionalStyle conditionalStyle = new JRDesignConditionalStyle();
-            vaToStyle(vaEven, conditionalStyle);
-
-            JRDesignExpression expression = new JRDesignExpression();
-            expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
-            conditionalStyle.setConditionExpression(expression);
+            JRDesignConditionalStyle conditionalStyle = evenStyle(vaEven);
 
             style.addConditionalStyle(conditionalStyle);
         }
+    }
+
+    private JRDesignConditionalStyle oddStyle(EJReportVisualAttributeProperties vaOdd)
+    {
+        String key = "__ODD_" + vaOdd.getName();
+        JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+
+        if (conditionalStyle != null)
+            return conditionalStyle;
+
+        conditionalStyle = new JRDesignConditionalStyle();
+        vaToStyle(vaOdd, conditionalStyle);
+
+        JRDesignExpression expression = new JRDesignExpression();
+        expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
+        conditionalStyle.setConditionExpression(expression);
+        vaCStyleCache.put(key, conditionalStyle);
+        return conditionalStyle;
+    }
+
+    private JRDesignConditionalStyle evenStyle(EJReportVisualAttributeProperties vaEven)
+    {
+        String key = "__EVEN_" + vaEven.getName();
+        JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+
+        if (conditionalStyle != null)
+            return conditionalStyle;
+
+        conditionalStyle = new JRDesignConditionalStyle();
+        vaToStyle(vaEven, conditionalStyle);
+
+        JRDesignExpression expression = new JRDesignExpression();
+        expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
+        conditionalStyle.setConditionExpression(expression);
+        vaCStyleCache.put(key, conditionalStyle);
+        return conditionalStyle;
     }
 
     private void createColumnLines(int bandHeight, JRDesignBand band, int currentX, int width, EJReportScreenColumnSection section) throws JRException
@@ -1872,7 +1911,7 @@ public class EJReportJasperReportBuilder
                 return JRDesignChart.CHART_TYPE_XYLINE;
             case PIE_CHART:
                 return JRDesignChart.CHART_TYPE_PIE;
-                
+
             default:
                 break;
 
