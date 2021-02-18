@@ -37,6 +37,8 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
         EJReportVisualAttributeProperties
 {
     public static final String      UNSPECIFIED     = "Unspecified";
+    
+    private static HashMap<String, Color> colormap = new HashMap<>();
 
     /**
      * The available font weights for use within the
@@ -453,6 +455,12 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
             throw new NullPointerException();
         }
 
+        Color color = colormap.get(colorString);
+        
+        if(color!=null)
+            return color;
+        
+        
         if (!colorString.contains("r") || !colorString.contains("g") || !colorString.contains("b"))
         {
             throw new IllegalArgumentException("The color is not in the correct format. Expected r<color>g<color>b<color>, received: " + colorString);
@@ -465,8 +473,8 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
             String G = colorString.substring(colorString.indexOf('g') + 1, colorString.indexOf('b'));
             String B = colorString.substring(colorString.indexOf('b') + 1);
 
-            Color color = new Color(Integer.parseInt(R), Integer.parseInt(G), Integer.parseInt(B));
-
+             color = new Color(Integer.parseInt(R), Integer.parseInt(G), Integer.parseInt(B));
+             colormap.put(colorString, color);
             return color;
         }
         catch (Exception e)
