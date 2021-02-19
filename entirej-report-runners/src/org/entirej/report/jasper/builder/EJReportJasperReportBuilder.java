@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportAlignmentBaseScreenItem;
@@ -105,9 +106,8 @@ import net.sf.jasperreports.engine.util.StyleResolver;
 public class EJReportJasperReportBuilder
 {
 
-    private final JasperDesign                           design;
-    private Locale                                       defaultLocale;
-    private static Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
+    private final JasperDesign design;
+    private Locale             defaultLocale;
 
     public EJReportJasperReportBuilder()
     {
@@ -1261,17 +1261,14 @@ public class EJReportJasperReportBuilder
 
             if (properties.isUsedAsDynamicVA())
             {
-                String key = item +"___"+section.name() +"__"+properties.getName();
-                JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+                // String key = item +"___"+section.name()
+                // +"__"+properties.getName();
+                JRDesignConditionalStyle conditionalStyle;// vaCStyleCache.get(key);
 
-                if (conditionalStyle == null)
-                {
-
-                    conditionalStyle = new JRDesignConditionalStyle();
-                    conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
-                    vaToStyle(properties, conditionalStyle);
-                    vaCStyleCache.put(key, conditionalStyle);
-                }
+                conditionalStyle = new JRDesignConditionalStyle();
+                conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
+                vaToStyle(properties, conditionalStyle);
+                // vaCStyleCache.put(key, conditionalStyle);
 
                 style.addConditionalStyle(conditionalStyle);
             }
@@ -1321,11 +1318,8 @@ public class EJReportJasperReportBuilder
 
     private JRDesignConditionalStyle oddStyle(EJReportVisualAttributeProperties vaOdd)
     {
-        String key = "__ODD_" + vaOdd.getName();
-        JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
-
-        if (conditionalStyle != null)
-            return conditionalStyle;
+        // String key = "__ODD_" + vaOdd.getName();
+        JRDesignConditionalStyle conditionalStyle;
 
         conditionalStyle = new JRDesignConditionalStyle();
         vaToStyle(vaOdd, conditionalStyle);
@@ -1333,17 +1327,13 @@ public class EJReportJasperReportBuilder
         JRDesignExpression expression = new JRDesignExpression();
         expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
         conditionalStyle.setConditionExpression(expression);
-        vaCStyleCache.put(key, conditionalStyle);
+        // vaCStyleCache.put(key, conditionalStyle);
         return conditionalStyle;
     }
 
     private JRDesignConditionalStyle evenStyle(EJReportVisualAttributeProperties vaEven)
     {
-        String key = "__EVEN_" + vaEven.getName();
-        JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
-
-        if (conditionalStyle != null)
-            return conditionalStyle;
+        JRDesignConditionalStyle conditionalStyle;
 
         conditionalStyle = new JRDesignConditionalStyle();
         vaToStyle(vaEven, conditionalStyle);
@@ -1351,7 +1341,7 @@ public class EJReportJasperReportBuilder
         JRDesignExpression expression = new JRDesignExpression();
         expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
         conditionalStyle.setConditionExpression(expression);
-        vaCStyleCache.put(key, conditionalStyle);
+
         return conditionalStyle;
     }
 
