@@ -208,7 +208,7 @@ public class EJJasperReports
             tempFile = File.createTempFile(report.getName(), "swap");
             tempFile.delete();
             tempFile.mkdirs();
-            net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(1000,
+            net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(2,
                     new JRSwapFile(tempFile.getAbsolutePath(), 2048, 1024), true);
 
             EJJasperReportParameter virtualizerParam = new EJJasperReportParameter(JRParameter.REPORT_VIRTUALIZER, JRAbstractLRUVirtualizer.class);
