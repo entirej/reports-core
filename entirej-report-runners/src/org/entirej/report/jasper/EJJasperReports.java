@@ -69,7 +69,6 @@ import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.engine.fill.JRAbstractLRUVirtualizer;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRSwapFile;
 import net.sf.jasperreports.engine.util.MarkupProcessorFactory;
@@ -191,6 +190,7 @@ public class EJJasperReports
     public static JasperPrint fillReport(EJReportFrameworkManager manager, final EJReport report, EJJasperReportParameter... parameters)
     {
         File tempFile = null;
+        JRSwapFileVirtualizer virtualizer = null;
         try
         {
             report.getActionController().beforeReport(report);
@@ -208,13 +208,11 @@ public class EJJasperReports
             tempFile = File.createTempFile(report.getName(), "swap");
             tempFile.delete();
             tempFile.mkdirs();
-            net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(2,
-                    new JRSwapFile(tempFile.getAbsolutePath(), 2048, 1024), true);
-
-            EJJasperReportParameter virtualizerParam = new EJJasperReportParameter(JRParameter.REPORT_VIRTUALIZER, JRAbstractLRUVirtualizer.class);
+            JRSwapFile swapFile = new JRSwapFile(tempFile.getAbsolutePath(), 2048, 200);
+            virtualizer = new JRSwapFileVirtualizer(150, swapFile, true);
+            EJJasperReportParameter virtualizerParam = new EJJasperReportParameter(JRParameter.REPORT_VIRTUALIZER, JRSwapFileVirtualizer.class);
             virtualizerParam.setValue(virtualizer);
             reportParameters.add(virtualizerParam);
-
             for (EJApplicationLevelParameter parameter : manager.getApplicationLevelParameters())
             {
                 EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
@@ -229,7 +227,6 @@ public class EJJasperReports
             }
 
             // add Block datasource
-
             EJReportBlockContext blockContext = new EJReportBlockContext()
             {
 
@@ -277,15 +274,7 @@ public class EJJasperReports
             throw new EJReportRuntimeException(e);
         }finally
         {
-            if(tempFile!=null)
-            {
-                File[] listFiles = tempFile.listFiles();
-                for (File file : listFiles)
-                {
-                    file.delete();
-                }
-                tempFile.delete();
-            }
+            virtualizer.cleanup();
         }
     }
 
