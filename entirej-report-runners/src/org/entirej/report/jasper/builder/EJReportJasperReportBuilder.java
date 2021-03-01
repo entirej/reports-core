@@ -107,7 +107,7 @@ public class EJReportJasperReportBuilder
 
     private final JasperDesign                           design;
     private Locale                                       defaultLocale;
-    private static Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
+    private  Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
 
     public EJReportJasperReportBuilder()
     {
