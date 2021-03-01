@@ -26,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.entirej.framework.report.enumerations.EJReportFontStyle;
 import org.entirej.framework.report.enumerations.EJReportFontWeight;
@@ -39,7 +38,7 @@ public class EJCoreReportVisualAttributeProperties implements Comparable<EJCoreR
 {
     public static final String      UNSPECIFIED     = "Unspecified";
     
-    private static ConcurrentHashMap<String, Color> colormap = new ConcurrentHashMap<>();
+    private static HashMap<String, Color> colormap = new HashMap<>();
 
     /**
      * The available font weights for use within the
