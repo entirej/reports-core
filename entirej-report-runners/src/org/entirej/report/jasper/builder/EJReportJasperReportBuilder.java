@@ -51,6 +51,8 @@ import org.entirej.framework.report.properties.EJCoreReportVisualAttributeProper
 import org.entirej.framework.report.properties.EJReportVisualAttributeProperties;
 import org.entirej.report.jasper.data.EJReportActionContext;
 import org.entirej.report.jasper.data.EJReportBlockContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
 import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
@@ -104,10 +106,10 @@ import net.sf.jasperreports.engine.util.StyleResolver;
 
 public class EJReportJasperReportBuilder
 {
-
-    private final JasperDesign                           design;
-    private Locale                                       defaultLocale;
-    private  Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
+    final static Logger LOGGER = LoggerFactory.getLogger(EJReportJasperReportBuilder.class);
+    private final JasperDesign                    design;
+    private Locale                                defaultLocale;
+    private Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
 
     public EJReportJasperReportBuilder()
     {
@@ -119,6 +121,8 @@ public class EJReportJasperReportBuilder
     {
         try
         {
+            LOGGER.info("START Building Report Design");
+            
             design.setSummaryNewPage(false);
             design.setPageFooter(null);
             design.setSummary(null);
@@ -173,6 +177,8 @@ public class EJReportJasperReportBuilder
                 design.setPageFooter(footer);
 
             }
+            
+            LOGGER.info("    Designing Report Headers");
 
             for (EJReportBlock block : report.getHeaderBlocks())
             {
@@ -193,6 +199,8 @@ public class EJReportJasperReportBuilder
 
                 header.addElement(subreport);
             }
+            
+            LOGGER.info("    Designing Report Footers");
             for (EJReportBlock block : report.getFooterBlocks())
             {
                 JRDesignSubreport subreport = createSubReport(report, block, true);
@@ -214,9 +222,12 @@ public class EJReportJasperReportBuilder
             }
 
             boolean addPageBrake = false;
+            LOGGER.info("    Designing Report Pages");
             for (EJReportPage page : report.getPages())
             {
 
+                LOGGER.info("    Designing Report Page: "+page.getName());
+                
                 JRDesignGroup group = new JRDesignGroup();
                 group.setName(page.getName());
                 JRDesignSection groupHeaderSection = (JRDesignSection) group.getGroupHeaderSection();
@@ -317,6 +328,9 @@ public class EJReportJasperReportBuilder
 
     private JRDesignSubreport createSubReport(EJReport report, EJReportBlock block, boolean fixed) throws JRException
     {
+        
+        LOGGER.info("START Creating subReport");
+        
         EJReportScreen screen = block.getScreen();
 
         String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
@@ -392,6 +406,7 @@ public class EJReportJasperReportBuilder
             subreport.addParameter(subreportParameter);
 
             subreport.setPrintWhenExpression(createBlockVisibleExpression(block.getName()));
+            LOGGER.info("FINISH Creating subReport");
             return subreport;
 
         }
@@ -1261,7 +1276,7 @@ public class EJReportJasperReportBuilder
 
             if (properties.isUsedAsDynamicVA())
             {
-                String key = item +"___"+section.name() +"__"+properties.getName();
+                String key = item + "___" + section.name() + "__" + properties.getName();
                 JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
 
                 if (conditionalStyle == null)

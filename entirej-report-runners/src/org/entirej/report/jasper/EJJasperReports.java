@@ -259,7 +259,8 @@ public class EJJasperReports
             LOGGER.info("END Genarate EjReport -> Jasper Report :" + report.getName() + " TIME(sec):" + (System.currentTimeMillis() - start) / 1000);
 
             // JasperDesignViewer.viewReportDesign(jasperReport);
-            LOGGER.info("START Filling  Report :" + report.getName());
+            LOGGER.info("START Running  Report :" + report.getName());
+            LOGGER.info("START Using Swap File Virtualizer");
             start = System.currentTimeMillis();
             JasperPrint print = fillReport(jasperReport, new EJReportDataSource(report), reportParameters.toArray(parameters));
             report.getActionController().afterReport(report);
