@@ -109,11 +109,12 @@ public class EJReportJasperReportBuilder
     final static Logger LOGGER = LoggerFactory.getLogger(EJReportJasperReportBuilder.class);
     private final JasperDesign                    design;
     private Locale                                defaultLocale;
-    private Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
+    private final Map<String, JRDesignConditionalStyle> vaCStyleCache;
 
-    public EJReportJasperReportBuilder()
+    public EJReportJasperReportBuilder(Map<String, JRDesignConditionalStyle> vaCStyleCache)
     {
         design = new JasperDesign();
+        this.vaCStyleCache = vaCStyleCache;
 
     }
 

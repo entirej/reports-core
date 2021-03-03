@@ -62,6 +62,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
@@ -189,12 +190,15 @@ public class EJJasperReports
 
     public static JasperPrint fillReport(EJReportFrameworkManager manager, final EJReport report, EJJasperReportParameter... parameters)
     {
+        Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
+
         File tempFile = null;
         JRSwapFileVirtualizer virtualizer = null;
         try
         {
             report.getActionController().beforeReport(report);
-            EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder();
+            
+            EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder(vaCStyleCache);
 
             builder.buildDesign(report);
 
@@ -234,7 +238,7 @@ public class EJJasperReports
                 public JasperReport getBlockReport(String blockName)
                 {
                     EJReportBlock block = report.getBlock(blockName);
-                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder(vaCStyleCache);
                     sbBuilder.buildDesign(block);
 
                     return sbBuilder.toReport();
@@ -244,7 +248,7 @@ public class EJJasperReports
                 public JasperReport getBlockReportFixed(String blockName)
                 {
                     EJReportBlock block = report.getBlock(blockName);
-                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder();
+                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder(vaCStyleCache);
                     sbBuilder.buildDesignFixed(block);
 
                     return sbBuilder.toReport();
@@ -286,6 +290,7 @@ public class EJJasperReports
                 }
                 tempFile.delete();
             }
+            vaCStyleCache.clear();
         }
     }
 
