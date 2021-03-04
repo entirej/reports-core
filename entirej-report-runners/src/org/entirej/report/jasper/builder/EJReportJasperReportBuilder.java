@@ -1272,19 +1272,23 @@ public class EJReportJasperReportBuilder
 
             if (properties.isUsedAsDynamicVA())
             {
-                String key = item + "___" + section.name() + "__" + properties.getName();
-                JRDesignConditionalStyle conditionalStyle = (JRDesignConditionalStyle) cache.get(key);
-
-                if (conditionalStyle == null)
+                synchronized (cache)
                 {
+                    String key = item + "___" + section.name() + "__" + properties.getName();
+                    JRDesignConditionalStyle conditionalStyle = (JRDesignConditionalStyle) cache.get(key);
 
-                    conditionalStyle = new JRDesignConditionalStyle();
-                    conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
-                    vaToStyle(properties, conditionalStyle);
-                    cache.put(key, conditionalStyle);
+                    if (conditionalStyle == null)
+                    {
+
+                        conditionalStyle = new JRDesignConditionalStyle();
+                        conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
+                        vaToStyle(properties, conditionalStyle);
+                        cache.put(key, conditionalStyle);
+                    }
+
+                    style.addConditionalStyle(conditionalStyle);
                 }
-
-                style.addConditionalStyle(conditionalStyle);
+               
             }
         }
 
@@ -2220,6 +2224,7 @@ public class EJReportJasperReportBuilder
 
         style.setName(UUID.randomUUID().toString());
         design.addStyle(style);
+        
 
         return style;
     }

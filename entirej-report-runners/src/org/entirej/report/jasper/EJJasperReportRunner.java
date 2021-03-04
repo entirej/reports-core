@@ -84,6 +84,7 @@ public class EJJasperReportRunner implements EJReportRunner
           
             JasperPrint jasperPrint = EJJasperReports.fillReport(manager, report);
 
+            System.gc();
             Collection<EJReportPage> pages = report.getPages();
             List<String> pageNames = new ArrayList<String>(pages.size());
             for (EJReportPage page : pages)
