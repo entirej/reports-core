@@ -190,14 +190,15 @@ public class EJJasperReports
 
     public static JasperPrint fillReport(EJReportFrameworkManager manager, final EJReport report, EJJasperReportParameter... parameters)
     {
-        Map<String, JRDesignConditionalStyle> vaCStyleCache = new HashMap<>();
+        Map<String, Object> vaCStyleCache = new HashMap<>();
+        Map<String, JasperReport> reportCache = new HashMap<>();
 
         File tempFile = null;
         JRSwapFileVirtualizer virtualizer = null;
         try
         {
             report.getActionController().beforeReport(report);
-            
+
             EJReportJasperReportBuilder builder = new EJReportJasperReportBuilder(vaCStyleCache);
 
             builder.buildDesign(report);
@@ -237,21 +238,45 @@ public class EJJasperReports
                 @Override
                 public JasperReport getBlockReport(String blockName)
                 {
-                    EJReportBlock block = report.getBlock(blockName);
-                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder(vaCStyleCache);
-                    sbBuilder.buildDesign(block);
+                    synchronized (report)
+                    {
 
-                    return sbBuilder.toReport();
+                        String key = "___rb_" + blockName;
+                        JasperReport rd = reportCache.get(key);
+                        if (rd != null)
+                            return rd;
+
+                        EJReportBlock block = report.getBlock(blockName);
+                        EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder(vaCStyleCache);
+                        sbBuilder.buildDesign(block);
+
+                        rd = sbBuilder.toReport();
+                        reportCache.put(key, rd);
+
+                        return rd;
+                    }
+
                 }
 
                 @Override
                 public JasperReport getBlockReportFixed(String blockName)
                 {
-                    EJReportBlock block = report.getBlock(blockName);
-                    EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder(vaCStyleCache);
-                    sbBuilder.buildDesignFixed(block);
+                    synchronized (report)
+                    {
+                        String key = "___rbf_" + blockName;
+                        JasperReport rd = reportCache.get(key);
+                        if (rd != null)
+                            return rd;
 
-                    return sbBuilder.toReport();
+                        EJReportBlock block = report.getBlock(blockName);
+                        EJReportJasperReportBuilder sbBuilder = new EJReportJasperReportBuilder(vaCStyleCache);
+                        sbBuilder.buildDesignFixed(block);
+
+                        rd = sbBuilder.toReport();
+                        reportCache.put(key, rd);
+
+                        return rd;
+                    }
                 }
             };
 

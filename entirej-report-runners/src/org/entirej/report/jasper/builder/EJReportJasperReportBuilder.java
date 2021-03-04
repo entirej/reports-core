@@ -106,15 +106,15 @@ import net.sf.jasperreports.engine.util.StyleResolver;
 
 public class EJReportJasperReportBuilder
 {
-    final static Logger LOGGER = LoggerFactory.getLogger(EJReportJasperReportBuilder.class);
-    private final JasperDesign                    design;
-    private Locale                                defaultLocale;
-    private final Map<String, JRDesignConditionalStyle> vaCStyleCache;
+    final static Logger               LOGGER = LoggerFactory.getLogger(EJReportJasperReportBuilder.class);
+    private final JasperDesign        design;
+    private Locale                    defaultLocale;
+    private final Map<String, Object> cache;
 
-    public EJReportJasperReportBuilder(Map<String, JRDesignConditionalStyle> vaCStyleCache)
+    public EJReportJasperReportBuilder(Map<String, Object> cache)
     {
         design = new JasperDesign();
-        this.vaCStyleCache = vaCStyleCache;
+        this.cache = cache;
 
     }
 
@@ -123,7 +123,7 @@ public class EJReportJasperReportBuilder
         try
         {
             LOGGER.info("START Building Report Design");
-            
+
             design.setSummaryNewPage(false);
             design.setPageFooter(null);
             design.setSummary(null);
@@ -178,7 +178,7 @@ public class EJReportJasperReportBuilder
                 design.setPageFooter(footer);
 
             }
-            
+
             LOGGER.info("    Designing Report Headers");
 
             for (EJReportBlock block : report.getHeaderBlocks())
@@ -200,7 +200,7 @@ public class EJReportJasperReportBuilder
 
                 header.addElement(subreport);
             }
-            
+
             LOGGER.info("    Designing Report Footers");
             for (EJReportBlock block : report.getFooterBlocks())
             {
@@ -227,8 +227,8 @@ public class EJReportJasperReportBuilder
             for (EJReportPage page : report.getPages())
             {
 
-                LOGGER.info("    Designing Report Page: "+page.getName());
-                
+                LOGGER.info("    Designing Report Page: " + page.getName());
+
                 JRDesignGroup group = new JRDesignGroup();
                 group.setName(page.getName());
                 JRDesignSection groupHeaderSection = (JRDesignSection) group.getGroupHeaderSection();
@@ -329,9 +329,9 @@ public class EJReportJasperReportBuilder
 
     private JRDesignSubreport createSubReport(EJReport report, EJReportBlock block, boolean fixed) throws JRException
     {
-        
+
         LOGGER.info("START Creating subReport");
-        
+
         EJReportScreen screen = block.getScreen();
 
         String blockDataSourceField = String.format("EJRJ_BLOCK_DS_%s", block.getName());
@@ -364,13 +364,10 @@ public class EJReportJasperReportBuilder
             subreport.setKey(block.getName());
             subreport.setRemoveLineWhenBlank(true);
 
-            JRDesignExpression expressionDS = new JRDesignExpression();
-            expressionDS.setText(String.format("$F{%s}", blockDataSourceField));
+            JRDesignExpression expressionDS = toDE(String.format("$F{%s}", blockDataSourceField));
             subreport.setDataSourceExpression(expressionDS);
 
-            JRDesignExpression expressionRPT = new JRDesignExpression();
-
-            expressionRPT.setText(
+            JRDesignExpression expressionRPT = toDE(
                     String.format(!fixed ? "$P{EJRJ_BLOCK_RPT}.getBlockReport(\"%s\")" : "$P{EJRJ_BLOCK_RPT}.getBlockReportFixed(\"%s\")", block.getName()));
             subreport.setExpression(expressionRPT);
 
@@ -378,8 +375,7 @@ public class EJReportJasperReportBuilder
             {
                 JRDesignSubreportParameter subreportParameter = new JRDesignSubreportParameter();
                 subreportParameter.setName(parameter.getName());
-                JRDesignExpression expression = new JRDesignExpression();
-                expression.setText(String.format("$P{%s}", parameter.getName()));
+                JRDesignExpression expression = toDE(String.format("$P{%s}", parameter.getName()));
                 subreportParameter.setExpression(expression);
 
                 subreport.addParameter(subreportParameter);
@@ -1053,8 +1049,7 @@ public class EJReportJasperReportBuilder
             designBreak.setHeight(1);
             designBreak.setMode(ModeEnum.TRANSPARENT);
             newPageBand.addElement(designBreak);
-            JRDesignExpression expression = new JRDesignExpression();
-            expression.setText("($F{_EJ_VA_CONTEXT}).getRecordIndex()!=0");
+            JRDesignExpression expression = (toDE("($F{_EJ_VA_CONTEXT}).getRecordIndex()!=0"));
             designBreak.setPrintWhenExpression(expression);
         }
         JRDesignBand subdetail = new JRDesignBand();
@@ -1252,10 +1247,10 @@ public class EJReportJasperReportBuilder
 
         if (element.getPrintWhenExpression() instanceof JRDesignExpression)
         {
-            JRDesignExpression visibleExpression = createScreenItemVisibleExpression(item.getBlockName(), item.getName(), section);
+            String key = createScreenItemVisibleExpression(item.getBlockName(), item.getName(), section).getText();
 
-            visibleExpression.setText(String.format("%s && %s", visibleExpression.getText(), (element.getPrintWhenExpression().getText())));
-            element.setPrintWhenExpression(visibleExpression);
+            key = (String.format("%s && %s", key, (element.getPrintWhenExpression().getText())));
+            element.setPrintWhenExpression(toDE(key));
         }
         else
         {
@@ -1278,7 +1273,7 @@ public class EJReportJasperReportBuilder
             if (properties.isUsedAsDynamicVA())
             {
                 String key = item + "___" + section.name() + "__" + properties.getName();
-                JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+                JRDesignConditionalStyle conditionalStyle = (JRDesignConditionalStyle) cache.get(key);
 
                 if (conditionalStyle == null)
                 {
@@ -1286,7 +1281,7 @@ public class EJReportJasperReportBuilder
                     conditionalStyle = new JRDesignConditionalStyle();
                     conditionalStyle.setConditionExpression(createItemVAExpression(item, properties.getName(), section));
                     vaToStyle(properties, conditionalStyle);
-                    vaCStyleCache.put(key, conditionalStyle);
+                    cache.put(key, conditionalStyle);
                 }
 
                 style.addConditionalStyle(conditionalStyle);
@@ -1338,7 +1333,7 @@ public class EJReportJasperReportBuilder
     private JRDesignConditionalStyle oddStyle(EJReportVisualAttributeProperties vaOdd)
     {
         String key = "__ODD_" + vaOdd.getName();
-        JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+        JRDesignConditionalStyle conditionalStyle = (JRDesignConditionalStyle) cache.get(key);
 
         if (conditionalStyle != null)
             return conditionalStyle;
@@ -1346,17 +1341,15 @@ public class EJReportJasperReportBuilder
         conditionalStyle = new JRDesignConditionalStyle();
         vaToStyle(vaOdd, conditionalStyle);
 
-        JRDesignExpression expression = new JRDesignExpression();
-        expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)");
-        conditionalStyle.setConditionExpression(expression);
-        vaCStyleCache.put(key, conditionalStyle);
+        conditionalStyle.setConditionExpression(toDE("new Boolean($V{REPORT_COUNT}.intValue()%2!=0)"));
+        cache.put(key, conditionalStyle);
         return conditionalStyle;
     }
 
     private JRDesignConditionalStyle evenStyle(EJReportVisualAttributeProperties vaEven)
     {
         String key = "__EVEN_" + vaEven.getName();
-        JRDesignConditionalStyle conditionalStyle = vaCStyleCache.get(key);
+        JRDesignConditionalStyle conditionalStyle = (JRDesignConditionalStyle) cache.get(key);
 
         if (conditionalStyle != null)
             return conditionalStyle;
@@ -1364,10 +1357,8 @@ public class EJReportJasperReportBuilder
         conditionalStyle = new JRDesignConditionalStyle();
         vaToStyle(vaEven, conditionalStyle);
 
-        JRDesignExpression expression = new JRDesignExpression();
-        expression.setText("new Boolean($V{REPORT_COUNT}.intValue()%2==0)");
-        conditionalStyle.setConditionExpression(expression);
-        vaCStyleCache.put(key, conditionalStyle);
+        conditionalStyle.setConditionExpression(toDE("new Boolean($V{REPORT_COUNT}.intValue()%2==0)"));
+        cache.put(key, conditionalStyle);
         return conditionalStyle;
     }
 
@@ -1944,11 +1935,19 @@ public class EJReportJasperReportBuilder
         {
             return style;
         }
-        style = new JRDesignStyle();
+        String key = "___VAS_" + va.getName();
+        style = (JRDesignStyle) cache.get(key);
 
-        style.setName(va.getName());
+        if (style == null)
+        {
+            style = new JRDesignStyle();
+            cache.put(key, style);
+            style.setName(va.getName());
+            vaToStyle(va, style);
+            
+        }
+
         design.addStyle(style);
-        vaToStyle(va, style);
 
         return style;
     }
@@ -2575,12 +2574,12 @@ public class EJReportJasperReportBuilder
 
     JRDesignExpression createValueExpression(EJReport report, String defaultValue)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key = null;
 
         if (defaultValue == null || defaultValue.trim().length() == 0)
         {
 
-            return expression;
+            return toDE(key);
         }
 
         String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
@@ -2588,48 +2587,54 @@ public class EJReportJasperReportBuilder
 
         if ("APP_PARAMETER".equals(paramTypeCode))
         {
-            expression.setText(String.format("$P{%s}", paramValue));
+            key = (String.format("$P{%s}", paramValue));
         }
         else if ("REPORT_PARAMETER".equals(paramTypeCode))
         {
-            expression.setText(String.format("$P{%s}", paramValue));
+            key = (String.format("$P{%s}", paramValue));
         }
         else if ("BLOCK_ITEM".equals(paramTypeCode))
         {
-            expression.setText(String.format("$F{%s}", paramValue));
+            key = (String.format("$F{%s}", paramValue));
         }
         else if ("VARIABLE".equals(paramTypeCode))
         {
             if (paramValue.equals("CURRENT_DATE"))
             {
-                expression.setText("new java.util.Date()");
+                key = ("new java.util.Date()");
             }
             else if (paramValue.equals("PAGE_NUMBER"))
             {
-                expression.setText("$V{MASTER_CURRENT_PAGE}");
+                key = ("$V{MASTER_CURRENT_PAGE}");
             }
             else if (paramValue.equals("PAGE_COUNT"))
             {
-                expression.setText("$V{MASTER_TOTAL_PAGES}");
+                key = ("$V{MASTER_TOTAL_PAGES}");
             }
             else if (paramValue.equals("PAGE_NUMBER_OF_TOTAL_PAGES"))
             {
-                expression.setText("$V{PAGE_NUMBER_OF_TOTAL_PAGES}");
+                key = ("$V{PAGE_NUMBER_OF_TOTAL_PAGES}");
             }
 
         }
         else if ("CLASS_FIELD".equals(paramTypeCode))
         {
 
-            expression.setText(paramValue);
+            key = (paramValue);
         }
 
-        return expression;
+        return toDE(key);
     }
 
     JRDesignExpression createTextExpression(String defaultValue)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key = "TE_" + defaultValue;
+        JRDesignExpression expression = (JRDesignExpression) cache.get(key);
+        if (expression != null)
+            return expression;
+
+        expression = new JRDesignExpression();
+        cache.put(key, expression);
 
         if (defaultValue == null || defaultValue.trim().length() == 0)
         {
@@ -2642,62 +2647,77 @@ public class EJReportJasperReportBuilder
 
     JRDesignExpression createItemVAExpression(String item, String vaName, EJReportScreenSection section)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key;
 
         if (vaName == null)
-            expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item, section.name()));
+            key = (String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\")", item, section.name()));
         else
-            expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item, section.name(), vaName));
-        return expression;
+            key = (String.format("($F{_EJ_VA_CONTEXT}).isActive(\"%s\",\"%s\",\"%s\")", item, section.name(), vaName));
+
+        return toDE(key);
     }
 
     JRDesignExpression createVABaseValueExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key;
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
+        key = (String.format("($F{_EJ_VA_CONTEXT}).getVABaseValue(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
                 defaultPattren == null ? "" : defaultPattren));
-        return expression;
+
+        return toDE(key);
     }
 
     JRDesignExpression createVABaseValuePatternExpression(JRDesignExpression valueExpression, String item, String defaultPattren, EJReportScreenSection section)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key;
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).getVABaseValuePattern(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
+        key = (String.format("($F{_EJ_VA_CONTEXT}).getVABaseValuePattern(%s,\"%s\",\"%s\",\"%s\")", valueExpression.getText(), item, section.name(),
                 defaultPattren == null ? "" : defaultPattren));
-        return expression;
+        return toDE(key);
     }
 
     JRDesignExpression createItemVisibleExpression(String item, EJReportScreenSection section)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key;
 
-        expression.setText(String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\",\"%s\")", item, section.name()));
-        return expression;
+        key = (String.format("($F{_EJ_VA_CONTEXT}).isVisible(\"%s\",\"%s\")", item, section.name()));
+        return toDE(key);
     }
 
     JRDesignExpression createScreenItemVisibleExpression(String block, String item, EJReportScreenSection section)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key;
 
-        expression.setText(String.format("($F{_EJ_AP_CONTEXT}).canShowScreenItem(\"%s\",\"%s\",\"%s\")", block, item, section.name()));
-        return expression;
+        key = (String.format("($F{_EJ_AP_CONTEXT}).canShowScreenItem(\"%s\",\"%s\",\"%s\")", block, item, section.name()));
+        return toDE(key);
     }
 
     JRDesignExpression createBlockVisibleExpression(String name)
     {
-        JRDesignExpression expression = new JRDesignExpression();
+        String key;
 
-        expression.setText(String.format("($F{_EJ_AP_CONTEXT}).canShowBlock(\"%s\")", name));
+        key = (String.format("($F{_EJ_AP_CONTEXT}).canShowBlock(\"%s\")", name));
+        return toDE(key);
+    }
+
+    private JRDesignExpression toDE(String key)
+    {
+        JRDesignExpression expression = (JRDesignExpression) cache.get(key);
+        if (expression != null)
+            return expression;
+
+        expression = new JRDesignExpression();
+        cache.put(key, expression);
+        expression.setText(key);
         return expression;
     }
 
     JRDesignExpression createImageValueExpression(EJReport report, String defaultValue, String deafultImage)
     {
-        JRDesignExpression expression = createValueExpression(report, defaultValue);
 
-        String text = expression.getText();
+        String text = createValueExpression(report, defaultValue).getText();
+        String key = text;
+
         if (text != null && !text.isEmpty())
         {
             if (deafultImage != null && !deafultImage.isEmpty())
@@ -2711,14 +2731,13 @@ public class EJReportJasperReportBuilder
                 {
                     deafultImage = deafultImage.substring(1);
                 }
-                expression.setText(
-                        String.format(" %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(\"%s\")", text,
-                                text, deafultImage));
+                key = (String.format(" %s!=null ? new ByteArrayInputStream((byte[]) %s) : this.getClass().getClassLoader().getResourceAsStream(\"%s\")", text,
+                        text, deafultImage));
 
             }
             else
             {
-                expression.setText(String.format(" new ByteArrayInputStream((byte[]) %s) ", text));
+                key = (String.format(" new ByteArrayInputStream((byte[]) %s) ", text));
 
             }
 
@@ -2736,11 +2755,11 @@ public class EJReportJasperReportBuilder
                 {
                     deafultImage = deafultImage.substring(1);
                 }
-                expression.setText(String.format("this.getClass().getClassLoader().getResourceAsStream(\"%s\")", deafultImage));
+                key = (String.format("this.getClass().getClassLoader().getResourceAsStream(\"%s\")", deafultImage));
             }
         }
 
-        return expression;
+        return toDE(key);
     }
 
     public JasperReport toReport()
