@@ -70,6 +70,7 @@ import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
 import net.sf.jasperreports.engine.util.JRSwapFile;
 import net.sf.jasperreports.engine.util.MarkupProcessorFactory;
@@ -194,7 +195,7 @@ public class EJJasperReports
         Map<String, JasperReport> reportCache = new HashMap<>();
 
         File tempFile = null;
-        JRSwapFileVirtualizer virtualizer = null;
+        JRFileVirtualizer virtualizer = null;
         try
         {
             report.getActionController().beforeReport(report);
@@ -214,10 +215,10 @@ public class EJJasperReports
             tempFile.delete();
             tempFile.mkdirs();
             JRSwapFile swapFile = new JRSwapFile(tempFile.getAbsolutePath(), 2048, 200);
-            virtualizer = new JRSwapFileVirtualizer(150, swapFile, true);
-            EJJasperReportParameter virtualizerParam = new EJJasperReportParameter(JRParameter.REPORT_VIRTUALIZER, JRSwapFileVirtualizer.class);
+            virtualizer = new JRFileVirtualizer(50);
+            EJJasperReportParameter virtualizerParam = new EJJasperReportParameter(JRParameter.REPORT_VIRTUALIZER, JRFileVirtualizer.class);
             virtualizerParam.setValue(virtualizer);
-            reportParameters.add(virtualizerParam);
+           // reportParameters.add(virtualizerParam);
             for (EJApplicationLevelParameter parameter : manager.getApplicationLevelParameters())
             {
                 EJJasperReportParameter jasperReportParameter = new EJJasperReportParameter(parameter.getName(), parameter.getValue());
