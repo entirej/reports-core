@@ -93,6 +93,8 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
 import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
 import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
+import net.sf.jasperreports.engine.type.HorizontalImageAlignEnum;
+import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.LineStyleEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
@@ -102,6 +104,8 @@ import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.SplitTypeEnum;
 import net.sf.jasperreports.engine.type.StretchTypeEnum;
 import net.sf.jasperreports.engine.type.VerticalAlignEnum;
+import net.sf.jasperreports.engine.type.VerticalImageAlignEnum;
+import net.sf.jasperreports.engine.type.VerticalTextAlignEnum;
 import net.sf.jasperreports.engine.util.StyleResolver;
 
 public class EJReportJasperReportBuilder
@@ -2125,16 +2129,20 @@ public class EJReportJasperReportBuilder
         switch (va.getHAlignment())
         {
             case LEFT:
-                style.setHorizontalAlignment(HorizontalAlignEnum.LEFT);
+                style.setHorizontalImageAlign(HorizontalImageAlignEnum.LEFT);
+                style.setHorizontalTextAlign(HorizontalTextAlignEnum.LEFT);
                 break;
             case RIGHT:
-                style.setHorizontalAlignment(HorizontalAlignEnum.RIGHT);
+                style.setHorizontalImageAlign(HorizontalImageAlignEnum.RIGHT);
+                style.setHorizontalTextAlign(HorizontalTextAlignEnum.RIGHT);
                 break;
             case CENTER:
-                style.setHorizontalAlignment(HorizontalAlignEnum.CENTER);
+                style.setHorizontalImageAlign(HorizontalImageAlignEnum.CENTER);
+                style.setHorizontalTextAlign(HorizontalTextAlignEnum.CENTER);
                 break;
             case JUSTIFIED:
-                style.setHorizontalAlignment(HorizontalAlignEnum.JUSTIFIED);
+                style.setHorizontalImageAlign(HorizontalImageAlignEnum.LEFT);
+                style.setHorizontalTextAlign(HorizontalTextAlignEnum.JUSTIFIED);
                 break;
 
             default:
@@ -2143,15 +2151,19 @@ public class EJReportJasperReportBuilder
         switch (va.getVAlignment())
         {
             case TOP:
-                style.setVerticalAlignment(VerticalAlignEnum.TOP);
+                style.setVerticalImageAlign(VerticalImageAlignEnum.TOP);
+                style.setVerticalTextAlign(VerticalTextAlignEnum.TOP);
                 break;
             case BOTTOM:
-                style.setVerticalAlignment(VerticalAlignEnum.BOTTOM);
+                style.setVerticalImageAlign(VerticalImageAlignEnum.BOTTOM);
+                style.setVerticalTextAlign(VerticalTextAlignEnum.BOTTOM);
                 break;
             case CENTER:
-                style.setVerticalAlignment(VerticalAlignEnum.MIDDLE);
+                style.setVerticalImageAlign(VerticalImageAlignEnum.MIDDLE);
+                style.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
             case JUSTIFIED:
-                style.setVerticalAlignment(VerticalAlignEnum.JUSTIFIED);
+                style.setVerticalImageAlign(VerticalImageAlignEnum.TOP);
+                style.setVerticalTextAlign(VerticalTextAlignEnum.JUSTIFIED);
                 break;
 
             default:
@@ -2522,16 +2534,20 @@ public class EJReportJasperReportBuilder
         switch (alignmentBaseItem.getVAlignment())
         {
             case TOP:
-                elm.setVerticalAlignment(VerticalAlignEnum.TOP);
+                elm.setVerticalImageAlign(VerticalImageAlignEnum.TOP);
+                elm.setVerticalTextAlign(VerticalTextAlignEnum.TOP);
                 break;
             case BOTTOM:
-                elm.setVerticalAlignment(VerticalAlignEnum.BOTTOM);
+                elm.setVerticalImageAlign(VerticalImageAlignEnum.BOTTOM);
+                elm.setVerticalTextAlign(VerticalTextAlignEnum.BOTTOM);
                 break;
             case CENTER:
-                elm.setVerticalAlignment(VerticalAlignEnum.MIDDLE);
+                elm.setVerticalImageAlign(VerticalImageAlignEnum.MIDDLE);
+                elm.setVerticalTextAlign(VerticalTextAlignEnum.MIDDLE);
                 break;
             case JUSTIFIED:
-                elm.setVerticalAlignment(VerticalAlignEnum.JUSTIFIED);
+                elm.setVerticalImageAlign(VerticalImageAlignEnum.TOP);
+                elm.setVerticalTextAlign(VerticalTextAlignEnum.JUSTIFIED);
                 break;
 
             default:
@@ -2540,16 +2556,20 @@ public class EJReportJasperReportBuilder
         switch (alignmentBaseItem.getHAlignment())
         {
             case LEFT:
-                elm.setHorizontalAlignment(HorizontalAlignEnum.LEFT);
+                elm.setHorizontalImageAlign(HorizontalImageAlignEnum.LEFT);
+                elm.setHorizontalTextAlign(HorizontalTextAlignEnum.LEFT);
                 break;
             case RIGHT:
-                elm.setHorizontalAlignment(HorizontalAlignEnum.RIGHT);
+                elm.setHorizontalImageAlign(HorizontalImageAlignEnum.RIGHT);
+                elm.setHorizontalTextAlign(HorizontalTextAlignEnum.RIGHT);
                 break;
             case CENTER:
-                elm.setHorizontalAlignment(HorizontalAlignEnum.CENTER);
+                elm.setHorizontalImageAlign(HorizontalImageAlignEnum.CENTER);
+                elm.setHorizontalTextAlign(HorizontalTextAlignEnum.CENTER);
                 break;
             case JUSTIFIED:
-                elm.setHorizontalAlignment(HorizontalAlignEnum.JUSTIFIED);
+                elm.setHorizontalImageAlign(HorizontalImageAlignEnum.LEFT);
+                elm.setHorizontalTextAlign(HorizontalTextAlignEnum.JUSTIFIED);
                 break;
 
             default:

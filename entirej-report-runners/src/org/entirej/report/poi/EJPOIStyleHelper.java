@@ -163,7 +163,7 @@ public class EJPOIStyleHelper
 
             if (foregroundColor != null)
             {
-                font.setColor(new XSSFColor(foregroundColor));
+                font.setColor(new XSSFColor(foregroundColor,null));
                 cellStyle.setFont(font);
             }
             if (!EJCoreReportVisualAttributeProperties.UNSPECIFIED.equals(va.getFontName()))
@@ -385,7 +385,7 @@ public class EJPOIStyleHelper
         if (backgroundColor != null)
         {
 
-            cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor));
+            cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor,null));
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         }
@@ -413,7 +413,7 @@ public class EJPOIStyleHelper
             if (border.getVisualAttributeName() != null && border.getVisualAttributeName().getBackgroundColor() != null)
             {
 
-                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor()));
+                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor(),null));
 
             }
 
