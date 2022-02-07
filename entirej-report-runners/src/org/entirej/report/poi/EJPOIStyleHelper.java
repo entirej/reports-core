@@ -18,6 +18,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
+import org.apache.poi.xssf.usermodel.IndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -40,12 +42,14 @@ public class EJPOIStyleHelper
     private XSSFCellStyle              defaultStyleWarp;
     private Locale                     currentLocale;
     private XSSFWorkbook               xworkbook;
+    private IndexedColorMap indexedColorMap = new  DefaultIndexedColorMap(); 
 
     public EJPOIStyleHelper(XSSFWorkbook xworkbook, SXSSFWorkbook workbook, EJReport report)
     {
         this.workbook = workbook;
         this.xworkbook = xworkbook;
-
+        currentLocale = report.getCurrentLocale();
+        currentLocale = currentLocale!=null ?currentLocale: Locale.getDefault();
         
         String defaultCellType =null;
 
@@ -102,7 +106,7 @@ public class EJPOIStyleHelper
             {
                 font.setFontHeight((short) (va.getFontSize() * 20));
             }
-            currentLocale = report.getCurrentLocale();
+            
             defaultStyle = getStyle(false, va, null, null, null);
             
             defaultStyleWarp = getStyle(true, va, null, null, null);
@@ -163,7 +167,7 @@ public class EJPOIStyleHelper
 
             if (foregroundColor != null)
             {
-                font.setColor(new XSSFColor(foregroundColor,null));
+                font.setColor(new XSSFColor(foregroundColor,indexedColorMap));
                 cellStyle.setFont(font);
             }
             if (!EJCoreReportVisualAttributeProperties.UNSPECIFIED.equals(va.getFontName()))
@@ -385,7 +389,7 @@ public class EJPOIStyleHelper
         if (backgroundColor != null)
         {
 
-            cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor,null));
+            cellStyle.setFillForegroundColor(new XSSFColor(backgroundColor,indexedColorMap));
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         }
@@ -413,7 +417,7 @@ public class EJPOIStyleHelper
             if (border.getVisualAttributeName() != null && border.getVisualAttributeName().getBackgroundColor() != null)
             {
 
-                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor(),null));
+                bcolor = (new XSSFColor(border.getVisualAttributeName().getBackgroundColor(),indexedColorMap));
 
             }
 
