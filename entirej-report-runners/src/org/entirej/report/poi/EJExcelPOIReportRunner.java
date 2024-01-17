@@ -80,6 +80,13 @@ public class EJExcelPOIReportRunner
         }
         LOGGER.info("START Filling  Report :" + report.getName());
         long start = System.currentTimeMillis();
+        
+        EJReportParameter reportAutoLayoutParameter = null;
+        if(report.hasReportParameter("REPORT_AUTOLAYOUT"))
+        {
+            reportAutoLayoutParameter = report.getReportParameter("REPORT_AUTOLAYOUT");
+        }
+        
         report.getActionController().beforeReport(report);
         try
         {
@@ -103,7 +110,7 @@ public class EJExcelPOIReportRunner
                 reportPOIPage.build(report, page);
 
                 SXSSFSheet sheet = wb.createSheet(page.getName());
-
+               
                 if (report.getProperties().getOrientation() == ORIENTATION.LANDSCAPE)
                 {
                     sheet.getPrintSetup().setLandscape(true);
@@ -140,13 +147,29 @@ public class EJExcelPOIReportRunner
                     rownum = processBlock(styleHelper, report, reportDS, reportPOIPage, sheet, rownum, reportPOIPage.getBlock(block.getName()), rangeAddresses);
 
                 }
+                
+                if(reportAutoLayoutParameter!=null && Boolean.TRUE.equals(reportAutoLayoutParameter.getValue())) {
+                    sheet.trackAllColumnsForAutoSizing();
+                    for (Entry<Integer, Integer> entry : colWidths.entrySet())
+                    {
+
+                        sheet.autoSizeColumn(entry.getKey());
+                    }
+                }
+
+                
 
                 for (CellRangeAddress address : rangeAddresses)
                 {
                     sheet.addMergedRegionUnsafe(address);
                 }
+                
+                
+                
+                
 
             }
+
             FileOutputStream out = new FileOutputStream(outputFile);
             wb.write(out);
             out.close();
@@ -178,7 +201,7 @@ public class EJExcelPOIReportRunner
             LOGGER.info("END get datasource :" + block.getName() + " TIME(sec):" + (System.currentTimeMillis() - dsStart) / 1000);
 
             Map<String, SimpleDateFormat> dateMap = new HashMap<String, SimpleDateFormat>();
-            
+
             int initRow = rownum;
             if (blockDataSource.next())
             {
@@ -253,35 +276,33 @@ public class EJExcelPOIReportRunner
                     }
                 }
             }
-           
-            if(initRow<(rownum-1))
+
+            if (initRow < (rownum - 1))
             {
                 List<EJReportPOIRaw> raws = poiBlock.getRaws();
-                int starCell=0;
-                int endCell=0;
+                int starCell = 0;
+                int endCell = 0;
                 boolean setIgnoew = true;
                 for (EJReportPOIRaw poiRaw : raws)
                 {
-                 
-                          
-                        for (EJReportPOIElement poiElement : poiRaw.getElements())
+
+                    for (EJReportPOIElement poiElement : poiRaw.getElements())
+                    {
+
+                        if (poiElement.isIgnoreWarnings() && poiElement.getStartCell() > -1)
                         {
-    
-                           if(   poiElement.isIgnoreWarnings() && poiElement.getStartCell()>-1 )
-                           {
-                               setIgnoew = true;
-                               starCell = Math.min(starCell, poiElement.getStartCell());
-                               endCell = Math.min(endCell, poiElement.getStartCell());
-                              
-                             
-                           }
-                            
+                            setIgnoew = true;
+                            starCell = Math.min(starCell, poiElement.getStartCell());
+                            endCell = Math.min(endCell, poiElement.getStartCell());
+
                         }
-                    
+
+                    }
+
                 }
-                if(setIgnoew)
-                    styleHelper.addIgnore(sheet.getSheetName(), new CellRangeAddress(initRow, rownum-1, starCell, endCell), IgnoredErrorType.values());
-                
+                if (setIgnoew)
+                    styleHelper.addIgnore(sheet.getSheetName(), new CellRangeAddress(initRow, rownum - 1, starCell, endCell), IgnoredErrorType.values());
+
             }
         }
         return rownum;
@@ -327,7 +348,7 @@ public class EJExcelPOIReportRunner
                     row.setHeight((short) -1);
                 }
                 setCellValue(cell, value);
-               
+
             }
             else
             {
@@ -439,9 +460,9 @@ public class EJExcelPOIReportRunner
                 default:
                     break;
             }
-            //handle manual format
+            // handle manual format
             String manualPattern = visualAttribute.getManualPattern();
-            if(manualPattern!=null && !manualPattern.isEmpty())
+            if (manualPattern != null && !manualPattern.isEmpty())
             {
                 try
                 {
@@ -637,7 +658,5 @@ public class EJExcelPOIReportRunner
         int cellIndex;
         int numOfCells;
     }
-    
-
 
 }
