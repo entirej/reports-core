@@ -110,6 +110,9 @@ public class EJExcelPOIReportRunner
                 reportPOIPage.build(report, page);
 
                 SXSSFSheet sheet = wb.createSheet(page.getName());
+                if(reportAutoLayoutParameter!=null && Boolean.TRUE.equals(reportAutoLayoutParameter.getValue())) {
+                    sheet.trackAllColumnsForAutoSizing();
+                }
                
                 if (report.getProperties().getOrientation() == ORIENTATION.LANDSCAPE)
                 {
@@ -149,7 +152,6 @@ public class EJExcelPOIReportRunner
                 }
                 
                 if(reportAutoLayoutParameter!=null && Boolean.TRUE.equals(reportAutoLayoutParameter.getValue())) {
-                    sheet.trackAllColumnsForAutoSizing();
                     for (Entry<Integer, Integer> entry : colWidths.entrySet())
                     {
 
