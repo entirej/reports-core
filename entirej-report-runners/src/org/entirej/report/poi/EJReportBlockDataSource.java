@@ -126,7 +126,10 @@ public class EJReportBlockDataSource implements Serializable, EJReportBlockItemV
                         return value;
                     }
 
+                } else {
+                    System.err.print("EJReportBlockDataSource.getValue() : Block not found: "+blockName );
                 }
+                
             }
 
         }

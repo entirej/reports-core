@@ -102,6 +102,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                 }
                 return new EJReportBlockDataSource(subBlock);
             }
+            else 
+            {
+                System.err.print("EJReportBlockDataSource.getValue() : Block not found: "+blockName );
+            }
 
         }
 
@@ -136,6 +140,10 @@ public class EJReportBlockDataSource implements JRDataSource, Serializable, EJRe
                         return value;
                     }
 
+                } 
+                else
+                {
+                    System.err.print("EJReportBlockDataSource.getValue() : Block not found: "+blockName );
                 }
             }
 

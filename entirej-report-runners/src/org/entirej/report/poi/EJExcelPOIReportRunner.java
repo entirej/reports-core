@@ -104,12 +104,22 @@ public class EJExcelPOIReportRunner
             EJReportDataSource reportDS = new EJReportDataSource(report);
 
             Collection<EJReportPage> pages = report.getPages();
+            int pageIndex = 0;
             for (EJReportPage page : pages)
             {
                 EJReportPOIPage reportPOIPage = new EJReportPOIPage();
                 reportPOIPage.build(report, page);
+                pageIndex++;
 
-                SXSSFSheet sheet = wb.createSheet(page.getName());
+                String pageName = page.getName();
+                if(report.hasReportParameter("REPORT_PAGE_"+pageIndex+"_NAME"))
+                {
+                    Object customPageName = report.getReportParameter("REPORT_PAGE_"+pageIndex+"_NAME").getValue();
+                    if(customPageName instanceof String)
+                        pageName = (String) customPageName; 
+                }
+
+                SXSSFSheet sheet = wb.createSheet(pageName);
                 if(reportAutoLayoutParameter!=null && Boolean.TRUE.equals(reportAutoLayoutParameter.getValue())) {
                     sheet.trackAllColumnsForAutoSizing();
                 }

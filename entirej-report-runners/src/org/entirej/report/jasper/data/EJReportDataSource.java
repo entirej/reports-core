@@ -62,6 +62,10 @@ public class EJReportDataSource implements JRDataSource, Serializable, EJReportA
                 }
                 return new EJReportBlockDataSource(block);
             }
+            else 
+            {
+                System.err.print("EJReportBlockDataSource.getValue() : Block not found: "+blockName );
+            }
 
         }
 
