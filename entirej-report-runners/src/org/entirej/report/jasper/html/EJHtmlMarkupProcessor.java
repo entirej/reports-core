@@ -12,11 +12,13 @@ import javax.swing.text.AbstractDocument.LeafElement;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.EditorKit;
 import javax.swing.text.Element;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTML.Tag;
 import javax.swing.text.html.HTMLDocument.RunElement;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +27,7 @@ import net.sf.jasperreports.engine.JRPrintHyperlink;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.base.JRBasePrintHyperlink;
 import net.sf.jasperreports.engine.type.HyperlinkTypeEnum;
-import net.sf.jasperreports.engine.util.JEditorPaneMarkupProcessor;
+import net.sf.jasperreports.engine.util.EditorKitMarkupProcessor;
 import net.sf.jasperreports.engine.util.JRStringUtil;
 import net.sf.jasperreports.engine.util.JRStyledText;
 import net.sf.jasperreports.engine.util.JRStyledTextParser;
@@ -33,7 +35,7 @@ import net.sf.jasperreports.engine.util.JRTextAttribute;
 
 
 
-public class EJHtmlMarkupProcessor extends JEditorPaneMarkupProcessor
+public class EJHtmlMarkupProcessor extends EditorKitMarkupProcessor
 {
 	private static final Log log = LogFactory.getLog(EJHtmlMarkupProcessor.class);
 	
@@ -62,8 +64,10 @@ public class EJHtmlMarkupProcessor extends JEditorPaneMarkupProcessor
 	               replaceAll("</s>","</font>").
 	               replaceAll("<strong>","<b>").replaceAll("</strong>","</b>");
 	    
-		JEditorPane editorPane = new JEditorPane("text/html", srcText);
-		editorPane.setEditable(false);
+	       JEditorPane editorPane = new JEditorPane();
+	       editorPane.setEditable(false);
+	       editorPane.setEditorKit(getEditorKit());
+	       editorPane.setText(srcText);
 
 		List<Element> elements = new ArrayList<Element>();
 
@@ -392,4 +396,11 @@ public class EJHtmlMarkupProcessor extends JEditorPaneMarkupProcessor
 		
 		return JRStringUtil.getLetterNumeral(index, isUpperCase);
 	}
+
+	
+	@Override
+	protected EditorKit getEditorKit() {
+	    return new HTMLEditorKit();
+	}
+    
 }
