@@ -304,7 +304,8 @@ public class EJJasperReports
         }
         finally
         {
-            virtualizer.cleanup();
+            if(virtualizer!=null)
+                virtualizer.cleanup();
             if (tempFile != null)
             {
                 File[] listFiles = tempFile.listFiles();

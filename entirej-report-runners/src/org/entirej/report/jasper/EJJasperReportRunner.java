@@ -79,9 +79,10 @@ public class EJJasperReportRunner implements EJReportRunner
         {
             throw new EJReportRuntimeException("EJReportFrameworkManager not initialised");
         }
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try
         {
-          
+          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             JasperPrint jasperPrint = EJJasperReports.fillReport(manager, report);
 
             System.gc();
@@ -98,6 +99,9 @@ public class EJJasperReportRunner implements EJReportRunner
         catch (Throwable t)
         {
             throw new EJReportRuntimeException(t.getMessage(), t);
+        }
+        finally {
+            Thread.currentThread().setContextClassLoader(classLoader);
         }
 
     }
