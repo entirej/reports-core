@@ -57,6 +57,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -107,6 +108,10 @@ public class EJJasperReports
         // context.setProperty("net.sf.jasperreports.extension.simple.font.families.courier_new","org/entirej/report/jasper/fonts/ej-fonts.xml");
 
         context.setProperty(MarkupProcessorFactory.PROPERTY_MARKUP_PROCESSOR_FACTORY_PREFIX + "html", EJHtmlFactory.class.getName());
+        
+        JRPropertiesUtil.getInstance(DefaultJasperReportsContext.getInstance())
+        .setProperty("net.sf.jasperreports.compiler.class",
+                     "net.sf.jasperreports.jdt.JRJdtCompiler");
     }
 
     static Map<String, Object> toParameters(EJJasperReportParameter... parameters)

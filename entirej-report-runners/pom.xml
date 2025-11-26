@@ -170,10 +170,21 @@
             <version>5.3.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.3.0</version>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml-full</artifactId>
+          <version>5.3.0</version>
         </dependency>
+        <dependency>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml</artifactId>
+          <version>5.3.0</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.xmlbeans</groupId>
+          <artifactId>xmlbeans</artifactId>
+          <version>5.2.1</version>
+        </dependency>
+        
 
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -189,6 +200,20 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-excel-poi</artifactId>
             <version>7.0.3</version>
+            <exclusions>
+                <exclusion>
+                  <groupId>org.apache.poi</groupId>
+                  <artifactId>poi-ooxml-lite</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.apache.poi</groupId>
+                  <artifactId>poi-ooxml</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.apache.xmlbeans</groupId>
+                  <artifactId>xmlbeans</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -204,6 +229,11 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-metadata</artifactId>
             <version>7.0.3</version>
+        </dependency>
+        <dependency>
+          <groupId>net.sf.jasperreports</groupId>
+          <artifactId>jasperreports-jdt</artifactId>
+          <version>7.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
