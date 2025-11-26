@@ -56,10 +56,12 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.jasperreports.charts.design.JRDesignCategoryDataset;
 import net.sf.jasperreports.charts.design.JRDesignCategorySeries;
+import net.sf.jasperreports.charts.design.JRDesignChart;
 import net.sf.jasperreports.charts.design.JRDesignPieDataset;
 import net.sf.jasperreports.charts.design.JRDesignPieSeries;
 import net.sf.jasperreports.charts.design.JRDesignXyDataset;
 import net.sf.jasperreports.charts.design.JRDesignXySeries;
+import net.sf.jasperreports.charts.type.ChartTypeEnum;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
 import net.sf.jasperreports.engine.JRException;
@@ -73,7 +75,6 @@ import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.base.JRBoxPen;
 import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignBreak;
-import net.sf.jasperreports.engine.design.JRDesignChart;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
@@ -92,7 +93,6 @@ import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRXlsAbstractExporter;
 import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
-import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
 import net.sf.jasperreports.engine.type.HorizontalImageAlignEnum;
 import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
@@ -103,7 +103,7 @@ import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.SplitTypeEnum;
 import net.sf.jasperreports.engine.type.StretchTypeEnum;
-import net.sf.jasperreports.engine.type.VerticalAlignEnum;
+import net.sf.jasperreports.engine.type.TextAdjustEnum;
 import net.sf.jasperreports.engine.type.VerticalImageAlignEnum;
 import net.sf.jasperreports.engine.type.VerticalTextAlignEnum;
 import net.sf.jasperreports.engine.util.StyleResolver;
@@ -1692,7 +1692,7 @@ public class EJReportJasperReportBuilder
             case AREA_CHART:
             case LINE_CHART:
             {
-                byte chartType = getChartType(screenChart);
+                ChartTypeEnum chartType = getChartType(screenChart);
                 chart = new JRDesignChart(new JRDefaultStyleProvider()
                 {
 
@@ -1758,7 +1758,7 @@ public class EJReportJasperReportBuilder
             case XY_BAR_CHART:
             case XY_LINE_CHART:
             {
-                byte chartType = getChartType(screenChart);
+                ChartTypeEnum chartType = getChartType(screenChart);
                 chart = new JRDesignChart(new JRDefaultStyleProvider()
                 {
 
@@ -1837,7 +1837,7 @@ public class EJReportJasperReportBuilder
                         // TODO Auto-generated method stub
                         return null;
                     }
-                }, screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_PIE3D : JRDesignChart.CHART_TYPE_PIE);
+                }, screenChart.isUse3dView() ? ChartTypeEnum.PIE3D : ChartTypeEnum.PIE);
 
                 JRDesignPieDataset data = new JRDesignPieDataset(null);
 
@@ -1895,44 +1895,44 @@ public class EJReportJasperReportBuilder
         design.setTitle(detail);
     }
 
-    private byte getChartType(EJReportScreenChart screenChart)
+    private ChartTypeEnum getChartType(EJReportScreenChart screenChart)
     {
 
         switch (screenChart.getChartType())
         {
             case BAR_CHART:
 
-                return (screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_BAR3D : JRDesignChart.CHART_TYPE_BAR);
+                return (screenChart.isUse3dView() ? ChartTypeEnum.BAR3D : ChartTypeEnum.BAR);
             case STACKED_BAR_CHART:
 
-                return (screenChart.isUse3dView() ? JRDesignChart.CHART_TYPE_STACKEDBAR3D : JRDesignChart.CHART_TYPE_STACKEDBAR);
+                return (screenChart.isUse3dView() ? ChartTypeEnum.STACKEDBAR3D: ChartTypeEnum.STACKEDBAR);
             case AREA_CHART:
 
-                return JRDesignChart.CHART_TYPE_AREA;
+                return ChartTypeEnum.AREA;
             case STACKED_AREA_CHART:
 
-                return JRDesignChart.CHART_TYPE_STACKEDAREA;
+                return ChartTypeEnum.STACKEDAREA;
             case LINE_CHART:
 
-                return JRDesignChart.CHART_TYPE_LINE;
+                return ChartTypeEnum.LINE;
             case XY_AREA_CHART:
 
-                return JRDesignChart.CHART_TYPE_XYAREA;
+                return ChartTypeEnum.XYAREA;
             case XY_BAR_CHART:
 
-                return JRDesignChart.CHART_TYPE_XYBAR;
+                return ChartTypeEnum.XYBAR;
             case XY_LINE_CHART:
 
-                return JRDesignChart.CHART_TYPE_XYLINE;
+                return ChartTypeEnum.XYLINE;
             case PIE_CHART:
-                return JRDesignChart.CHART_TYPE_PIE;
+                return ChartTypeEnum.PIE;
 
             default:
                 break;
 
         }
 
-        return JRDesignChart.CHART_TYPE_AREA;
+        return ChartTypeEnum.AREA;
     }
 
     private JRDesignStyle toStyle(EJReportVisualAttributeProperties va) throws JRException
@@ -2277,7 +2277,9 @@ public class EJReportJasperReportBuilder
 
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
-                text.setStretchWithOverflow(textItem.isExpandToFit() || (properties != null && properties.isExpandToFit()));
+                if((textItem.isExpandToFit() || (properties != null && properties.isExpandToFit())))
+                    text.setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT);
+                
                 text.setBlankWhenNull(true);
                 configMarkup(itemStyle, item);
             }
@@ -2303,7 +2305,8 @@ public class EJReportJasperReportBuilder
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
-                text.setStretchWithOverflow(textItem.isExpandToFit());
+                if(textItem.isExpandToFit());
+                    text.setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT);
 
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
                 {
@@ -2347,7 +2350,8 @@ public class EJReportJasperReportBuilder
                 setAlignments(itemStyle, textItem);
                 setRotation(itemStyle, textItem);
                 text.setBlankWhenNull(true);
-                text.setStretchWithOverflow(textItem.isExpandToFit());
+                if(textItem.isExpandToFit());
+                    text.setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT);
                 Locale defaultLocale = block.getReport().getFrameworkManager().getCurrentLocale();
 
                 if (textItem.getManualFormat() != null && !textItem.getManualFormat().isEmpty())
@@ -2412,7 +2416,7 @@ public class EJReportJasperReportBuilder
                 JRDesignTextField text = new JRDesignTextField();
                 element = text;
                 text.setBlankWhenNull(true);
-                text.setStretchWithOverflow(true);
+                text.setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT);
                 text.setExpression(createTextExpression(labelItem.getText()));
                 setAlignments(itemStyle, labelItem);
                 setRotation(itemStyle, labelItem);
