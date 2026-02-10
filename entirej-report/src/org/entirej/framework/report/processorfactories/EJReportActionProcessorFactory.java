@@ -166,7 +166,7 @@ public class EJReportActionProcessorFactory implements Serializable
         Object processorObject;
         try
         {
-            processorObject = processorClass.newInstance();
+            processorObject = processorClass.getDeclaredConstructor().newInstance();
             if (processorObject instanceof EJReportActionProcessor)
             {
                 return (EJReportActionProcessor) processorObject;
@@ -177,12 +177,7 @@ public class EJReportActionProcessorFactory implements Serializable
                         processorName, "EJReportActionProcessor"));
             }
         }
-        catch (InstantiationException e)
-        {
-            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_ACTION_PROCESSOR,
-                    processorName), e);
-        }
-        catch (IllegalAccessException e)
+        catch (ReflectiveOperationException e)
         {
             throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_ACTION_PROCESSOR,
                     processorName), e);
@@ -211,7 +206,7 @@ public class EJReportActionProcessorFactory implements Serializable
         Object processorObject;
         try
         {
-            processorObject = processorClass.newInstance();
+            processorObject = processorClass.getDeclaredConstructor().newInstance();
             if (processorObject instanceof EJReportBlockActionProcessor)
             {
                 return (EJReportBlockActionProcessor) processorObject;
@@ -222,12 +217,7 @@ public class EJReportActionProcessorFactory implements Serializable
                         processorName, "EJBlockActionProcessor"));
             }
         }
-        catch (InstantiationException e)
-        {
-            throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_ACTION_PROCESSOR,
-                    processorName), e);
-        }
-        catch (IllegalAccessException e)
+        catch (ReflectiveOperationException e)
         {
             throw new EJReportRuntimeException(EJReportMessageFactory.getInstance().createMessage(EJReportFrameworkMessage.UNABLE_TO_CREATE_ACTION_PROCESSOR,
                     processorName), e);

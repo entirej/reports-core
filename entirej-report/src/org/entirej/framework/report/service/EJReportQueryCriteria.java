@@ -300,4 +300,56 @@ public class EJReportQueryCriteria extends EJReportStatementCriteria implements 
         return null;
     }
 
+    /**
+     * Fluent method to add a {@link EJReportRestriction} to this criteria
+     *
+     * @param restriction
+     *            The restriction to add
+     * @return This {@link EJReportQueryCriteria} instance for method chaining
+     */
+    public EJReportQueryCriteria withRestriction(EJReportRestriction<?> restriction)
+    {
+        add(restriction);
+        return this;
+    }
+
+    /**
+     * Fluent method to add a {@link EJReportQuerySort} to this criteria
+     *
+     * @param sort
+     *            The sort to add
+     * @return This {@link EJReportQueryCriteria} instance for method chaining
+     */
+    public EJReportQueryCriteria withSort(EJReportQuerySort sort)
+    {
+        add(sort);
+        return this;
+    }
+
+    /**
+     * Fluent method to set the page size
+     *
+     * @param pageSize
+     *            The size of the pages to retrieve
+     * @return This {@link EJReportQueryCriteria} instance for method chaining
+     */
+    public EJReportQueryCriteria withPageSize(int pageSize)
+    {
+        setPageSize(pageSize);
+        return this;
+    }
+
+    /**
+     * Fluent method to set the page number
+     *
+     * @param pageNumber
+     *            The number of the page to be retrieved
+     * @return This {@link EJReportQueryCriteria} instance for method chaining
+     */
+    public EJReportQueryCriteria withPageNumber(int pageNumber)
+    {
+        setPageNumber(pageNumber);
+        return this;
+    }
+
 }

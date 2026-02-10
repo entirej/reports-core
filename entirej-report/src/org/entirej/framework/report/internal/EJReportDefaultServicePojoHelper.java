@@ -104,15 +104,11 @@ public class EJReportDefaultServicePojoHelper implements Serializable
 
             pojoClass = getPojoFromService(_blockProperties.getBlockService().getClass());
 
-            return pojoClass.newInstance();
+            return pojoClass.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException e)
+        catch (ReflectiveOperationException e)
         {
             throw new EJReportRuntimeException(new EJReportMessage("Unable to instantiate pojo from service: " + pojoClass), e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new EJReportRuntimeException(new EJReportMessage("Unable to access pojo from service: " + pojoClass), e);
         }
     }
 
@@ -240,15 +236,11 @@ public class EJReportDefaultServicePojoHelper implements Serializable
         {
             
             Class<?> pojoClass  = getPojoFromService(baseEntityObject.getClass());
-            return pojoClass.newInstance();
+            return pojoClass.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException e)
+        catch (ReflectiveOperationException e)
         {
             throw new EJReportRuntimeException(new EJReportMessage("Unable to instantiate service pojo: " + baseEntityObject), e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new EJReportRuntimeException(new EJReportMessage("Unable to access service pojo: " + baseEntityObject), e);
         }
     }
 

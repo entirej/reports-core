@@ -39,11 +39,11 @@ public class EJReportBlockServiceFactory implements Serializable
         try
         {
             Class<?> serviceClass = Class.forName(serviceClassName);
-            Object service = serviceClass.newInstance();
+            Object service = serviceClass.getDeclaredConstructor().newInstance();
 
-            if (service != null && service instanceof EJReportBlockService<?>)
+            if (service instanceof EJReportBlockService<?> blockService)
             {
-                return (EJReportBlockService<?>) service;
+                return blockService;
             }
             else
             {
@@ -54,13 +54,9 @@ public class EJReportBlockServiceFactory implements Serializable
         {
             throw new EJReportRuntimeException(new EJReportMessage("Unable to find service class: " + serviceClassName), e);
         }
-        catch (InstantiationException e)
+        catch (ReflectiveOperationException e)
         {
-            throw new EJReportRuntimeException(new EJReportMessage("Unable to instanciate service class: " + serviceClassName), e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new EJReportRuntimeException(new EJReportMessage("Illegal access exception when trying to access service class: " + serviceClassName), e);
+            throw new EJReportRuntimeException(new EJReportMessage("Unable to instantiate service class: " + serviceClassName), e);
         }
     }
 }

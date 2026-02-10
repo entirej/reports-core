@@ -102,7 +102,7 @@ public class EJReportRestrictions
     {
         List<E> values = new ArrayList<E>();
 
-        for (E val : values)
+        for (E val : value)
         {
             values.add(val);
         }

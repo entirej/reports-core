@@ -53,7 +53,7 @@ public class EJReportResultSet<T>
 
             if (_resultSet.next())
             {
-                T result = _pojoType.newInstance();
+                T result = _pojoType.getDeclaredConstructor().newInstance();
 
                 for (int i = 1; i <= metaData.getColumnCount(); i++)
                 {
@@ -72,11 +72,7 @@ public class EJReportResultSet<T>
         {
             throw new EJReportRuntimeException("Error retrieving next:", e);
         }
-        catch (InstantiationException e)
-        {
-            throw new EJReportRuntimeException("Error retrieving next:", e);
-        }
-        catch (IllegalAccessException e)
+        catch (ReflectiveOperationException e)
         {
             throw new EJReportRuntimeException("Error retrieving next:", e);
         }

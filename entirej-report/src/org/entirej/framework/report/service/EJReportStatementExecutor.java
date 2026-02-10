@@ -161,7 +161,7 @@ public class EJReportStatementExecutor implements Serializable
             {
                 while (rset.next())
                 {
-                    T result = pojoType.newInstance();
+                    T result = pojoType.getDeclaredConstructor().newInstance();
 
                     for (int i = 1; i <= metaData.getColumnCount(); i++)
                     {
@@ -172,11 +172,7 @@ public class EJReportStatementExecutor implements Serializable
 
                 logger.info("Query retrieved {} results", results.size());
             }
-            catch (InstantiationException e)
-            {
-                throw new EJReportRuntimeException("Error creating pojo instance", e);
-            }
-            catch (IllegalAccessException e)
+            catch (ReflectiveOperationException e)
             {
                 throw new EJReportRuntimeException("Error creating pojo instance", e);
             }
