@@ -337,7 +337,7 @@ public class EJHtmlMarkupProcessor extends EditorKitMarkupProcessor
 		{
 			attrMap.put(
 				TextAttribute.SIZE,
-				new Float(StyleConstants.getFontSize(attrSet))
+				Float.valueOf(StyleConstants.getFontSize(attrSet))
 				);
 		}
 					
