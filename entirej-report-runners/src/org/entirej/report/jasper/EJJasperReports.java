@@ -23,7 +23,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -456,10 +455,10 @@ public class EJJasperReports
                     break;
                 case PNG:
                 {
-
-                    FileOutputStream output = new FileOutputStream(new File(outputFile));
-                    ImageIO.write(toBufferedImage(JasperPrintManager.printPageToImage(print, 0, 1)), "PNG", output);
-                    output.close();
+                    try (FileOutputStream output = new FileOutputStream(new File(outputFile)))
+                    {
+                        ImageIO.write(toBufferedImage(JasperPrintManager.printPageToImage(print, 0, 1)), "PNG", output);
+                    }
                 }
 
                     break;
@@ -500,6 +499,8 @@ public class EJJasperReports
 
                     exporter.exportReport();
                 }
+
+                    break;
                 case RTF:
                 {
                     File destFile = new File(outputFile);
@@ -570,13 +571,9 @@ public class EJJasperReports
             e.printStackTrace();
             throw new EJReportRuntimeException(e);
         }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new EJReportRuntimeException("Unable to export report to " + outputFile, e);
         }
         finally
         {
